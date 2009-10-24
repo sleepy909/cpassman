@@ -1,0 +1,154 @@
+body{
+width: 1000px;
+margin-left: auto;
+margin-right: auto;
+background: #F0F0F0 url(../images/stripe.png) repeat;
+font-family: sans-serif;
+font-size:11pt;
+}
+
+#top{
+width: 980px;
+height: 35px;
+margin-left: auto;
+margin-right: auto;
+padding: 10px;
+background: #F0F0F0 url(../images/stripe_footer.png) repeat;
+font-family: sans-serif;
+font-size: 10px;
+display:block;
+}
+
+#footer{
+width: 980px;
+margin-left: auto;
+margin-right: auto;
+margin-top: 10px;
+padding: 10px;
+background: #F0F0F0 url(../images/stripe_footer.png) repeat;
+font-family: sans-serif;
+font-size: 10px;
+margin-bottom: 100px;
+}
+
+#main{
+background-color: white;
+padding: 10px;
+border:1px solid #F0F0F0;
+margin-top: 10px;
+}
+
+#title {
+  font: bold 270%/100% "Lucida Grande";
+  color: #464646;
+  float:left;
+  margin-top:3px;
+}
+
+td.id_th{
+font-weight:bold;
+width: 100px;
+}
+
+td.id_val{
+margin-left: 10px;
+}
+
+div#global {
+position: relative;
+}
+div#header {
+color: #fff;
+}
+div#center {
+padding-bottom: 50px; 
+background-color:white;
+display: block;
+}
+div#content {
+float: right;
+width: 670px;
+}
+.sidebar {
+float: left;
+width: 300px; 
+//overflow : scroll; 
+border-right:1px solid #FF8000;
+}
+
+thead th{
+font-size: 13px;
+font-weight: bold;
+background: #FF8000;
+padding: 4px 10px 4px 10px;
+font-family: arial;
+}
+tr.ligne0 td {
+background-color:#FFFFFF;
+border-bottom:1px solid #CCCCCC;
+font-family: arial;
+font-size:11px;
+}
+tr.ligne1 td {
+background-color:#F0F0F0;
+border-bottom:1px solid #CCCCCC;
+font-family: arial;
+font-size:11px;
+}
+
+#div_loading {
+  position:absolute;
+  left: 50%;
+  top: 40%;
+}
+
+a:link {text-decoration: none}
+a:visited {text-decoration: none}
+a:active {text-decoration: none}
+a:hover {text-decoration: none;}
+
+.form_label{
+display:block;
+width:180px;
+float:left;
+}
+
+.form_label_120{
+display:block;
+width:120px;
+float:left;
+}
+
+.td_title{
+font-weight:bold;
+font-family: serif;
+}
+
+ul{
+list-style-type:none;
+}
+
+li{
+cursor: pointer;
+}
+
+.fg-button { clear:left; margin:0px 0px 20px 20px; padding: .4em 1em; text-decoration:none !important; cursor:pointer; position: relative; text-align: center; zoom: 1; }
+.fg-button .ui-icon { position: absolute; top: 50%; margin-top: -8px; left: 50%; margin-left: -8px; }
+a.fg-button { font-size:12px; }
+button.fg-button { width:auto; overflow:visible; } /* removes extra button width in IE */
+
+.fg-button-icon-left { padding-left: 2.1em; }
+.fg-button-icon-right { padding-right: 2.1em; }
+.fg-button-icon-left .ui-icon { right: auto; left: .2em; margin-left: 0; }
+.fg-button-icon-right .ui-icon { left: auto; right: .2em; margin-left: 0; }
+.fg-button-icon-solo { display:block; width:8px; text-indent: -9999px; }     /* solo icon buttons must have block properties for the text-indent to work */    
+
+.fg-button.ui-state-loading .ui-icon { background: url(spinner_bar.gif) no-repeat 0 0; }
+
+.error{
+    margin-top: 50px;
+    margin-bottom: 50px;
+    padding: 10px;
+    font-weight: bold;
+    background: url(../images/error.png) no-repeat 0 0;
+}
