@@ -1,0 +1,35 @@
+.liste_items li.hover { color: red; }
+
+.liste_items li.item {
+    color:green;
+}
+
+.liste_items ul{
+
+}
+
+.liste_items li {
+    list-style-type:none;
+}
+<<<<<<< .mine.liste_items a.file, .liste_items a.fileselected {  
+    cursor:pointer;
+    padding: 2px 1px 1px 16px;
+    display: inline;
+    font-family:verdana;
+    font-size:11px;
+    color: #000080;
+    background: url(../images/key.png) 0 0 no-repeat;
+}
+.liste_items a.fileselected { cursor:pointer; font-style: italic;font-weight:bold}
+.liste_items a.file:hover{ cursor:pointer; text-decoration:underline;}=======.liste_items a.file, .liste_items a.fileselected {  
+    cursor:pointer;
+    padding: 2px 1px 1px 16px;
+    display: inline;
+    font-family:verdana;
+    font-size:11px;
+    color: #000080;
+    background: url(../images/key.png) 0 0 no-repeat;
+}
+.liste_items a.fileselected { cursor:pointer; font-style: italic;font-weight:bold}
+.liste_items a.file:hover{ cursor:pointer; text-decoration:underline;}
+>>>>>>> .theirs
