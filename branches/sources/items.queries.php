@@ -461,7 +461,7 @@ switch($_POST['type'])
             }
         }
         if ( $_POST['edit']==1 ) $div = "edit_afficher_visibilite"; else $div = "afficher_visibilite";
-        echo 'document.getElementById("'.$div.'").innerHTML = "<img=\'includes/images/direction.png\'> <b>'.$visibilite.'</b>";';
+        echo 'document.getElementById("'.$div.'").innerHTML = "<img src=\'includes/images/users.png\'>&nbsp;<b>'.$visibilite.'</b>";';
         
         RecupDroitCreationSansComplexite($_POST['groupe']);
     break;
