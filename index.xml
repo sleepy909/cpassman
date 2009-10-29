@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="0.92">
+<channel>
+	<title>cPassMan Feed</title>
+	<link>http://cpassman.net23.net/feeds/</link>
+	<description>Subscribe to cPassMan RSS feed and stay up to date with latest news and releases</description>
+	<lastBuildDate>Wed, 28 Oct 2009 10:14:20 -0700</lastBuildDate>
+	<docs>http://backend.userland.com/rss092</docs>
+	<language>en</language>
+<item>
+<title>Version 1.02 released and Help available</title>
+<description>cPassMan 1.02 is now available for download. Please update your server!<br />
+The page for Users Help has been updated on the Website.</description>
+<link>http://cpassman.net23.net/feeds/blog-.Version-1-02-released-and-Help-available</link>
+</item>
+<item>
+<title>Website is out</title>
+<description>This new website dedicated for promoting cPassMan is now available. I hope you will found all informations you need about it. So I've put in place a Demo so that you can test cPassMan in real condition.</description>
+<link>http://cpassman.net23.net/feeds/blog-.Website-is-out</link>
+</item>
+<item>
+<title>Version 1.01 is now W3C compliant</title>
+<description>This version of cPassMan is now W3C compliant! Although that I've done all my possible during coding this tool to follow the W3C standards, some parts of the code were still not compliant in v1.0.</description>
+<link>http://cpassman.net23.net/feeds/blog-.Version-1-01-is-now-W3C-compliant</link>
+</item>
+<item>
+<title>Version 1.0 has been released to public</title>
+<description>cPassMan is finally out ! This first version has needed a lot of work and efforts in order to find ideas and do tests. Nevertheless, I'm today very proud to get it released to public.</description>
+<link>http://cpassman.net23.net/feeds/blog-.Version-1-0-has-been-released-to-public</link>
+</item>
+</channel>
+ </rss>
