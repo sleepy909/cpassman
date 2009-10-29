@@ -10,7 +10,7 @@ switch($_POST['type'])
         $text = "<ul>";     
         // Chemin vers le fichier distant
         $remote_file = 'web/pmc/pmc_config.txt';
-        $local_file = 'localfile.txt';
+        $local_file = '../files/localfile.txt';
 
         // Ouverture du fichier pour écriture
         $handle = fopen($local_file, 'w');
@@ -31,12 +31,15 @@ switch($_POST['type'])
                 $tableau = file($local_file);
                 while(list($cle,$val) = each($tableau)) {
                     if ( substr($val,0,1) <> "#" ){
-                        $tmp = explode('§',str_replace("\r\n",'<br />',$val));
-                        $text .= '<li><u>'.$txt[$tmp[0]]."</u> : ".addslashes($tmp[1]).'</li>';
-                        if ( $tmp[0] == "version" ) {
-                            $text .= '<li><u>'.$txt['your_version']."</u> : ".$k['version'];
-                            if ( floatval($k['version']) < floatval($tmp[1]) ) $text .= '&nbsp;&nbsp;<b>'.$txt['please_update'].'</b>';
-                            $text .= '</li>';
+                        $tab = explode('|',$val);
+                        foreach($tab as $elem){
+                            $tmp = explode('§',$elem);
+                            $text .= '<li><u>'.$txt[$tmp[0]]."</u> : ".addslashes($tmp[1]).'</li>';
+                            if ( $tmp[0] == "version" ) {
+                                $text .= '<li><u>'.$txt['your_version']."</u> : ".$k['version'];
+                                if ( floatval($k['version']) < floatval($tmp[1]) ) $text .= '&nbsp;&nbsp;<b>'.$txt['please_update'].'</b>';
+                                $text .= '</li>';
+                            }
                         }
                     }
                 }

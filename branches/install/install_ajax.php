@@ -264,11 +264,11 @@ if ( isset($_POST['type']) ){
                     echo 'document.getElementById("loader").style.display = "none";';
                     break;
                 }else{
-                    $events .= "The file $filename already exist. A copy has been created.<br />";
+                    $events .= "The file $filename already exist. A copy has been created.<br />"; 
+                    unlink($filename);  
                 }
-            } 
-            
-            $fh = fopen($filename, 'w') or die("can't open file");
+            }
+            $fh = fopen($filename, 'w');
             
             fwrite($fh, "<?php
 global \$lang, \$txt, \$k, \$chemin_passman, \$url_passman, \$mdp_complexite, \$mng_pages;
