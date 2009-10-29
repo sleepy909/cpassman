@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+
+<url>
+  <loc>http://cpassman.net23.net/</loc>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://cpassman.net23.net/?page=home</loc>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://cpassman.net23.net/?page=more</loc>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://cpassman.net23.net/?page=demo</loc>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://cpassman.net23.net/?page=help</loc>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://cpassman.net23.net/includes/lang_help_user.php</loc>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://cpassman.net23.net/includes/lang_help_admin.php</loc>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://cpassman.net23.net/includes/lang_help_install.php</loc>
+  <changefreq>weekly</changefreq>
+</url>
+</urlset>
