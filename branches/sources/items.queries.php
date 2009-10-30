@@ -41,7 +41,7 @@ switch($_POST['type'])
                     $mail->From     = $email_from;
                     $mail->FromName = $email_from_name;
                     
-                    $mail->AddAddress($mail_destinataire);     //Destinataire     $mailAdresses[$i]                
+                    $mail->AddAddress($mail_destinataire);     //Destinataire                
                     
                     $mail->WordWrap = 80;                              // set word wrap
                     $mail->IsHTML(true);                               // send as HTML
@@ -150,16 +150,13 @@ switch($_POST['type'])
                 $mail->SetLanguage("en","../includes/phpmailer/language");
                 //$mail->SMTPDebug=true;
                 $mail->IsSMTP();                                   // send via SMTP
-                $mail->Host     = "mail.clinsight.eu"; // SMTP servers
-                $mail->SMTPAuth = false;     // turn on SMTP authentication
-                $mail->Username = "";  // SMTP username
-                $mail->Password = ""; // SMTP password
-                
-                
-                $mail->From     = "nils.laumaille@clinsight.fr";
-                $mail->FromName = "PassMan";
-                
-                $mail->AddAddress($mail_destinataire);     //Destinataire     $mailAdresses[$i]                
+                $mail->Host     = $smtp_server; // SMTP servers
+                $mail->SMTPAuth = $smtp_auth;     // turn on SMTP authentication
+                $mail->Username = $smtp_auth_username;  // SMTP username
+                $mail->Password = $smtp_auth_password; // SMTP password  
+                $mail->From     = $email_from;
+                $mail->FromName = $email_from_name;                
+                $mail->AddAddress($mail_destinataire);     //Destinataire                  
                 
                 $mail->WordWrap = 80;                              // set word wrap
                 $mail->IsHTML(true);                               // send as HTML
