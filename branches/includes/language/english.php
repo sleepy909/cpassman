@@ -27,7 +27,7 @@
   $txt['find'] = "Find";
   $txt['index_last_seen'] = "Last connection, the";
   $txt['index_last_pw_change'] = "Password changed the";
-  $txt['index_pw_expiration'] = "Acual password expiration in";
+  $txt['index_pw_expiration'] = "Actual password expiration in";
   $txt['days'] = "days";
   $txt[''] = "Change the password";
   $txt['admin'] = "Administration";
@@ -39,7 +39,9 @@
   $txt['index_welcome'] = "Welcome";
   $txt['index_get_identified'] = "Please identify you";
   $txt['cancel'] = "Cancel";
-  $txt['cancel_button'] = "Cancel";
+  $txt['cancel_button'] = "Cancel";  
+  $txt['pw_used'] = "This password has already been used!";
+  $txt['pw_changed'] = "Password changed!";
   
   $txt['label'] = "Label";
   $txt['description'] = "Description";

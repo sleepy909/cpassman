@@ -17,11 +17,10 @@ switch($_POST['type'])
     case "change_pw":
         //vérifier certaines valeurs
         $tmp = explode(';',$_SESSION['last_pw']);
-        //echo 'alert("'.$_SESSION['last_pw'].' -- '.$_POST['new_pw'].'");';
         if ( in_array(md5($_POST['new_pw']),$tmp) ){
             echo 'document.getElementById(\'new_pw\').value = "";';
             echo 'document.getElementById(\'new_pw2\').value = "";';
-            echo 'alert(\'Ce mot de passe a déjà été utilisé !\');';
+            echo 'alert(\''.$txt['pw_used'].'\');';
         }else{
             //MAJ la liste des derniers mdps
             if ( sizeof($tmp) == 5 )
@@ -33,13 +32,13 @@ switch($_POST['type'])
             $_SESSION['last_pw_change'] = mktime(0,0,0,date('m'),date('d'),date('y'));
             $_SESSION['validite_pw'] = true;
             
-            $sql="UPDATE ".$k['prefix']."users SET pw = '".md5($_POST['new_pw'])."', last_pw_change = '".mktime(0,0,0,date('m'),date('d'),date('y'))."', last_pw = '".implode(';',$tmp)."' WHERE id = ".$_SESSION['id'];
+            $sql="UPDATE ".$k['prefix']."users SET pw = '".md5($_POST['new_pw'])."', last_pw_change = '".mktime(0,0,0,date('m'),date('d'),date('y'))."', last_pw = '".implode(';',$tmp)."' WHERE id = ".$_SESSION['user_id'];
             mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());            
             
             echo 'document.getElementById(\'new_pw\').value = "";';
             echo 'document.getElementById(\'new_pw2\').value = "";';
             echo 'document.getElementById(\'div_changer_mdp\').style.display = "none";';
-            echo 'alert(\'Mot de passe changé !\');';
+            echo 'alert(\''.$txt['pw_changed'].'\');';
             echo 'window.location.href = "index.php";';
         }
         
@@ -99,7 +98,6 @@ switch($_POST['type'])
             $_SESSION['hauteur_ecran'] = $_POST['hauteur_ecran'];
             
             echo 'document.location.href="index.php";';
-           //echo 'document.form_identify.submit();';
         }else{
             echo 'document.getElementById(\'erreur_connexion\').style.display = "";';
             echo 'document.getElementById(\'erreur_connexion\').innerHTML = "'.$txt['index_bas_pw'].'";';

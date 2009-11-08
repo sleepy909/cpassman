@@ -40,6 +40,8 @@
   $txt['at'] = " à ";
   $txt['index_get_identified'] = "Merci de vous identifier";
   $txt['cancel'] = "Annuler";
+  $txt['pw_used'] = "Ce mot de passe a déjà été utilisé !";
+  $txt['pw_changed'] = "Mot de passe changé !";
   
   $txt['label'] = "Intitulé";
   $txt['description'] = "Description";
