@@ -1,6 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <?php
 session_start();
+$debug = 1;
 
 //Manage Language
 if ( !isset($_SESSION['user_language']) ){
@@ -60,6 +61,7 @@ include('includes/lang_'.$_SESSION['user_language'].'.php');
             else if ( base_url == "demo" ) page = 2;
             else if ( base_url == "help" ) page = 3;
             else if ( base_url == "blog" ) page = 4;
+            if ( document.location.href.lastIndexOf("/forum") > 0 ) page = 5;
             $('#lavaLampBasicImage').lavaLamp({
                 fx: "easeOutExpo",
                 speed: 800,
@@ -173,6 +175,7 @@ echo '
             <li><a href="demo">Demo</a></li>
             <li><a href="help">Help</a></li>
             <li><a href="blog">Blog</a></li>
+            <li><a href="forum">Forum</a></li>
         </ul>
     </div>';
 
@@ -185,6 +188,7 @@ echo '
             else if ( $_GET['page'] == "help" ) include('help.php');
             else if ( $_GET['page'] == "more" ) include('more.php');
             else if ( $_GET['page'] == "blog" ) include('blog.php');
+            else if ( $_GET['page'] == "forum" ) include('forum.php');
             else if ( $_GET['page'] == "rss" ) include('includes/create-xml-rss.php');
         }else
             include('home.php');
@@ -237,11 +241,13 @@ echo '
     </body>
 </html>
 
-
+<?php
+if ( $debug != 1 )
+echo '
 <!-- Piwik -->
 <script type="text/javascript">
 var pkBaseURL = (("https:" == document.location.protocol) ? "https://www.vag-technique.fr/piwik/" : "http://www.vag-technique.fr/piwik/");
-document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+document.write(unescape("%3Cscript src=\'" + pkBaseURL + "piwik.js\' type=\'text/javascript\'%3E%3C/script%3E"));
 </script><script type="text/javascript">
 try {
 var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
@@ -249,4 +255,5 @@ piwikTracker.trackPageView();
 piwikTracker.enableLinkTracking();
 } catch( err ) {}
 </script><noscript><p><img src="http://www.vag-technique.fr/piwik/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
-<!-- End Piwik Tag -->
+<!-- End Piwik Tag -->';
+?>
