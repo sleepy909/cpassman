@@ -1,6 +1,14 @@
-
+<?php
+####################################################################################################
+## File : groups.php
+## Author : Nils Laumaillé
+## Description : Groups page
+## 
+## DON'T CHANGE !!!
+## 
+####################################################################################################
+?>
 <script src="includes/js/jquery.jeditable.js" type="text/javascript"></script>
-
 <?php
 require_once ("sources/NestedTree.class.php");
 $tree = new NestedTree($k['prefix'].'nested_tree', 'id', 'parent_id', 'title');
@@ -135,6 +143,7 @@ echo '
     <select id="parent_id">';
         echo '<option value="na">---'.$txt['select'].'---</option>';
         echo '<option value="0">'.$txt['root'].'</option>';
+        $prev_level = 0;
         foreach($tst as $t){
             $ident="";
             for($x=1;$x<$t->nlevel;$x++) $ident .= "&nbsp;&nbsp;";

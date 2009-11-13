@@ -1,15 +1,19 @@
 <?php
-    include('../includes/settings.php'); 
+####################################################################################################
+## File : main.queries.php
+## Author : Nils Laumaillé
+## Description : File contains queries for ajax
+## 
+## DON'T CHANGE !!!
+## 
+####################################################################################################
+
+include('../includes/settings.php'); 
+header("Content-type: text/html; charset=".$k['charset']);
+session_start();
+$k['langage'] = @$_SESSION['user_language'];    
+require_once('../includes/language/'.$_SESSION['user_language'].'.php'); 
     
-    header("Content-type: text/html; charset=".$k['charset']);
-    
-    session_start();
-    
-    //keep language
-    $k['langage'] = @$_SESSION['user_language'];    
-    require_once('../includes/language/'.$_SESSION['user_language'].'.php'); 
-    
-    $erreurSQL = "";
 
 // Construction de la requête en fonction du type de valeur
 switch($_POST['type'])

@@ -1,4 +1,13 @@
-
+<?php
+####################################################################################################
+## File : items.php
+## Author : Nils Laumaillé
+## Description : Items page
+## 
+## DON'T CHANGE !!!
+## 
+####################################################################################################
+?>
 <script src="includes/js/jquery.search.js" type="text/javascript"></script>
 <script src="includes/js/jquery.copy.js" type="text/javascript"></script>
 <script src="includes/js/jquery.treeview.js" type="text/javascript"></script>
@@ -824,12 +833,6 @@ echo '
                         "&groupe="+document.getElementById("delete_rep_groupe").value;
             httpRequest("sources/items.queries.php",data);
         }
-    }
-    
-    function showDetails(id){
-        LoadingPage();  //afficher image de chargement
-        var data = "type=load_item&id="+id;
-        httpRequest("sources/items.queries.php",data);
     }
     
     function AfficherDetailsItem(id){

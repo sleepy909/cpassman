@@ -1,6 +1,14 @@
-
+<?php
+####################################################################################################
+## File : functions.php
+## Author : Nils Laumaillé
+## Description : Function page
+## 
+## DON'T CHANGE !!!
+## 
+####################################################################################################
+?>
 <script src="includes/js/jquery.jeditable.js" type="text/javascript"></script>
-
 <script type="text/javascript">
 $(function() {
     $("#change_group_autgroups").dialog({
@@ -73,7 +81,7 @@ while( $res_groups = mysql_fetch_row($data_groups) )
                             <div id="list_autgroups_function_'.$data['id'].'" style="display:inline;">';
                                 $list = explode(';',$data['groupes_visibles']);
                                 foreach($list as $elem){
-                                    echo $arr_groups[$elem]."<br />";
+                                    if ( !empty($elem) ) echo $arr_groups[$elem]."<br />";
                                 }
                             echo '
                             </div>
@@ -83,7 +91,7 @@ while( $res_groups = mysql_fetch_row($data_groups) )
                             <div id="list_forgroups_function_'.$data['id'].'" style="display:inline;">';
                                 $list = explode(';',$data['groupes_interdits']);
                                 foreach($list as $elem){
-                                    echo $arr_groups[$elem]."<br />";
+                                    if ( !empty($elem) ) echo $arr_groups[$elem]."<br />";
                                 }
                             echo '
                             </div>

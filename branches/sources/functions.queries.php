@@ -1,26 +1,37 @@
 <?php
-// Report all errors except E_NOTICE
+####################################################################################################
+## File : views.queries.php
+## Author : Nils Laumaillé
+## Description : File contains queries for ajax
+## 
+## DON'T CHANGE !!!
+## 
+####################################################################################################
+
 session_start();
 
 include('../includes/language/'.$_SESSION['user_language'].'.php'); 
 include('../includes/settings.php');
 header("Content-type: text/html; charset=".$k['charset']); 
 
-$erreurSQL = "";
-
 // Construction de la requête en fonction du type de valeur
 if ( !empty($_POST['type']) ){
     switch($_POST['type'])
     {
+        #CASE adding a new function
         case "ajouter_fonction":
             $sql = "INSERT INTO ".$k['prefix']."functions VALUES (NULL,'".mysql_real_escape_string(stripslashes(($_POST['fonction'])))."','','')";
             mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
         break;
         
+        #-------------------------------------------
+        #CASE delete a function
         case "supprimer_fonction":
             mysql_query("DELETE FROM ".$k['prefix']."functions WHERE id = ".$_POST['id']);
         break;
         
+        #-------------------------------------------
+        #CASE update allowed/forbidden groups for a Function
         case "groupes_visibles":
         case "groupes_interdits":
             $val = explode(';',$_POST['valeur']);
@@ -39,8 +50,9 @@ if ( !empty($_POST['type']) ){
             while ( substr_count($new_groupes,";;") > 0 ) $new_groupes = str_replace(";;",";",$new_groupes);
             mysql_query("UPDATE ".$k['prefix']."functions SET ".$_POST['type']." = '".$new_groupes."' WHERE id = ".$val[0]);
         break;
-        
-        
+                
+        #-------------------------------------------
+        #CASE refresh the matrix
         case "rafraichir_matrice": 
             echo '$("#refresh_loader").show();';
             echo 'document.getElementById(\'matrice_droits\').innerHTML = "";';
@@ -54,7 +66,7 @@ if ( !empty($_POST['type']) ){
             $res = mysql_query("SELECT title,id,groupes_visibles,groupes_interdits FROM ".$k['prefix']."functions ORDER BY title ASC");
             while ($data = mysql_fetch_row($res) ){
                 $texte .= '<th style="font-size:10px;">'.$data[0].'</th>';
-                //récupérer tous les groupes descendants
+                //Get all descendents groups
                 $gpok = $data[2];
                 $gpnok = $data[3];
                 $tmp_ok = explode(';',$data[2]);
@@ -73,7 +85,7 @@ if ( !empty($_POST['type']) ){
                             $gpnok .= ';'.$d->id;
                     }
                 }
-                //sauvegarder
+                //save into database
                 $tab_fonctions[$data[1]] = array(
                     "ok" => $gpok,
                     "nok" => $gpnok,
@@ -126,7 +138,8 @@ if ( !empty($_POST['type']) ){
             echo '$("#refresh_loader").hide();';
         break;
         
-        //CHANGE FUNCTION'S AUTHORIZED GROUPS
+        #-------------------------------------------
+        #CASE display the div for allowed groups
         case "open_div_autgroups";
             $text = "";
             
@@ -159,10 +172,11 @@ if ( !empty($_POST['type']) ){
             echo '$("#change_group_autgroups").dialog("open");';
         break;
         
+        #-------------------------------------------
+        #CASE change the allowed groups
         case "change_function_autgroups";
             //save data
-            mysql_query("UPDATE ".$k['prefix']."functions SET groupes_visibles = '".$_POST['list']."' WHERE id = ".$_POST['id']);
-                        
+            mysql_query("UPDATE ".$k['prefix']."functions SET groupes_visibles = '".$_POST['list']."' WHERE id = ".$_POST['id']);                        
             //display information
             $text = "";
             $val = str_replace(';',',',$_POST['list']);
@@ -173,15 +187,15 @@ if ( !empty($_POST['type']) ){
              echo 'document.getElementById("list_autgroups_function_'.$_POST['id'].'").innerHTML = "'.$text.'";';
         break;
         
-        
-        //CHANGE FUNCTION'S FORBIDDEN GROUPS
+        #-------------------------------------------
+        #CASE display the list of forbidden groups
         case "open_div_forgroups";
-            $text = "";
+            $text = "";            
             
             //get list of forbidden groups for this Function
             $data_group = mysql_fetch_row(mysql_query("SELECT groupes_interdits FROM ".$k['prefix']."functions WHERE id = ".$_POST['id']));
             $autgroups = explode(';',$data_group[0]);
-            
+                        
             //Refresh list of existing groups
             require_once ("NestedTree.class.php");
             $tree = new NestedTree($k['prefix'].'nested_tree', 'id', 'parent_id', 'title');
@@ -207,6 +221,8 @@ if ( !empty($_POST['type']) ){
             echo '$("#change_group_forgroups").dialog("open");';
         break;
         
+        #-------------------------------------------
+        #CASE change the forbidden groups
         case "change_function_forgroups";
             //save data
             mysql_query("UPDATE ".$k['prefix']."functions SET groupes_interdits = '".$_POST['list']."' WHERE id = ".$_POST['id']);

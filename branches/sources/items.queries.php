@@ -1,27 +1,38 @@
 <?php
-    session_start();
-    require_once('../includes/language/'.$_SESSION['user_language'].'.php');
-    include('../includes/settings.php');    
-    header("Content-type: text/html; charset=".$k['charset']);  
-    include('main.functions.php'); 
+####################################################################################################
+## File : items.queries.php
+## Author : Nils Laumaillé
+## Description : File contains queries for ajax
+## 
+## DON'T CHANGE !!!
+## 
+####################################################################################################
+
+session_start();
+require_once('../includes/language/'.$_SESSION['user_language'].'.php');
+include('../includes/settings.php');    
+header("Content-type: text/html; charset=".$k['charset']);  
+include('main.functions.php'); 
 
 // Construction de la requête en fonction du type de valeur
 switch($_POST['type'])
-{    
+{   
+    ### CASE ####
+    ### creating a new ITEM
     case "new_item":
-        //vérifier si l'élément n'existe pas déjà
+        //check if element doesn't already exist
         $res = mysql_query("SELECT COUNT(*) FROM ".$k['prefix']."items WHERE label = '".mysql_real_escape_string(stripslashes(($_POST['label'])))."' AND inactif=0");
         $data = mysql_fetch_row($res);
         if ( $data[0] != 0 ) 
             echo 'alert(\''.$txt['error_item_exists'].'\');';
         else {
-            //ajouter élément
+            //ADD item
             $sql = "INSERT INTO ".$k['prefix']."items VALUES (NULL,'".mysql_real_escape_string(stripslashes($_POST['label']))."','".addslashes($_POST['desc'])."','".encrypt($_POST['pw'])."','".mysql_real_escape_string(stripslashes(($_POST['url'])))."','".$_POST['categorie']."','".$_POST['personnel']."','".mysql_real_escape_string(stripslashes(($_POST['login'])))."','0','".$_POST['restricted_to']."')";
             $res = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
             $new_id=mysql_insert_id();
             //log
             mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$new_id."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','Création','')");
-            //annoncer par email
+            //Announce by email?
             if ( $_POST['annonce'] == 1 ){
                 require_once("class.phpmailer.php");
                 //envoyer email
@@ -29,60 +40,50 @@ switch($_POST['type'])
                 foreach($destinataire as $mail_destinataire){
                     //envoyer ay destinataire
                     $mail = new PHPMailer();                    
-                    $mail->SetLanguage("en","../includes/phpmailer/language");
-                    //$mail->SMTPDebug=true;
+                    $mail->SetLanguage("en","../includes/phpmailer/language");                    
                     $mail->IsSMTP();                                   // send via SMTP
                     $mail->Host     = $smtp_server; // SMTP servers
                     $mail->SMTPAuth = $smtp_auth;     // turn on SMTP authentication
                     $mail->Username = $smtp_auth_username;  // SMTP username
                     $mail->Password = $smtp_auth_password; // SMTP password
-                    
-                    
                     $mail->From     = $email_from;
-                    $mail->FromName = $email_from_name;
-                    
-                    $mail->AddAddress($mail_destinataire);     //Destinataire                
-                    
+                    $mail->FromName = $email_from_name;                    
+                    $mail->AddAddress($mail_destinataire);     //Destinataire                     
                     $mail->WordWrap = 80;                              // set word wrap
-                    $mail->IsHTML(true);                               // send as HTML
-                    
+                    $mail->IsHTML(true);                               // send as HTML                    
                     $mail->Subject  =  $txt['email_subject'];
                     $mail->AltBody     =  $txt['email_altbody_1']." ".mysql_real_escape_string(stripslashes(($_POST['label'])))." ".$txt['email_altbody_2'];
-                    
-                    
                     $corpsDeMail = $txt['email_body_1'].mysql_real_escape_string(stripslashes(($_POST['label']))).$txt['email_body_2'].
-                    $url_passman."/index.php?page=items&group=".$_POST['categorie']."&id=".$new_id.$txt['email_body_3'];
-                    
-                    $mail->Body  =  $corpsDeMail;
-                            
+                    $url_passman."/index.php?page=items&group=".$_POST['categorie']."&id=".$new_id.$txt['email_body_3'];                    
+                    $mail->Body  =  $corpsDeMail;                            
                     $mail->Send();
                 }
             }
-            //rafrachir la page
+            //Refresh page
             echo 'window.location.href = "index.php?page=items&group='.$_POST['categorie'].'&id='.$new_id.'";';
         }
     break;
     
-    #===========#
-    
+    #############
+    ### CASE ####
+    ### update an ITEM
     case "update_item":
-        //récup des valeurs existantes
+        //Get existing values
         $sql = "SELECT * FROM ".$k['prefix']."items WHERE id=".$_POST['id'];
         $res = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
         $data = mysql_fetch_array($res);
         
-        //Gérer le cas du caractère &
+        //Manage specific characters (&, +)
         $patterns = array('/ETCOMMERCIAL/','/SIGNEPLUS/');
         $remplacements = array('&','+');
         $pw_recu = $_POST['pw'];
         $pw_recu = preg_replace($patterns,$remplacements,$pw_recu);
-        
-        
-        //MAJ l'item 
+                
+        //update item
         $sql = "UPDATE ".$k['prefix']."items SET label = '".mysql_real_escape_string(stripslashes(($_POST['label'])))."', description = '".addslashes($_POST['description'])."', pw = '".encrypt($pw_recu)."', login = '".mysql_real_escape_string(stripslashes(($_POST['login'])))."', url = '".mysql_real_escape_string(stripslashes(($_POST['url'])))."', id_tree = '".mysql_real_escape_string($_POST['categorie'])."', perso = '".$_POST['perso']."', restricted_to = '".$_POST['restricted_to']."' WHERE id='".$_POST['id']."'";
         mysql_query($sql) or die($sql.'  =>  '.mysql_error());
         
-        //identifier les différences
+        //Identify differencies
         if ( $data['label'] != $_POST['label'] ) mysql_query("INSERT INTO ".$k['prefix']." VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','Modification','Label : ".$data['label']." => ".mysql_real_escape_string(stripslashes(($_POST['label'])))."')");
         if ( $data['login'] != $_POST['login'] ) mysql_query("INSERT INTO ".$k['prefix']." VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','Modification','login : ".$data['login']." => ".mysql_real_escape_string(stripslashes(($_POST['login'])))."')");
         if ( $data['url'] != $_POST['url'] ) mysql_query("INSERT INTO ".$k['prefix']." VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','Modification','Url : ".$data['url']." => ".mysql_real_escape_string(stripslashes($_POST['url']))."')");
@@ -91,114 +92,10 @@ switch($_POST['type'])
         if ( $data['id_tree'] != mysql_real_escape_string($_POST['categorie']) ) mysql_query("INSERT INTO ".$k['prefix']." VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','Modification','Catégorie : ".$data['id_tree']." => ".mysql_real_escape_string($_POST['categorie'])."')");
         if ( $data['pw'] != encrypt($pw_recu) ) mysql_query("INSERT INTO ".$k['prefix']." VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','Modification','Mot de passe changé')");
         
-        //recharger les nouvelles données
-            $sql = "SELECT * FROM ".$k['prefix']."items i, ".$k['prefix']."log_items l WHERE i.id=".$_POST['id']." AND l.id_item = i.id AND l.action = 'Création'";
-            $res = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
-            $data_item = mysql_fetch_array($res);
-            $historique = "";
-            $res1 = mysql_query("SELECT * FROM ".$k['prefix']."log_items WHERE id_item=".$_POST['id']);
-            while ( $data1 = mysql_fetch_array($res1) ){
-                $res2 = mysql_query("SELECT login FROM ".$k['prefix']."users WHERE id=".$data1['id_user']);
-                $data2 = mysql_fetch_row($res2);
-            
-                if ( empty($historique) ) $historique = date("d/m/Y H:i:s",$data1['date'])." - ". $data2[0] ." - ".$data1['action']." - ".$data1['raison'];
-                else
-                 $historique .= "<br />".date("d/m/Y H:i:s",$data1['date'])." - ". $data2[0] ." - ".$data1['action']." - ".$data1['raison']; 
-            }
-            
-            //recup liste de restriction
-            $liste = explode(";",$data_item['restricted_to']);
-            $liste_restriction = "";
-            foreach($liste as $elem){
-                if ( !empty($elem) ){
-                    $data2 = mysql_fetch_row(mysql_query("SELECT login FROM ".$k['prefix']."users WHERE id=".$elem));
-                    $liste_restriction .= $data2[0].";";
-                }
-            }
-        
-        
-            echo 'document.getElementById(\'id_label\').innerHTML = "'.$data_item['label'].'";';
-            echo 'document.getElementById(\'id_pw\').innerHTML = "'.htmlentities(decrypt($data_item['pw']),ENT_QUOTES).'";';
-            echo 'document.getElementById(\'id_url\').innerHTML = "'.$data_item['url'].'";';
-            echo 'document.getElementById(\'id_desc\').innerHTML = "'.str_replace('\n','<br>',(mysql_real_escape_string($data_item['description']))).'";';
-            echo 'document.getElementById(\'id_login\').innerHTML = "'.$data_item['login'].'";';
-            //if ( $data_item['perso'] == 0 ) $perso = "Non"; else $perso = "Oui";
-            //echo 'document.getElementById(\'id_perso\').innerHTML = "'.$perso.'";';
-            echo 'document.getElementById(\'id_info\').innerHTML = "'.$historique.'";';
-            echo 'document.getElementById(\'id_restricted_to\').innerHTML = "'.$liste_restriction.'";';
-            
-            //renseigner les champs masqués
-            echo 'document.getElementById(\'hid_label\').value = "'.$data_item['label'].'";';
-            echo 'document.getElementById(\'hid_pw\').value = "'.htmlentities(decrypt($data_item['pw']),ENT_QUOTES).'";';
-            echo 'document.getElementById(\'hid_url\').value = "'.$data_item['url'].'";';
-            echo 'document.getElementById(\'hid_desc\').value = "'.mysql_real_escape_string($data_item['description']).'";';
-            echo 'document.getElementById(\'hid_login\').value = "'.$data_item['login'].'";';
-            echo 'document.getElementById(\'id_categorie\').value = "'.$data_item['id_tree'].'";';
-            echo 'document.getElementById(\'id_item\').value = "'.$data_item['id'].'";';
-            //echo 'document.getElementById(\'hid_perso\').value = "'.$data_item['perso'].'";';
-            echo 'document.getElementById(\'hid_restricted_to\').value = "'.$data_item['restricted_to'].'";';
-            
-            //rafrachir la page
-            #echo "document.new_item.submit();";
-            
-            require_once("class.phpmailer.php");
-            //envoyer email
-            $destinataire= explode(';',$_POST['diffusion']);
-            foreach($destinataire as $mail_destinataire){
-                //envoyer ay destinataire
-                $mail = new PHPMailer();                    
-                $mail->SetLanguage("en","../includes/phpmailer/language");
-                //$mail->SMTPDebug=true;
-                $mail->IsSMTP();                                   // send via SMTP
-                $mail->Host     = $smtp_server; // SMTP servers
-                $mail->SMTPAuth = $smtp_auth;     // turn on SMTP authentication
-                $mail->Username = $smtp_auth_username;  // SMTP username
-                $mail->Password = $smtp_auth_password; // SMTP password  
-                $mail->From     = $email_from;
-                $mail->FromName = $email_from_name;                
-                $mail->AddAddress($mail_destinataire);     //Destinataire                  
-                
-                $mail->WordWrap = 80;                              // set word wrap
-                $mail->IsHTML(true);                               // send as HTML
-                
-                $mail->Subject  =  "Mise à jour d'un mot de passe";
-                $mail->AltBody     =  "Le mot de passe de ".mysql_real_escape_string(stripslashes(($_POST['label'])))." a été mis à jour.";
-                
-                
-                $corpsDeMail = "Bonjour,<br><br>Le mot de passe de '" .mysql_real_escape_string(stripslashes(($_POST['label'])))."' a été mis à jour.<br /><br />".
-                "Vous pouvez le consulter <a href=\"".$url_passman."/index.php?page=items&group=".$_POST['categorie']."&id=".$_POST['id']."\">ICI</a><br /><br />".
-                "A bientot";
-                
-                $mail->Body  =  $corpsDeMail;
-                        
-                $mail->Send();
-            }
-    break;
-    
-    case "load_item":
-        $sql = "SELECT * FROM ".$k['prefix']."items WHERE id=".$_POST['id'];
+        //Reload new values
+        $sql = "SELECT * FROM ".$k['prefix']."items i, ".$k['prefix']."log_items l WHERE i.id=".$_POST['id']." AND l.id_item = i.id AND l.action = 'Création'";
         $res = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
-        $data = mysql_fetch_array($res);
-        echo 'document.getElementById(\'item_details\').style.display = "";';
-        echo 'document.getElementById(\'item_menu\').style.display = "";';
-        echo 'document.getElementById(\'id_label\').innerHTML = "'.$data['label'].'";';
-        echo 'document.getElementById(\'id_pw\').innerHTML = "'.decrypt($data['pw']).'";';
-        echo 'document.getElementById(\'id_url\').innerHTML = "'.$data['url'].'";';
-        echo 'document.getElementById(\'id_desc\').innerHTML = "'.$data['description'].'";';
-        echo 'document.getElementById(\'id_login\').innerHTML = "'.$data['login'].'";';
-        //if ( $data['perso'] == 0 ) $perso = "Non"; else $perso = "Oui";
-        //echo 'document.getElementById(\'id_perso\').innerHTML = "'.$perso.'";';
-        
-        //renseigner les champs masqués
-        echo 'document.getElementById(\'hid_label\').value = "'.$data['label'].'";';
-        echo 'document.getElementById(\'hid_pw\').value = "'.decrypt($data['pw']).'";';
-        echo 'document.getElementById(\'hid_url\').value = "'.$data['url'].'";';
-        echo 'document.getElementById(\'hid_desc\').value = "'.$data['description'].'";';
-        echo 'document.getElementById(\'hid_login\').value = "'.$data['login'].'";';
-        echo 'document.getElementById(\'id_categorie\').value = "'.$data['id_tree'].'";';
-        echo 'document.getElementById(\'id_item\').value = "'.$data['id'].'";';
-        //echo 'document.getElementById(\'hid_perso\').value = "'.$data['perso'].'";';
-        
+        $data_item = mysql_fetch_array($res);
         $historique = "";
         $res1 = mysql_query("SELECT * FROM ".$k['prefix']."log_items WHERE id_item=".$_POST['id']);
         while ( $data1 = mysql_fetch_array($res1) ){
@@ -207,13 +104,67 @@ switch($_POST['type'])
         
             if ( empty($historique) ) $historique = date("d/m/Y H:i:s",$data1['date'])." - ". $data2[0] ." - ".$data1['action']." - ".$data1['raison'];
             else
-             $historique .= "<br />".date("d/m/Y H:i:s",$data1['date'])." - ". $data2[0] ." - ".$data1['action']." - ".$data1['raison'];
-        }  
+             $historique .= "<br />".date("d/m/Y H:i:s",$data1['date'])." - ". $data2[0] ." - ".$data1['action']." - ".$data1['raison']; 
+        }
         
+        //Get list of restriction
+        $liste = explode(";",$data_item['restricted_to']);
+        $liste_restriction = "";
+        foreach($liste as $elem){
+            if ( !empty($elem) ){
+                $data2 = mysql_fetch_row(mysql_query("SELECT login FROM ".$k['prefix']."users WHERE id=".$elem));
+                $liste_restriction .= $data2[0].";";
+            }
+        }
+            
+        echo 'document.getElementById(\'id_label\').innerHTML = "'.$data_item['label'].'";';
+        echo 'document.getElementById(\'id_pw\').innerHTML = "'.htmlentities(decrypt($data_item['pw']),ENT_QUOTES).'";';
+        echo 'document.getElementById(\'id_url\').innerHTML = "'.$data_item['url'].'";';
+        echo 'document.getElementById(\'id_desc\').innerHTML = "'.str_replace('\n','<br>',(mysql_real_escape_string($data_item['description']))).'";';
+        echo 'document.getElementById(\'id_login\').innerHTML = "'.$data_item['login'].'";';
         echo 'document.getElementById(\'id_info\').innerHTML = "'.$historique.'";';
-         
+        echo 'document.getElementById(\'id_restricted_to\').innerHTML = "'.$liste_restriction.'";';
+        
+        //Fill in hidden fields
+        echo 'document.getElementById(\'hid_label\').value = "'.$data_item['label'].'";';
+        echo 'document.getElementById(\'hid_pw\').value = "'.htmlentities(decrypt($data_item['pw']),ENT_QUOTES).'";';
+        echo 'document.getElementById(\'hid_url\').value = "'.$data_item['url'].'";';
+        echo 'document.getElementById(\'hid_desc\').value = "'.mysql_real_escape_string($data_item['description']).'";';
+        echo 'document.getElementById(\'hid_login\').value = "'.$data_item['login'].'";';
+        echo 'document.getElementById(\'id_categorie\').value = "'.$data_item['id_tree'].'";';
+        echo 'document.getElementById(\'id_item\').value = "'.$data_item['id'].'";';
+        echo 'document.getElementById(\'hid_restricted_to\').value = "'.$data_item['restricted_to'].'";';
+        
+        //Send email        
+        require_once("class.phpmailer.php");
+        $destinataire= explode(';',$_POST['diffusion']);
+        foreach($destinataire as $mail_destinataire){
+            //envoyer ay destinataire
+            $mail = new PHPMailer();                    
+            $mail->SetLanguage("en","../includes/phpmailer/language");
+            $mail->IsSMTP();                                   // send via SMTP
+            $mail->Host     = $smtp_server; // SMTP servers
+            $mail->SMTPAuth = $smtp_auth;     // turn on SMTP authentication
+            $mail->Username = $smtp_auth_username;  // SMTP username
+            $mail->Password = $smtp_auth_password; // SMTP password  
+            $mail->From     = $email_from;
+            $mail->FromName = $email_from_name;                
+            $mail->AddAddress($mail_destinataire);     //Destinataire                              
+            $mail->WordWrap = 80;                              // set word wrap
+            $mail->IsHTML(true);                               // send as HTML            
+            $mail->Subject  =  "Mise à jour d'un mot de passe";
+            $mail->AltBody     =  "Le mot de passe de ".mysql_real_escape_string(stripslashes(($_POST['label'])))." a été mis à jour.";
+            $corpsDeMail = "Bonjour,<br><br>Le mot de passe de '" .mysql_real_escape_string(stripslashes(($_POST['label'])))."' a été mis à jour.<br /><br />".
+            "Vous pouvez le consulter <a href=\"".$url_passman."/index.php?page=items&group=".$_POST['categorie']."&id=".$_POST['id']."\">ICI</a><br /><br />".
+            "A bientot";            
+            $mail->Body  =  $corpsDeMail;                    
+            $mail->Send();
+        }
     break;
     
+    #############
+    ### CASE ####
+    ### Display informations of selected item    
     case "show_details_item":
         //changer la class de l'élément sélectionné
         echo 'var tmp = \'fileclass\'+document.getElementById(\'selected_items\').value;';
@@ -300,6 +251,9 @@ switch($_POST['type'])
         }        
     break;
     
+    #############
+    ### CASE ####
+    ### Generate a password
     case "pw_generate":
         $size = $_POST['size'];
         $letters = "abcdefghijklmnopqrstuvwxyz";
@@ -316,6 +270,9 @@ switch($_POST['type'])
         echo 'runPassword(document.getElementById(\''.$_POST['elem'].'pw1\').value, \''.$_POST['elem'].'mypassword\');';
     break;
     
+    #############
+    ### CASE ####
+    ### Delete an item
     case "del_item":
         $sql = "UPDATE ".$k['prefix']."items SET inactif = '1' WHERE id = ".$_POST['id'];
         mysql_query($sql) or die($sql.'  =>  '.mysql_error());
@@ -325,6 +282,9 @@ switch($_POST['type'])
         echo 'window.location.href = "index.php?page=items&group='.$_POST['groupe'].'";';
     break;
     
+    #############
+    ### CASE ####
+    ### Create a new Group
     case "new_rep":        
         $res = mysql_query("SELECT COUNT(*) FROM ".$k['prefix']."nested_tree WHERE title = '".mysql_real_escape_string(stripslashes(($_POST['title'])))."'");
         $data = mysql_fetch_row($res);
@@ -351,6 +311,9 @@ switch($_POST['type'])
         
     break;
     
+    #############
+    ### CASE ####
+    ### Update a Group
     case "update_rep":    
         $sql = "UPDATE ".$k['prefix']."nested_tree SET title = '".mysql_real_escape_string(stripslashes(($_POST['title'])))."' WHERE id='".$_POST['groupe']."'";
         mysql_query($sql) or die($sql.'  =>  '.mysql_error());
@@ -365,6 +328,9 @@ switch($_POST['type'])
         echo 'window.location.href = "index.php?page=items";';
     break;
     
+    #############
+    ### CASE ####
+    ### Delete a Group
     case "delete_rep":
         $tmp = explode(';',$_POST['groupe']);
         if ( count($tmp) == 1 ){            
@@ -397,17 +363,20 @@ switch($_POST['type'])
         }
         echo 'window.location.href = "index.php?page=items";';
     break;
-        
-        
+    
+    #############
+    ### CASE ####
+    ### Store hierarchic position of Group
     case 'save_position':
         require_once ("NestedTree.class.php");
         mysql_query("UPDATE ".$k['prefix']."nested_tree SET parent_id = '".$_POST['destination']."' WHERE id='".$_POST['source']."'");
-       // echo "UPDATE ".$k['prefix']."nested_tree SET parent_id = '".$_POST['destination']."' WHERE id='".$_POST['source']."'";
         $tree = new NestedTree($k['prefix'].'nested_tree', 'id', 'parent_id', 'title');
         $tree->rebuild();
     break;
     
-    
+    #############
+    ### CASE ####
+    ### List items of a group
     case 'lister_items_groupe':
         //préparer l'arborescence
         require_once ("NestedTree.class.php");
@@ -417,26 +386,36 @@ switch($_POST['type'])
         foreach($arbo as $elem){
             $arbo_html .= $elem->title." > ";
         }
-        
-        //lister les Items
-        $html = '<ul class="liste_items">';
-        $res1 = mysql_query("SELECT * FROM ".$k['prefix']."items WHERE inactif = 0 AND id_tree=".$_POST['id']." ORDER BY label");
-        while ( $data1 = mysql_fetch_array($res1) ){
-            if ( $data1['perso'] == 1 || !empty($data1['restricted_to']) ) $perso = '<img src="includes/images/tag__exclamation.png">';
-            else $perso = '<img src="includes/images/tag.png">';
-            $html .= '<li class="item">'.$perso.'&nbsp;<a id="fileclass'.$data1['id'].'" class="file" onclick="AfficherDetailsItem(\''.$data1['id'].'\')">'.$data1['label'].'</a></li>';            
+        //check if items exist
+        $data_count = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM ".$k['prefix']."items WHERE inactif = 0"));
+        if ( $data_count[0] > 0 ){        
+            //lister les Items
+            $html = '<ul class="liste_items">';
+            $res1 = mysql_query("SELECT * FROM ".$k['prefix']."items WHERE inactif = 0 AND id_tree=".$_POST['id']." ORDER BY label");
+            while ( $data1 = mysql_fetch_array($res1) ){
+                if ( $data1['perso'] == 1 || !empty($data1['restricted_to']) ) $perso = '<img src="includes/images/tag__exclamation.png">';
+                else $perso = '<img src="includes/images/tag.png">';
+                $html .= '<li class="item">'.$perso.'&nbsp;<a id="fileclass'.$data1['id'].'" class="file" onclick="AfficherDetailsItem(\''.$data1['id'].'\')">'.$data1['label'].'</a></li>';            
+            }
+            $html .= '</ul>';
+            echo 'document.getElementById(\'liste_des_items\').style.display = "";';
+            echo 'document.getElementById(\'liste_des_items\').innerHTML = "'.addslashes($html).'";';
+            echo 'document.getElementById(\'arborescence\').innerHTML = "'.addslashes(substr($arbo_html,0,strlen($arbo_html)-3)).'";';
+            echo 'document.getElementById(\'selected_items\').value = "";';
+            echo 'document.getElementById(\'hid_cat\').value = "'.$_POST['id'].'";';
+            
+            RecupDroitCreationSansComplexite($_POST['id']);
+        }else{
+            echo 'document.getElementById(\'liste_des_items\').style.display = "";';
+            echo 'document.getElementById(\'liste_des_items\').innerHTML = "";';
+            echo 'document.getElementById(\'arborescence\').innerHTML = "'.addslashes(substr($arbo_html,0,strlen($arbo_html)-3)).'";';
+            echo 'document.getElementById(\'selected_items\').value = "";';
         }
-        $html .= '</ul>';
-        echo 'document.getElementById(\'liste_des_items\').style.display = "";';
-        echo 'document.getElementById(\'liste_des_items\').innerHTML = "'.addslashes($html).'";';
-        echo 'document.getElementById(\'arborescence\').innerHTML = "'.addslashes(substr($arbo_html,0,strlen($arbo_html)-3)).'";';
-        echo 'document.getElementById(\'selected_items\').value = "";';
-        echo 'document.getElementById(\'hid_cat\').value = "'.$_POST['id'].'";';
-        
-        RecupDroitCreationSansComplexite($_POST['id']);
     break;
     
-    
+    #############
+    ### CASE ####
+    ### Get complexity level of a group
     case "recup_complex":
         $res = mysql_query("SELECT valeur FROM ".$k['prefix']."misc WHERE type='complex' AND intitule = '".$_POST['groupe']."'");
         $data = mysql_fetch_row($res);
@@ -475,6 +454,9 @@ function RecupDroitCreationSansComplexite($groupe){
     echo 'document.getElementById("bloquer_modification_complexite").value = "'.$data[1].'";';
 }
 
+#############
+# FUNCTION
+# Rebuild full Tree
 function RechargerArbo(){
     require_once('NestedTree.class.php');
     $tree = new NestedTree($k['prefix'].'nested_tree', 'id', 'parent_id', 'title');

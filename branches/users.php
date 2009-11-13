@@ -1,6 +1,14 @@
-
+<?php
+####################################################################################################
+## File : users.php
+## Author : Nils Laumaillé
+## Description : Users page
+## 
+## DON'T CHANGE !!!
+## 
+####################################################################################################
+?>
 <script src="includes/js/jquery.jeditable.js" type="text/javascript"></script>
-
 <script type="text/javascript">
 $(function() {
     $("#change_user_functions").dialog({
@@ -67,14 +75,14 @@ require_once ("sources/NestedTree.class.php");
 $tree = new NestedTree($k['prefix'].'nested_tree', 'id', 'parent_id', 'title');
 $tree_desc = $tree->getDescendants();
 
-//construire la liste des FONCTIONS
+//Build FUNCTIONS list
 $liste_fonctions = array();
 $res = mysql_query("SELECT * FROM ".$k['prefix']."functions ORDER BY title ASC");
 while($data = mysql_fetch_row($res)){
     $liste_fonctions[$data[0]] = array('id'=>$data[0],'title'=>$data[1]);
 }
 
-//Afficher la liste des utilisteurs
+//Display list of USERS
 echo '
 <div style="margin-top:10px;">
     <h3>'.$txt['admin_users'].'<img src="includes/images/user__plus.png" title="Ajouter un Compte" onclick="ajouter_user()" style="cursor:pointer;" /></h3>';
@@ -90,6 +98,7 @@ echo '
                 </thead>
                 <tbody>';
             $x = 0;
+            //Get through all users
             $res = mysql_query("SELECT * FROM ".$k['prefix']."users");
             while ($data=mysql_fetch_array($res)){
                 echo '<tr class="ligne'.($x%2).'">

@@ -1,4 +1,12 @@
 <?php
+####################################################################################################
+## File : home.php
+## Author : Nils Laumaillé
+## Description : Home page
+## 
+## DON'T CHANGE !!!
+## 
+####################################################################################################
 echo '
             <form method="post" name="form_pw" action="">
             <div style="line-height: 24px;margin-top:10px;">

@@ -1,11 +1,21 @@
 <?php
+####################################################################################################
+## File : admin.queries.php
+## Author : Nils Laumaillé
+## Description : File contains queries for ajax
+## 
+## DON'T CHANGE !!!
+## 
+####################################################################################################
 session_start();
 include('../includes/language/'.$_SESSION['user_language'].'.php'); 
 include('../includes/settings.php'); 
 header("Content-type: text/html; charset=".$k['charset']);
 
 switch($_POST['type'])
-{    
+{
+    #CASE for getting informations about the tool
+    # connection to author's cpassman website
     case "cpm_status":   
         $text = "<ul>";     
         // Chemin vers le fichier distant
@@ -37,7 +47,7 @@ switch($_POST['type'])
                             $text .= '<li><u>'.$txt[$tmp[0]]."</u> : ".addslashes($tmp[1]).'</li>';
                             if ( $tmp[0] == "version" ) {
                                 $text .= '<li><u>'.$txt['your_version']."</u> : ".$k['version'];
-                                if ( floatval($k['version']) < floatval($tmp[1]) ) $text .= '&nbsp;&nbsp;<b>'.$txt['please_update'].'</b>';
+                                if ( floatval($k['version']) < floatval($tmp[1]) ) $text .= '&nbsp;&nbsp;<b>'.$txt['please_update'].'</b><br />';
                                 $text .= '</li>';
                             }
                         }

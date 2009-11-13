@@ -40,7 +40,7 @@ if ( (isset($_POST['menu_action']) && $_POST['menu_action'] == "deconnexion") ||
     exit;
 }
 
-//Vérifier la validité du MDP
+//Check PW validity
 if ( isset($_SESSION['last_pw_change']) ){
     $nb_jours_avant_expiration_du_mdp = $k['user_password_limit'] - round( (mktime(0,0,0,date('m'),date('d'),date('y'))-$_SESSION['last_pw_change'])/(24*60*60) );
     if ( $nb_jours_avant_expiration_du_mdp <= 0 )
@@ -67,7 +67,6 @@ if ( isset($_SESSION['user_id']) && ( empty($_SESSION['fin_session']) || $_SESSI
     //$_SESSION['autoriser'] = "";
     header("Location:index.php");
 }  
-
 ?>
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -88,9 +87,8 @@ if ( isset($_SESSION['user_id']) && ( empty($_SESSION['fin_session']) || $_SESSI
         <script type="text/javascript" src="includes/js/fg-menu/fg.menu.js"></script>    
         <link type="text/css" href="includes/js/fg-menu/fg.menu.css" media="screen" rel="stylesheet" />
         
-        
-        
         <?php
+        //For ITEMS page, load specific CSS files for treeview
         if ( isset($_GET['page']) && $_GET['page'] == "items")
             echo '
                 <link rel="stylesheet" type="text/css" href="includes/css/jquery.treeview.css" />
@@ -194,12 +192,14 @@ if ( isset($_SESSION['user_id']) && ( empty($_SESSION['fin_session']) || $_SESSI
                     });
             });
             
+            //Add 1 hour to session duration
             function AugmenterSession(){
                 var data = "type=augmenter_session";
                 httpRequest("sources/main.queries.php",data);
                 document.getElementById('countdown').style.color="black"; 
             }
             
+            //Countdown before session expiration
             function countdown()
             {
                 var DayTill
@@ -232,6 +232,7 @@ if ( isset($_SESSION['user_id']) && ( empty($_SESSION['fin_session']) || $_SESSI
                 var counter = setTimeout("countdown()", 1000) //Create the timer "counter" that will automatic restart function countdown() again every second.
             }
             
+            //Change language using icon flags
             function ChangeLanguage(lang){
                 document.getElementById('language').value = lang;
                 document.temp_form.submit();

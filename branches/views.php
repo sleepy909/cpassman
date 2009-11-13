@@ -1,3 +1,13 @@
+<?php
+####################################################################################################
+## File : views.php
+## Author : Nils Laumaillé
+## Description : Views page
+## 
+## DON'T CHANGE !!!
+## 
+####################################################################################################
+?>
 <script type="text/javascript">
 $(function() {
     $("#tabs").tabs();
@@ -30,6 +40,7 @@ function restaurerItem(id){
 </script>
 
 <?php
+// show TABS permitting to select specific actions
 echo '
 <div id="tabs">
     <ul>

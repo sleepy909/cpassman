@@ -1,32 +1,32 @@
 <?php
+####################################################################################################
+## File : main.functions.php
+## Author : Nils Laumaillé
+## Description : File contains several needed functions
+## 
+## DON'T CHANGE !!!
+## 
+####################################################################################################
 
-function nbjours($datedeb, $datefin) { 
-    list ($yearF, $monthF, $dayF) = explode ('-', $datedeb);
-    list ($yearC, $monthC, $dayC) = explode ('-', $datefin);
-    if(strlen($yearF)===4){
-        if (false === @checkdate ($monthF, $dayF, $yearF) || false === @checkdate ($monthC, $dayC, $yearC)) {
-            return false;
-        } else {
-            $tFar = mktime (0,0,0,$monthF, $dayF, $yearF);
-            $tClose = mktime (0,0,0,$monthC, $dayC, $yearC);
-            $tDistance = $tFar - $tClose;
-            return round ($tDistance/(24*60*60));
-        }
-    }else{
-            return false;
-    }
-}
-
+# FUNCTION permits to
+# crypt a string
+#
 function encrypt($text)
 {    
     return trim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, SALT, $text, MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND))));
 }
 
+# FUNCTION permits to
+# decrypt a crypted string
+#
 function decrypt($text)
 {
     return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, SALT, base64_decode($text), MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND)));
 } 
 
+# FUNCTION permits to
+# trim a string depending on a specific string
+#
 function TrimElement($chaine,$element){
     $chaine = trim($chaine);
     if ( substr($chaine,0,1) == $element ) $chaine = substr($chaine,1);
@@ -34,6 +34,9 @@ function TrimElement($chaine,$element){
     return $chaine;
 }
 
+# FUNCTION permits to
+# refresh the rights of the actual user
+#
 function IdentificationDesDroits($groupes_visibles_user,$groupes_interdits_user,$is_admin,$id_fonctions,$refresh){    
     include('../includes/settings.php');
     //Vérifier si utilisateur est ADMIN DIEU
@@ -109,13 +112,8 @@ function IdentificationDesDroits($groupes_visibles_user,$groupes_interdits_user,
                 }      
             }
         }
-        
-        #echo " -- ";
-        #print_r($new_liste_gp_visibles);
 
         $_SESSION['groupes_visibles'] = array_unique($new_liste_gp_visibles);//implode(';',$new_liste_gp_visibles);
-        
-        #if ( $refresh == true ) return "ok";
     }
 }
 

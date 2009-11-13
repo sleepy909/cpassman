@@ -1,10 +1,16 @@
 <?php
-  // Report all errors except E_NOTICE
-    session_start();
+####################################################################################################
+## File : users.queries.php
+## Author : Nils Laumaillé
+## Description : File contains queries for ajax
+## 
+## DON'T CHANGE !!!
+## 
+####################################################################################################
 
-    include('../includes/settings.php'); 
-    header("Content-type: text/html; charset=".$k['charset']); 
-    $erreurSQL = "";
+session_start();
+include('../includes/settings.php'); 
+header("Content-type: text/html; charset=".$k['charset']); 
 
 // Construction de la requête en fonction du type de valeur
 if ( !empty($_POST['type']) ){
