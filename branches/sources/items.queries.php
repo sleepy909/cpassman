@@ -84,13 +84,13 @@ switch($_POST['type'])
         mysql_query($sql) or die($sql.'  =>  '.mysql_error());
         
         //Identify differencies
-        if ( $data['label'] != $_POST['label'] ) mysql_query("INSERT INTO ".$k['prefix']." VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','Modification','Label : ".$data['label']." => ".mysql_real_escape_string(stripslashes(($_POST['label'])))."')");
-        if ( $data['login'] != $_POST['login'] ) mysql_query("INSERT INTO ".$k['prefix']." VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','Modification','login : ".$data['login']." => ".mysql_real_escape_string(stripslashes(($_POST['login'])))."')");
-        if ( $data['url'] != $_POST['url'] ) mysql_query("INSERT INTO ".$k['prefix']." VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','Modification','Url : ".$data['url']." => ".mysql_real_escape_string(stripslashes($_POST['url']))."')");
-        if ( $data['description'] != $_POST['description'] ) mysql_query("INSERT INTO ".$k['prefix']." VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','Modification','Description.')");
-        if ( $data['perso'] != $_POST['perso'] ) mysql_query("INSERT INTO ".$k['prefix']." VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','Modification','Personnel : ".$data['perso']." => ".$_POST['perso']."')");
-        if ( $data['id_tree'] != mysql_real_escape_string($_POST['categorie']) ) mysql_query("INSERT INTO ".$k['prefix']." VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','Modification','Catégorie : ".$data['id_tree']." => ".mysql_real_escape_string($_POST['categorie'])."')");
-        if ( $data['pw'] != encrypt($pw_recu) ) mysql_query("INSERT INTO ".$k['prefix']." VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','Modification','Mot de passe changé')");
+        if ( $data['label'] != $_POST['label'] ) mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','Modification','Label : ".$data['label']." => ".mysql_real_escape_string(stripslashes(($_POST['label'])))."')");
+        if ( $data['login'] != $_POST['login'] ) mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','Modification','login : ".$data['login']." => ".mysql_real_escape_string(stripslashes(($_POST['login'])))."')");
+        if ( $data['url'] != $_POST['url'] ) mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','Modification','Url : ".$data['url']." => ".mysql_real_escape_string(stripslashes($_POST['url']))."')");
+        if ( $data['description'] != $_POST['description'] ) mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','Modification','Description.')");
+        if ( $data['perso'] != $_POST['perso'] ) mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','Modification','Personnel : ".$data['perso']." => ".$_POST['perso']."')");
+        if ( $data['id_tree'] != mysql_real_escape_string($_POST['categorie']) ) mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','Modification','Catégorie : ".$data['id_tree']." => ".mysql_real_escape_string($_POST['categorie'])."')");
+        if ( $data['pw'] != encrypt($pw_recu) ) mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','Modification','Mot de passe changé')");
         
         //Reload new values
         $sql = "SELECT * FROM ".$k['prefix']."items i, ".$k['prefix']."log_items l WHERE i.id=".$_POST['id']." AND l.id_item = i.id AND l.action = 'Création'";
@@ -134,31 +134,33 @@ switch($_POST['type'])
         echo 'document.getElementById(\'id_categorie\').value = "'.$data_item['id_tree'].'";';
         echo 'document.getElementById(\'id_item\').value = "'.$data_item['id'].'";';
         echo 'document.getElementById(\'hid_restricted_to\').value = "'.$data_item['restricted_to'].'";';
-        
+        //echo "=>".$_POST['diffusion']."<=";
         //Send email        
-        require_once("class.phpmailer.php");
-        $destinataire= explode(';',$_POST['diffusion']);
-        foreach($destinataire as $mail_destinataire){
-            //envoyer ay destinataire
-            $mail = new PHPMailer();                    
-            $mail->SetLanguage("en","../includes/phpmailer/language");
-            $mail->IsSMTP();                                   // send via SMTP
-            $mail->Host     = $smtp_server; // SMTP servers
-            $mail->SMTPAuth = $smtp_auth;     // turn on SMTP authentication
-            $mail->Username = $smtp_auth_username;  // SMTP username
-            $mail->Password = $smtp_auth_password; // SMTP password  
-            $mail->From     = $email_from;
-            $mail->FromName = $email_from_name;                
-            $mail->AddAddress($mail_destinataire);     //Destinataire                              
-            $mail->WordWrap = 80;                              // set word wrap
-            $mail->IsHTML(true);                               // send as HTML            
-            $mail->Subject  =  "Mise à jour d'un mot de passe";
-            $mail->AltBody     =  "Le mot de passe de ".mysql_real_escape_string(stripslashes(($_POST['label'])))." a été mis à jour.";
-            $corpsDeMail = "Bonjour,<br><br>Le mot de passe de '" .mysql_real_escape_string(stripslashes(($_POST['label'])))."' a été mis à jour.<br /><br />".
-            "Vous pouvez le consulter <a href=\"".$url_passman."/index.php?page=items&group=".$_POST['categorie']."&id=".$_POST['id']."\">ICI</a><br /><br />".
-            "A bientot";            
-            $mail->Body  =  $corpsDeMail;                    
-            $mail->Send();
+        if ( !empty($_POST['diffusion']) ){
+            require_once("class.phpmailer.php");
+            $destinataire= explode(';',$_POST['diffusion']);
+            foreach($destinataire as $mail_destinataire){
+                //envoyer ay destinataire
+                $mail = new PHPMailer();                    
+                $mail->SetLanguage("en","../includes/phpmailer/language");
+                $mail->IsSMTP();                                   // send via SMTP
+                $mail->Host     = $smtp_server; // SMTP servers
+                $mail->SMTPAuth = $smtp_auth;     // turn on SMTP authentication
+                $mail->Username = $smtp_auth_username;  // SMTP username
+                $mail->Password = $smtp_auth_password; // SMTP password  
+                $mail->From     = $email_from;
+                $mail->FromName = $email_from_name;                
+                $mail->AddAddress($mail_destinataire);     //Destinataire                              
+                $mail->WordWrap = 80;                              // set word wrap
+                $mail->IsHTML(true);                               // send as HTML            
+                $mail->Subject  =  "Mise à jour d'un mot de passe";
+                $mail->AltBody     =  "Le mot de passe de ".mysql_real_escape_string(stripslashes(($_POST['label'])))." a été mis à jour.";
+                $corpsDeMail = "Bonjour,<br><br>Le mot de passe de '" .mysql_real_escape_string(stripslashes(($_POST['label'])))."' a été mis à jour.<br /><br />".
+                "Vous pouvez le consulter <a href=\"".$url_passman."/index.php?page=items&group=".$_POST['categorie']."&id=".$_POST['id']."\">ICI</a><br /><br />".
+                "A bientot";            
+                $mail->Body  =  $corpsDeMail;                    
+                $mail->Send();
+            }
         }
     break;
     
@@ -277,7 +279,7 @@ switch($_POST['type'])
         $sql = "UPDATE ".$k['prefix']."items SET inactif = '1' WHERE id = ".$_POST['id'];
         mysql_query($sql) or die($sql.'  =>  '.mysql_error());
         //log
-        mysql_query("INSERT INTO ".$k['prefix']." VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','Suppression','')");
+        mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','Suppression','')");
         //recharger
         echo 'window.location.href = "index.php?page=items&group='.$_POST['groupe'].'";';
     break;
@@ -347,7 +349,7 @@ switch($_POST['type'])
                     $sql = "UPDATE ".$k['prefix']."items SET inactif = '1' WHERE id = ".$data[0];
                     mysql_query($sql) or die($sql.'  =>  '.mysql_error());
                     //log
-                    mysql_query("INSERT INTO ".$k['prefix']." VALUES ('".$data[0]."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','Suppression','')");
+                    mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$data[0]."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','Suppression','')");
                 }
             } 
         }else{
@@ -358,7 +360,7 @@ switch($_POST['type'])
                 $sql = "UPDATE ".$k['prefix']."items SET inactif = '1' WHERE id = ".$data[0];
                     mysql_query($sql) or die($sql.'  =>  '.mysql_error());
                     //log
-                    mysql_query("INSERT INTO ".$k['prefix']." VALUES ('".$data[0]."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','Suppression','')");
+                    mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$data[0]."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','Suppression','')");
             }
         }
         echo 'window.location.href = "index.php?page=items";';
