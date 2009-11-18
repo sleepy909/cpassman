@@ -123,6 +123,8 @@ if ( isset($_SESSION['user_id']) && ( empty($_SESSION['fin_session']) || $_SESSI
             //Identifier l'utilisateur
             function identifyUser(){
                 if ( document.getElementById('login').value != "" && document.getElementById('pw').value != "" ){
+                    document.getElementById('erreur_connexion').innerHTML = "";
+                    document.getElementById('ajax_loader_connexion').style.display = "";
                     var data = "type=identify_user"+
                                 "&login="+document.getElementById('login').value+
                                 "&pw="+document.getElementById('pw').value+
@@ -343,6 +345,7 @@ if ( isset($_SESSION['user_id']) && ( empty($_SESSION['fin_session']) || $_SESSI
                 <div style="width:300px; margin-left:auto; margin-right:auto;margin-bottom:50px;padding:25px;" class="ui-state-highlight ui-corner-all">
                     <div style="text-align:center;font-weight:bold;margin-bottom:20px;">
                         '.$txt['index_get_identified'].'
+                        &nbsp;<img id="ajax_loader_connexion" style="display:none;" src="includes/images/ajax-loader.gif" />
                     </div>
                     <div id="erreur_connexion" style="color:red;display:none;text-align:center;margin:5px;"></div>
                     

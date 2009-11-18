@@ -104,6 +104,7 @@ switch($_POST['type'])
             echo 'document.location.href="index.php";';
         }else{
             echo 'document.getElementById(\'erreur_connexion\').style.display = "";';
+            echo 'document.getElementById(\'ajax_loader_connexion\').style.display = "none";';
             echo 'document.getElementById(\'erreur_connexion\').innerHTML = "'.$txt['index_bas_pw'].'";';
         }
     break;
