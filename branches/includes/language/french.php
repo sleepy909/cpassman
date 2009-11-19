@@ -180,4 +180,16 @@ $txt['please_update'] = "Pensez à effectuer la mise à jour !";
 $txt['info'] = "Informations"; 
 $txt['thku'] = "Merci d'utiliser cPassMan !"; 
 
+//AUDIT TRAIL
+$txt['at_modification'] = "Modification"; 
+$txt['at_creation'] = "Création"; 
+$txt['at_delete'] = "Suppression"; 
+$txt['at_pw'] = "Mot de passe changé."; 
+$txt['at_category'] = "Groupe"; 
+$txt['at_personnel'] = "Personnel"; 
+$txt['at_description'] = "Description."; 
+$txt['at_url'] = "Url"; 
+$txt['at_login'] = "Login"; 
+$txt['at_label'] = "Label"; 
+
 ?>

@@ -45,7 +45,7 @@ $txt['description'] = "Description";
 $txt['group'] = "Group"; 
 $txt['find_text'] = "Your research"; 
 $txt['cancel_button'] = "Cancel"; 
-$txt['all'] = "tous"; 
+$txt['all'] = "all"; 
 $txt['item_menu_add_rep'] = "Add a Group"; 
 $txt['item_menu_edi_rep'] = "Edit a Group"; 
 $txt['item_menu_del_rep'] = "Delete a Group"; 
@@ -179,5 +179,17 @@ $txt['auteur'] = "Author";
 $txt['please_update'] = "Please evaluate updating the tool!"; 
 $txt['info'] = "Informations"; 
 $txt['thku'] = "Thank you for using cPassMan!"; 
+
+//AUDIT TRAIL
+$txt['at_modification'] = "Modification"; 
+$txt['at_creation'] = "Creation"; 
+$txt['at_delete'] = "Deletion"; 
+$txt['at_pw'] = "Password changed."; 
+$txt['at_category'] = "Group"; 
+$txt['at_personnel'] = "Personnal"; 
+$txt['at_description'] = "Description."; 
+$txt['at_url'] = "Url"; 
+$txt['at_login'] = "Login"; 
+$txt['at_label'] = "Label"; 
 
 ?>

@@ -12,11 +12,9 @@
 <script src="includes/js/jquery.copy.js" type="text/javascript"></script>
 <script src="includes/js/jquery.treeview.js" type="text/javascript"></script>
 <script src="includes/js/jquery.contextMenu/jquery.contextMenu.js" type="text/javascript"></script>
+<script src="includes/zeroclipboard/ZeroClipboard.js" type="text/javascript"></script>
 
-
-<script type="text/javascript">
-
-    
+<script type="text/javascript">    
     function AddNewNode(){
         //Select first child node in tree
         $('#2').click();
@@ -49,6 +47,11 @@
 </script>
 
 <?php
+# Launch the copy in clipboard script
+echo '
+<script type="text/javascript">
+    ZeroClipboard.setMoviePath( "'.$url_passman.'/includes/zeroclipboard/ZeroClipboard.swf");
+</script>';
 
 require_once ("sources/NestedTree.class.php");
 
@@ -222,7 +225,7 @@ echo '
                     <td>
                         <div id="id_pw" style="float:left;"></div>
                         <div id="pw_clipboard" style="display:none;">
-                            &nbsp;&nbsp;<img src="includes/images/clipboard__plus.png" style="cursor:pointer;" id="copy_pw" title="'.$txt['pw_copy_clipboard'].'" />
+                            <div style="display:inline;margin-left:10px; witdh:25px;" id="div_copy_pw"><img src="includes/images/clipboard__plus.png" id="copy_pw" title="'.$txt['pw_copy_clipboard'].'" /></div>
                             <div style="display:inline;color:#008000;font-weight:bold;" id="copy_pw_done">'.$txt['pw_copied_clipboard'].'</div>
                         </div>
                         <input type="hidden" id="hid_pw" value="" />
@@ -234,7 +237,7 @@ echo '
                     <td>
                         <div id="id_login" style="float:left;"></div>
                         <div id="login_clipboard" style="display:none;">
-                            &nbsp;&nbsp;<img src="includes/images/clipboard__plus.png" style="cursor:pointer;" id="copy_login" title="'.$txt['login_copy'].'" />
+                            <div style="display:inline;margin-left:10px; witdh:25px;" id="div_copy_login"><img src="includes/images/clipboard__plus.png" style="cursor:pointer;" id="copy_login" title="'.$txt['login_copy'].'" /></div>
                             <div style="display:inline;color:#008000;font-weight:bold;" id="copy_login_done">'.$txt['pw_copied_clipboard'].'</div>
                         </div>
                         <input type="hidden" id="hid_login" value="" />
@@ -876,20 +879,6 @@ echo '
         $("#for_searchtext").hide();
         $("#copy_pw_done").hide();
         $("#copy_login_done").hide();
-        
-        //Gestion du CLIPBOARD    
-        $("#copy_pw").bind( 'click', function() {
-            $("#copy_pw_done").show();
-            $("#copy_pw_done").fadeOut(1000);
-            //return window.clipboardData.setData("text",document.getElementById("hid_pw").value);
-            $.copy(document.getElementById("hid_pw").value);
-        });
-        $("#copy_login").bind( 'click', function() {
-            $("#copy_login_done").show();
-            $("#copy_login_done").fadeOut(1000);
-            //return window.clipboardData.setData("text",document.getElementById("hid_login").value);
-            $.copy(document.getElementById("hid_login").value);
-        });
         
         //PREPARE DIALOGBOXES
             //=> ADD A NEW GROUP
