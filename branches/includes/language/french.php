@@ -93,6 +93,7 @@ $txt['email_altbody_2'] = "a été créé.";
 $txt['email_body1'] = "Bonjour,<br><br>Le mot de passe de '"; 
 $txt['email_body2'] = " a été créé.<br /><br />Vous pouvez le consulter <a href=\""; 
 $txt['email_body3'] = "\">ICI</a><br /><br />A bientot."; 
+$txt['block_last_created'] = "Derniers créés"; 
 
 //ERRORS
 $txt['error_label'] = "Un label est obligatoire !"; 

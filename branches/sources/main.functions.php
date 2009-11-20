@@ -47,6 +47,7 @@ function IdentificationDesDroits($groupes_visibles_user,$groupes_interdits_user,
             array_push($groupes_visibles,$data[0]);
         } 
         $_SESSION['groupes_visibles'] = $groupes_visibles;
+        $_SESSION['groupes_visibles_list'] = implode(';',$_SESSION['groupes_visibles']);
         $_SESSION['is_admin'] = $is_admin;
     }else{
         //init
@@ -59,8 +60,7 @@ function IdentificationDesDroits($groupes_visibles_user,$groupes_interdits_user,
         $new_liste_gp_visibles = array();
         $liste_gp_interdits = array();
         
-        #echo "=>".$groupes_visibles_user." - ".$groupes_interdits_user." - ".$id_fonctions." - ";
-                
+        //build Tree
         require_once ("NestedTree.class.php");
         $tree = new NestedTree($k['prefix'].'nested_tree', 'id', 'parent_id', 'title');    
             
@@ -71,7 +71,6 @@ function IdentificationDesDroits($groupes_visibles_user,$groupes_interdits_user,
                 $data=mysql_fetch_row($res);
                 $gp_visibles_tmp = explode(';',TrimElement($data[0],";"));
                 $gp_interdits_tmp = explode(';',TrimElement($data[1],";"));
-                #echo "**** => ".$fonc_id." --- ";
                 
                 //gérer les groupes visibles
                 if (!empty($data[0]) ){
@@ -83,7 +82,6 @@ function IdentificationDesDroits($groupes_visibles_user,$groupes_interdits_user,
                         }
                     }
                 }
-                #echo " ::: groupes visibles : ";print_r($groupes_visibles);echo " ::: ";
                                 
                 //gérer les groupes interdits
                 if (!empty($data[1]) ){
@@ -91,10 +89,6 @@ function IdentificationDesDroits($groupes_visibles_user,$groupes_interdits_user,
                         //supprimer tous les sous groupes
                         $mytree = $tree->getDescendants($gp_id_interdit,true);
                         foreach($mytree as $t){
-                            /*if ( in_array($t->id,$groupes_visibles) ){
-                                //supprimer l'id du groupe s'il existe dans le tableau des visibles
-                                unset($groupes_visibles[array_search($t->id, $groupes_visibles)]);
-                            }*/
                              if ( !in_array($t->id,$liste_gp_interdits) )array_push($liste_gp_interdits,$t->id);
                         }
                     }
@@ -113,8 +107,18 @@ function IdentificationDesDroits($groupes_visibles_user,$groupes_interdits_user,
             }
         }
 
-        $_SESSION['groupes_visibles'] = array_unique($new_liste_gp_visibles);//implode(';',$new_liste_gp_visibles);
+        $_SESSION['groupes_visibles'] = array_unique($new_liste_gp_visibles);
+        $_SESSION['groupes_visibles_list'] = implode(';',$_SESSION['groupes_visibles']);
     }
 }
 
+# FUNCTION permits to
+# call the mysqlq_query
+#
+function query($sql){
+    global $nbquery; //initiliaze a global variable
+    $nbquery++; // Add 1 to the variable
+    $var = mysql_query($sql); //do the query
+    return $var;    //return value
+}
 ?>

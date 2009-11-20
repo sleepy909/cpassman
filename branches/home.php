@@ -12,7 +12,7 @@ echo '
             <div style="line-height: 24px;margin-top:10px;">
             <span class="ui-icon ui-icon-person" style="float: left; margin-right: .3em;">&nbsp;</span>
             '.$txt['index_welcome'].' <b>'.$_SESSION['login'].'</b><br />';
-            //Vérifier la validité du mdp
+            //Check if password is valid
             if ( empty($_SESSION['last_pw_change']) OR $_SESSION['validite_pw'] == false ){
                 echo '<b>'.$txt['index_change_pw'].'</b>
                 <div style="margin:5px;border:1px solid #FF0000;background-color:#FFFFC0;padding:4px;width:300px;text-align:center;"  class="ui-state-highlight ui-corner-all" id="div_changer_mdp">
@@ -28,12 +28,36 @@ echo '
                         <tr><td colspan="2"><input type="button" onClick="ChangerMdp(\''.$_SESSION['last_pw'].'\')" value="'.$txt['index_change_pw_button'].'" /></td></tr>
                     </table>                    
                 </div>';
-            }else{
-                if (!empty($_SESSION['derniere_connexion']))
+            }elseif ( !empty($_SESSION['derniere_connexion']) ){                 
+                //Last items created block
+                echo '
+                <div id="div_changer_mdp" style="position:relative;float:right;margin-top:-25px;padding:4px;width:250px;" class="ui-state-highlight ui-corner-all">
+                    <span class="ui-icon ui-icon-comment" style="float: left; margin-right: .3em;">&nbsp;</span>
+                    <span style="font-weight:bold;margin-bottom:10px;">'.$txt['block_last_created'].'</span><br />';
+                    $res = query("SELECT 
+                    i.label AS label, i.id AS id, i.id_tree AS id_tree  
+                    FROM ".$k['prefix']."log_items l
+                    INNER JOIN ".$k['prefix']."items i                 
+                    WHERE l.action = 'Creation' 
+                        AND l.id_item = i.id 
+                        AND i.id_tree IN (".$_SESSION['groupes_visibles_list'].") 
+                    ORDER BY l.date DESC
+                    LIMIT 0,5
+                    ");
+                    while( $data = mysql_fetch_array($res) )
+                        echo '<span class="ui-icon ui-icon-triangle-1-e" style="float: left; margin-right: .3em;">&nbsp;</span>
+                        <a href="#" onClick="javascript:window.location.href =\'index.php?page=items&amp;group='.$data['id_tree'].'&amp;id='.$data['id'].'\';" style="cursor:pointer;">'.$data['label'].'</a><br />';
+                    echo '
+                </div>';
+                
+                //some informations               
                 echo '
                    <span class="ui-icon ui-icon-calendar" style="float: left; margin-right: .3em;">&nbsp;</span>
                    '.$txt['index_last_seen'].' '.date("d/m/Y",$_SESSION['derniere_connexion']).$txt['at'].date("H:i:s",$_SESSION['derniere_connexion']).'.
-                <br />
+                <br />';
+                
+                //change the password
+                echo '
                 <div>
                     <span class="ui-icon ui-icon-key" style="float: left; margin-right: .3em;">&nbsp;</span>
                 '.$txt['index_last_pw_change'].' '.date("d/m/Y",$_SESSION['last_pw_change']).'. '.$txt['index_pw_expiration'].' '.$nb_jours_avant_expiration_du_mdp.' '.$txt['days'].'.<br />
@@ -53,6 +77,8 @@ echo '
                         <input type="button" onClick="ChangerMdp(\''.$_SESSION['last_pw'].'\')" value="'.$txt['index_change_pw_button'].'" />                 
                     </div>
                 </div>';
+            }else{
+                
             }
             echo '
             </div>
