@@ -9,7 +9,7 @@
 ####################################################################################################
 echo '
             <form method="post" name="form_pw" action="">
-            <div style="line-height: 24px;margin-top:10px;">
+            <div style="line-height: 24px;margin-top:10px;min-height:220px;">
             <span class="ui-icon ui-icon-person" style="float: left; margin-right: .3em;">&nbsp;</span>
             '.$txt['index_welcome'].' <b>'.$_SESSION['login'].'</b><br />';
             //Check if password is valid
@@ -31,7 +31,7 @@ echo '
             }elseif ( !empty($_SESSION['derniere_connexion']) ){                 
                 //Last items created block
                 echo '
-                <div id="div_changer_mdp" style="position:relative;float:right;margin-top:-25px;padding:4px;width:250px;" class="ui-state-highlight ui-corner-all">
+                <div style="position:relative;float:right;margin-top:-25px;padding:4px;width:250px;" class="ui-state-highlight ui-corner-all">
                     <span class="ui-icon ui-icon-comment" style="float: left; margin-right: .3em;">&nbsp;</span>
                     <span style="font-weight:bold;margin-bottom:10px;">'.$txt['block_last_created'].'</span><br />';
                     $res = query("SELECT 

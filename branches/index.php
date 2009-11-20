@@ -322,11 +322,15 @@ if ( isset($_SESSION['user_id']) && ( empty($_SESSION['fin_session']) || $_SESSI
     //Display pages
     if ( isset($_SESSION['validite_pw']) && $_SESSION['validite_pw'] == true && !empty($_GET['page']) ) {
         if ( $_GET['page'] == "items"){
+            //SHow page with Items
             include("items.php");
         }else if ( $_GET['page'] == "find"){
+            //Show page for items findind
             include("find.php");
         }else if ( in_array($_GET['page'],array_keys($mng_pages)) ){
-            if ($_SESSION['user_admin'] == 1 || $_SESSION['user_gestionnaire'] == 1) include($mng_pages[$_GET['page']]);
+            //Define if user is allowed to see management pages
+            if ($_SESSION['user_admin'] == 1 || $_SESSION['user_gestionnaire'] == 1) 
+                include($mng_pages[$_GET['page']]);
             else {
                 $_SESSION['error'] = "1000";    //not allowed page
                 include("error.php");

@@ -79,7 +79,7 @@ switch($_POST['type'])
             $res2 = mysql_query("SELECT login FROM ".$k['prefix']."users WHERE id=".$data['id_user']);
             $data2 = mysql_fetch_row($res2);
             
-            $texte .= '<tr><td><img src=\"includes/images/arrow-repeat.png\" title=\"Restaurer\" style=\"cursor:pointer;\" onclick=\"restaurerItem(\''.$data['id'].'\')\">&nbsp;&nbsp;'.$data['label'].'</td><td width=\"100px\" align=\"center\">'.date("d/m/Y",$data['date']).'</td><td width=\"70px\" align=\"center\">'.$data2[0].'</td></tr>';
+            $texte .= '<tr><td><img src=\"includes/images/arrow-repeat.png\" title=\"'.$txt['restore'].'\" style=\"cursor:pointer;\" onclick=\"restaurerItem(\''.$data['id'].'\')\">&nbsp;&nbsp;'.$data['label'].'</td><td width=\"100px\" align=\"center\">'.date("d/m/Y",$data['date']).'</td><td width=\"70px\" align=\"center\">'.$data2[0].'</td></tr>';
         }
         echo 'document.getElementById("liste_elems_del").innerHTML = "'.$texte.'</table>";';
         //reload

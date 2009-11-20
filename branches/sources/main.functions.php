@@ -47,7 +47,7 @@ function IdentificationDesDroits($groupes_visibles_user,$groupes_interdits_user,
             array_push($groupes_visibles,$data[0]);
         } 
         $_SESSION['groupes_visibles'] = $groupes_visibles;
-        $_SESSION['groupes_visibles_list'] = implode(';',$_SESSION['groupes_visibles']);
+        $_SESSION['groupes_visibles_list'] = implode(',',$_SESSION['groupes_visibles']);
         $_SESSION['is_admin'] = $is_admin;
     }else{
         //init
@@ -108,7 +108,7 @@ function IdentificationDesDroits($groupes_visibles_user,$groupes_interdits_user,
         }
 
         $_SESSION['groupes_visibles'] = array_unique($new_liste_gp_visibles);
-        $_SESSION['groupes_visibles_list'] = implode(';',$_SESSION['groupes_visibles']);
+        $_SESSION['groupes_visibles_list'] = implode(',',$_SESSION['groupes_visibles']);
     }
 }
 
