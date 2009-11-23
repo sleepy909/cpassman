@@ -109,7 +109,7 @@ echo '
         $prev_level = 1;
         $first_group = "";
         echo '
-        <ul id="browser" class="filetree" style="margin-top:3px;">';
+        <ul id="browser" class="filetree" style="margin-top:3px;min-height:200px;">';
         foreach($tst as $t){
             //S'assurer que l'utilisateur ne voit que ce qu'il peut voir
             $res = mysql_query("SELECT COUNT(*) FROM ".$k['prefix']."items WHERE inactif=0 AND id_tree = ".$t->id);

@@ -62,9 +62,13 @@ else if ( isset($_POST['type']) ){
         // CASE where DELETING a group
         case "supprimer_groupe":
             mysql_query("DELETE FROM ".$k['prefix']."nested_tree WHERE id = ".$_POST['id']);
+            
             //rebuild tree
             $tree = new NestedTree($k['prefix'].'nested_tree', 'id', 'parent_id', 'title');
             $tree->rebuild();
+            
+            //Refresh the page
+            echo 'RefreshPage("form_groupes");';
         break;
         
         //CASE where ADDING a new group
@@ -82,6 +86,9 @@ else if ( isset($_POST['type']) ){
             //rebuild the tree
             $tree = new NestedTree($k['prefix'].'nested_tree', 'id', 'parent_id', 'title');
             $tree->rebuild();
+            
+            //Refresh the page
+            echo 'RefreshPage("form_groupes");';
         break;
         
         //CASE where to update the associated Function
@@ -98,7 +105,7 @@ else if ( isset($_POST['type']) ){
                     mysql_query("UPDATE ".$k['prefix']."rights SET authorized = '0' WHERE id = '".$val[0]."' AND fonction_id= '".$val[1]."'") or die(mysql_error());
                 else
                     mysql_query("UPDATE ".$k['prefix']."rights SET authorized = '1' WHERE id = '".$val[0]."' AND fonction_id= '".$val[1]."'") or die(mysql_error());
-            }        
+            }    
         break;
         
         // CASE where to authorize an ITEM creation without respecting the complexity

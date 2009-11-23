@@ -185,6 +185,8 @@ if ( !empty($_POST['type']) ){
                 $text .= $res[0]."<br />";
             }
              echo 'document.getElementById("list_autgroups_function_'.$_POST['id'].'").innerHTML = "'.$text.'";';
+            //refresh matrix
+            echo 'refresh_matrice();';
         break;
         
         #-------------------------------------------

@@ -217,7 +217,6 @@ function ajouter_groupe(){
                         "&complex="+document.getElementById('new_rep_complexite').value+
                         "&parent_id="+document.getElementById('parent_id').value;
             httpRequest("sources/groups.queries.php",data);
-            setTimeout('RefreshPage("form_groupes")',500);
         }else{
             alert('<?php echo $txt['error_fields_2'];?>');
         }
@@ -228,7 +227,6 @@ function supprimer_groupe(id){
     if ( confirm("<?php echo $txt['confirm_delete_group'];?>") ){
         var data = "type=supprimer_groupe&id="+id;
         httpRequest("sources/groups.queries.php",data);
-        setTimeout('RefreshPage("form_groupes")',500);
     }
 }   
 

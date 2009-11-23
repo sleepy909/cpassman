@@ -1,3 +1,6 @@
+<?php
+    session_start();
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <?php
 ####################################################################################################
@@ -8,7 +11,6 @@
 ## DON'T CHANGE !!!
 ## 
 ####################################################################################################
-session_start();
 
 //Manage Language
 if ( !isset($_SESSION['user_language']) ){
@@ -92,7 +94,7 @@ if ( isset($_SESSION['user_id']) && ( empty($_SESSION['fin_session']) || $_SESSI
         if ( isset($_GET['page']) && $_GET['page'] == "items")
             echo '
                 <link rel="stylesheet" type="text/css" href="includes/css/jquery.treeview.css" />
-                <link rel="stylesheet" type="text/css" href="includes/css/mdp.css" />
+                <link rel="stylesheet" type="text/css" href="includes/css/items.css" />
                 <link href="includes/js/jquery.contextMenu/jquery.contextMenu.css" rel="stylesheet" type="text/css" />';
         ?>
         
