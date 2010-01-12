@@ -9,7 +9,7 @@
 ####################################################################################################
 
 //DONT'T CHANGE
-$k['version'] = "1.06";
+$k['version'] = "1.07";
 $k['tool_name'] = "Collaborative Passwords Manager";
 $k['jquery-version'] = "1.3.2";
 $k['jquery-ui-version'] = "1.7.2";

@@ -26,17 +26,5 @@ echo '
                 '.$txt['thku'].'
                 </center
             </div>
-        </div>
-        
-        <script type="text/javascript">
-            //Function loads informations from cpassman FTP
-            function LoadCPMInfo(){
-                var data = "type=cpm_status";
-                httpRequest("sources/admin.queries.php",data);
-            }
-            //Load function on page load
-            $(function() {
-                LoadCPMInfo();
-            });
-        </script>';
+        </div>';
 ?>

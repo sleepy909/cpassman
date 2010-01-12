@@ -55,3 +55,49 @@ function AfficherCacher(divId){
 function RefreshPage(myform){
     document.forms[myform].submit();
 }
+            
+//Add 1 hour to session duration
+function AugmenterSession(){
+    var data = "type=augmenter_session";
+    httpRequest("sources/main.queries.php",data);
+    document.getElementById('countdown').style.color="black"; 
+}
+
+//Countdown before session expiration
+function countdown()
+{
+    var DayTill
+    var theDay =  document.getElementById('temps_restant').value;
+    var today = new Date() //Create an Date Object that contains today's date.
+    var second = Math.floor(theDay - (today.getTime()/1000))
+    var minute = Math.floor(second/60) //Devide "second" into 60 to get the minute
+    var hour = Math.floor(minute/60) //Devide "minute" into 60 to get the hour
+    CHour= hour % 24 //Correct hour, after devide into 24, the remainder deposits here.
+    if (CHour<10) {CHour = "0" + CHour}
+    CMinute= minute % 60 //Correct minute, after devide into 60, the remainder deposits here.
+    if (CMinute<10) {CMinute = "0" + CMinute}
+    CSecond= second % 60 //Correct second, after devide into 60, the remainder deposits here.
+    if (CSecond<10) {CSecond = "0" + CSecond}
+    DayTill = CHour+":"+CMinute+":"+CSecond
+    
+    //Avertir de la fin imminante de la session
+    if ( DayTill == "00:01:00" ){
+        $('#div_fin_session').dialog('open');
+        document.getElementById('countdown').style.color="red"; 
+    }
+    
+    //Gérer la fin de la session
+    if ( DayTill == "00:00:00" )
+        document.location = "index.php?session=expiree";
+    
+    //Rewrite the string to the correct information.
+    if ( document.getElementById('countdown') )
+        document.getElementById('countdown').innerHTML = DayTill //Make the particular form chart become "Daytill"
+    var counter = setTimeout("countdown()", 1000) //Create the timer "counter" that will automatic restart function countdown() again every second.
+}
+
+//Change language using icon flags
+function ChangeLanguage(lang){
+    document.getElementById('language').value = lang;
+    document.temp_form.submit();
+}
