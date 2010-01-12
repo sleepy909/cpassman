@@ -2,7 +2,7 @@
 ####################################################################################################
 ## File : load.php
 ## Author : Nils Laumaillé
-## Description : Loads things depending on the pages
+## Description : Loads things depending on the pages. It is called by index.php page.
 ## 
 ## DON'T CHANGE !!!
 ## 

@@ -125,6 +125,18 @@ width:120px;
 float:left;
 }
 
+.form_label_100{
+display:block;
+width:100px;
+float:left;
+}
+
+.form_label_80{
+display:block;
+width:80px;
+float:left;
+}
+
 .td_title{
 font-weight:bold;
 font-family: serif;

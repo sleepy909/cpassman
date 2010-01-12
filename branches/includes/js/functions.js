@@ -101,3 +101,7 @@ function ChangeLanguage(lang){
     document.getElementById('language').value = lang;
     document.temp_form.submit();
 }
+
+function OpenDialog(id){
+    $('#'+id).dialog('open');
+}

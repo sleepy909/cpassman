@@ -268,8 +268,12 @@ switch($_POST['type'])
         {
             $key.=substr($letters,(rand()%(strlen($letters))),1);
         }
-        echo 'document.getElementById(\''.$_POST['elem'].'pw1\').value = "'.$key.'";';
-        echo 'runPassword(document.getElementById(\''.$_POST['elem'].'pw1\').value, \''.$_POST['elem'].'mypassword\');';
+        if ( isset($_POST['fixed_elem']) && $_POST['fixed_elem'] == 1 ) $myElem = $_POST['elem'];
+        else $myElem = $_POST['elem'].'pw1';
+        echo 'document.getElementById(\''.$myElem.'\').value = "'.$key.'";';
+        
+        if ( isset($_POST['fixed_elem']) && $_POST['fixed_elem'] == 1 )
+            echo 'runPassword(document.getElementById(\''.$myElem.'\').value, \''.$_POST['elem'].'mypassword\');';
     break;
     
     #############

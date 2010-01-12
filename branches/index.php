@@ -68,10 +68,11 @@ if ( isset($_SESSION['user_id']) && ( empty($_SESSION['fin_session']) || $_SESSI
     // erase session table
     $_SESSION = array();
     
-    //$_SESSION['autoriser'] = "";
+    //Redirection
     header("Location:index.php");
 }  
 
+// Load links, css and javascripts
 include("load.php");
 ?>
 
@@ -85,9 +86,6 @@ include("load.php");
     
     <body onload="countdown()">
     <?php
-    
-    
-    
     ## HEADER ##
     echo '
     <div id="top">
@@ -227,7 +225,7 @@ include("load.php");
     echo '
     <div id="footer">
         <div style="width:500px;">
-            cPassMan '.$k['version'].' © copyright 2009
+            cPassMan '.$k['version'].' © copyright 2009-2010
         </div>
         <div style="float:right;margin-top:-15px;">
             <!--<a href="http://sourceforge.net/projects/communitypasswo" target="_blank"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=280505&amp;type=10" width="80" height="15" alt="Get Collaborative Passwords Manager at SourceForge.net. Fast, secure and Free Open Source software downloads" /></a>-->

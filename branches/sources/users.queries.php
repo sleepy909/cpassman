@@ -58,9 +58,16 @@ if ( !empty($_POST['type']) ){
         
         break;   
         
-        case "ajouter_user":
-            $sql = "INSERT INTO ".$k['prefix']."users VALUES (NULL,'".$_POST['login']."','".md5($_POST['login'])."','','','','','','0','','','','0','')";
+        case "add_new_user":
+            $sql = "INSERT INTO ".$k['prefix']."users SET 
+                    login = '".$_POST['login']."',
+                    pw = '".md5($_POST['pw'])."',
+                    email = '".($_POST['email'])."',
+                    admin = '".($_POST['admin']=="true" ? '1' : '0')."',
+                    gestionnaire = '".($_POST['manager']=="true" ? '1' : '0')."'
+            ";
             mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
+            echo 'document.form_utilisateurs.submit();';
         break;
         
         case "supprimer_user":
@@ -76,12 +83,11 @@ if ( !empty($_POST['type']) ){
         break;
         
         case "modif_droit_gest_groupes_user":
-            mysql_query("UPDATE ".$k['prefix']."users SET gest_groupes = '".$_POST['gest_groupes']."' WHERE id = ".$_POST['id']);
+            mysql_query("UPDATE ".$k['prefix']."users SET gestionnaire = '".$_POST['gest_groupes']."' WHERE id = ".$_POST['id']);
         break;
         
         case "modif_droit_admin_user":
-            mysql_query("UPDATE ".$k['prefix']."users SET admin = '".$_POST['admin']."', gest_groupes = '1' WHERE id = ".$_POST['id']) or die('Erreur SQL ! '.mysql_error());
-            echo 'document.getElementById("cb_gest_groupes_'.$_POST['id'].'").checked = true;';
+            mysql_query("UPDATE ".$k['prefix']."users SET admin = '".$_POST['admin']."' WHERE id = ".$_POST['id']) or die('Erreur SQL ! '.mysql_error());
         break;
         
         //CHANGE USER FUNCTIONS

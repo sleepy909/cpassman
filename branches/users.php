@@ -64,6 +64,30 @@ $(function() {
             }
         }
     });
+    
+    $("#add_new_user").dialog({
+        bgiframe: true,
+        modal: true,
+        autoOpen: false,
+        width: 400,
+        height: 250,
+        title: "<?php echo $txt['new_user_title'];?>",
+        buttons: {
+            "<?php echo $txt['save_button'];?>": function() {
+                var data = "type=add_new_user&"+
+                    "&login="+document.getElementById("new_login").value+
+                    "&pw="+document.getElementById("new_pwd").value+
+                    "&email="+document.getElementById("new_email").value+
+                    "&admin="+document.getElementById("new_admin").checked+
+                    "&manager="+document.getElementById("new_manager").checked;
+                httpRequest("sources/users.queries.php",data);
+                $(this).dialog('close');
+            },
+            "<?php echo $txt['cancel_button'];?>": function() {
+                $(this).dialog('close');
+            }
+        }
+    });
 });
 </script>
 
@@ -85,7 +109,7 @@ while($data = mysql_fetch_row($res)){
 //Display list of USERS
 echo '
 <div style="margin-top:10px;">
-    <h3>'.$txt['admin_users'].'<img src="includes/images/user__plus.png" title="Ajouter un Compte" onclick="ajouter_user()" style="cursor:pointer;" /></h3>';
+    <h3>'.$txt['admin_users'].'&nbsp;&nbsp;&nbsp;<img src="includes/images/user__plus.png" title="'.$txt['new_user_title'].'" onclick="OpenDialog(\'add_new_user\')" style="cursor:pointer;" /></h3>';
     
 echo '
     <form name="form_utilisateurs" method="post" action="">
@@ -198,6 +222,16 @@ $txt['change_user_forgroups_info'].'
 </form>
 </div>';
 
+// DIV FOR ADDING A USER
+echo '
+<div id="add_new_user" style="">
+    <label for="new_login" class="form_label_100">'.$txt['name'].'</label><input type="text" id="new_login" size="20" /><br />
+    <label for="new_pwd" class="form_label_100">'.$txt['pw'].'</label><input type="text" id="new_pwd" size="20" />&nbsp;<img src="includes/images/refresh.png"" onclick="pwGenerate(\'new_pwd\')" style="cursor:pointer;" /><br />
+    <label for="new_email" class="form_label_100">'.$txt['email'].'</label><input type="text" id="new_email" size="50" /><br />
+    <label for="new_admin" class="form_label_100">'.$txt['is_admin'].'</label><input type="checkbox" id="new_admin" /><br />
+    <label for="new_manager" class="form_label_100">'.$txt['is_manager'].'</label><input type="checkbox" id="new_manager" />
+</div>';
+
 ?>
 
 <script type="text/javascript">
@@ -210,17 +244,18 @@ $(function() {
           submit : " <img src='includes/images/disk_black.png' />",
           cancel : " <img src='includes/images/cross.png' />",
           name : "newlogin"
-
-      });
+    });
 });
 
-function ajouter_user(){
-    var login = prompt("<?php echo $txt['give_new_login'];?>");
-    if ( login != null && login != "" ){
-        var data = "type=ajouter_user&login="+login;
-        httpRequest("sources/users.queries.php",data);
-        setTimeout('RefreshPage("form_utilisateurs")',500);
-    }
+function pwGenerate(elem){    
+    var data = "type=pw_generate"+
+                "&size="+(Math.floor((8-5)*Math.random()) + 6)+
+                "&num=true"+
+                "&maj=true"+
+                "&symb=false"+
+                "&fixed_elem=1"+
+                "&elem="+elem;            
+    httpRequest("sources/items.queries.php",data+"&force=false");
 }
 
 function supprimer_user(id){
