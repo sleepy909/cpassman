@@ -6,31 +6,10 @@ session_start();
     <head>
         <title>cPassMan Installation</title>
         <link rel="stylesheet" href="install.css" type="text/css" />
-        <!--
-        <script type="text/javascript" src="../includes/jquery-ui/js/jquery-1.3.2.min.js"></script>
-        <script type="text/javascript" src="../includes/jquery-ui/js/jquery-ui-1.7.2.custom.min.js"></script>
-        <link rel="stylesheet" href="../includes/jquery-ui/css/ui-lightness/jquery-ui-1.7.2.custom.css" type="text/css" />
-        -->
         <script type="text/javascript" src="../includes/js/functions.js"></script>
         <script type="text/javascript" src="gauge/gauge.js"></script>
         
         <script type="text/javascript">
-        /*$(function() {
-            //BUTTONS
-            $('#but_next, #but_launch').hover(
-                function(){ 
-                    $(this).addClass("ui-state-hover"); 
-                },
-                function(){ 
-                    $(this).removeClass("ui-state-hover"); 
-                }
-            ).mousedown(function(){
-                $(this).addClass("ui-state-active"); 
-            })
-            .mouseup(function(){
-                    $(this).removeClass("ui-state-active");
-            });
-        });*/
         if(typeof $=='undefined') {function $(v) {return(document.getElementById(v));}}
         window.onload = function () { 
             if ( document.getElementById("progressbar") ){
@@ -156,7 +135,7 @@ if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
                     <div style="margin:15px;" id="res_step1">
                     <span style="padding-left:30px;font-size:13pt;">File "settings.php" is writable</span><br />
                     <span style="padding-left:30px;font-size:13pt;">Directory "/install/" is writable</span><br />
-                    <span style="padding-left:30px;font-size:13pt;">Directory "/includes/<" is writable</span><br />
+                    <span style="padding-left:30px;font-size:13pt;">Directory "/includes/" is writable</span><br />
                     <span style="padding-left:30px;font-size:13pt;">Directory "/files/" is writable</span><br />
                     <span style="padding-left:30px;font-size:13pt;">PHP extension "mcrypt" is loaded</span><br />
                     </div> 
