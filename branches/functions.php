@@ -47,6 +47,26 @@ $(function() {
         }
     });
     
+    $("#add_new_function").dialog({
+        bgiframe: true,
+        modal: true,
+        autoOpen: false,
+        width: 400,
+        height: 100,
+        title: "<?php echo $txt['give_function_title'];?>",
+        buttons: {
+            "<?php echo $txt['save_button'];?>": function() {
+                var data = "type=add_new_function&"+
+                    "&name="+document.getElementById("new_function").value;
+                httpRequest("sources/functions.queries.php",data);
+                $(this).dialog('close');
+            },
+            "<?php echo $txt['cancel_button'];?>": function() {
+                $(this).dialog('close');
+            }
+        }
+    });
+    
     refresh_matrice();
 });
 </script>
@@ -60,7 +80,7 @@ while( $res_groups = mysql_fetch_row($data_groups) )
 //display     
   echo '
 <div style="margin-top:10px;">
-    <h3>'.$txt['admin_functions'].' <img src="includes/images/card__plus.png" title="Ajouter une Fonction" onclick="ajouter_fonction()" style="cursor:pointer;" /></h3>    
+    <h3>'.$txt['admin_functions'].'&nbsp;&nbsp;&nbsp;<img src="includes/images/card__plus.png" title="Ajouter une Fonction" onclick="OpenDialog(\'add_new_function\')" style="cursor:pointer;" /></h3>    
     <form name="form_fonctions" method="post" action="">
         <div style="width:600px;margin:auto; line-height:20px;">
             <table style="margin-top:10px;">
@@ -139,6 +159,12 @@ $txt['change_group_forgroups_info'].'
 </form>
 </div>';
 
+// DIV FOR ADDING A FUNCTION
+echo '
+<div id="add_new_function" style="">
+    <label for="new_function" class="form_label_100">'.$txt['name'].'</label><input type="text" id="new_function" size="40" />
+</div>';
+
 ?>
 <script type="text/javascript">
 $(function() {     
@@ -153,15 +179,6 @@ $(function() {
 
       });
 });
-
-function ajouter_fonction(){
-    var fonction = prompt("<?php echo $txt['give_function_title'];?>");
-    if ( fonction != null && fonction != "" ){
-        var data = "type=ajouter_fonction&fonction="+fonction;
-        httpRequest("sources/functions.queries.php",data);
-        setTimeout('RefreshPage("form_fonctions")',500);
-    }
-}
 
 function Open_Div_Change(id,type){    
     var data = "type=open_div_"+type+"&id="+id;

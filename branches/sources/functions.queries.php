@@ -19,9 +19,10 @@ if ( !empty($_POST['type']) ){
     switch($_POST['type'])
     {
         #CASE adding a new function
-        case "ajouter_fonction":
-            $sql = "INSERT INTO ".$k['prefix']."functions VALUES (NULL,'".mysql_real_escape_string(stripslashes(($_POST['fonction'])))."','','')";
+        case "add_new_function":
+            $sql = "INSERT INTO ".$k['prefix']."functions SET title = '".mysql_real_escape_string(stripslashes(($_POST['name'])))."'";
             mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
+            echo 'document.form_fonctions.submit();';
         break;
         
         #-------------------------------------------

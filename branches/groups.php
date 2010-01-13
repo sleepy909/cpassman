@@ -15,7 +15,7 @@ $tree = new NestedTree($k['prefix'].'nested_tree', 'id', 'parent_id', 'title');
 $tst = $tree->getDescendants();
 
 //faire une liste des groupes
-$liste_groupes = "\'0\':\'Racine\'";
+$liste_groupes = "\'0\':\'".$txt['root']."\'";
 foreach($tst as $t){
     if ( $t->nlevel == 1 ) $ident = ">";
     if ( $t->nlevel == 2 ) $ident = "->";
@@ -41,7 +41,7 @@ while($data = mysql_fetch_row($res)){
 
 echo '
 <div style="margin-top:10px;">
-    <h3>'.$txt['admin_groups'].'<img src="includes/images/blog__plus.png" id="open_add_group_div" title="'.$txt['item_menu_add_rep'].'" style="cursor:pointer;" />
+    <h3>'.$txt['admin_groups'].'&nbsp;&nbsp;&nbsp;<img src="includes/images/blog__plus.png" id="open_add_group_div" title="'.$txt['item_menu_add_rep'].'" style="cursor:pointer;" />
     </h3>';
 
 echo '
