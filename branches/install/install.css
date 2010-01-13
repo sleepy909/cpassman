@@ -74,3 +74,15 @@ float:right;
 width:200px;
 text-align:right;
 }
+
+#footer{
+width: 980px;
+margin-left: auto;
+margin-right: auto;
+margin-top: 10px;
+padding: 10px;
+background: #F0F0F0 url(../includes/images/stripe_footer.png) repeat;
+font-family: sans-serif;
+font-size: 10px;
+margin-bottom: 100px;
+}
