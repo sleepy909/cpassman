@@ -106,8 +106,15 @@ function IdentificationDesDroits($groupes_visibles_user,$groupes_interdits_user,
                 }      
             }
         }
+        //Clean array
+        $array = array_unique($new_liste_gp_visibles);
+        foreach($array as $key => $value) {
+          if($value == "") {
+            unset($array[$key]);
+          }
+        }
 
-        $_SESSION['groupes_visibles'] = array_unique($new_liste_gp_visibles);
+        $_SESSION['groupes_visibles'] = array_values($array); 
         $_SESSION['groupes_visibles_list'] = implode(',',$_SESSION['groupes_visibles']);
     }
 }

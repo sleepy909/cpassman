@@ -118,11 +118,15 @@ if ( !empty($_POST['type']) ){
             //display information
             $text = "";
             $val = str_replace(';',',',$_POST['list']);
-            $data = mysql_query("SELECT title FROM ".$k['prefix']."functions WHERE id IN (".$val.")");
-            while ( $res = mysql_fetch_row($data) ){
-                $text .= $res[0]."<br />";
-            }
-             echo 'document.getElementById("list_function_user_'.$_POST['id'].'").innerHTML = "'.$text.'";';
+            //Check if POST is empty
+            if ( !empty($val) ){
+                $data = mysql_query("SELECT title FROM ".$k['prefix']."functions WHERE id IN (".$val.")");
+                while ( $res = mysql_fetch_row($data) ){
+                    $text .= $res[0]."<br />";
+                }                
+            }else
+                $text = '<span style=\"text-align:center\"><img src=\"includes/images/error.png\" /></span>';
+            echo 'document.getElementById("list_function_user_'.$_POST['id'].'").innerHTML = "'.$text.'";';
         break;
         
         //CHANGE AUTHORIZED GROUPS

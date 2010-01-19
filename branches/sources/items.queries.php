@@ -272,7 +272,7 @@ switch($_POST['type'])
         else $myElem = $_POST['elem'].'pw1';
         echo 'document.getElementById(\''.$myElem.'\').value = "'.$key.'";';
         
-        if ( isset($_POST['fixed_elem']) && $_POST['fixed_elem'] == 1 )
+        if ( !isset($_POST['fixed_elem']) )
             echo 'runPassword(document.getElementById(\''.$myElem.'\').value, \''.$_POST['elem'].'mypassword\');';
     break;
     

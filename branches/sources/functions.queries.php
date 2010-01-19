@@ -119,7 +119,10 @@ if ( !empty($_POST['type']) ){
                         else $couleur = '#FF0000';
                         if ( count($gpes_nok)>0 && in_array($groupe['id'],$gpes_nok) ) $couleur = '#FF0000';
                         $texte .= '<td align="center" style="background-color:'.$couleur.'"></td>';
-                        if ( $couleur != '#FF0000') $visibilite .= $fonction['id'];
+                        if ( $couleur != '#FF0000') {
+                            if ( empty($visibilite) ) $visibilite =  $fonction['id'];
+                            else $visibilite .= ";".$fonction['id'];
+                        }
                     }
                 }
                 $texte .= '</tr>';

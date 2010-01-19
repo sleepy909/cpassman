@@ -76,7 +76,8 @@ echo '
 <input type="text" style="display:none;" name="selected_items" id="selected_items" />
 <input type="hidden" name="input_liste_utilisateurs" id="input_liste_utilisateurs" value="'.$tmp.'" />
 <input type="hidden" id="bloquer_creation_complexite" />
-<input type="hidden" id="bloquer_modification_complexite" />';
+<input type="hidden" id="bloquer_modification_complexite" />
+<input type="hidden" id="error_detected" />';
 
 //Afficher mdp suite à recherche
 if ( isset($_GET['group']) && isset($_GET['id']) ){
@@ -279,7 +280,7 @@ echo '
     echo ' 
     </div>
 </div>';
-  
+
 //Formulaire NOUVEAU
 echo '
 <div id="div_formulaire_saisi" style="display:none;"> 
@@ -320,7 +321,7 @@ echo '
             <tr>
                 <td>'.$txt['used_pw'].' :</td>
                 <td>
-                    <input type="text" size="30" id="pw1" onkeyup="runPassword(this.value, \'mypassword\');" title="" />                    
+                    <input type="text" size="30" id="pw1" onkeyup="runPassword(this.value, \'mypassword\');" onchange="runPassword(this.value, \'mypassword\');" title="" />                    
                     <img src="includes/images/bricks.png" onClick="pwOptions(\'\')" style="cursor:pointer;" title="'.$txt['generation_options'].'" />&nbsp;
                     <img src="includes/images/arrow_refresh.png" onClick="pwGenerate(\'\');" style="cursor:pointer;" title="'.$txt['pw_generate'].'" />&nbsp;
                     <img src="includes/images/paste_plain.png" onClick="pwCopy(\'\')" style="cursor:pointer;" title="'.$txt['copy'].'" />
@@ -688,6 +689,7 @@ echo '
     }
     
     function AjouterItem(){
+        document.getElementById('error_detected').value = '';   //Refresh error foolowup
         var erreur = "";
         if ( document.getElementById("label").value == "" ) erreur = "<?php echo $txt['error_label'];?>";
         else if ( document.getElementById("pw1").value == "" ) erreur = "<?php echo $txt['error_pw'];?>";
@@ -737,10 +739,15 @@ echo '
                             "&categorie="+document.getElementById('categorie').value+
                             "&restricted_to="+restriction;
                 httpRequest("sources/items.queries.php",data);
-            }else
+            }else{
+                document.getElementById('error_detected').value = 1;
                 alert("<?php echo $txt['error_complex_not_enought'];?>");
+            }
         }        
-        if ( erreur != "") alert(erreur);
+        if ( erreur != "") {
+            document.getElementById('error_detected').value = 1;
+            alert(erreur);
+        }
     }
     
     function EditerItem(){
@@ -971,7 +978,7 @@ echo '
                 buttons: {
                     "<?php echo $txt['save_button'];?>": function() {
                         AjouterItem();
-                        $(this).dialog('close');
+                        if ( document.getElementById('error_detected').value != "1" ) $(this).dialog('close');
                     },
                     "<?php echo $txt['cancel_button'];?>": function() {
                         $(this).dialog('close');

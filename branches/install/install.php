@@ -91,6 +91,8 @@ session_start();
     </head>
     <body>
 <?php
+require_once("../includes/language/english.php");
+require_once("../includes/include.php");
 
 ## LOADER
 echo '
@@ -109,7 +111,7 @@ echo '
     
 #Elements cachés
 echo '
-                    <input type="hidden" id="step" name="step" value="'.$_POST['step'].'" />'; 
+                    <input type="hidden" id="step" name="step" value="', isset($_POST['step']) ? $_POST['step']:'', '" />'; 
 
 if ( !isset($_GET['step']) && !isset($_POST['step'])  ){   
    //ETAPE O 
@@ -122,7 +124,7 @@ if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
                     - get some CHMOD rights on the server.<br />';
    
 
-}else if ( $_POST['step'] == 1 ||  $_GET['step'] == 1 ){
+}else if ( (isset($_POST['step']) && $_POST['step'] == 1) || (isset($_GET['step']) && $_GET['step'] == 1) ){
    //ETAPE 1 
    echo '
                     <h3>Step 1 - Check server</h3>
@@ -142,7 +144,7 @@ if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
                     <div style="margin-top:20px;font-weight:bold;text-align:center;height:27px;" id="status_step1"></div>';   
    
    
-}else if ( $_POST['step'] == 2 ||  $_GET['step'] == 2 ){
+}else if ( (isset($_POST['step']) && $_POST['step'] == 2) || (isset($_GET['step']) && $_GET['step'] == 2) ){
     $_SESSION['root_path'] = $_POST['root_path'];
    //ETAPE 2 
    echo '
@@ -158,7 +160,7 @@ if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
                     <input type="hidden" id="step2" name="step2" value="" />'; 
     
     
-}else if ( $_POST['step'] == 3 ||  $_GET['step'] == 3 ){
+}else if ( (isset($_POST['step']) && $_POST['step'] == 3) || (isset($_GET['step']) && $_GET['step'] == 3) ){
     $_SESSION['db_host'] = $_POST['db_host'];
     $_SESSION['db_bdd'] = $_POST['db_bdd'];
     $_SESSION['db_login'] = $_POST['db_login'];
@@ -192,7 +194,7 @@ if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
                     <div style="margin-top:20px;font-weight:bold;text-align:center;height:27px;" id="res_step3"></div>  '; 
    
     
-}else if ( $_POST['step'] == 4 ||  $_GET['step'] == 4 ){
+}else if ( (isset($_POST['step']) && $_POST['step'] == 4) || (isset($_GET['step']) && $_GET['step'] == 4) ){
     $_SESSION['tbl_prefix'] = $_POST['tbl_prefix'];
     $_SESSION['pw_validity'] = $_POST['pw_validity'];
     $_SESSION['charset'] = $_POST['charset'];
@@ -224,7 +226,7 @@ if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
                     <div style="margin-top:20px;font-weight:bold;text-align:center;height:27px;" id="res_step4"></div>  '; 
    
     
-}else if ( $_POST['step'] == 5 ||  $_GET['step'] == 5 ){    
+}else if ( (isset($_POST['step']) && $_POST['step'] == 5) || (isset($_GET['step']) && $_GET['step'] == 5) ){    
    //ETAPE 5
    echo '
                     <h3>Step 5 - Update setting file</h3>
@@ -234,7 +236,7 @@ if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
                     <div style="margin-top:20px;font-weight:bold;text-align:center;height:27px;" id="res_step5"></div>  '; 
 }
 
-else if ( $_POST['step'] == 6 ||  $_GET['step'] == 6 ){
+else if ( (isset($_POST['step']) && $_POST['step'] == 6) || (isset($_GET['step']) && $_GET['step'] == 6) ){
     
    //ETAPE 6
    echo '
