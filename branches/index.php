@@ -105,6 +105,7 @@ include("load.php");
         <div style="float:right;margin-left:30px;margin-top:12px;">
             <img src="includes/images/flag_fr.png" style="cursor:pointer;" onclick="ChangeLanguage(\'french\')" />
             <img src="includes/images/flag_us.png" style="cursor:pointer;" onclick="ChangeLanguage(\'english\')" />
+            <img src="includes/images/flag_es.png" style="cursor:pointer;" onclick="ChangeLanguage(\'spanish\')" />
         </div>
     </div>';
     
