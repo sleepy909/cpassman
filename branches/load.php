@@ -8,8 +8,6 @@
 ## 
 ####################################################################################################
 
-global $html_headers;
-
 //Common elements
 $html_headers = '
 <link rel="stylesheet" href="includes/css/passman.css" type="text/css" />
@@ -38,6 +36,7 @@ if ( isset($_GET['page']) && $_GET['page'] == "items"){
 
 $html_headers .= '
 <script type="text/javascript">
+<!-- // --><![CDATA[
     //deconnexion
     function MenuAction(val){
         if ( val == "deconnexion" ) {
@@ -48,17 +47,6 @@ $html_headers .= '
             if ( val == "") document.location.href="index.php";
             else document.location.href="index.php?page="+val;
         }                
-    }
-    
-    //Changer le MDP
-    function ChangerMdp(old_pw){
-        if ( document.getElementById("new_pw").value != "" && document.getElementById("new_pw").value == document.getElementById("new_pw2").value ){
-            
-            var data = "type=change_pw&new_pw="+document.getElementById("new_pw").value+"&old_pw="+old_pw;
-            httpRequest("sources/main.queries.php",data);
-        }else{
-            alert("Les mots de passe doivent etre identiques !");
-        }
     }
     
     //Identifier l"utilisateur
@@ -80,7 +68,11 @@ $html_headers .= '
     }
     
     function ouvrir_div(div){
-        $("#"+div).toggle("slow");
+        $("#"+div).slideToggle("slow");
+    }
+    
+    function OpenDialogBox(id){
+        $("#"+id).dialog("open");
     }
     
     $(function() {
@@ -134,6 +126,41 @@ $html_headers .= '
                 crossSpeed: 50
             });
     });';
+    
+if ( !isset($_GET['page']) ){
+    $html_headers .= '
+    $(function() {
+        // DIALOG BOX FOR CHANGING PASSWORD
+        $("#div_changer_mdp").dialog({
+            bgiframe: true,
+            modal: true,
+            autoOpen: false,
+            width: 300,
+            height: 190,
+            title: "'.$txt['index_change_pw'].'",
+            buttons: {
+                "'.$txt['index_change_pw_button'].'": function() {
+                    ChangerMdp("'.$_SESSION['last_pw'].'");
+                    //$(this).dialog("close");
+                },
+                "'.$txt['cancel_button'].'": function() {
+                    $(this).dialog("close");
+                }
+            }
+        });
+    })
+    
+    //Change the Users password when he asks for
+    function ChangerMdp(old_pw){
+        if ( document.getElementById("new_pw").value != "" && document.getElementById("new_pw").value == document.getElementById("new_pw2").value ){            
+            var data = "type=change_pw&new_pw="+document.getElementById("new_pw").value+"&old_pw="+old_pw;
+            httpRequest("sources/main.queries.php",data);
+        }else{
+            $("#change_pwd_error").addClass("ui-state-error ui-corner-all");
+            document.getElementById("change_pwd_error").innerHTML = "'.$txt['index_pw_error_identical'].'";
+        }
+    }';
+}
 
 if ( isset($_GET['page']) && $_GET['page'] == "administration" ){
     $html_headers .= '
@@ -151,5 +178,9 @@ if ( isset($_GET['page']) && $_GET['page'] == "administration" ){
 
 
 $html_headers .= '
+// ]]>
 </script>';
+
+//Load some PHP elements
+
 ?>

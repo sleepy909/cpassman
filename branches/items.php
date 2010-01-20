@@ -617,6 +617,8 @@ echo '
     <li class="add_item"><a href="#add_item">'.$txt['item_menu_add_elem'].'</a></li>
     <li class="edit_item"><a href="#edit_item">'.$txt['item_menu_edi_elem'].'</a></li>
     <li class="del_item"><a href="#del_item">'.$txt['item_menu_del_elem'].'</a></li>
+    <li class="add_to_fav"><a href="#add_to_fav">'.$txt['item_menu_add_to_fav'].'</a></li>
+    <li class="del_from_fav"><a href="#del_from_fav">'.$txt['item_menu_del_from_fav'].'</a></li>
     <li class="quit separator"><a href="#quit">Quit</a></li>
 </ul>';
 
@@ -1065,6 +1067,20 @@ echo '
                 }
             });
             //<=
+            //=>ADD TO MY FAVOURITES
+            function add_to_my_favourites(){
+                var data = "type=add_item_to_my_favourites"+
+                            "&id="+document.getElementById('id_item').value;
+                httpRequest("sources/items.queries.php",data);
+            }
+            //<=
+            //=>DELETE FROM MY FAVOURITES
+            function delete_from_my_favourites(){
+                var data = "type=del_item_from_my_favourites"+
+                            "&id="+document.getElementById('id_item').value;
+                httpRequest("sources/items.queries.php",data);
+            }
+            //<=
             
         
         
@@ -1093,6 +1109,8 @@ echo '
                 if ( action == "add_item" ) open_add_item_div();
                 if ( action == "del_item" ) open_del_item_div();
                 if ( action == "edit_item" ) open_edit_item_div();
+                if ( action == "add_to_fav" ) add_to_my_favourites();            
+                if ( action == "del_from_fav" ) delete_from_my_favourites();
             }
         );
         $('#contextMenuContent').disableContextMenuItems('#edit_item,#del_item');

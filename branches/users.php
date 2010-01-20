@@ -125,47 +125,64 @@ echo '
             //Get through all users
             $res = mysql_query("SELECT * FROM ".$k['prefix']."users");
             while ($data=mysql_fetch_array($res)){
+                //Get list of allowed functions
+                    $list_allo_fcts = "";
+                    if ( $data['admin'] != 1 ){
+                        if ( count($liste_fonctions) > 0 ){
+                            foreach($liste_fonctions as $fonction){
+                                if ( in_array($fonction['id'],explode(";",$data['fonction_id'])) ) $list_allo_fcts .= '<img src="includes/images/arrow-000-small.png" />'.htmlspecialchars($fonction['title'],ENT_COMPAT,$k['charset']);
+                            }
+                        }
+                        if ( empty($list_allo_fcts) ) $list_allo_fcts = '<img src="includes/images/error.png" title="'.$txt['user_alarm_no_function'].'" />';
+                    }
+                
+                //Get list of allowed groups
+                    $list_allo_grps = "";
+                    if ( $data['admin'] != 1 ){
+                        if ( count($tree_desc) > 0 ){
+                            foreach($tree_desc as $t){
+                                if ( @!in_array($t->id,$_SESSION['groupes_interdits']) && in_array($t->id,$_SESSION['groupes_visibles']) ){
+                                    $ident="";
+                                    //for($y=1;$y<$t->nlevel;$y++) $ident .= "&nbsp;&nbsp;";
+                                    if ( in_array($t->id,explode(";",$data['groupes_visibles'])) ) $list_allo_grps .= '<img src="includes/images/arrow-000-small.png" />'.htmlspecialchars($ident.$t->title,ENT_COMPAT,$k['charset']).'<br />';
+                                    $prev_level = $t->nlevel;
+                                }
+                            }
+                        }
+                    }
+                
+                //Get list of forbidden groups
+                    $list_forb_grps = "";
+                    if ( $data['admin'] != 1 ){
+                        if ( count($tree_desc) > 0 ){
+                            foreach($tree_desc as $t){
+                                $ident="";
+                                //for($y=1;$y<$t->nlevel;$y++) $ident .= "&nbsp;&nbsp;";
+                                if ( in_array($t->id,explode(";",$data['groupes_interdits'])) ) $list_forb_grps .= '<img src="includes/images/arrow-000-small.png" />'.htmlspecialchars($ident.$t->title,ENT_COMPAT,$k['charset']).'<br />';
+                                $prev_level = $t->nlevel;
+                            }
+                        }
+                    }
+                    
+                //Display Grid
                 echo '<tr class="ligne'.($x%2).'">
                         <td align="center">'.$data['id'].'</td>
                         <td align="center"><p class="editable_textarea" id="login_'.$data['id'].'">'.$data['login'].'</p></td>
                         <td>
-                            <div id="list_function_user_'.$data['id'].'" style="display:inline;">';
-                                if ( count($liste_fonctions) > 0 ){
-                                    foreach($liste_fonctions as $fonction){
-                                        if ( in_array($fonction['id'],explode(";",$data['fonction_id'])) ) echo htmlspecialchars($fonction['title'],ENT_COMPAT,$k['charset'])."<br />";
-                                    }
-                                }
-                            echo '
+                            <div id="list_function_user_'.$data['id'].'" style="text-align:center;">'
+                                .$list_allo_fcts.'
                             </div>
                             <div style="text-align:center;"><img src="includes/images/cog_edit.png" style="cursor:pointer;" onclick="Open_Div_Change(\''.$data['id'].'\',\'functions\')" title="'.$txt['change_function'].'" /></div>
                         </td>
                         <td>
-                            <div id="list_autgroups_user_'.$data['id'].'" style="display:inline;">';
-                                if ( count($tree_desc) > 0 ){
-                                    foreach($tree_desc as $t){
-                                        if ( @!in_array($t->id,$_SESSION['groupes_interdits']) && in_array($t->id,$_SESSION['groupes_visibles']) ){
-                                            $ident="";
-                                            //for($y=1;$y<$t->nlevel;$y++) $ident .= "&nbsp;&nbsp;";
-                                            if ( in_array($t->id,explode(";",$data['groupes_visibles'])) ) echo htmlspecialchars($ident.$t->title,ENT_COMPAT,$k['charset']).'<br />';
-                                            $prev_level = $t->nlevel;
-                                        }
-                                    }
-                                }
-                            echo '
+                            <div id="list_autgroups_user_'.$data['id'].'" style="text-align:center;">'
+                            .$list_allo_grps.'
                             </div>
                             <div style="text-align:center;"><img src="includes/images/cog_edit.png" style="cursor:pointer;" onclick="Open_Div_Change(\''.$data['id'].'\',\'autgroups\')" title="'.$txt['change_authorized_groups'].'" /></div>
                         </td>
                         <td>
-                            <div id="list_forgroups_user_'.$data['id'].'" style="display:inline;">';
-                                if ( count($tree_desc) > 0 ){
-                                    foreach($tree_desc as $t){
-                                        $ident="";
-                                        //for($y=1;$y<$t->nlevel;$y++) $ident .= "&nbsp;&nbsp;";
-                                        if ( in_array($t->id,explode(";",$data['groupes_interdits'])) ) echo htmlspecialchars($ident.$t->title,ENT_COMPAT,$k['charset']).'<br />';
-                                        $prev_level = $t->nlevel;
-                                    }
-                                }
-                            echo '
+                            <div id="list_forgroups_user_'.$data['id'].'" style="text-align:center;">'
+                                .$list_forb_grps. '
                             </div>
                             <div style="text-align:center;"><img src="includes/images/cog_edit.png" style="cursor:pointer;" onclick="Open_Div_Change(\''.$data['id'].'\',\'forgroups\')" title="'.$txt['change_forbidden_groups'].'" /></div>
                         </td>
@@ -226,7 +243,7 @@ $txt['change_user_forgroups_info'].'
 echo '
 <div id="add_new_user" style="">
     <label for="new_login" class="form_label_100">'.$txt['name'].'</label><input type="text" id="new_login" size="20" /><br />
-    <label for="new_pwd" class="form_label_100">'.$txt['pw'].'</label><input type="text" id="new_pwd" size="20" />&nbsp;<img src="includes/images/refresh.png"" onclick="pwGenerate(\'new_pwd\')" style="cursor:pointer;" /><br />
+    <label for="new_pwd" class="form_label_100">'.$txt['pw'].'</label><input type="text" id="new_pwd" size="20" />&nbsp;<img src="includes/images/refresh.png" onclick="pwGenerate(\'new_pwd\')" style="cursor:pointer;" /><br />
     <label for="new_email" class="form_label_100">'.$txt['email'].'</label><input type="text" id="new_email" size="50" /><br />
     <label for="new_admin" class="form_label_100">'.$txt['is_admin'].'</label><input type="checkbox" id="new_admin" /><br />
     <label for="new_manager" class="form_label_100">'.$txt['is_manager'].'</label><input type="checkbox" id="new_manager" />

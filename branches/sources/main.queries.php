@@ -24,7 +24,8 @@ switch($_POST['type'])
         if ( in_array(md5($_POST['new_pw']),$tmp) ){
             echo 'document.getElementById(\'new_pw\').value = "";';
             echo 'document.getElementById(\'new_pw2\').value = "";';
-            echo 'alert(\''.$txt['pw_used'].'\');';
+            echo '$("#change_pwd_error").addClass("ui-state-error ui-corner-all");';
+            echo 'document.getElementById("change_pwd_error").innerHTML = \''.$txt['pw_used'].'\';';
         }else{
             //MAJ la liste des derniers mdps
             if ( sizeof($tmp) == 5 )
@@ -42,7 +43,8 @@ switch($_POST['type'])
             echo 'document.getElementById(\'new_pw\').value = "";';
             echo 'document.getElementById(\'new_pw2\').value = "";';
             echo 'document.getElementById(\'div_changer_mdp\').style.display = "none";';
-            echo 'alert(\''.$txt['pw_changed'].'\');';
+            echo '$("#change_pwd_error").addClass("");'; 
+            echo 'document.getElementById("change_pwd_error").innerHTML = \''.$txt['pw_changed'].'\';';
             echo 'window.location.href = "index.php";';
         }
         
@@ -86,6 +88,10 @@ switch($_POST['type'])
                 $_SESSION['cle_session'] = $key;
                 $_SESSION['fin_session'] = time() + $_POST['duree_session'] * 60;
                 $_SESSION['derniere_connexion'] = $data['last_connexion'];
+                if ( !empty($data['latest_items']) ) $_SESSION['latest_items'] = explode(';',$data['latest_items']);
+                else $_SESSION['latest_items'] = array();
+                if ( !empty($data['favourites']) ) $_SESSION['favourites'] = explode(';',$data['favourites']);
+                else $_SESSION['favourites'] = array();
                 $_SESSION['groupes_visibles'] = array();
                 $_SESSION['groupes_interdits'] = array();
                 if ( !empty($data['groupes_visibles'])) $_SESSION['groupes_visibles'] = implode(';',$data['groupes_visibles']);
@@ -99,7 +105,44 @@ switch($_POST['type'])
             //récupérer les droits de l'utilisateur
             IdentificationDesDroits($data['groupes_visibles'],$data['groupes_interdits'],$data['admin'],$data['fonction_id'],false);
             
+            //Get some more elements            
             $_SESSION['hauteur_ecran'] = $_POST['hauteur_ecran'];
+            
+            //Get latest items max value
+            $data = mysql_fetch_array(mysql_query("SELECT valeur FROM ".$k['prefix']."misc WHERE type = 'admin' AND intitule = 'max_latest_items'")) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error()); 
+            $_SESSION['max_latest_items'] = $data['valeur'];
+            
+            //Get enable favourites value
+            $data = mysql_fetch_array(mysql_query("SELECT valeur FROM ".$k['prefix']."misc WHERE type = 'admin' AND intitule = 'enable_favourites'")) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error()); 
+            $_SESSION['enable_favourites'] = $data['valeur'];
+            
+            //Get enable blcok value
+            $data = mysql_fetch_array(mysql_query("SELECT valeur FROM ".$k['prefix']."misc WHERE type = 'admin' AND intitule = 'show_last_items'")) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error()); 
+            $_SESSION['show_last_items'] = $data['valeur'];
+            
+            //Get last seen items
+            $_SESSION['latest_items_tab'][] = "";
+            foreach($_SESSION['latest_items'] as $item){
+                if ( !empty($item) ){
+                    $data = mysql_fetch_array(mysql_query("SELECT label,id_tree FROM ".$k['prefix']."items WHERE id = ".$item));
+                    $_SESSION['latest_items_tab'][$item] = array(
+                        'label'=>$data['label'],
+                        'url'=>'index.php?page=items&amp;group='.$data['id_tree'].'&amp;id='.$item
+                    );
+                }
+            }
+            
+            //Get favourites
+            $_SESSION['favourites_tab'][] = "";
+            foreach($_SESSION['favourites'] as $fav){
+                if ( !empty($fav) ){
+                    $data = mysql_fetch_array(mysql_query("SELECT label,id_tree FROM ".$k['prefix']."items WHERE id = ".$fav));
+                    $_SESSION['favourites_tab'][$fav] = array(
+                        'label'=>$data['label'],
+                        'url'=>'index.php?page=items&amp;group='.$data['id_tree'].'&amp;id='.$fav
+                    );
+                }
+            }
             
             echo 'document.location.href="index.php";';
         }else{

@@ -1,7 +1,7 @@
 /* Generic context menu styles */
 .contextMenu {
 	position: absolute;
-	width: 180px;
+	width: 190px;
 	z-index: 99999;
 	border: solid 1px #CCC;
 	background: #EEE;
@@ -71,7 +71,8 @@
 .contextMenu LI.add_item A { background-image: url(../../images/key__plus.png); }
 .contextMenu LI.edit_item A { background-image: url(../../images/key__pencil.png); }
 .contextMenu LI.del_item A { background-image: url(../../images/key__minus.png); }
-
+.contextMenu LI.add_to_fav A { background-image: url(../../images/bookmark--plus.png); }
+.contextMenu LI.del_from_fav A { background-image: url(../../images/bookmark--minus.png); }
 
 
 

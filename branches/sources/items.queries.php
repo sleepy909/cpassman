@@ -240,6 +240,30 @@ switch($_POST['type'])
             if ( $data_item['login'] != "" ) echo 'document.getElementById(\'login_clipboard\').style.display = "inline";var clip = new ZeroClipboard.Client();clip.setText( "'.$data_item['login'].'" );clip.glue( "div_copy_login" );clip.addEventListener( "onMouseDown", function(client) {$("#copy_login_done").show();$("#copy_login_done").fadeOut(1000);});';
             else echo 'document.getElementById(\'login_clipboard\').style.display = "none";';
             
+            //Add this item to the latests list
+            if ( isset($_SESSION['latest_items']) && !in_array($data_item['id'],$_SESSION['latest_items']) ){
+                if ( count($_SESSION['latest_items']) >= $_SESSION['max_latest_items'] ){
+                    array_pop($_SESSION['latest_items']);   //delete last items
+                }
+                array_unshift($_SESSION['latest_items'],$data_item['id']);
+                mysql_query("UPDATE ".$k['prefix']."users SET latest_items = '". implode(';',$_SESSION['latest_items']). "' WHERE id = ".$_SESSION['user_id']);
+            }
+            
+            //Refresh last seen items
+                $text = $txt['last_items_title'].":&nbsp;";
+                $_SESSION['latest_items_tab'][] = "";
+                foreach($_SESSION['latest_items'] as $item){
+                    if ( !empty($item) ){
+                        $data = mysql_fetch_array(mysql_query("SELECT label,id_tree FROM ".$k['prefix']."items WHERE id = ".$item));
+                        $_SESSION['latest_items_tab'][$item] = array(
+                            'label'=>$data['label'],
+                            'url'=>'index.php?page=items&amp;group='.$data['id_tree'].'&amp;id='.$item
+                        );
+                        $text .= '<span style=\"cursor:pointer;\" onclick=\"javascript:window.location.href = \''.$_SESSION['latest_items_tab'][$item]['url'].'\'\"><img src=\"includes/images/tag_small.png\" />'.$_SESSION['latest_items_tab'][$item]['label'].'</span>&nbsp;';
+                    }
+                }
+                echo 'document.getElementById("div_last_items").innerHTML = "'.$text.'";';
+            
             //afficher l'icone pour suppression si user = createur
             if ($data_item['id_user'] == $_SESSION['user_id'] || $_SESSION['is_admin'] == 1 )
                 echo '$(\'#contextMenuContent\').enableContextMenuItems(\'#del_item,#edit_item\');';//echo 'document.getElementById(\'icon_del_mdp\').style.display = "";';
@@ -250,7 +274,16 @@ switch($_POST['type'])
             echo 'document.getElementById(\'item_details_ok\').style.display = "none";';
             if ( $_SESSION['is_admin'] != 1 )
             echo '$("#contextMenuContent").disableContextMenuItems("#del_item,#edit_item");';//echo 'document.getElementById(\'icon_del_mdp\').style.display = "none";';
-        }        
+        }   
+        
+        //disable add bookmark if alread bookmarked
+        if ( in_array($_POST['id'],$_SESSION['favourites']) ) {
+            echo '$("#contextMenuContent").disableContextMenuItems("#add_to_fav");';
+            echo '$("#contextMenuContent").enableContextMenuItems("#del_from_fav");';
+        }else{
+            echo '$("#contextMenuContent").enableContextMenuItems("#add_to_fav");';
+            echo '$("#contextMenuContent").disableContextMenuItems("#del_from_fav");';
+        }
     break;
     
     #############
@@ -446,6 +479,48 @@ switch($_POST['type'])
         echo 'document.getElementById("'.$div.'").innerHTML = "<img src=\'includes/images/users.png\'>&nbsp;<b>'.$visibilite.'</b>";';
         
         RecupDroitCreationSansComplexite($_POST['groupe']);
+    break;
+    
+    #############
+    ### CASE ####
+    ### Add item to my favourites
+    case "add_item_to_my_favourites":
+        //Check if item is not aloready in favourites
+        if ( !in_array($_POST['id'],$_SESSION['favourites']) ){
+            array_push($_SESSION['favourites'],$_POST['id']);
+            mysql_query("UPDATE ".$k['prefix']."users SET favourites = '".implode(';',$_SESSION['favourites'])."' WHERE id = '".$_SESSION['user_id']."'");
+            
+            $data = mysql_fetch_array(mysql_query("SELECT label,id_tree FROM ".$k['prefix']."items WHERE id = ".$_POST['id']));
+            $_SESSION['favourites_tab'][$_POST['id']] = array(
+                'label'=>$data['label'],
+                'url'=>'index.php?page=items&amp;group='.$data['id_tree'].'&amp;id='.$_POST['id']
+            );
+        }
+    break;
+    
+    #############
+    ### CASE ####
+    ### DELETE item from my favourites
+    case "del_item_from_my_favourites":
+        //Check if item is in favourites
+        if ( in_array($_POST['id'],$_SESSION['favourites']) ){
+            //delete from session
+            foreach ($_SESSION['favourites'] as $key => $value){
+                if ($_SESSION['favourites'][$key] == $_POST['id']){
+                    unset($_SESSION['favourites'][$key]);
+                    break;
+                }
+            }
+            //delet from DB
+            mysql_query("UPDATE ".$k['prefix']."users SET favourites = '".implode(';',$_SESSION['favourites'])."' WHERE id = '".$_SESSION['user_id']."'");
+            //refresh session fav list
+            foreach ($_SESSION['favourites_tab'] as $key => $value){
+                if ($key == $_POST['id']){
+                    unset($_SESSION['favourites_tab'][$key]);echo "=>".$key;
+                    break;
+                }
+            }
+        }
     break;
     
 }

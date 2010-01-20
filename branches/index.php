@@ -12,8 +12,6 @@
 ## 
 ####################################################################################################
 
-global $html_headers;
-
 //Manage Language
 if ( !isset($_SESSION['user_language']) ){
     if ( isset($_POST['language']) ) $_SESSION['user_language'] = $_POST['language'];
@@ -78,6 +76,7 @@ include("load.php");
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=<?php echo $k['charset'];?>" />
         <title>Collaborative Passwords Manager</title>
         <?php
         echo $html_headers;
@@ -89,7 +88,7 @@ include("load.php");
     ## HEADER ##
     echo '
     <div id="top">
-        <div id="logo"><img src="includes/images/logo.png" /></div>
+        <div id="logo"><img src="includes/images/logo.png" alt="" /></div>
         
         <div id="title">'.$k['tool_name'].'</div>',
         
@@ -102,10 +101,10 @@ include("load.php");
                 &nbsp;<img src="includes/images/clock__plus.png" style="cursor:pointer;" onclick="AugmenterSession()" title="'.$txt['index_add_one_hour'].'" />
             </div>' : '','
                    
-        <div style="float:right;margin-left:30px;margin-top:12px;">
-            <img src="includes/images/flag_fr.png" style="cursor:pointer;" onclick="ChangeLanguage(\'french\')" />
-            <img src="includes/images/flag_us.png" style="cursor:pointer;" onclick="ChangeLanguage(\'english\')" />
-            <img src="includes/images/flag_es.png" style="cursor:pointer;" onclick="ChangeLanguage(\'spanish\')" />
+        <div style="float:right;margin-left:30px;margin:auto 0 auto 0;">
+            <div style="margin-bottom:2px;"><img src="includes/images/flag_fr.png" style="cursor:pointer;" onclick="ChangeLanguage(\'french\')" alt="" /></div>
+            <div style="margin-bottom:2px;"><img src="includes/images/flag_us.png" style="cursor:pointer;" onclick="ChangeLanguage(\'english\')" alt="" /></div>
+            <div style=""><img src="includes/images/flag_es.png" style="cursor:pointer;" onclick="ChangeLanguage(\'spanish\')" alt="" /></div>
         </div>
     </div>';
     
@@ -127,18 +126,49 @@ include("load.php");
                 <li><a href="#" onclick="MenuAction(\'administration\');" class="accessible">'.$txt['admin'].'</a>
                     <ul>
                         <li><a href="#" onclick="MenuAction(\'administration\');">'.$txt['admin_main'].'</a></li>
+                        <li><a href="#" onclick="MenuAction(\'manage_settings\');">'.$txt['admin_settings'].'</a></li>
                         <li><a href="#" onclick="MenuAction(\'manage_groups\');">'.$txt['admin_groups'].'</a></li>
                         <li><a href="#" onclick="MenuAction(\'manage_functions\');">'.$txt['admin_functions'].'</a></li>
                         <li><a href="#" onclick="MenuAction(\'manage_users\');">'.$txt['admin_users'].'</a></li>
                         <li><a href="#" onclick="MenuAction(\'manage_views\');">'.$txt['admin_views'].'</a></li>
                     </ul>
                 </li>';
+                //add Favourites
+                if ( isset($_SESSION['favourites']) && count($_SESSION['favourites']) > 0 && $_SESSION['enable_favourites'] == 1 ){
+                    echo '
+                <li><a href="#" onclick="MenuAction(\'items\');">'.$txt['my_favourites'].'</a>
+                    <ul>';
+                        foreach($_SESSION['favourites_tab'] as $fav){
+                            if ( !empty($fav) )
+                                echo 
+                        '<li><a href="#" onclick="javascript:window.location.href = \''.$fav['url'].'\'">'.$fav['label'].'</a></li>';
+                        }
+                        echo '
+                    </ul>
+                </li>';
+                }
             }
             echo '
             <li>
                 <a href="#" onclick="MenuAction(\'deconnexion\');">'.$txt['disconnect'].'</a>
             </li>
         </ul>
+    </div>';
+    
+    ## LAST SEEN ##
+    echo '
+    <div style="cursor:pointer;float:right;margin:-3px -20px;" onclick="ouvrir_div(\'div_last_items\')">
+        <img src="includes/images/tag_blue.png" alt="" />
+    </div>
+    <div style="display:none;" id="div_last_items">'.$txt['last_items_title'].":&nbsp;";
+        if ( isset($_SESSION['latest_items_tab']) ){
+            foreach($_SESSION['latest_items_tab'] as $item){
+                if ( !empty($item) )
+                    echo '
+                    <span style="cursor:pointer;" onclick="javascript:window.location.href = \''.$item['url'].'\'"><img src="includes/images/tag_small.png" alt="" />'.$item['label'].'</span>&nbsp;';
+            }
+        }else echo $txt['no_last_items'];
+    echo '
     </div>';
     
     ## MAIN PAGE ##
@@ -190,7 +220,7 @@ include("load.php");
                 <div style="width:300px; margin-left:auto; margin-right:auto;margin-bottom:50px;padding:25px;" class="ui-state-highlight ui-corner-all">
                     <div style="text-align:center;font-weight:bold;margin-bottom:20px;">
                         '.$txt['index_get_identified'].'
-                        &nbsp;<img id="ajax_loader_connexion" style="display:none;" src="includes/images/ajax-loader.gif" />
+                        &nbsp;<img id="ajax_loader_connexion" style="display:none;" src="includes/images/ajax-loader.gif" alt="" />
                     </div>
                     <div id="erreur_connexion" style="color:red;display:none;text-align:center;margin:5px;"></div>
                     
@@ -199,15 +229,15 @@ include("load.php");
                     <br />
                     
                     <label for="pw" class="form_label">'.$txt['index_password'].' : </label>
-                    <input type="password" size="10" id="pw" name="pw" onKeyPress="if (event.keyCode == 13) identifyUser()" />
+                    <input type="password" size="10" id="pw" name="pw" onkeypress="if (event.keyCode == 13) identifyUser()" />
                     <br />
                     
                     <label for="duree_session" class="form_label">'.$txt['index_session_duration'].' : </label>
-                    <input type="text" size="4" id="duree_session" name="duree_session" value="60" onKeyPress="if (event.keyCode == 13) identifyUser()" /> minutes
+                    <input type="text" size="4" id="duree_session" name="duree_session" value="60" onkeypress="if (event.keyCode == 13) identifyUser()" /> minutes
                     <br />
                     
                     <div style="text-align:center;margin-top:15px;">
-                        <input type="button" id="but_identify_user" onClick="identifyUser()" style="padding:3px;cursor:pointer;" class="ui-state-default ui-corner-all" value="'.$txt['index_identify_button'].'" />
+                        <input type="button" id="but_identify_user" onclick="identifyUser()" style="padding:3px;cursor:pointer;" class="ui-state-default ui-corner-all" value="'.$txt['index_identify_button'].'" />
                     </div>
                 </div>
             </form>
@@ -239,7 +269,7 @@ include("load.php");
     echo '
     <div id="div_loading" style="display:none;">
         <div style="border:2px solid #969696; padding:5px; background-color:#B8C2E7;">
-            <img src="includes/images/ajax-loader_2.gif" />
+            <img src="includes/images/ajax-loader_2.gif" alt="" />
         </div>
     </div>';
     
@@ -247,7 +277,7 @@ include("load.php");
     echo '
     <div id="div_fin_session" style="display:none;">
         <div style="padding:10px;text-align:center;">
-            <img src="includes/images/alarm-clock.png" /> <b> '.$txt['index_session_ending'].'</b>
+            <img src="includes/images/alarm-clock.png" alt="" /> <b> '.$txt['index_session_ending'].'</b>
         </div>
     </div>
     ';

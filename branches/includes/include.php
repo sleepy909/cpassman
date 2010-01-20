@@ -8,8 +8,12 @@
 ## 
 ####################################################################################################
 
+global $user_info, $html_headers;
+
+$user_info[] = "";
+
 //DONT'T CHANGE
-$k['version'] = "1.07";
+$k['version'] = "1.08b";
 $k['tool_name'] = "Collaborative Passwords Manager";
 $k['jquery-version'] = "1.3.2";
 $k['jquery-ui-version'] = "1.7.2";
@@ -21,7 +25,8 @@ $mng_pages = array(
     'manage_groups' => 'groups.php',
     'manage_functions' => 'functions.php',
     'manage_views' => 'views.php',
-    'administration' => 'admin.php'
+    'administration' => 'admin.php',
+    'manage_settings' => 'admin.settings.php'
 );
 
 //pw complexity levels

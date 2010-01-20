@@ -37,6 +37,11 @@ font-size: 10px;
 margin-bottom: 100px;
 }
 
+#div_last_items{
+    background: #F0F0F0 url(../images/stripe_footer.png) repeat;
+    padding: 2px;
+}
+
 #main{
 background-color: white;
 padding: 10px;
@@ -116,6 +121,12 @@ a:hover {text-decoration: none;}
 .form_label{
 display:block;
 width:180px;
+float:left;
+}
+
+.form_label_500{
+display:block;
+width:500px;
 float:left;
 }
 

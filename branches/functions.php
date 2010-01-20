@@ -93,27 +93,35 @@ while( $res_groups = mysql_fetch_row($data_groups) )
             $x = 0;
             $res = mysql_query("SELECT * FROM ".$k['prefix']."functions");
             while ($data=mysql_fetch_array($res)){
+                //Get list of allowed groups
+                    $list_allo_grps = "";
+                    $list = explode(';',$data['groupes_visibles']);
+                    foreach($list as $elem){
+                        if ( !empty($elem) ) $list_allo_grps .= '<img src="includes/images/arrow-000-small.png" />'.$arr_groups[$elem]."<br />";
+                    }
+                    if ( empty($list_allo_grps) ) $list_allo_grps = '<img src="includes/images/error.png" title="'.$txt['function_alarm_no_group'].'" />';
+                
+                //Get list of forbiden groups
+                    $list_forb_grps = "";
+                    $list = explode(';',$data['groupes_visibles']);
+                    foreach($list as $elem){
+                        if ( !empty($elem) ) $list_forb_grps .= '<img src="includes/images/arrow-000-small.png" />'.$arr_groups[$elem]."<br />";
+                    }
+                    
+                //Display Grid
                 echo '
                     <tr class="ligne'.($x%2).'">
                         <td align="center">'.$data['id'].'</td>
                         <td align="center"><p class="editable_textarea" id="title_'.$data['id'].'">'.str_replace('&','&amp;',$data['title']).'</p></td>
                         <td>
-                            <div id="list_autgroups_function_'.$data['id'].'" style="display:inline;">';
-                                $list = explode(';',$data['groupes_visibles']);
-                                foreach($list as $elem){
-                                    if ( !empty($elem) ) echo $arr_groups[$elem]."<br />";
-                                }
-                            echo '
+                            <div id="list_autgroups_function_'.$data['id'].'" style="text-align:center;">'
+                            .$list_allo_grps.'
                             </div>
                             <div style="text-align:center;"><img src="includes/images/cog_edit.png" style="cursor:pointer;" onclick="Open_Div_Change(\''.$data['id'].'\',\'autgroups\')" title="'.$txt['change_authorized_groups'].'" /></div>
                         </td>
                         <td>
-                            <div id="list_forgroups_function_'.$data['id'].'" style="display:inline;">';
-                                $list = explode(';',$data['groupes_interdits']);
-                                foreach($list as $elem){
-                                    if ( !empty($elem) ) echo $arr_groups[$elem]."<br />";
-                                }
-                            echo '
+                            <div id="list_forgroups_function_'.$data['id'].'" style="text-align:center;">'
+                            .$list_forb_grps.'
                             </div>
                             <div style="text-align:center;"><img src="includes/images/cog_edit.png" style="cursor:pointer;" onclick="Open_Div_Change(\''.$data['id'].'\',\'forgroups\')" title="'.$txt['change_forbidden_groups'].'" /></div>
                         </td>
