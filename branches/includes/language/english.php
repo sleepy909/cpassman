@@ -21,6 +21,8 @@ $txt['show_last_items'] = "Show last items block on main page";
 $txt['last_items_icon_title'] = "Show/Hide Last items seen";
 $txt['yes'] = "Yes";
 $txt['no'] = "No";
+$txt['enable_personal_folder'] = "Enable Personal folder";
+$txt['personal_folder'] = "Personal folder";
 //----
 
 $txt['index_session_ending'] = "Your session will end in less than 1 minute."; 

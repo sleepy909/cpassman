@@ -54,6 +54,8 @@ if ( isset($_POST['type']) ){
             ## Alter USERS table
             $res2 = mysql_query("ALTER TABLE `".$_SESSION['tbl_prefix']."users` ADD COLUMN favourites VARCHAR(300);");
             $res3 = mysql_query("ALTER TABLE `".$_SESSION['tbl_prefix']."users` ADD COLUMN latest_items VARCHAR(300);");
+            $res3 = mysql_query("ALTER TABLE `".$_SESSION['tbl_prefix']."users` ADD COLUMN personal_folder INT(1);");
+            $res3 = mysql_query("ALTER TABLE `".$_SESSION['tbl_prefix']."nested_tree` ADD COLUMN personal_folder TINYINT(1);");
             if ( $res2 && $res3 ){
                 echo 'document.getElementById("tbl_2").innerHTML = "<img src=\"images/tick.png\">";'; 
             }else{

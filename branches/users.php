@@ -79,7 +79,8 @@ $(function() {
                     "&pw="+document.getElementById("new_pwd").value+
                     "&email="+document.getElementById("new_email").value+
                     "&admin="+document.getElementById("new_admin").checked+
-                    "&manager="+document.getElementById("new_manager").checked;
+                    "&manager="+document.getElementById("new_manager").checked+
+                    "&personal_folder="+document.getElementById("new_personal_folder").checked;
                 httpRequest("sources/users.queries.php",data);
                 $(this).dialog('close');
             },
@@ -117,7 +118,17 @@ echo '
             <table cellspacing="0" cellpadding="2">
                 <thead>
                     <tr>
-                        <th>ID</th><th>'.$txt['index_login'].'</th><th>'.$txt['functions'].'</th><th>'.$txt['authorized_groups'].'</th><th>'.$txt['forbidden_groups'].'</th><th title="'.$txt['god'].'"><img src="includes/images/user-black.png" /></th><th title="'.$txt['gestionnaire'].'"><img src="includes/images/folder-bookmark.png" /></th><th title="'.$txt['user_del'].'"><img src="includes/images/user--minus.png" /></th><th title="'.$txt['pw_change'].'"><img src="includes/images/lock__pencil.png" /></th><th title="'.$txt['email_change'].'"><img src="includes/images/mail.png" /></th>
+                        <th>ID</th>
+                        <th>'.$txt['index_login'].'</th>
+                        <th>'.$txt['functions'].'</th>
+                        <th>'.$txt['authorized_groups'].'</th>
+                        <th>'.$txt['forbidden_groups'].'</th>
+                        <th title="'.$txt['god'].'"><img src="includes/images/user-black.png" /></th>
+                        <th title="'.$txt['gestionnaire'].'"><img src="includes/images/folder-bookmark.png" /></th>
+                        <th title="'.$txt['enable_personal_folder'].'"><img src="includes/images/folder_key.png" /></th>
+                        <th title="'.$txt['user_del'].'"><img src="includes/images/user--minus.png" /></th>
+                        <th title="'.$txt['pw_change'].'"><img src="includes/images/lock__pencil.png" /></th>
+                        <th title="'.$txt['email_change'].'"><img src="includes/images/mail.png" /></th>
                     </tr>
                 </thead>
                 <tbody>';
@@ -193,6 +204,9 @@ echo '
                             <input type="checkbox" id="cb_gest_groupes_'.$data['id'].'" onchange="Changer_Droit_Groupes(\''.$data['id'].'\')"', $data['gestionnaire']==1 ? 'checked' : '', ' />
                         </td>
                         <td align="center">
+                            <input type="checkbox" id="cb_personal_folder_'.$data['id'].'" onchange="Change_Personal_Folder(\''.$data['id'].'\')"', $data['personal_folder']==1 ? 'checked' : '', ' />
+                        </td>
+                        <td align="center">
                             <img src="includes/images/user--minus.png" onclick="supprimer_user(\''.$data['id'].'\')" style="cursor:pointer;" />
                         </td>
                         <td align="center">
@@ -246,7 +260,8 @@ echo '
     <label for="new_pwd" class="form_label_100">'.$txt['pw'].'</label><input type="text" id="new_pwd" size="20" />&nbsp;<img src="includes/images/refresh.png" onclick="pwGenerate(\'new_pwd\')" style="cursor:pointer;" /><br />
     <label for="new_email" class="form_label_100">'.$txt['email'].'</label><input type="text" id="new_email" size="50" /><br />
     <label for="new_admin" class="form_label_100">'.$txt['is_admin'].'</label><input type="checkbox" id="new_admin" /><br />
-    <label for="new_manager" class="form_label_100">'.$txt['is_manager'].'</label><input type="checkbox" id="new_manager" />
+    <label for="new_manager" class="form_label_100">'.$txt['is_manager'].'</label><input type="checkbox" id="new_manager" /><br />
+    <label for="new_personal_folder" class="form_label_100">'.$txt['personal_folder'].'</label><input type="checkbox" id="new_personal_folder" />
 </div>';
 
 ?>
@@ -279,7 +294,6 @@ function supprimer_user(id){
     if ( confirm("<?php echo $txt['confirm_del_account'];?>") ){
         var data = "type=supprimer_user&id="+id;
         httpRequest("sources/users.queries.php",data);
-        setTimeout('RefreshPage("form_utilisateurs")',500);
     }
 }      
 
@@ -313,6 +327,13 @@ function Changer_Droit_Admin(id){
     if ( document.getElementById('cb_admin_'+id).checked == true ) admin = 1;
     var data = "type=modif_droit_admin_user&id="+id+"&admin="+admin;
     httpRequest("sources/users.queries.php",data);   
+}
+
+function Change_Personal_Folder(id){    
+    var pers_fld = 0;
+    if ( document.getElementById('cb_personal_folder_'+id).checked == true ) pers_fld = 1;
+    var data = "type=modif_personal_folder_user&id="+id+"&pers_fld="+pers_fld;
+    httpRequest("sources/users.queries.php",data); 
 }
 
 function Open_Div_Change(id,type){    

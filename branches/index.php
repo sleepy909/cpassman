@@ -71,7 +71,7 @@ if ( isset($_SESSION['user_id']) && ( empty($_SESSION['fin_session']) || $_SESSI
 }  
 
 // Load links, css and javascripts
-include("load.php");
+include("load.php");print_r($_SESSION['groupes_visibles']);
 ?>
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">

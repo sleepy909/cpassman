@@ -73,7 +73,12 @@ else if ( isset($_POST['type']) ){
         
         //CASE where ADDING a new group
         case "ajouter_groupe":
-            $sql = "INSERT INTO ".$k['prefix']."nested_tree VALUES (NULL,'".$_POST['parent_id']."','".mysql_real_escape_string(stripslashes(($_POST['titre'])))."','','','','0','0')";
+            $sql = "INSERT INTO ".$k['prefix']."nested_tree SET
+                parent_id = '".$_POST['parent_id']."',
+                title = '".mysql_real_escape_string(stripslashes(($_POST['titre'])))."',
+                bloquer_creation = '0',
+                bloquer_modification = '0'
+            )";
             mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
             $new_id=mysql_insert_id();
             

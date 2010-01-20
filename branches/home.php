@@ -15,7 +15,7 @@ echo '
             //Check if password is valid
             if ( empty($_SESSION['last_pw_change']) OR $_SESSION['validite_pw'] == false ){
                 echo '<b>'.$txt['index_change_pw'].'</b>
-                <div style="margin:5px;border:1px solid #FF0000;background-color:#FFFFC0;padding:4px;width:300px;text-align:center;"  class="ui-state-highlight ui-corner-all" id="div_changer_mdp">
+                <div style="margin:5px;border:1px solid #FF0000;background-color:#FFFFC0;padding:4px;width:300px;text-align:center;"  class="ui-state-highlight ui-corner-all" id="">
                     <table>
                         <tr><td>'.$txt['index_new_pw'].' :</td><td><input type="password" size="10" name="new_pw" id="new_pw" onkeyup="runPassword(this.value, \'mypassword\', \''.$_SESSION['user_language'].'\');" />
                             <div style="width: 100px; display:inline;"> 

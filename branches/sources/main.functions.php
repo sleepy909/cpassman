@@ -42,7 +42,7 @@ function IdentificationDesDroits($groupes_visibles_user,$groupes_interdits_user,
     //Vérifier si utilisateur est ADMIN DIEU
     if ( $is_admin == 1 ){
         $groupes_visibles = array();
-        $res = mysql_query("SELECT id FROM ".$k['prefix']."nested_tree");
+        $res = mysql_query("SELECT id FROM ".$k['prefix']."nested_tree WHERE personal_folder = '0'");
         while($data=mysql_fetch_row($res)){
             array_push($groupes_visibles,$data[0]);
         } 

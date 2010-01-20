@@ -64,14 +64,27 @@ if ( !empty($_POST['type']) ){
                     pw = '".md5($_POST['pw'])."',
                     email = '".($_POST['email'])."',
                     admin = '".($_POST['admin']=="true" ? '1' : '0')."',
-                    gestionnaire = '".($_POST['manager']=="true" ? '1' : '0')."'
+                    gestionnaire = '".($_POST['manager']=="true" ? '1' : '0')."',
+                    personal_folder = '".($_POST['personal_folder']=="true" ? '1' : '0')."'
             ";
             mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
+            $new_id=mysql_insert_id();
+            
+            //Create personnal folder
+            if ( $_POST['personal_folder']=="true" )
+                mysql_query("INSERT INTO ".$k['prefix']."nested_tree SET
+                    parent_id = '0',
+                    title = '".$new_id."',
+                    bloquer_creation = '0',
+                    bloquer_modification = '0',
+                    personal_folder = '1'
+                ") or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
             echo 'document.form_utilisateurs.submit();';
         break;
         
         case "supprimer_user":
             mysql_query("DELETE FROM ".$k['prefix']."users WHERE id = ".$_POST['id']);
+            echo 'document.form_utilisateurs.submit();';
         break;
         
         case "modif_mdp_user":
@@ -88,6 +101,10 @@ if ( !empty($_POST['type']) ){
         
         case "modif_droit_admin_user":
             mysql_query("UPDATE ".$k['prefix']."users SET admin = '".$_POST['admin']."' WHERE id = ".$_POST['id']) or die('Erreur SQL ! '.mysql_error());
+        break;
+        
+        case "modif_personal_folder_user":
+            mysql_query("UPDATE ".$k['prefix']."users SET personal_folder = '".$_POST['pers_fld']."' WHERE id = ".$_POST['id']) or die('Erreur SQL ! '.mysql_error());
         break;
         
         //CHANGE USER FUNCTIONS
@@ -122,7 +139,7 @@ if ( !empty($_POST['type']) ){
             if ( !empty($val) ){
                 $data = mysql_query("SELECT title FROM ".$k['prefix']."functions WHERE id IN (".$val.")");
                 while ( $res = mysql_fetch_row($data) ){
-                    $text .= $res[0]."<br />";
+                    $text .= '<img src=\"includes/images/arrow-000-small.png\" />'.$res[0]."<br />";
                 }                
             }else
                 $text = '<span style=\"text-align:center\"><img src=\"includes/images/error.png\" /></span>';
@@ -166,7 +183,7 @@ if ( !empty($_POST['type']) ){
             while ( $res = mysql_fetch_row($data) ){
                 $ident="";
                 for($y=1;$y<$res[1];$y++) $ident .= "&nbsp;&nbsp;";
-                $text .= $ident.$res[0]."<br />";
+                $text .= '<img src=\"includes/images/arrow-000-small.png\" />'.$ident.$res[0]."<br />";
             }
              echo 'document.getElementById("list_autgroups_user_'.$_POST['id'].'").innerHTML = "'.$text.'";';
         break;
@@ -208,7 +225,7 @@ if ( !empty($_POST['type']) ){
             while ( $res = mysql_fetch_row($data) ){
                 $ident="";
                 for($y=1;$y<$res[1];$y++) $ident .= "&nbsp;&nbsp;";
-                $text .= $ident.$res[0]."<br />";
+                $text .= '<img src=\"includes/images/arrow-000-small.png\" />'.$ident.$res[0]."<br />";
             }
              echo 'document.getElementById("list_forgroups_user_'.$_POST['id'].'").innerHTML = "'.$text.'";';
         break;
