@@ -130,7 +130,7 @@ echo '
                     if ( $data['admin'] != 1 ){
                         if ( count($liste_fonctions) > 0 ){
                             foreach($liste_fonctions as $fonction){
-                                if ( in_array($fonction['id'],explode(";",$data['fonction_id'])) ) $list_allo_fcts .= '<img src="includes/images/arrow-000-small.png" />'.htmlspecialchars($fonction['title'],ENT_COMPAT,$k['charset']);
+                                if ( in_array($fonction['id'],explode(";",$data['fonction_id'])) ) $list_allo_fcts .= '<img src="includes/images/arrow-000-small.png" />'.htmlspecialchars($fonction['title'],ENT_COMPAT,$k['charset']).'<br />';
                             }
                         }
                         if ( empty($list_allo_fcts) ) $list_allo_fcts = '<img src="includes/images/error.png" title="'.$txt['user_alarm_no_function'].'" />';

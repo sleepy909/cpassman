@@ -30,13 +30,19 @@ echo '
         <div style="width:100%;margin:auto; line-height:20px; padding:10px;">
             <div>
                 <label for="max_last_items" class="form_label_500">'.$txt['max_last_items'].'</label>
-                <input type="text" size="5" id="max_last_items" name="max_last_items" value="', isset($_SESSION['max_latest_items']) ? $_SESSION['max_latest_items'] : '', '">
+                <input type="text" size="5" id="max_last_items" name="max_last_items" value="', isset($_SESSION['max_latest_items']) ? $_SESSION['max_latest_items'] : '', '" />
                 <br />
                 <label for="enable_favourites" class="form_label_500">'.$txt['enable_favourites'].'</label>
-                <input type="text" size="5" id="enable_favourites" name="enable_favourites" value="', isset($_SESSION['enable_favourites']) ? $_SESSION['enable_favourites'] : '', '">
+                <select id="enable_favourites" name="enable_favourites">
+                    <option value="1"', isset($_SESSION['enable_favourites']) && $_SESSION['enable_favourites'] == 1 ? ' selected="selected"' : '', '>'.$txt['yes'].'</option>
+                    <option value="0"', isset($_SESSION['enable_favourites']) && $_SESSION['enable_favourites'] != 1 ? ' selected="selected"' : '', '>'.$txt['no'].'</option>
+                </select>
                 <br />
                 <label for="show_last_items" class="form_label_500">'.$txt['show_last_items'].'</label>
-                <input type="text" size="5" id="show_last_items" name="show_last_items" value="', isset($_SESSION['show_last_items']) ? $_SESSION['show_last_items'] : '', '">
+                <select id="show_last_items" name="show_last_items">
+                    <option value="1"', isset($_SESSION['show_last_items']) && $_SESSION['show_last_items'] == 1 ? ' selected="selected"' : '', '>'.$txt['yes'].'</option>
+                    <option value="0"', isset($_SESSION['show_last_items']) && $_SESSION['show_last_items'] != 1 ? ' selected="selected"' : '', '>'.$txt['no'].'</option>
+                </select>
                 <br />
             </div>
             <div style="">

@@ -77,7 +77,7 @@ $html_headers .= '
     
     $(function() {
         //TOOLTIPS
-        $("#main *, #footer *").tooltip({
+        $("#main *, #footer *, #icon_last_items *").tooltip({
             delay: 0,
             showURL: false
         });
@@ -140,7 +140,7 @@ if ( !isset($_GET['page']) ){
             title: "'.$txt['index_change_pw'].'",
             buttons: {
                 "'.$txt['index_change_pw_button'].'": function() {
-                    ChangerMdp("'.$_SESSION['last_pw'].'");
+                    ChangerMdp("'. (isset($_SESSION['last_pw']) ? $_SESSION['last_pw'] : ''). '");
                     //$(this).dialog("close");
                 },
                 "'.$txt['cancel_button'].'": function() {

@@ -3,6 +3,26 @@
 
 global $txt;
 
+//new 1.08
+$txt['user_alarm_no_function'] = "Cet utilisateur n\'a aucune Fonction associée !";
+$txt['function_alarm_no_group'] = "Cette Fonction est associée à aucun Groupe!";
+$txt['index_pw_level_txt'] = "Complexité";
+$txt['index_pw_error_identical'] = "Les mots de passe doivent être identiques !";
+$txt['my_favourites'] = "Mes Favoris";
+$txt['item_menu_add_to_fav'] = "Ajouter aux Favoris";
+$txt['item_menu_del_from_fav'] = "Supprimer des Favoris";
+$txt['enable_favourites'] = "Autoriser les utilisateurs à utiliser les Favoris";
+$txt['last_items_title'] = "Derniers éléments vus";
+$txt['no_last_items'] = "Aucun";
+$txt['max_last_items'] = "Nombre maximum d'éléments dernièrement vus (par défaut 10)";
+$txt['admin_settings'] = "Paramétres";
+$txt['admin_settings_title'] = "Paramétres de cPassMan";
+$txt['show_last_items'] = "Montrer le block 'Récents' sur la page d'accueil";
+$txt['last_items_icon_title'] = "Montrer/Cacher les éléments consultés";
+$txt['yes'] = "Oui";
+$txt['no'] = "Non";
+//----
+
 $txt['index_session_ending'] = "Votre session expire dans 1 minute."; 
 $txt['index_alarm'] = "ATTENTION !!!"; 
 $txt['index_identify_you'] = "Veuillez vous identifier"; 

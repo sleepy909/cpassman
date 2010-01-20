@@ -36,7 +36,7 @@ if ( isset($_POST['type']) ){
             
             ## Populate table MISC
             $res1 = mysql_query("
-                INSERT INTO `".$_SESSION['tbl_prefix']."_misc` (`type`, `intitule`, `valeur`) VALUES
+                INSERT INTO `".$_SESSION['tbl_prefix']."misc` (`type`, `intitule`, `valeur`) VALUES
                 ('admin', 'max_latest_items', '10'),
                 ('admin', 'enable_favourites', '1'),
                 ('admin', 'show_last_items', '1');"
@@ -52,8 +52,8 @@ if ( isset($_POST['type']) ){
             }
             
             ## Alter USERS table
-            $res2 = mysql_query("ALTER TABLE `".$_SESSION['tbl_prefix']."_users` ADD COLUMN favourites VARCHAR(300);");
-            $res3 = mysql_query("ALTER TABLE `".$_SESSION['tbl_prefix']."_users` ADD COLUMN latest_items VARCHAR(300);");
+            $res2 = mysql_query("ALTER TABLE `".$_SESSION['tbl_prefix']."users` ADD COLUMN favourites VARCHAR(300);");
+            $res3 = mysql_query("ALTER TABLE `".$_SESSION['tbl_prefix']."users` ADD COLUMN latest_items VARCHAR(300);");
             if ( $res2 && $res3 ){
                 echo 'document.getElementById("tbl_2").innerHTML = "<img src=\"images/tick.png\">";'; 
             }else{
@@ -63,6 +63,12 @@ if ( isset($_POST['type']) ){
                 mysql_close($db_tmp);
                 break;   
             }
+            
+            echo 'gauge.modify($("pbar"),{values:[1,1]});';
+            echo 'document.getElementById("but_next").disabled = "";';
+            echo 'document.getElementById("res_step2").innerHTML = "Database has been populated";'; 
+            echo 'document.getElementById("loader").style.display = "none";';
+            mysql_close($db_tmp);
         break;
     }
 }

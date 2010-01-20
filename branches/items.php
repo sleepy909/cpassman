@@ -1113,7 +1113,7 @@ echo '
                 if ( action == "del_from_fav" ) delete_from_my_favourites();
             }
         );
-        $('#contextMenuContent').disableContextMenuItems('#edit_item,#del_item');
+        $('#contextMenuContent').disableContextMenuItems('#edit_item,#del_item,#add_to_fav,#del_from_fav');
         
         //display first group items
         AfficherRecherche();

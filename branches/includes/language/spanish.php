@@ -3,6 +3,26 @@
 
 global $txt;
 
+//new 1.08
+$txt['user_alarm_no_function'] = "This user has no Function!";
+$txt['function_alarm_no_group'] = "This function is not associated to any Group!";
+$txt['index_pw_level_txt'] = "Complexity";
+$txt['index_pw_error_identical'] = "The passwords have to be identical!";
+$txt['my_favourites'] = "My favourites";
+$txt['item_menu_add_to_fav'] = "Add to Favourites";
+$txt['item_menu_del_from_fav'] = "Delete from Favourites";
+$txt['enable_favourites'] = "Enable the Users to store Favourites";
+$txt['last_items_title'] = "Last items seen";
+$txt['no_last_items'] = "No items seen";
+$txt['max_last_items'] = "Maximum number of last items seen by user (default is 10)";
+$txt['admin_settings'] = "Settings";
+$txt['admin_settings_title'] = "cPassMan Settings";
+$txt['show_last_items'] = "Show last items block on main page";
+$txt['last_items_icon_title'] = "Show/Hide Last items seen";
+$txt['yes'] = "Yes";
+$txt['no'] = "No";
+//----
+
 $txt['index_session_ending'] = "Su sesion terminara en menos de 1 minuto.";
 $txt['index_alarm'] = "¡¡¡ALARMA!!!";
 $txt['index_identify_you'] = "Por favor, identifiquese";

@@ -16,6 +16,7 @@ session_start();
                 gauge.add($("progressbar"), { width:600, height:30, name: 'pbar', limit: true, gradient: true, scale: 10, colors:['#ff0000','#00ff00']});
                 if ( document.getElementById("step").value == "1" ) gauge.modify($('pbar'),{values:[0.25,1]});
                 else if ( document.getElementById("step").value == "2" ) gauge.modify($('pbar'),{values:[0.50,1]});
+                else if ( document.getElementById("step").value == "3" ) gauge.modify($('pbar'),{values:[1,1]});
             }
         }
         
@@ -35,6 +36,7 @@ session_start();
                     "&db_bdd="+document.getElementById("db_bdd").value;
                 }else
                 if ( step == "step2" ){
+                    var data = "type="+step;
                     document.getElementById("loader").style.display = "";
                 }
                 httpRequest("upgrade_ajax.php",data)
@@ -85,7 +87,8 @@ if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
                     <label for="db_host">Host :</label><input type="text" id="db_host" name="db_host" class="step" /><br />
                     <label for="db_db">Database name :</label><input type="text" id="db_bdd" name="db_bdd" class="step" /><br />
                     <label for="db_login">Login :</label><input type="text" id="db_login" name="db_login" class="step" /><br />
-                    <label for="db_pw">Password :</label><input type="text" id="db_pw" name="db_pw" class="step" />
+                    <label for="db_pw">Password :</label><input type="text" id="db_pw" name="db_pw" class="step" /><br />
+                    <label for="tbl_prefix">Table prefix :</label><input type="text" id="tbl_prefix" name="tbl_prefix" class="step" value="cpassman_" />
                     </fieldset>
 
                     <div style="margin-top:20px;font-weight:bold;text-align:center;height:27px;" id="res_step1"></div>   
@@ -94,6 +97,11 @@ if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
    
 }else if ( (isset($_POST['step']) && $_POST['step'] == 2) || (isset($_GET['step']) && $_GET['step'] == 2) ){
    //ETAPE 2 
+   $_SESSION['db_host'] = $_POST['db_host'];
+    $_SESSION['db_bdd'] = $_POST['db_bdd'];
+    $_SESSION['db_login'] = $_POST['db_login'];
+    $_SESSION['db_pw'] = $_POST['db_pw'];
+    $_SESSION['tbl_prefix'] = $_POST['tbl_prefix'];
    echo '
                     <h3>Step 2</h3>
                     
@@ -123,7 +131,7 @@ if ( !isset($_POST['step']) ){
                     <div id="buttons_bottom">
                         <input type="button" id="but_next" onclick="goto_next_page(\'1\')" style="padding:3px;cursor:pointer;font-size:20px;" class="ui-state-default ui-corner-all" value="NEXT" />
                     </div>';
-}elseif ( $_POST['step'] == 6 ){
+}elseif ( $_POST['step'] == 3 ){
        echo '   
                     <div id="buttons_bottom">
                         <input type="button" id="but_next" onclick="javascript:window.location.href=\'http://' . $_SERVER['HTTP_HOST'].substr($_SERVER['PHP_SELF'],0,strrpos($_SERVER['PHP_SELF'],'/')-8) . '\';" style="padding:3px;cursor:pointer;font-size:20px;" class="ui-state-default ui-corner-all" value="Open cPassMan" />

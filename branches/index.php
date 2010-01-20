@@ -157,10 +157,10 @@ include("load.php");
     
     ## LAST SEEN ##
     echo '
-    <div style="cursor:pointer;float:right;margin:-3px -20px;" onclick="ouvrir_div(\'div_last_items\')">
-        <img src="includes/images/tag_blue.png" alt="" />
+    <div style="cursor:pointer;float:right;margin:-3px -20px;" onclick="ouvrir_div(\'div_last_items\')" id="icon_last_items">
+        <img src="includes/images/tag_blue.png" alt="" title="'.$txt['last_items_icon_title'].'" />
     </div>
-    <div style="display:none;" id="div_last_items">'.$txt['last_items_title'].":&nbsp;";
+    <div style="display:none;" id="div_last_items" class="ui-corner-bottom">'.$txt['last_items_title'].":&nbsp;";
         if ( isset($_SESSION['latest_items_tab']) ){
             foreach($_SESSION['latest_items_tab'] as $item){
                 if ( !empty($item) )

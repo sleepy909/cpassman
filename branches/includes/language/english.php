@@ -18,6 +18,9 @@ $txt['max_last_items'] = "Maximum number of last items seen by user (default is 
 $txt['admin_settings'] = "Settings";
 $txt['admin_settings_title'] = "cPassMan Settings";
 $txt['show_last_items'] = "Show last items block on main page";
+$txt['last_items_icon_title'] = "Show/Hide Last items seen";
+$txt['yes'] = "Yes";
+$txt['no'] = "No";
 //----
 
 $txt['index_session_ending'] = "Your session will end in less than 1 minute."; 
