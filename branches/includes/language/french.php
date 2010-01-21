@@ -21,6 +21,12 @@ $txt['show_last_items'] = "Montrer le block 'Récents' sur la page d'accueil";
 $txt['last_items_icon_title'] = "Montrer/Cacher les éléments consultés";
 $txt['yes'] = "Oui";
 $txt['no'] = "Non";
+$txt['enable_personal_folder_feature'] = "Activer la fonctionnalité de Répertoire Personnel";
+$txt['enable_personal_folder'] = "Activer le Répertoire Personnel";
+$txt['personal_folder'] = "Répertoire personnel";
+$txt['personal_salt_key'] = "Votre clé personnel";
+$txt['personal_salt_key_info'] = "Cette clé sera utilisée pour crypter et décrypter votre mot de passe.<br />Elle n'est pas sauvée en base de données et elle est seule connue de vous.<br />Ne la perdait surtout pas !";
+$txt['personal_salt_key_empty'] = "Clé non saisie !";
 //----
 
 $txt['index_session_ending'] = "Votre session expire dans 1 minute."; 

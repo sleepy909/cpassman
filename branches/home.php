@@ -42,6 +42,7 @@ echo '
                         WHERE l.action = 'Creation' 
                             AND l.id_item = i.id 
                             AND i.id_tree IN (".$_SESSION['groupes_visibles_list'].") 
+                            AND i.perso = 0
                         ORDER BY l.date DESC
                         LIMIT 0,5
                         ");

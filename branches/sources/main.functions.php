@@ -11,17 +11,23 @@
 # FUNCTION permits to
 # crypt a string
 #
-function encrypt($text)
-{    
-    return trim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, SALT, $text, MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND))));
+function encrypt($text, $personal_salt="")
+{
+    if ( !empty($personal_salt) )
+        return trim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $personal_salt, $text, MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND))));
+    else
+        return trim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, SALT, $text, MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND))));
 }
 
 # FUNCTION permits to
 # decrypt a crypted string
 #
-function decrypt($text)
+function decrypt($text, $personal_salt="")
 {
-    return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, SALT, base64_decode($text), MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND)));
+    if ( !empty($personal_salt) )
+        return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $personal_salt, base64_decode($text), MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND)));
+    else
+        return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, SALT, base64_decode($text), MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND)));
 } 
 
 # FUNCTION permits to
@@ -39,19 +45,42 @@ function TrimElement($chaine,$element){
 #
 function IdentificationDesDroits($groupes_visibles_user,$groupes_interdits_user,$is_admin,$id_fonctions,$refresh){    
     include('../includes/settings.php');
+    require_once ("../sources/NestedTree.class.php");
     //Vérifier si utilisateur est ADMIN DIEU
     if ( $is_admin == 1 ){
         $groupes_visibles = array();
-        $res = mysql_query("SELECT id FROM ".$k['prefix']."nested_tree WHERE personal_folder = '0'");
+        $_SESSION['groupes_visibles'] = "";
+        $_SESSION['personal_visible_groups'] = array();
+        $_SESSION['groupes_visibles_list'] = "";
+        $res = mysql_query("SELECT id FROM ".$k['prefix']."nested_tree WHERE personal_folder = '0'") or die(mysql_error());
         while($data=mysql_fetch_row($res)){
             array_push($groupes_visibles,$data[0]);
         } 
         $_SESSION['groupes_visibles'] = $groupes_visibles;
+        
+        //Get ID of personal folder
+        $pf = mysql_fetch_row(mysql_query("SELECT id FROM ".$k['prefix']."nested_tree WHERE title = '".$_SESSION['user_id']."'"));
+        if ( !empty($pf[0]) ){
+            if ( !in_array($pf[0],$_SESSION['groupes_visibles']) ){
+                array_push($_SESSION['groupes_visibles'],$pf[0]);
+                array_push($_SESSION['personal_visible_groups'],$pf[0]);
+                //get all descendants
+                $tree = new NestedTree($k['prefix'].'nested_tree', 'id', 'parent_id', 'title', 'personal_folder');
+                $tree->rebuild();
+                $tst = $tree->getDescendants($pf[0]);
+                foreach($tst as $t){
+                    array_push($_SESSION['groupes_visibles'],$t->id);
+                    array_push($_SESSION['personal_visible_groups'],$t->id);
+                }
+            }
+        }
+        
         $_SESSION['groupes_visibles_list'] = implode(',',$_SESSION['groupes_visibles']);
         $_SESSION['is_admin'] = $is_admin;
     }else{
         //init
         $_SESSION['groupes_visibles'] = array();
+        $_SESSION['personal_visible_groups'] = array();
         $groupes_visibles = array();
         $groupes_interdits = array();
         if ( !empty($groupes_interdits_user) && count($groupes_interdits_user)>0 ) $groupes_interdits = $groupes_interdits_user;
@@ -112,9 +141,27 @@ function IdentificationDesDroits($groupes_visibles_user,$groupes_interdits_user,
           if($value == "") {
             unset($array[$key]);
           }
+        }  
+        
+        $_SESSION['groupes_visibles'] = array_values($array);                              
+        
+        //Get ID of personal folder
+        $pf = mysql_fetch_row(mysql_query("SELECT id FROM ".$k['prefix']."nested_tree WHERE title = '".$_SESSION['user_id']."'"));
+        if ( !empty($pf[0]) ){
+            if ( !in_array($pf[0],$_SESSION['groupes_visibles']) ){
+                array_push($_SESSION['groupes_visibles'],$pf[0]);
+                array_push($_SESSION['personal_visible_groups'],$pf[0]);
+                //get all descendants
+                $tree = new NestedTree($k['prefix'].'nested_tree', 'id', 'parent_id', 'title', 'personal_folder');
+                $tree->rebuild();
+                $tst = $tree->getDescendants($pf[0]);
+                foreach($tst as $t){
+                    array_push($_SESSION['groupes_visibles'],$t->id);
+                    array_push($_SESSION['personal_visible_groups'],$t->id);
+                }
+            }
         }
 
-        $_SESSION['groupes_visibles'] = array_values($array); 
         $_SESSION['groupes_visibles_list'] = implode(',',$_SESSION['groupes_visibles']);
     }
 }

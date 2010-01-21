@@ -144,6 +144,13 @@ if ( isset($_POST['type']) ){
                   `intitule` varchar(100) NOT NULL,
                   `valeur` varchar(100) NOT NULL
                 );");
+            mysql_query("
+                INSERT INTO `".$_SESSION['tbl_prefix']."misc` (`type`, `intitule`, `valeur`) VALUES
+                ('admin', 'max_latest_items', '10'),
+                ('admin', 'enable_favourites', '1'),
+                ('admin', 'show_last_items', '1'),
+                ('admin', 'enable_pf_feature', '0');"
+            );
             if ( $res4 ){
                 echo 'document.getElementById("tbl_4").innerHTML = "<img src=\"images/tick.png\">";'; 
             }else{
@@ -165,6 +172,7 @@ if ( isset($_POST['type']) ){
                   `nlevel` int(11) NOT NULL,
                   `bloquer_creation` tinyint(1) NOT NULL DEFAULT '0',
                   `bloquer_modification` tinyint(1) NOT NULL DEFAULT '0',
+                  `personal_folder` tinyint(1) NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `id` (`id`),
                   KEY `nested_tree_parent_id` (`parent_id`),
@@ -218,6 +226,9 @@ if ( isset($_POST['type']) ){
                   `last_connexion` varchar(30) NOT NULL,
                   `gestionnaire` int(11) NOT NULL DEFAULT '0',
                   `email` varchar(300) NOT NULL,
+                  `favourites` varchar(300) NOT NULL,
+                  `latest_items` varchar(300) NOT NULL,
+                  `personal_folder` int(1) NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `login` (`login`)
                 );");

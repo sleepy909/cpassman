@@ -21,6 +21,12 @@ $txt['show_last_items'] = "Show last items block on main page";
 $txt['last_items_icon_title'] = "Show/Hide Last items seen";
 $txt['yes'] = "Yes";
 $txt['no'] = "No";
+$txt['enable_personal_folder_feature'] = "Enable Personal folder feature";
+$txt['enable_personal_folder'] = "Enable Personal folder";
+$txt['personal_folder'] = "Personal folder";
+$txt['personal_salt_key'] = "Your personnal salt key";
+$txt['personal_salt_key_info'] = "This salt key will be used to crypt and encrypt your password.<br />It is not stored in database, you are the only person who knows it.<br />So don't loose it!";
+$txt['personal_salt_key_empty'] = "Personal salt key has not been entered!";
 //----
 
 $txt['index_session_ending'] = "Su sesion terminara en menos de 1 minuto.";

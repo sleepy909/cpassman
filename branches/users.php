@@ -125,7 +125,7 @@ echo '
                         <th>'.$txt['forbidden_groups'].'</th>
                         <th title="'.$txt['god'].'"><img src="includes/images/user-black.png" /></th>
                         <th title="'.$txt['gestionnaire'].'"><img src="includes/images/folder-bookmark.png" /></th>
-                        <th title="'.$txt['enable_personal_folder'].'"><img src="includes/images/folder_key.png" /></th>
+                        ', $_SESSION['enable_pf_feature']==1 ? '<th title="'.$txt['enable_personal_folder'].'"><img src="includes/images/folder_key.png" /></th>' : '', '
                         <th title="'.$txt['user_del'].'"><img src="includes/images/user--minus.png" /></th>
                         <th title="'.$txt['pw_change'].'"><img src="includes/images/lock__pencil.png" /></th>
                         <th title="'.$txt['email_change'].'"><img src="includes/images/mail.png" /></th>
@@ -202,10 +202,13 @@ echo '
                         </td>
                         <td align="center">
                             <input type="checkbox" id="cb_gest_groupes_'.$data['id'].'" onchange="Changer_Droit_Groupes(\''.$data['id'].'\')"', $data['gestionnaire']==1 ? 'checked' : '', ' />
-                        </td>
+                        </td>';
+                        if($_SESSION['enable_pf_feature']==1)
+                            echo '
                         <td align="center">
                             <input type="checkbox" id="cb_personal_folder_'.$data['id'].'" onchange="Change_Personal_Folder(\''.$data['id'].'\')"', $data['personal_folder']==1 ? 'checked' : '', ' />
-                        </td>
+                        </td>';
+                        echo '
                         <td align="center">
                             <img src="includes/images/user--minus.png" onclick="supprimer_user(\''.$data['id'].'\')" style="cursor:pointer;" />
                         </td>

@@ -113,6 +113,8 @@ echo '
         <ul id="browser" class="filetree" style="margin-top:3px;min-height:200px;">';
         foreach($tst as $t){
             //S'assurer que l'utilisateur ne voit que ce qu'il peut voir
+            if ( in_array($t->id,$_SESSION['groupes_visibles']) ) {
+            
             $res = mysql_query("SELECT COUNT(*) FROM ".$k['prefix']."items WHERE inactif=0 AND id_tree = ".$t->id);
             $data=mysql_fetch_row($res);
             $nb_items = $data[0];
@@ -122,6 +124,7 @@ echo '
             
             //Construire l'arborescence
             if ( $cpt_total == 0 ) {
+                 if ( $t->title ==$_SESSION['user_id'] && $t->nlevel == 1 ) $t->title = $_SESSION['login'];
                  echo '
                  <li id="li_'.$t->id.'"><span class="folder">&nbsp;</span>
                     <div style="display:inline;cursor:pointer;">', 
@@ -176,6 +179,7 @@ echo '
                 $prev_level = $t->nlevel;
             }
             $cpt_total++;
+        }
         }
             
         //clore toutes les balises de l'arbo
@@ -318,6 +322,10 @@ echo '
                 &nbsp;&nbsp;'.$txt['complex_asked'].' : <span id="complex_attendue"></span>
                 </td>
             </tr>
+            <tr style="display:none;" id="new_item_salt_key">
+                <td>'.$txt['personal_salt_key'].' :</td>
+                <td><input type="text" size="20" name="personal_salt_key" id="personal_salt_key" value="', !empty($_SESSION['salt_key']) ? $_SESSION['salt_key'] : '', '" />&nbsp;<img src="includes/images/information.png" title="'.$txt['personal_salt_key_info'].'" alt="" /></td>
+            </tr>
             <tr>
                 <td>'.$txt['used_pw'].' :</td>
                 <td>
@@ -417,6 +425,10 @@ echo '
             </select>
             &nbsp;&nbsp;'.$txt['complex_asked'].' : <span id="edit_complex_attendue"></span>
             </td>
+        </tr>
+        <tr style="display:none;" id="edit_item_salt_key">
+            <td>'.$txt['personal_salt_key'].' :</td>
+            <td><input type="text" size="20" name="edit_personal_salt_key" id="edit_personal_salt_key" value="', !empty($_SESSION['salt_key']) ? $_SESSION['salt_key'] : '', '" />&nbsp;<img src="includes/images/information.png" title="'.$txt['personal_salt_key_info'].'" alt="" /></td>
         </tr>
         <tr>
             <td>'.$txt['used_pw'].' :</td>
@@ -697,13 +709,16 @@ echo '
         else if ( document.getElementById("pw1").value == "" ) erreur = "<?php echo $txt['error_pw'];?>";
         else if ( document.getElementById("categorie").value == "na" ) erreur = "<?php echo $txt['error_group'];?>";
         else if ( document.getElementById("pw1").value != document.getElementById("pw2").value ) erreur = "<?php echo $txt['error_confirm'];?>";
+        else if ( document.getElementById("new_item_salt_key").style.display == "" && document.getElementById("personal_salt_key").value == "" ) erreur = "<?php echo $txt['personal_salt_key_empty'];?>"; 
         else{
             //vérifier le niveau de complexité du mdp
-            if ( 
+            if (
                 ( document.getElementById("bloquer_creation_complexite").value == 0 && parseInt(document.getElementById("mypassword_complex").value) >= parseInt(document.getElementById("complexite_groupe").value) )
                 ||
                 ( document.getElementById("bloquer_creation_complexite").value == 1 )
-                ){
+                ||
+                ( document.getElementById("new_item_salt_key").style.display == "" )
+            ){
             
                 LoadingPage();  //afficher image de chargement
                 var perso = annonce = 0;
@@ -728,6 +743,8 @@ echo '
                 }
                 if ( diffusion == ";" ) diffusion = "";
                 
+                var salt_key = "";
+                if ( document.getElementById("personal_salt_key").value != "" ) salt_key = escape(document.getElementById("personal_salt_key").value);
                 
                 var data = "type=new_item"+
                             "&pw="+escape(document.getElementById('pw1').value)+
@@ -739,7 +756,8 @@ echo '
                             "&annonce="+annonce+
                             "&diffusion="+diffusion+
                             "&categorie="+document.getElementById('categorie').value+
-                            "&restricted_to="+restriction;
+                            "&restricted_to="+restriction+
+                            "&salt_key="+salt_key;
                 httpRequest("sources/items.queries.php",data);
             }else{
                 document.getElementById('error_detected').value = 1;
@@ -757,11 +775,14 @@ echo '
         if ( document.getElementById("edit_label").value == "" ) erreur = "<?php echo $txt['error_label'];?>";
         else if ( document.getElementById("edit_pw1").value == "" ) erreur = "<?php echo $txt['error_pw'];?>";
         else if ( document.getElementById("edit_pw1").value != document.getElementById("edit_pw2").value ) erreur = "<?php echo $txt['error_confirm'];?>";
+        else if ( document.getElementById("edit_item_salt_key").style.display == "" && document.getElementById("edit_item_salt_key").value == "" ) erreur = "<?php echo $txt['personal_salt_key_empty'];?>"; 
         else{
             //vérifier le niveau de complexité du mdp
             if ( ( document.getElementById("bloquer_modification_complexite").value == 0 && parseInt(document.getElementById("edit_mypassword_complex").value) >= parseInt(document.getElementById("complexite_groupe").value) )
                 ||
                 ( document.getElementById("bloquer_modification_complexite").value == 1 )
+                ||
+                ( document.getElementById("edit_item_salt_key").style.display == "" )
             ){
                 LoadingPage();  //afficher image de chargement
                 var perso = annonce = 0;
@@ -793,6 +814,9 @@ echo '
                     pw = pw.replace('+','SIGNEPLUS');
                 }
                 
+                var salt_key = "";
+                if ( document.getElementById("edit_personal_salt_key").value != "" ) salt_key = escape(document.getElementById("edit_personal_salt_key").value);
+                
                 //envoyer la requete
                 var data = "type=update_item"+
                             "&pw="+pw+
@@ -805,7 +829,8 @@ echo '
                             "&annonce="+annonce+
                             "&diffusion="+diffusion+
                             "&id="+document.getElementById('id_item').value+
-                            "&restricted_to="+restriction; //document.getElementById('edit_restricted_to').value;
+                            "&restricted_to="+restriction+
+                            "&salt_key="+salt_key; 
                 httpRequest("sources/items.queries.php",data);
             }else
                 alert("<?php echo $txt['error_complex_not_enought'];?>");
@@ -847,13 +872,25 @@ echo '
         }
     }
     
-    function AfficherDetailsItem(id){
+    function AfficherDetailsItem(id, salt_key_required){
         LoadingPage();  //afficher image de chargement
         if ( document.getElementById("is_admin").value == "1" )
             $('#contextMenuContent').enableContextMenuItems('#edit_item,#del_item');
-            
-        var data = "type=show_details_item&id="+id;
-        httpRequest("sources/items.queries.php",data);
+        
+        var post = "ok";
+        var data = "type=show_details_item"+
+                    "&id="+id;
+        
+        //Ask for SaltKey
+        if ( salt_key_required == 1 ){
+            sk = prompt("<?php echo $txt['personal_salt_key'];?>");
+            if ( sk == null || sk == "" ) post = "nok";
+            data = data+
+                    "&salt_key_required="+salt_key_required + 
+                    "&salt_key="+sk;
+        }
+        if ( post == "ok" ) httpRequest("sources/items.queries.php",data);
+        else LoadingPage();  //afficher image de chargement
     }
     
     function ShowSearchDiv(){
@@ -975,7 +1012,7 @@ echo '
                 modal: true,
                 autoOpen: false,
                 width: 520,
-                height: 470,
+                height: 510,
                 title: "<?php echo $txt['item_menu_add_elem'];?>",
                 buttons: {
                     "<?php echo $txt['save_button'];?>": function() {
@@ -1029,7 +1066,7 @@ echo '
                 modal: true,
                 autoOpen: false,
                 width: 520,
-                height: 470,
+                height: 510,
                 title: "<?php echo $txt['item_menu_edi_elem'];?>",
                 buttons: {
                     "<?php echo $txt['save_button'];?>": function() {

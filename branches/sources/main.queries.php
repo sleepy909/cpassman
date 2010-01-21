@@ -45,7 +45,7 @@ switch($_POST['type'])
             echo 'document.getElementById(\'div_changer_mdp\').style.display = "none";';
             echo '$("#change_pwd_error").addClass("");'; 
             echo 'document.getElementById("change_pwd_error").innerHTML = \''.$txt['pw_changed'].'\';';
-            echo 'window.location.href = "index.php";';
+            echo 'document.getElementById("form_pw").submit();';
         }
         
     break;
@@ -96,7 +96,7 @@ switch($_POST['type'])
                 $_SESSION['groupes_interdits'] = array();
                 if ( !empty($data['groupes_visibles'])) $_SESSION['groupes_visibles'] = implode(';',$data['groupes_visibles']);
                 if ( !empty($data['groupes_interdits'])) $_SESSION['groupes_interdits'] = implode(';',$data['groupes_interdits']);
-                $_SESSION['fonction_id'] = $data['fonction_id'];
+                $_SESSION['fonction_id'] = $data['fonction_id']; 
 
             // Update table
             $sql = "UPDATE ".$k['prefix']."users SET key_tempo='".$_SESSION['cle_session']."', last_connexion='".mktime(date("h"),date("i"),date("s"),date("m"),date("d"),date("Y"))."' WHERE id=".$data['id'];
@@ -106,19 +106,7 @@ switch($_POST['type'])
             IdentificationDesDroits($data['groupes_visibles'],$data['groupes_interdits'],$data['admin'],$data['fonction_id'],false);
             
             //Get some more elements            
-            $_SESSION['hauteur_ecran'] = $_POST['hauteur_ecran'];
-            
-            //Get latest items max value
-            $data = mysql_fetch_array(mysql_query("SELECT valeur FROM ".$k['prefix']."misc WHERE type = 'admin' AND intitule = 'max_latest_items'")) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error()); 
-            $_SESSION['max_latest_items'] = $data['valeur'];
-            
-            //Get enable favourites value
-            $data = mysql_fetch_array(mysql_query("SELECT valeur FROM ".$k['prefix']."misc WHERE type = 'admin' AND intitule = 'enable_favourites'")) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error()); 
-            $_SESSION['enable_favourites'] = $data['valeur'];
-            
-            //Get enable blcok value
-            $data = mysql_fetch_array(mysql_query("SELECT valeur FROM ".$k['prefix']."misc WHERE type = 'admin' AND intitule = 'show_last_items'")) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error()); 
-            $_SESSION['show_last_items'] = $data['valeur'];
+            $_SESSION['hauteur_ecran'] = $_POST['hauteur_ecran'];            
             
             //Get last seen items
             $_SESSION['latest_items_tab'][] = "";
@@ -143,6 +131,26 @@ switch($_POST['type'])
                     );
                 }
             }
+            
+            ## => SETTINGS <=
+            
+                //Get latest items max value
+                $data = mysql_fetch_array(mysql_query("SELECT valeur FROM ".$k['prefix']."misc WHERE type = 'admin' AND intitule = 'max_latest_items'")) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error()); 
+                $_SESSION['max_latest_items'] = $data['valeur'];
+                
+                //Get enable favourites value
+                $data = mysql_fetch_array(mysql_query("SELECT valeur FROM ".$k['prefix']."misc WHERE type = 'admin' AND intitule = 'enable_favourites'")) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error()); 
+                $_SESSION['enable_favourites'] = $data['valeur'];
+                
+                //Get enable blcok value
+                $data = mysql_fetch_array(mysql_query("SELECT valeur FROM ".$k['prefix']."misc WHERE type = 'admin' AND intitule = 'show_last_items'")) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error()); 
+                $_SESSION['show_last_items'] = $data['valeur'];
+                
+                //Get enable enable_pf_feature value
+                $data = mysql_fetch_array(mysql_query("SELECT valeur FROM ".$k['prefix']."misc WHERE type = 'admin' AND intitule = 'enable_pf_feature'")) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error()); 
+                $_SESSION['enable_pf_feature'] = $data['valeur'];
+            
+            
             
             echo 'document.location.href="index.php";';
         }else{

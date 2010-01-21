@@ -21,6 +21,9 @@ if ( isset($_POST['save_button']) ){
     
     mysql_query("UPDATE ".$k['prefix']."misc SET valeur = '".$_POST['show_last_items']."' WHERE type='admin' AND intitule = 'show_last_items'");
     $_SESSION['show_last_items'] = $_POST['show_last_items'];
+    
+    mysql_query("UPDATE ".$k['prefix']."misc SET valeur = '".$_POST['enable_pf_feature']."' WHERE type='admin' AND intitule = 'enable_pf_feature'");
+    $_SESSION['enable_pf_feature'] = $_POST['enable_pf_feature'];
 }
 
 echo '
@@ -42,6 +45,12 @@ echo '
                 <select id="show_last_items" name="show_last_items">
                     <option value="1"', isset($_SESSION['show_last_items']) && $_SESSION['show_last_items'] == 1 ? ' selected="selected"' : '', '>'.$txt['yes'].'</option>
                     <option value="0"', isset($_SESSION['show_last_items']) && $_SESSION['show_last_items'] != 1 ? ' selected="selected"' : '', '>'.$txt['no'].'</option>
+                </select>
+                <br />
+                <label for="enable_pf_feature" class="form_label_500">'.$txt['enable_personal_folder_feature'].'</label>
+                <select id="enable_pf_feature" name="enable_pf_feature">
+                    <option value="1"', isset($_SESSION['enable_pf_feature']) && $_SESSION['enable_pf_feature'] == 1 ? ' selected="selected"' : '', '>'.$txt['yes'].'</option>
+                    <option value="0"', isset($_SESSION['enable_pf_feature']) && $_SESSION['enable_pf_feature'] != 1 ? ' selected="selected"' : '', '>'.$txt['no'].'</option>
                 </select>
                 <br />
             </div>
