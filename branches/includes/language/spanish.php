@@ -4,29 +4,29 @@
 global $txt;
 
 //new 1.08
-$txt['user_alarm_no_function'] = "This user has no Function!";
-$txt['function_alarm_no_group'] = "This function is not associated to any Group!";
-$txt['index_pw_level_txt'] = "Complexity";
-$txt['index_pw_error_identical'] = "The passwords have to be identical!";
-$txt['my_favourites'] = "My favourites";
-$txt['item_menu_add_to_fav'] = "Add to Favourites";
-$txt['item_menu_del_from_fav'] = "Delete from Favourites";
-$txt['enable_favourites'] = "Enable the Users to store Favourites";
-$txt['last_items_title'] = "Last items seen";
-$txt['no_last_items'] = "No items seen";
-$txt['max_last_items'] = "Maximum number of last items seen by user (default is 10)";
-$txt['admin_settings'] = "Settings";
-$txt['admin_settings_title'] = "cPassMan Settings";
-$txt['show_last_items'] = "Show last items block on main page";
-$txt['last_items_icon_title'] = "Show/Hide Last items seen";
-$txt['yes'] = "Yes";
+$txt['user_alarm_no_function'] = "¡Este usuario no tiene Funcion!";
+$txt['function_alarm_no_group'] = "Esta funcion no esta asociada a ningun Grupo!";
+$txt['index_pw_level_txt'] = "Complejidad";
+$txt['index_pw_error_identical'] = "¡Las contraseñas han de ser identicas!";
+$txt['my_favourites'] = "Mis favoritos";
+$txt['item_menu_add_to_fav'] = "Añadir a Favoritos";
+$txt['item_menu_del_from_fav'] = "Eliminar de Favoritos";
+$txt['enable_favourites'] = "Permitir a los Usuarios almacenar Favoritos";
+$txt['last_items_title'] = "Ultimos items vistos";
+$txt['no_last_items'] = "Ningun item visto";
+$txt['max_last_items'] = "Maximo numero de ultimos items vistos por usuario (10 por defecto)";
+$txt['admin_settings'] = "Configuracion";
+$txt['admin_settings_title'] = "Configuracion de cPassMan";
+$txt['show_last_items'] = "Mostrar bloque de ultimos items en la pagina principal";
+$txt['last_items_icon_title'] = "Mostrar/Ocultar ultimos items vistos";
+$txt['yes'] = "Si";
 $txt['no'] = "No";
-$txt['enable_personal_folder_feature'] = "Enable Personal folder feature";
-$txt['enable_personal_folder'] = "Enable Personal folder";
-$txt['personal_folder'] = "Personal folder";
-$txt['personal_salt_key'] = "Your personnal salt key";
-$txt['personal_salt_key_info'] = "This salt key will be used to crypt and encrypt your password.<br />It is not stored in database, you are the only person who knows it.<br />So don't loose it!";
-$txt['personal_salt_key_empty'] = "Personal salt key has not been entered!";
+$txt['enable_personal_folder_feature'] = "Habilitar funcion Carpeta Personal";
+$txt['enable_personal_folder'] = "Habilitar Carpeta Personal";
+$txt['personal_folder'] = "Carpeta Personal";
+$txt['personal_salt_key'] = "Su palabra codificadora personal";
+$txt['personal_salt_key_info'] = "Esta palabra codificadora se utilizara para encriptar y desencriptar su contraseña.<br />No se almacena en base de datos, asi que usted es la unica persona que la sabe.<br />¡Asi que no la pierda ni olvide!";
+$txt['personal_salt_key_empty'] = "¡No se ha introducido la palabra codificadora!"; 
 //----
 
 $txt['index_session_ending'] = "Su sesion terminara en menos de 1 minuto.";

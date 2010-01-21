@@ -11,7 +11,7 @@ $k['prefix'] = "";  //tables prefix
 
 ### EMAIL PROPERTIES ###
 $smtp_server = "";
-$smtp_auth = ; //false or true
+$smtp_auth = ""; //false or true
 $smtp_auth_username = "";
 $smtp_auth_password = "";
 $email_from = "";
