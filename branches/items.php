@@ -83,12 +83,15 @@ echo '
 if ( isset($_GET['group']) && isset($_GET['id']) ){
     echo '<input type="hidden" name="recherche_groupe" id="recherche_groupe" value="'.$_GET['group'].'" />';
     echo '<input type="hidden" name="recherche_id" id="recherche_id" value="'.$_GET['id'].'" />';
+    echo '<input type="hidden" name="recherche_group_pf" id="recherche_group_pf" value="', in_array($_GET['group'],$_SESSION['personal_visible_groups']) ? '1' : '', '" />';
 }elseif ( isset($_GET['group']) && !isset($_GET['id']) ){
     echo '<input type="hidden" name="recherche_groupe" id="recherche_groupe" value="'.$_GET['group'].'" />';
     echo '<input type="hidden" name="recherche_id" id="recherche_id" value="" />';
+    echo '<input type="hidden" name="recherche_group_pf" id="recherche_group_pf" value="" />';
 }else{
     echo '<input type="hidden" name="recherche_groupe" id="recherche_groupe" value="" />';
     echo '<input type="hidden" name="recherche_id" id="recherche_id" value="" />';
+    echo '<input type="hidden" name="recherche_group_pf" id="recherche_group_pf" value="" />';
 }
 
 echo '
@@ -881,9 +884,12 @@ echo '
         var data = "type=show_details_item"+
                     "&id="+id;
         
+        if ( document.getElementById('recherche_group_pf').value == 1 )
+            salt_key_required = 1;
+        
         //Ask for SaltKey
         if ( salt_key_required == 1 ){
-            sk = prompt("<?php echo $txt['personal_salt_key'];?>");
+            sk = prompt("<?php echo $txt['personal_salt_key'];?>","<?php echo $_SESSION['salt_key'];?>");
             if ( sk == null || sk == "" ) post = "nok";
             data = data+
                     "&salt_key_required="+salt_key_required + 

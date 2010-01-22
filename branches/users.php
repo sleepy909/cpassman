@@ -74,6 +74,7 @@ $(function() {
         title: "<?php echo $txt['new_user_title'];?>",
         buttons: {
             "<?php echo $txt['save_button'];?>": function() {
+                LoadingPage();  //show loading div
                 var data = "type=add_new_user&"+
                     "&login="+document.getElementById("new_login").value+
                     "&pw="+document.getElementById("new_pwd").value+
@@ -340,6 +341,7 @@ function Change_Personal_Folder(id){
 }
 
 function Open_Div_Change(id,type){    
+    LoadingPage();  //show loading div
     var data = "type=open_div_"+type+"&id="+id;
     httpRequest("sources/users.queries.php",data);  
 }

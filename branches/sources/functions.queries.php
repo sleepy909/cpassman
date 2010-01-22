@@ -55,7 +55,7 @@ if ( !empty($_POST['type']) ){
         #-------------------------------------------
         #CASE refresh the matrix
         case "rafraichir_matrice": 
-            echo '$("#refresh_loader").show();';
+            echo '$("#ajax_loader_matrix").show();';
             echo 'document.getElementById(\'matrice_droits\').innerHTML = "";';
             require_once ("NestedTree.class.php");
             $tree = new NestedTree($k['prefix'].'nested_tree', 'id', 'parent_id', 'title');
@@ -98,13 +98,15 @@ if ( !empty($_POST['type']) ){
             //construire tableau des groupes
             $tab_groupes = array();
             foreach($tst as $t){
-                $ident="";
-                for($a=1;$a<$t->nlevel;$a++) $ident .= "&nbsp;&nbsp;";
-                $tab_groupes[$t->id] = array(
-                        'id' => $t->id,
-                        'titre' => $t->title,
-                        'ident' => $ident
-                        );
+                if ( in_array($t->id,$_SESSION['groupes_visibles']) ) {
+                    $ident="";
+                    for($a=1;$a<$t->nlevel;$a++) $ident .= "&nbsp;&nbsp;";
+                    $tab_groupes[$t->id] = array(
+                            'id' => $t->id,
+                            'titre' => $t->title,
+                            'ident' => $ident
+                            );
+                }
             } 
             
             //afficher
@@ -139,7 +141,7 @@ if ( !empty($_POST['type']) ){
             }
             $texte .= '</tbody></table>';
             echo 'document.getElementById(\'matrice_droits\').innerHTML = "'.addslashes($texte).'";';
-            echo '$("#refresh_loader").hide();';
+            echo '$("#ajax_loader_matrix").hide();';
         break;
         
         #-------------------------------------------
@@ -157,7 +159,7 @@ if ( !empty($_POST['type']) ){
             $descendants = $tree->getDescendants();
             
             foreach($descendants as $t){
-                if ( !in_array($t->id,$_SESSION['groupes_interdits']) ){
+                if ( !in_array($t->id,$_SESSION['groupes_interdits']) && in_array($t->id,$_SESSION['groupes_visibles']) ){
                     $ident="";
                     for($y=1;$y<$t->nlevel;$y++) $ident .= "&nbsp;&nbsp;";
                     
@@ -174,6 +176,7 @@ if ( !empty($_POST['type']) ){
                         
             //display dialogbox
             echo '$("#change_group_autgroups").dialog("open");';
+            echo '$("#div_loading").hide()';  //hide loading div
         break;
         
         #-------------------------------------------
@@ -208,7 +211,7 @@ if ( !empty($_POST['type']) ){
             $descendants = $tree->getDescendants();
             
             foreach($descendants as $t){
-                if ( !in_array($t->id,$_SESSION['groupes_interdits']) ){
+                if ( !in_array($t->id,$_SESSION['groupes_interdits']) && in_array($t->id,$_SESSION['groupes_visibles']) ){
                     $ident="";
                     for($y=1;$y<$t->nlevel;$y++) $ident .= "&nbsp;&nbsp;";
                     
@@ -225,6 +228,7 @@ if ( !empty($_POST['type']) ){
                         
             //display dialogbox
             echo '$("#change_group_forgroups").dialog("open");';
+            echo '$("#div_loading").hide()';  //hide loading div
         break;
         
         #-------------------------------------------

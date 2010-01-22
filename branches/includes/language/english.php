@@ -27,6 +27,7 @@ $txt['personal_folder'] = "Personal folder";
 $txt['personal_salt_key'] = "Your personnal salt key";
 $txt['personal_salt_key_info'] = "This salt key will be used to crypt and encrypt your password.<br />It is not stored in database, you are the only person who knows it.<br />So don't loose it!";
 $txt['personal_salt_key_empty'] = "Personal salt key has not been entered!";
+$txt['info_click_to_edit'] = "Click on a cell to edit its value";
 //----
 
 $txt['index_session_ending'] = "Your session will end in less than 1 minute."; 

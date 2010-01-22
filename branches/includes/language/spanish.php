@@ -27,6 +27,7 @@ $txt['personal_folder'] = "Carpeta Personal";
 $txt['personal_salt_key'] = "Su palabra codificadora personal";
 $txt['personal_salt_key_info'] = "Esta palabra codificadora se utilizara para encriptar y desencriptar su contraseña.<br />No se almacena en base de datos, asi que usted es la unica persona que la sabe.<br />¡Asi que no la pierda ni olvide!";
 $txt['personal_salt_key_empty'] = "¡No se ha introducido la palabra codificadora!"; 
+$txt['info_click_to_edit'] = "Click on a cell to edit its value";
 //----
 
 $txt['index_session_ending'] = "Su sesion terminara en menos de 1 minuto.";

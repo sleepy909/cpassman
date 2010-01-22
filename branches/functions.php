@@ -20,6 +20,7 @@ $(function() {
         title: "<?php echo $txt['change_user_autgroups_title'];?>",
         buttons: {
             "<?php echo $txt['save_button'];?>": function() {
+                LoadingPage();  //show loading div
                 Change_groups(document.getElementById("selected_function").value,"autgroups");
                 $(this).dialog('close');
             },
@@ -38,6 +39,7 @@ $(function() {
         title: "<?php echo $txt['change_user_forgroups_title'];?>",
         buttons: {
             "<?php echo $txt['save_button'];?>": function() {
+                LoadingPage();  //show loading div
                 Change_groups(document.getElementById("selected_function").value,"forgroups");
                 $(this).dialog('close');
             },
@@ -56,6 +58,7 @@ $(function() {
         title: "<?php echo $txt['give_function_title'];?>",
         buttons: {
             "<?php echo $txt['save_button'];?>": function() {
+                LoadingPage();  //show loading div
                 var data = "type=add_new_function&"+
                     "&name="+document.getElementById("new_function").value;
                 httpRequest("sources/functions.queries.php",data);
@@ -139,8 +142,8 @@ while( $res_groups = mysql_fetch_row($data_groups) )
             
             <h3>'.$txt['rights_matrix'].'   
                 <a onClick="refresh_matrice()"><img src="includes/images/arrow_refresh.png" style="cursor:pointer" /></a>
+                &nbsp;<img id="ajax_loader_matrix" style="display:none;" src="includes/images/ajax-loader.gif" alt="" />
             </h3>
-            <div style="display:inline;" id="refresh_loader"><img src="includes/images/ajax-loader.gif" /></div>
             <div id="matrice_droits"></div>
             <br />
             

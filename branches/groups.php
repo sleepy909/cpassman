@@ -55,57 +55,62 @@ echo '
             $x = 0;    
             $arr_ids = array();          
             foreach($tst as $t){
-                //récup $t->parent_id
-                $res = mysql_query("SELECT title FROM ".$k['prefix']."nested_tree WHERE id = ".$t->parent_id);
-                $data = mysql_fetch_row($res);
-                if ( $t->nlevel == 1 ) $data[0] = "Racine";
-                
-                //récup les droits associés à ce groupe
-                $tab_droits=array();
-                $res1 = mysql_query("SELECT fonction_id  FROM ".$k['prefix']."rights WHERE authorized=1 AND tree_id = ".$t->id);
-                while($data1 = mysql_fetch_row($res1)){
-                    array_push($tab_droits,$data1[0]);
+                if ( in_array($t->id,$_SESSION['groupes_visibles']) ) {
+                    //récup $t->parent_id
+                    $res = mysql_query("SELECT title FROM ".$k['prefix']."nested_tree WHERE id = ".$t->parent_id);
+                    $data = mysql_fetch_row($res);
+                    if ( $t->nlevel == 1 ) $data[0] = "Racine";
+                    
+                    //récup les droits associés à ce groupe
+                    $tab_droits=array();
+                    $res1 = mysql_query("SELECT fonction_id  FROM ".$k['prefix']."rights WHERE authorized=1 AND tree_id = ".$t->id);
+                    while($data1 = mysql_fetch_row($res1)){
+                        array_push($tab_droits,$data1[0]);
+                    }
+                    //gérer l'identation en fonction du niveau
+                    $ident = "";  
+                    for($l=1;$l<$t->nlevel;$l++) $ident .= "&nbsp;&nbsp;";
+                    
+                    //récup le niveau de complexité
+                    $res = mysql_query("SELECT valeur FROM ".$k['prefix']."misc WHERE type='complex' AND intitule = ".$t->id);
+                    $complexite = mysql_fetch_row($res);
+                    
+                    
+                    echo '<tr class="ligne'.($x%2).'">
+                            <td align="center">'.$t->id.'</td>
+                            <td align="center">'.$t->nlevel.'</td>
+                            <td width="50%">
+                                '.$ident.'<span class="editable_textarea" style="" id="title_'.$t->id.'">'.$t->title.'</span>
+                            </td>
+                            <td align="center">
+                                <span class="editable_select" id="complexite_'.$t->id.'">'.$mdp_complexite[$complexite[0]][1].'</span>
+                            </td>               
+                            <td align="center">
+                                <span class="editable_select" id="parent_'.$t->id.'">'.$data[0].'</span>
+                            </td>
+                            <td align="center">
+                                <img src="includes/images/blog__minus.png" onclick="supprimer_groupe(\''.$t->id.'\')" style="cursor:pointer;" />
+                            </td>';
+                            
+                            $data3 = mysql_fetch_row(mysql_query("SELECT bloquer_creation,bloquer_modification FROM ".$k['prefix']."nested_tree WHERE id = ".$t->id));
+                            echo '
+                            <td align="center">
+                                <input type="checkbox" id="cb_droit_'.$t->id.'" onchange="Changer_Droit_Complexite(\''.$t->id.'\',\'creation\')"', isset($data3[0]) && $data3[0]==1 ? 'checked' : '', ' />
+                            </td>
+                            <td align="center">
+                                <input type="checkbox" id="cb_droit_modif_'.$t->id.'" onchange="Changer_Droit_Complexite(\''.$t->id.'\',\'modification\')"', isset($data3[1]) && $data3[1]==1 ? 'checked' : '', ' />
+                            </td>
+                    </tr>';
+                    array_push($arr_ids,$t->id);
+                    $x++;
                 }
-                //gérer l'identation en fonction du niveau
-                $ident = "";  
-                for($l=1;$l<$t->nlevel;$l++) $ident .= "&nbsp;&nbsp;";
-                
-                //récup le niveau de complexité
-                $res = mysql_query("SELECT valeur FROM ".$k['prefix']."misc WHERE type='complex' AND intitule = ".$t->id);
-                $complexite = mysql_fetch_row($res);
-                
-                
-                echo '<tr class="ligne'.($x%2).'">
-                        <td align="center">'.$t->id.'</td>
-                        <td align="center">'.$t->nlevel.'</td>
-                        <td width="50%">
-                            '.$ident.'<span class="editable_textarea" style="" id="title_'.$t->id.'">'.$t->title.'</span>
-                        </td>
-                        <td align="center">
-                            <span class="editable_select" id="complexite_'.$t->id.'">'.$mdp_complexite[$complexite[0]][1].'</span>
-                        </td>               
-                        <td align="center">
-                            <span class="editable_select" id="parent_'.$t->id.'">'.$data[0].'</span>
-                        </td>
-                        <td align="center">
-                            <img src="includes/images/blog__minus.png" onclick="supprimer_groupe(\''.$t->id.'\')" style="cursor:pointer;" />
-                        </td>';
-                        
-                        $data3 = mysql_fetch_row(mysql_query("SELECT bloquer_creation,bloquer_modification FROM ".$k['prefix']."nested_tree WHERE id = ".$t->id));
-                        echo '
-                        <td align="center">
-                            <input type="checkbox" id="cb_droit_'.$t->id.'" onchange="Changer_Droit_Complexite(\''.$t->id.'\',\'creation\')"', isset($data3[0]) && $data3[0]==1 ? 'checked' : '', ' />
-                        </td>
-                        <td align="center">
-                            <input type="checkbox" id="cb_droit_modif_'.$t->id.'" onchange="Changer_Droit_Complexite(\''.$t->id.'\',\'modification\')"', isset($data3[1]) && $data3[1]==1 ? 'checked' : '', ' />
-                        </td>
-                </tr>';
-                array_push($arr_ids,$t->id);
-                $x++;
             }
             echo '
             </tbody>
         </table>
+        <div style="font-size:11px;font-style:italic;margin-top:5px;">
+            <img src="includes/images/information.png" alt="" />&nbsp;'.$txt['info_click_to_edit'].'
+        </div>
         </div>
     </form>
 </div>';

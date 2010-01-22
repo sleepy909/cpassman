@@ -9,7 +9,7 @@
 ####################################################################################################
 
 session_start();
-include('../includes/settings.php'); 
+include('../includes/settings.php');  
 header("Content-type: text/html; charset=".$k['charset']); 
 
 // Construction de la requête en fonction du type de valeur
@@ -126,6 +126,7 @@ if ( !empty($_POST['type']) ){
                         
             //display dialogbox
             echo '$("#change_user_functions").dialog("open");';
+            echo '$("#div_loading").hide()';  //hide loading div
         break;
         
         case "change_user_functions";
@@ -157,12 +158,14 @@ if ( !empty($_POST['type']) ){
             $tree = new NestedTree($k['prefix'].'nested_tree', 'id', 'parent_id', 'title');
             $tree_desc = $tree->getDescendants();
             foreach($tree_desc as $t){
-                $text .= '<input type=\"checkbox\" id=\"cb_change_autgroup-'.$t->id.'\"';
-                $ident="";
-                for($y=1;$y<$t->nlevel;$y++) $ident .= "&nbsp;&nbsp;";
-                if ( in_array($t->id,$user) ) $text .= ' checked';
-                $text .= '>&nbsp;'.$ident.$t->title.'<br />';
-                $prev_level = $t->nlevel;
+                if ( in_array($t->id,$_SESSION['groupes_visibles']) ) {
+                    $text .= '<input type=\"checkbox\" id=\"cb_change_autgroup-'.$t->id.'\"';
+                    $ident="";
+                    for($y=1;$y<$t->nlevel;$y++) $ident .= "&nbsp;&nbsp;";
+                    if ( in_array($t->id,$user) ) $text .= ' checked';
+                    $text .= '>&nbsp;'.$ident.$t->title.'<br />';
+                    $prev_level = $t->nlevel;
+                }
             }
             
             echo 'document.getElementById("change_user_autgroups_list").innerHTML = "'.$text.'";';
@@ -170,6 +173,7 @@ if ( !empty($_POST['type']) ){
                         
             //display dialogbox
             echo '$("#change_user_autgroups").dialog("open");';
+            echo '$("#div_loading").hide()';  //hide loading div
         break;
         
         case "change_user_autgroups";
@@ -199,12 +203,14 @@ if ( !empty($_POST['type']) ){
             $tree = new NestedTree($k['prefix'].'nested_tree', 'id', 'parent_id', 'title');
             $tree_desc = $tree->getDescendants();
             foreach($tree_desc as $t){
-                $text .= '<input type=\"checkbox\" id=\"cb_change_forgroup-'.$t->id.'\"';
-                $ident="";
-                for($y=1;$y<$t->nlevel;$y++) $ident .= "&nbsp;&nbsp;";
-                if ( in_array($t->id,$user) ) $text .= ' checked';
-                $text .= '>&nbsp;'.$ident.$t->title.'<br />';
-                $prev_level = $t->nlevel;
+                if ( in_array($t->id,$_SESSION['groupes_visibles']) ) {
+                    $text .= '<input type=\"checkbox\" id=\"cb_change_forgroup-'.$t->id.'\"';
+                    $ident="";
+                    for($y=1;$y<$t->nlevel;$y++) $ident .= "&nbsp;&nbsp;";
+                    if ( in_array($t->id,$user) ) $text .= ' checked';
+                    $text .= '>&nbsp;'.$ident.$t->title.'<br />';
+                    $prev_level = $t->nlevel;
+                }
             }
             
             echo 'document.getElementById("change_user_forgroups_list").innerHTML = "'.$text.'";';
@@ -212,6 +218,7 @@ if ( !empty($_POST['type']) ){
                         
             //display dialogbox
             echo '$("#change_user_forgroups").dialog("open");';
+            echo '$("#div_loading").hide()';  //hide loading div
         break;
         
         case "change_user_forgroups";

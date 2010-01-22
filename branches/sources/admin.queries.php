@@ -65,7 +65,7 @@ switch($_POST['type'])
         //DELETE FILE
         unlink($local_file);
         
-        echo 'document.getElementById("CPM_infos").innerHTML = "<span style=\"font-weight:bold;\">'.$txt['admin_info'].'</span'.$text.'</ul>";';
+        echo 'document.getElementById("CPM_infos").innerHTML = "<span style=\"font-weight:bold;\">'.$txt['admin_info'].'</span>'.$text.'</ul>";';
     break;
 }
 ?>
