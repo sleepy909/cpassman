@@ -889,7 +889,7 @@ echo '
         
         //Ask for SaltKey
         if ( salt_key_required == 1 ){
-            sk = prompt("<?php echo $txt['personal_salt_key'];?>","<?php echo $_SESSION['salt_key'];?>");
+            sk = prompt("<?php echo $txt['personal_salt_key'];?>","<?php if (isset($_SESSION['salt_key'])) echo $_SESSION['salt_key'];?>");
             if ( sk == null || sk == "" ) post = "nok";
             data = data+
                     "&salt_key_required="+salt_key_required + 
