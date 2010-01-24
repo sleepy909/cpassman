@@ -20,10 +20,7 @@ $html_headers = '
 <script language="JavaScript" type="text/javascript" src="includes/js/jquery.tooltip.js"></script>
 <link rel="stylesheet" href="includes/css/jquery.tooltip.css" type="text/css" />
 
-<script language="JavaScript" type="text/javascript" src="includes/js/pwd_strength.js"></script>        
-
-<script type="text/javascript" src="includes/js/fg-menu/fg.menu.js"></script>    
-<link type="text/css" href="includes/js/fg-menu/fg.menu.css" media="screen" rel="stylesheet" />';
+<script language="JavaScript" type="text/javascript" src="includes/js/pwd_strength.js"></script>';
 
 
 //For ITEMS page, load specific CSS files for treeview
@@ -77,7 +74,7 @@ $html_headers .= '
     
     $(function() {
         //TOOLTIPS
-        $("#main *, #footer *, #icon_last_items *").tooltip({
+        $("#main *, #footer *, #icon_last_items *, #top *").tooltip({
             delay: 0,
             showURL: false
         });
@@ -115,16 +112,14 @@ $html_headers .= '
             }
         });
         
-        //MENU
-            $(".fg-button").hover(
-                function(){ $(this).removeClass("ui-state-default").addClass("ui-state-focus"); },
-                function(){ $(this).removeClass("ui-state-focus").addClass("ui-state-default"); }
-            );
-            $("#cpm_menu").menu({
-                content: $("#menu_content").html(),
-                flyOut: true,
-                crossSpeed: 50
-            });
+        $(".button_menu").hover(
+            function(){ 
+                $(this).addClass("ui-state-hover"); 
+            },
+            function(){ 
+                $(this).removeClass("ui-state-hover"); 
+            }
+        )
     });';
     
 if ( !isset($_GET['page']) ){

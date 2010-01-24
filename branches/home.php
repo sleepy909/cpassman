@@ -15,7 +15,7 @@ echo '
             //Check if password is valid
             if ( empty($_SESSION['last_pw_change']) OR $_SESSION['validite_pw'] == false ){
                 echo '<b>'.$txt['index_change_pw'].'</b>
-                <div style="margin:5px;border:1px solid #FF0000;background-color:#FFFFC0;padding:4px;width:300px;text-align:center;"  class="ui-state-highlight ui-corner-all" id="">
+                <div style="margin:5px;border:1px solid #FF0000;background-color:#FFFFC0;padding:4px;width:300px;text-align:center;"  class="ui-state-highlight ui-corner-all">
                     <table>
                         <tr><td>'.$txt['index_new_pw'].' :</td><td><input type="password" size="10" name="new_pw" id="new_pw" onkeyup="runPassword(this.value, \'mypassword\', \''.$_SESSION['user_language'].'\');" />
                             <div style="width: 100px; display:inline;"> 
@@ -30,7 +30,7 @@ echo '
                 </div>';
             }elseif ( !empty($_SESSION['derniere_connexion']) ){                 
                 //Last items created block
-                if ( isset($_SESSION['show_last_items']) && $_SESSION['show_last_items'] == 1 ){
+                if ( isset($_SESSION['show_last_items']) && $_SESSION['show_last_items'] == 1 && !empty($_SESSION['groupes_visibles_list']) ){
                     echo '
                     <div style="position:relative;float:right;margin-top:-25px;padding:4px;width:250px;" class="ui-state-highlight ui-corner-all">
                         <span class="ui-icon ui-icon-comment" style="float: left; margin-right: .3em;">&nbsp;</span>

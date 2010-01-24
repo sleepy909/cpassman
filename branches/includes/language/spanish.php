@@ -28,6 +28,9 @@ $txt['personal_salt_key'] = "Su palabra codificadora personal";
 $txt['personal_salt_key_info'] = "Esta palabra codificadora se utilizara para encriptar y desencriptar su contraseña.<br />No se almacena en base de datos, asi que usted es la unica persona que la sabe.<br />¡Asi que no la pierda ni olvide!";
 $txt['personal_salt_key_empty'] = "¡No se ha introducido la palabra codificadora!"; 
 $txt['info_click_to_edit'] = "Click on a cell to edit its value";
+$txt['error_html_codes'] = "Some text contains HTML codes! This is not allowed.";
+$txt['error_group_exist'] = "This group already exists!";
+$txt['not_defined'] = "Not defined";
 //----
 
 $txt['index_session_ending'] = "Su sesion terminara en menos de 1 minuto.";

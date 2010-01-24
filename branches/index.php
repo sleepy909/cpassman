@@ -67,7 +67,13 @@ if ( isset($_SESSION['user_id']) && ( empty($_SESSION['fin_session']) || $_SESSI
     $_SESSION = array();
     
     //Redirection
-    header("Location:index.php");
+    //header("Location:index.php");
+    echo '
+    <script language="javascript" type="text/javascript">
+    <!--
+    document.main_form.submit();
+    -->
+    </script>';
 }  
 
 // Load links, css and javascripts
@@ -89,70 +95,74 @@ include("load.php");
     echo '
     <div id="top">
         <div id="logo"><img src="includes/images/logo.png" alt="" /></div>
+        <div id="title">'.$k['tool_name'].'</div>';
         
-        <div id="title">'.$k['tool_name'].'</div>',
-        
-        isset($_SESSION['login']) ? '
-            <div style="float:left;margin-left:20px; margin-top:3px;">
-                <a tabindex="0" href="#menu_content" class="fg-button fg-button-icon-right ui-widget ui-state-default ui-corner-all" id="cpm_menu"><span class="ui-icon ui-icon-triangle-1-s">&nbsp;</span>Menu</a>
-            </div>
-            <div style="float:left;font-size:12px;margin-left:20px;margin-top:6px;">
+        //Display menu
+        if ( isset($_SESSION['login']) ){
+            echo '
+        <div style="float:left;">
+            <div style="font-size:12px;margin-left:40px;margin-top:-5px;width:100%;">
                 <b>'.$_SESSION['login'].'</b> - '.$txt['index_expiration_in'].' <div style="display:inline;" id="countdown"></div>
-                &nbsp;<img src="includes/images/clock__plus.png" style="cursor:pointer;" onclick="AugmenterSession()" title="'.$txt['index_add_one_hour'].'" />
-            </div>' : '','
-                   
+            </div>
+            <div style="margin-left:40px; margin-top:3px;width:100%;">
+                    <button class="button_menu ui-button ui-state-default ui-corner-all" title="'.$txt['home'].'" onclick="MenuAction(\'\');">
+                        <img src="includes/images/home.png" alt="" />
+                    </button>
+                    <button class="button_menu ui-button ui-state-default ui-corner-all" style="margin-left:5px;" title="'.$txt['pw'].'" onclick="MenuAction(\'items\');">
+                        <img src="includes/images/menu_key.png" alt="" />
+                    </button>
+                    <button class="button_menu ui-button ui-state-default ui-corner-all" style="margin-left:5px;" title="'.$txt['find'].'" onclick="MenuAction(\'find\');">
+                        <img src="includes/images/binocular.png" alt="" />
+                    </button>';
+                    // Favourites menu
+                    if ( isset($_SESSION['favourites']) && count($_SESSION['favourites']) > 0 && $_SESSION['enable_favourites'] == 1 )
+                        echo '
+                    <button class="button_menu ui-button ui-state-default ui-corner-all" style="margin-left:5px;" title="'.$txt['my_favourites'].'" onclick="MenuAction(\'favourites\');">
+                        <img src="includes/images/bookmark.png" alt="" />
+                    </button>';
+                    //Admin menu
+                    if ( $_SESSION['user_admin'] == 1 || $_SESSION['user_gestionnaire'] == 1 )
+                        echo '
+                    <button class="button_menu ui-button ui-state-default ui-corner-all" style="margin-left:10px;" title="'.$txt['admin_main'].'" onclick="MenuAction(\'administration\');">
+                        <img src="includes/images/menu_informations.png" alt="" />
+                    </button>
+                    <button class="button_menu ui-button ui-state-default ui-corner-all" style="margin-left:1px;" title="'.$txt['admin_settings'].'" onclick="MenuAction(\'manage_settings\');">
+                        <img src="includes/images/menu_settings.png" alt="" />
+                    </button>
+                    <button class="button_menu ui-button ui-state-default ui-corner-all" style="margin-left:1px;" title="'.$txt['admin_groups'].'" onclick="MenuAction(\'manage_groups\');">
+                        <img src="includes/images/menu_groups.png" alt="" />
+                    </button>
+                    <button class="button_menu ui-button ui-state-default ui-corner-all" style="margin-left:1px;" title="'.$txt['admin_functions'].'" onclick="MenuAction(\'manage_functions\');">
+                        <img src="includes/images/menu_functions.png" alt="" />
+                    </button>
+                    <button class="button_menu ui-button ui-state-default ui-corner-all" style="margin-left:1px;" title="'.$txt['admin_users'].'" onclick="MenuAction(\'manage_users\');">
+                        <img src="includes/images/menu_user.png" alt="" />
+                    </button>
+                    <button class="button_menu ui-button ui-state-default ui-corner-all" style="margin-left:1px;" title="'.$txt['admin_views'].'" onclick="MenuAction(\'manage_views\');">
+                        <img src="includes/images/menu_views.png" alt="" />
+                    </button>
+                    &nbsp;&nbsp;';
+                    //1 hour
+                    echo '
+                    <button class="button_menu ui-button ui-state-default ui-corner-all" style="margin-left:5px;" title="'.$txt['index_add_one_hour'].'" onclick="AugmenterSession();">
+                        <img src="includes/images/clock__plus.png" alt="" />
+                    </button>';
+                    //Disconnect menu
+                    echo '
+                    <button class="button_menu ui-button ui-state-default ui-corner-all" style="margin-left:5px;" title="'.$txt['disconnect'].'" onclick="MenuAction(\'deconnexion\');">
+                        <img src="includes/images/door-open.png" alt="" />
+                    </button>
+            </div>
+        </div>';
+        }
+        
+        //Display languahe menu
+        echo '          
         <div style="float:right;margin-left:30px;margin:auto 0 auto 0;">
             <div style="margin-bottom:2px;"><img src="includes/images/flag_fr.png" style="cursor:pointer;" onclick="ChangeLanguage(\'french\')" alt="" /></div>
             <div style="margin-bottom:2px;"><img src="includes/images/flag_us.png" style="cursor:pointer;" onclick="ChangeLanguage(\'english\')" alt="" /></div>
             <div style=""><img src="includes/images/flag_es.png" style="cursor:pointer;" onclick="ChangeLanguage(\'spanish\')" alt="" /></div>
         </div>
-    </div>';
-    
-    ## MENU ##
-    echo '    
-    <div id="menu_content" style="display:none;">
-        <ul>
-            <li><a href="#" onclick="MenuAction(\'\');">'.$txt['home'].'</a></li>';
-            if ($_SESSION['validite_pw'] == true ) {
-                echo '
-                <li><a href="#" onclick="MenuAction(\'items\');">'.$txt['pw'].'</a>
-                    <ul>
-                        <li><a href="#" onclick="MenuAction(\'items\');">'.$txt['show'].'</a></li>
-                        <li><a href="#" onclick="MenuAction(\'find\');">'.$txt['find'].'</a></li>
-                    </ul>
-                </li>';
-                if ($_SESSION['user_admin'] == 1 || $_SESSION['user_gestionnaire'] == 1) 
-                    echo '
-                <li><a href="#" onclick="MenuAction(\'administration\');" class="accessible">'.$txt['admin'].'</a>
-                    <ul>
-                        <li><a href="#" onclick="MenuAction(\'administration\');">'.$txt['admin_main'].'</a></li>
-                        <li><a href="#" onclick="MenuAction(\'manage_settings\');">'.$txt['admin_settings'].'</a></li>
-                        <li><a href="#" onclick="MenuAction(\'manage_groups\');">'.$txt['admin_groups'].'</a></li>
-                        <li><a href="#" onclick="MenuAction(\'manage_functions\');">'.$txt['admin_functions'].'</a></li>
-                        <li><a href="#" onclick="MenuAction(\'manage_users\');">'.$txt['admin_users'].'</a></li>
-                        <li><a href="#" onclick="MenuAction(\'manage_views\');">'.$txt['admin_views'].'</a></li>
-                    </ul>
-                </li>';
-                //add Favourites
-                if ( isset($_SESSION['favourites']) && count($_SESSION['favourites']) > 0 && $_SESSION['enable_favourites'] == 1 ){
-                    echo '
-                <li><a href="#" onclick="MenuAction(\'items\');">'.$txt['my_favourites'].'</a>
-                    <ul>';
-                        foreach($_SESSION['favourites_tab'] as $fav){
-                            if ( !empty($fav) )
-                                echo 
-                        '<li><a href="#" onclick="javascript:window.location.href = \''.$fav['url'].'\'">'.$fav['label'].'</a></li>';
-                        }
-                        echo '
-                    </ul>
-                </li>';
-                }
-            }
-            echo '
-            <li>
-                <a href="#" onclick="MenuAction(\'deconnexion\');">'.$txt['disconnect'].'</a>
-            </li>
-        </ul>
     </div>';
     
     ## LAST SEEN ##
@@ -198,6 +208,9 @@ include("load.php");
         }else if ( $_GET['page'] == "find"){
             //Show page for items findind
             include("find.php");
+        }else if ( $_GET['page'] == "favourites"){
+            //Show page for user favourites
+            include("favourites.php");
         }else if ( in_array($_GET['page'],array_keys($mng_pages)) ){
             //Define if user is allowed to see management pages
             if ($_SESSION['user_admin'] == 1 || $_SESSION['user_gestionnaire'] == 1) 

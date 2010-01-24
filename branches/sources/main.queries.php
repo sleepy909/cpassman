@@ -38,14 +38,11 @@ switch($_POST['type'])
             $_SESSION['validite_pw'] = true;
             
             $sql="UPDATE ".$k['prefix']."users SET pw = '".md5($_POST['new_pw'])."', last_pw_change = '".mktime(0,0,0,date('m'),date('d'),date('y'))."', last_pw = '".implode(';',$tmp)."' WHERE id = ".$_SESSION['user_id'];
-            mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());            
+            mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error()); 
             
-            echo 'document.getElementById(\'new_pw\').value = "";';
-            echo 'document.getElementById(\'new_pw2\').value = "";';
-            echo 'document.getElementById(\'div_changer_mdp\').style.display = "none";';
-            echo '$("#change_pwd_error").addClass("");'; 
-            echo 'document.getElementById("change_pwd_error").innerHTML = \''.$txt['pw_changed'].'\';';
-            echo 'document.getElementById("form_pw").submit();';
+            //reload page
+            //echo 'document.location.href="index.php";';
+            echo 'document.main_form.submit();';
         }
         
     break;
@@ -87,7 +84,8 @@ switch($_POST['type'])
                 $_SESSION['last_pw'] = $data['last_pw'];
                 $_SESSION['cle_session'] = $key;
                 $_SESSION['fin_session'] = time() + $_POST['duree_session'] * 60;
-                $_SESSION['derniere_connexion'] = $data['last_connexion'];
+                if ( empty($data['last_connexion']) ) $_SESSION['derniere_connexion'] = mktime(date('h'),date('m'),date('s'),date('m'),date('d'),date('y'));
+                else $_SESSION['derniere_connexion'] = $data['last_connexion'];
                 if ( !empty($data['latest_items']) ) $_SESSION['latest_items'] = explode(';',$data['latest_items']);
                 else $_SESSION['latest_items'] = array();
                 if ( !empty($data['favourites']) ) $_SESSION['favourites'] = explode(';',$data['favourites']);
@@ -116,18 +114,6 @@ switch($_POST['type'])
                     $_SESSION['latest_items_tab'][$item] = array(
                         'label'=>$data['label'],
                         'url'=>'index.php?page=items&amp;group='.$data['id_tree'].'&amp;id='.$item
-                    );
-                }
-            }
-            
-            //Get favourites
-            $_SESSION['favourites_tab'][] = "";
-            foreach($_SESSION['favourites'] as $fav){
-                if ( !empty($fav) ){
-                    $data = mysql_fetch_array(mysql_query("SELECT label,id_tree FROM ".$k['prefix']."items WHERE id = ".$fav));
-                    $_SESSION['favourites_tab'][$fav] = array(
-                        'label'=>$data['label'],
-                        'url'=>'index.php?page=items&amp;group='.$data['id_tree'].'&amp;id='.$fav
                     );
                 }
             }

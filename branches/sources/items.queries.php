@@ -20,12 +20,23 @@ switch($_POST['type'])
     ### CASE ####
     ### creating a new ITEM
     case "new_item":
+        //Check if pw doesn't contains html codes
+//        if (preg_match_all("|<[^>]+>(.*)</[^>]+>|U",$_POST['pw'],$out)) $html_codes = true;
+//        else $html_codes = false;
+        
         //check if element doesn't already exist
         $res = mysql_query("SELECT COUNT(*) FROM ".$k['prefix']."items WHERE label = '".mysql_real_escape_string(stripslashes(($_POST['label'])))."' AND inactif=0");
         $data = mysql_fetch_row($res);
-        if ( $data[0] != 0 ) 
-            echo 'alert(\''.$txt['error_item_exists'].'\');';
-        else {
+        if ( $data[0] != 0 ){
+            echo '$("#div_formulaire_saisi").dialog("open");';
+            echo 'document.getElementById("new_show_error").innerHTML = "'.$txt['error_item_exists'].'";';
+            echo '$("#new_show_error").show();';
+//        }else if ( $html_codes == true ) {
+//            echo '$("#div_formulaire_saisi").dialog("open");';
+//            echo 'document.getElementById("new_show_error").innerHTML = "'.$txt['error_item_html_codes'].'";';
+//            echo '$("#new_show_error").show();';
+        }else{    
+            echo '$("#new_show_error").hide();';       
             $resticted_to = $_POST['restricted_to'];
             $personal = $_POST['personnel'];
             //encrypt PW
@@ -55,7 +66,7 @@ switch($_POST['type'])
                 id_item = '".$new_id."',
                 date = '".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."',
                 id_user = '".$_SESSION['user_id']."',
-                action = '".$txt['at_creation']."'
+                action = 'at_creation'
             ");
             //Announce by email?
             if ( $_POST['annonce'] == 1 ){
@@ -119,16 +130,16 @@ switch($_POST['type'])
         mysql_query($sql) or die($sql.'  =>  '.mysql_error());
         
         //Identify differencies
-        if ( $data['label'] != $_POST['label'] ) mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','".$txt['at_modification']."','".$txt['at_label']." : ".$data['label']." => ".mysql_real_escape_string(stripslashes(($_POST['label'])))."')");
-        if ( $data['login'] != $_POST['login'] ) mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','".$txt['at_modification']."','".$txt['at_login']." : ".$data['login']." => ".mysql_real_escape_string(stripslashes(($_POST['login'])))."')");
-        if ( $data['url'] != $_POST['url'] ) mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','".$txt['at_modification']."','".$txt['at_url']." : ".$data['url']." => ".mysql_real_escape_string(stripslashes($_POST['url']))."')");
-        if ( $data['description'] != $_POST['description'] ) mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','".$txt['at_modification']."','".$txt['at_description']."')");
-        if ( $data['perso'] != $personal ) mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','".$txt['at_modification']."','".$txt['at_personnel']." : ".$data['perso']." => ".$personal."')");
-        if ( $data['id_tree'] != mysql_real_escape_string($_POST['categorie']) ) mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','".$txt['at_modification']."','".$txt['at_category']." : ".$data['id_tree']." => ".mysql_real_escape_string($_POST['categorie'])."')");
-        if ( $data['pw'] != $pw_recu ) mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','".$txt['at_modification']."','".$txt['at_pw']."')");
+        if ( $data['label'] != $_POST['label'] ) mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','at_modification','at_label : ".$data['label']." => ".mysql_real_escape_string(stripslashes(($_POST['label'])))."')");
+        if ( $data['login'] != $_POST['login'] ) mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','at_modification','at_login : ".$data['login']." => ".mysql_real_escape_string(stripslashes(($_POST['login'])))."')");
+        if ( $data['url'] != $_POST['url'] ) mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','at_modification','at_url : ".$data['url']." => ".mysql_real_escape_string(stripslashes($_POST['url']))."')");
+        if ( $data['description'] != $_POST['description'] ) mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','at_modification','at_description')");
+        if ( $data['perso'] != $personal ) mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','at_modification','at_personnel : ".$data['perso']." => ".$personal."')");
+        if ( $data['id_tree'] != mysql_real_escape_string($_POST['categorie']) ) mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','at_modification','at_category : ".$data['id_tree']." => ".mysql_real_escape_string($_POST['categorie'])."')");
+        if ( $data['pw'] != $pw_recu ) mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','at_modification','at_pw')");
         
         //Reload new values
-        $sql = "SELECT * FROM ".$k['prefix']."items i, ".$k['prefix']."log_items l WHERE i.id=".$_POST['id']." AND l.id_item = i.id AND l.action = '".$txt['at_creation']."'";
+        $sql = "SELECT * FROM ".$k['prefix']."items i, ".$k['prefix']."log_items l WHERE i.id=".$_POST['id']." AND l.id_item = i.id AND l.action = 'at_creation'";
         $res = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
         $data_item = mysql_fetch_array($res);
         $historique = "";
@@ -137,9 +148,9 @@ switch($_POST['type'])
             $res2 = mysql_query("SELECT login FROM ".$k['prefix']."users WHERE id=".$data1['id_user']);
             $data2 = mysql_fetch_row($res2);
         
-            if ( empty($historique) ) $historique = date("d/m/Y H:i:s",$data1['date'])." - ". $data2[0] ." - ".$data1['action']." - ".$data1['raison'];
+            if ( empty($historique) ) $historique = date("d/m/Y H:i:s",$data1['date'])." - ". $data2[0] ." - ".$txt[$data1['action']]." - ".(!empty($data1['raison']) ?$txt[$data1['raison']]:'');
             else
-             $historique .= "<br />".date("d/m/Y H:i:s",$data1['date'])." - ". $data2[0] ." - ".$data1['action']." - ".$data1['raison']; 
+             $historique .= "<br />".date("d/m/Y H:i:s",$data1['date'])." - ". $data2[0] ." - ".$txt[$data1['action']]." - ".(!empty($data1['raison']) ?$txt[$data1['raison']]:''); 
         }
         
         //Get list of restriction
@@ -160,8 +171,8 @@ switch($_POST['type'])
             $_SESSION['salt_key'] = $_POST['salt_key'];
         }
             
-        echo 'document.getElementById(\'id_label\').innerHTML = "'.$data_item['label'].'";';
-        echo 'document.getElementById(\'id_pw\').innerHTML = "'.htmlentities($pw,ENT_QUOTES).'";';
+        echo '$(\'#id_label\').text("'.$data_item['label'].'");';
+        echo '$(\'#id_pw\').text("'.$pw.'");';
         echo 'document.getElementById(\'id_url\').innerHTML = "'.$data_item['url'].'";';
         echo 'document.getElementById(\'id_desc\').innerHTML = "'.str_replace('\n','<br>',(mysql_real_escape_string($data_item['description']))).'";';
         echo 'document.getElementById(\'id_login\').innerHTML = "'.$data_item['login'].'";';
@@ -170,7 +181,7 @@ switch($_POST['type'])
         
         //Fill in hidden fields
         echo 'document.getElementById(\'hid_label\').value = "'.$data_item['label'].'";';
-        echo 'document.getElementById(\'hid_pw\').value = "'.htmlentities($pw,ENT_QUOTES).'";';
+        echo 'document.getElementById(\'hid_pw\').value = "'.$pw.'";';
         echo 'document.getElementById(\'hid_url\').value = "'.$data_item['url'].'";';
         echo 'document.getElementById(\'hid_desc\').value = "'.mysql_real_escape_string($data_item['description']).'";';
         echo 'document.getElementById(\'hid_login\').value = "'.$data_item['login'].'";';
@@ -220,7 +231,7 @@ switch($_POST['type'])
         echo 'document.getElementById(\'selected_items\').value = "'.$_POST['id'].'";';
         
         //charger les données de ce mdp
-        $sql = "SELECT * FROM ".$k['prefix']."items i, ".$k['prefix']."log_items l WHERE i.id=".$_POST['id']." AND l.id_item = i.id AND l.action = '".$txt['at_creation']."'";
+        $sql = "SELECT * FROM ".$k['prefix']."items i, ".$k['prefix']."log_items l WHERE i.id=".$_POST['id']." AND l.id_item = i.id AND l.action = 'at_creation'";
         $res = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
         $data_item = mysql_fetch_array($res);
         
@@ -230,7 +241,7 @@ switch($_POST['type'])
         $restricted_to = explode(';',$data_item['restricted_to']);
         if ( in_array($_SESSION['user_id'],$restricted_to) ) $restriction_active = false;
         if ( empty($data_item['restricted_to']) ) $restriction_active = false;
-            
+
         //Uncrypt PW
         if ( isset($_POST['salt_key_required']) && $_POST['salt_key_required'] == 1 ){
             if ( empty($_POST['salt_key']) ) $restriction_active = true;
@@ -242,9 +253,9 @@ switch($_POST['type'])
             $pw = decrypt($data_item['pw']);
         }
         
-        if ( ( in_array($access[0],$_SESSION['groupes_visibles']) OR $_SESSION['is_admin'] == 1 ) 
-            AND  ( $data_item['perso']==0 OR ($data_item['perso']==1 AND $data_item['id_user'] == $_SESSION['user_id'] ) )  
-            AND $restriction_active == false
+        if ( ( in_array($access[0],$_SESSION['groupes_visibles']) || $_SESSION['is_admin'] == 1 ) 
+            &&  ( $data_item['perso']==0 || ($data_item['perso']==1 && $data_item['id_user'] == $_SESSION['user_id'] ) )  
+            && $restriction_active == false
         ){    
             $historique = "";
             $res1 = mysql_query("SELECT * FROM ".$k['prefix']."log_items WHERE id_item=".$_POST['id']);
@@ -252,9 +263,9 @@ switch($_POST['type'])
                 $res2 = mysql_query("SELECT login FROM ".$k['prefix']."users WHERE id=".$data1['id_user']);
                 $data2 = mysql_fetch_row($res2);
             
-                if ( empty($historique) ) $historique = date("d/m/Y H:i:s",$data1['date'])." - ". $data2[0] ." - ".$data1['action']." - ".$data1['raison'];
+                if ( empty($historique) ) $historique = date("d/m/Y H:i:s",$data1['date'])." - ". $data2[0] ." - ".$txt[$data1['action']]." - ".(!empty($data1['raison']) ? $txt[$data1['raison']] : '');
                 else
-                 $historique .= "<br />".date("d/m/Y H:i:s",$data1['date'])." - ". $data2[0] ." - ".$data1['action']." - ".$data1['raison']; 
+                 $historique .= "<br />".date("d/m/Y H:i:s",$data1['date'])." - ". $data2[0] ." - ".$txt[$data1['action']]." - ".(!empty($data1['raison']) ?$txt[$data1['raison']]:''); 
             }
             
             //recup liste de restriction
@@ -271,8 +282,9 @@ switch($_POST['type'])
             echo 'document.getElementById(\'item_details_ok\').style.display = "";';
             echo 'document.getElementById(\'fileclass'.$_POST['id'].'\').className = "fileselected";';
             
-            echo 'document.getElementById(\'id_label\').innerHTML = "'.$data_item['label'].'";';
-            echo 'document.getElementById(\'id_pw\').innerHTML = \''.addslashes($pw).'\';';
+            echo '$(\'#id_label\').text("'.$data_item['label'].'");';
+            //echo 'document.getElementById(\'id_pw\').wrt = \''.addslashes($pw).'\';';
+            echo '$(\'#id_pw\').text(\''.addslashes($pw).'\');';
             if ( substr($data_item['url'],0,7) == "http://" || substr($data_item['url'],0,8) == "https://" ) $lien = $data_item['url'];
             else $lien = "http://".$data_item['url'];
             echo 'document.getElementById(\'id_url\').innerHTML = "'.$data_item['url'].'',!empty($data_item['url'])?'&nbsp;<a href=\''. $lien.'\' target=\'_blank\'><img src=\'includes/images/arrow_skip.png\' style=\'border:0px;\' title=\'Ouvrir la page\'></a>':'','";';
@@ -373,7 +385,7 @@ switch($_POST['type'])
         $sql = "UPDATE ".$k['prefix']."items SET inactif = '1' WHERE id = ".$_POST['id'];
         mysql_query($sql) or die($sql.'  =>  '.mysql_error());
         //log
-        mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','".$txt['at_delete']."','')");
+        mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$_POST['id']."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','at_delete','')");
         //recharger
         echo 'window.location.href = "index.php?page=items&group='.$_POST['groupe'].'";';
     break;
@@ -381,12 +393,23 @@ switch($_POST['type'])
     #############
     ### CASE ####
     ### Create a new Group
-    case "new_rep":        
+    case "new_rep":  
+        //Check if title doesn't contains html codes
+        if (preg_match_all("|<[^>]+>(.*)</[^>]+>|U",$_POST['title'],$out)) $html_codes = true;
+        else $html_codes = false;     
+         
         $res = mysql_query("SELECT COUNT(*) FROM ".$k['prefix']."nested_tree WHERE title = '".mysql_real_escape_string(stripslashes(($_POST['title'])))."'");
         $data = mysql_fetch_row($res);
-        if ( $data[0] != 0 ) 
+        if ( $data[0] != 0 ){
             echo 'alert(\'Ce groupe existe déjà !\');';
-        else {
+            echo '$("#div_ajout_rep").dialog("open");';
+            echo 'document.getElementById("new_rep_show_error").innerHTML = "'.$txt['error_group_exist'].'";';
+            echo '$("#new_rep_show_error").show();';
+        }else if ( $html_codes == true ) {
+            echo '$("#div_ajout_rep").dialog("open");';
+            echo 'document.getElementById("new_rep_show_error").innerHTML = "'.$txt['error_html_codes'].'";';
+            echo '$("#new_rep_show_error").show();';
+        }else {
             //Check if group is a personnal folder
             $data = mysql_fetch_row(mysql_query("SELECT personal_folder FROM ".$k['prefix']."nested_tree WHERE id = ".$_POST['groupe']));
             
@@ -416,18 +439,28 @@ switch($_POST['type'])
     #############
     ### CASE ####
     ### Update a Group
-    case "update_rep":    
-        $sql = "UPDATE ".$k['prefix']."nested_tree SET title = '".mysql_real_escape_string(stripslashes(($_POST['title'])))."' WHERE id='".$_POST['groupe']."'";
-        mysql_query($sql) or die($sql.'  =>  '.mysql_error());
+    case "update_rep":   
+        //Check if title doesn't contains html codes
+        if (preg_match_all("|<[^>]+>(.*)</[^>]+>|U",$_POST['title'],$out)) $html_codes = true;
+        else $html_codes = false;  
         
-        //editer complexité
-        mysql_query("UPDATE ".$k['prefix']."misc SET valeur = '".$_POST['complexite']."' WHERE intitule = '".$_POST['groupe']."' AND type = 'complex'");
-        
-        require_once('NestedTree.class.php');
-        $tree = new NestedTree($k['prefix'].'nested_tree', 'id', 'parent_id', 'title');
-        $tree->rebuild();
-        
-        echo 'window.location.href = "index.php?page=items";';
+        if ( $html_codes == true ) {
+            echo '$("#div_editer_rep").dialog("open");';
+            echo 'document.getElementById("edit_rep_show_error").innerHTML = "'.$txt['error_html_codes'].'";';
+            echo '$("#edit_rep_show_error").show();';
+        }else{         
+            $sql = "UPDATE ".$k['prefix']."nested_tree SET title = '".mysql_real_escape_string(stripslashes(($_POST['title'])))."' WHERE id='".$_POST['groupe']."'";
+            mysql_query($sql) or die($sql.'  =>  '.mysql_error());
+            
+            //editer complexité
+            mysql_query("UPDATE ".$k['prefix']."misc SET valeur = '".$_POST['complexite']."' WHERE intitule = '".$_POST['groupe']."' AND type = 'complex'");
+            
+            require_once('NestedTree.class.php');
+            $tree = new NestedTree($k['prefix'].'nested_tree', 'id', 'parent_id', 'title');
+            $tree->rebuild();
+            
+            echo 'window.location.href = "index.php?page=items";';
+        }
     break;
     
     #############
@@ -449,7 +482,7 @@ switch($_POST['type'])
                     $sql = "UPDATE ".$k['prefix']."items SET inactif = '1' WHERE id = ".$data[0];
                     mysql_query($sql) or die($sql.'  =>  '.mysql_error());
                     //log
-                    mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$data[0]."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','".$txt['at_delete']."','')");
+                    mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$data[0]."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','at_delete','')");
                 }
             } 
         }else{
@@ -460,7 +493,7 @@ switch($_POST['type'])
                 $sql = "UPDATE ".$k['prefix']."items SET inactif = '1' WHERE id = ".$data[0];
                     mysql_query($sql) or die($sql.'  =>  '.mysql_error());
                     //log
-                    mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$data[0]."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','".$txt['at_delete']."','')");
+                    mysql_query("INSERT INTO ".$k['prefix']."log_items VALUES ('".$data[0]."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','at_delete','')");
             }
         }
         echo 'window.location.href = "index.php?page=items";';
@@ -502,9 +535,11 @@ switch($_POST['type'])
                 }else if ( $data1['perso'] == 1 || !empty($data1['restricted_to']) ){
                     $perso = '<img src="includes/images/tag__exclamation.png">';
                     $action = 'AfficherDetailsItem(\''.$data1['id'].'\')';
+                    echo 'document.getElementById("recherche_group_pf").value = "";';    //reinit in case of not personal group
                 }else{
                     $perso = '<img src="includes/images/tag.png">';
                     $action = 'AfficherDetailsItem(\''.$data1['id'].'\')';
+                    echo 'document.getElementById("recherche_group_pf").value = "";';    //reinit in case of not personal group
                 }
                 $html .= '<li class="item">'.$perso.'&nbsp;<a id="fileclass'.$data1['id'].'" class="file" onclick="'.$action.'">'.$data1['label'].'</a></li>';            
             }
@@ -551,7 +586,7 @@ switch($_POST['type'])
             else
                 echo 'document.getElementById("new_item_salt_key").style.display = "none";';
         }
-        echo 'document.getElementById("'.$div.'").innerHTML = "<b>'.$mdp_complexite[$data[0]][1].'</b>";';
+        echo 'document.getElementById("'.$div.'").innerHTML = "<b>', empty($data[0]) ? $txt['not_defined'] : $mdp_complexite[$data[0]][1], '</b>";';
                 
         //afficher la visibilité
         $visibilite = "";

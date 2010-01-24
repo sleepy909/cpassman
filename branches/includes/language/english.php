@@ -28,6 +28,9 @@ $txt['personal_salt_key'] = "Your personnal salt key";
 $txt['personal_salt_key_info'] = "This salt key will be used to crypt and encrypt your password.<br />It is not stored in database, you are the only person who knows it.<br />So don't loose it!";
 $txt['personal_salt_key_empty'] = "Personal salt key has not been entered!";
 $txt['info_click_to_edit'] = "Click on a cell to edit its value";
+$txt['error_html_codes'] = "Some text contains HTML codes! This is not allowed.";
+$txt['error_group_exist'] = "This group already exists!";
+$txt['not_defined'] = "Not defined";
 //----
 
 $txt['index_session_ending'] = "Your session will end in less than 1 minute."; 
@@ -42,7 +45,7 @@ $txt['index_refresh_page'] = "Refresh page";
 $txt['index_bas_pw'] = "Bad password for this account!"; 
 $txt['home'] = "Home"; 
 $txt['index_expiration_in'] = "session expiration in"; 
-$txt['index_add_one_hour'] = "Increment with 1 hour"; 
+$txt['index_add_one_hour'] = "Increment session with 1 hour"; 
 $txt['index_change_pw'] = "Your password must be changed!"; 
 $txt['index_change_pw_button'] = "Change"; 
 $txt['index_change_pw_confirmation'] = "Confirm"; 

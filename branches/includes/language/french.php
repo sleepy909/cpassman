@@ -28,6 +28,9 @@ $txt['personal_salt_key'] = "Votre clé personnel";
 $txt['personal_salt_key_info'] = "Cette clé sera utilisée pour crypter et décrypter votre mot de passe.<br />Elle n'est pas sauvée en base de données et elle est seule connue de vous.<br />Ne la perdait surtout pas !";
 $txt['personal_salt_key_empty'] = "Clé non saisie !";
 $txt['info_click_to_edit'] = "Cliquer sur une cellule pour en éditer le contenu";
+$txt['error_html_codes'] = "Du texte contient du code html. Ceci n\'est pas une bonne idée !";
+$txt['error_group_exist'] = "Ce groupe existe déjà !!";
+$txt['not_defined'] = "Non défini";
 //----
 
 $txt['index_session_ending'] = "Votre session expire dans 1 minute."; 

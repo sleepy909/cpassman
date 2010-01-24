@@ -293,6 +293,7 @@ echo '
 <div id="div_formulaire_saisi" style="display:none;"> 
     <form method="post" name="new_item" action="">
         <div id="afficher_visibilite" style="text-align:center;margin-bottom:6px;"></div>
+        <div id="new_show_error" style="text-align:center;margin:2px;display:none;" class="ui-state-error ui-corner-all"></div>
         <table>
             <tr>
                 <td>'.$txt['label'].' : </td>
@@ -499,6 +500,7 @@ echo '
 //Formulaire AJOUT REPERTORIE
 echo '
 <div id="div_ajout_rep" style="display:none;"> 
+    <div id="new_rep_show_error" style="text-align:center;margin:2px;display:none;" class="ui-state-error ui-corner-all"></div>
     <table>
         <tr>
             <td>'.$txt['label'].' : </td>
@@ -540,6 +542,7 @@ echo '
 //Formulaire EDITER REPERTORIE
 echo '
 <div id="div_editer_rep" style="display:none;"> 
+    <div id="edit_rep_show_error" style="text-align:center;margin:2px;display:none;" class="ui-state-error ui-corner-all"></div>
     <table>
         <tr>
             <td>'.$txt['new_label'].' : </td>
@@ -644,28 +647,24 @@ echo '
 <script type="text/javascript">
 
     function ListerItems(groupe_id){
-        LoadingPage();  //afficher image de chargement
-        //aficher le bon menu des items
-        //document.getElementById('item_details_ok').style.display="none";
-        /*if ( document.getElementById('item_menu_notactivated').style.display=="none" ){
-            document.getElementById('item_menu').style.display="none";
-            document.getElementById('item_menu_notactivated').style.display="inline";
-        }*/
-        //clean form
-        document.getElementById('id_label').innerHTML = "";
-        document.getElementById('id_pw').innerHTML = "";
-        document.getElementById('id_url').innerHTML = "";
-        document.getElementById('id_desc').innerHTML = "";
-        document.getElementById('id_login').innerHTML = "";
-        document.getElementById('id_info').innerHTML = "";
-        document.getElementById('id_restricted_to').innerHTML = "";
-        document.getElementById('pw_clipboard').style.display = "none";
-        document.getElementById('login_clipboard').style.display = "none";
-            
-        $('#contextMenuContent').disableContextMenuItems('#edit_item,#del_item');
-        var data = "type=lister_items_groupe"+
-                    "&id="+groupe_id;
-        httpRequest("sources/items.queries.php",data);
+        if ( groupe_id != undefined ){
+            LoadingPage();  //afficher image de chargement
+            //clean form
+            document.getElementById('id_label').innerHTML = "";
+            document.getElementById('id_pw').innerHTML = "";
+            document.getElementById('id_url').innerHTML = "";
+            document.getElementById('id_desc').innerHTML = "";
+            document.getElementById('id_login').innerHTML = "";
+            document.getElementById('id_info').innerHTML = "";
+            document.getElementById('id_restricted_to').innerHTML = "";
+            document.getElementById('pw_clipboard').style.display = "none";
+            document.getElementById('login_clipboard').style.display = "none";
+                
+            $('#contextMenuContent').disableContextMenuItems('#edit_item,#del_item');
+            var data = "type=lister_items_groupe"+
+                        "&id="+groupe_id;
+            httpRequest("sources/items.queries.php",data);
+        }
     }
     
     function pwOptions(elem){
@@ -942,7 +941,7 @@ echo '
                 modal: true,
                 autoOpen: false,
                 width: 300,
-                height: 200,
+                height: 250,
                 title: "<?php echo $txt['item_menu_add_rep'];?>",
                 buttons: {
                     "<?php echo $txt['save_button'];?>": function() {
@@ -964,7 +963,7 @@ echo '
                 modal: true,
                 autoOpen: false,
                 width: 300,
-                height: 200,
+                height: 250,
                 title: "<?php echo $txt['item_menu_edi_rep'];?>",
                 buttons: {
                     "<?php echo $txt['save_button'];?>": function() {
