@@ -17,12 +17,14 @@ $tst = $tree->getDescendants();
 //faire une liste des groupes
 $liste_groupes = "\'0\':\'".$txt['root']."\'";
 foreach($tst as $t){
-    if ( $t->nlevel == 1 ) $ident = ">";
-    if ( $t->nlevel == 2 ) $ident = "->";
-    if ( $t->nlevel == 3 ) $ident = "-->";
-    if ( $t->nlevel == 4 ) $ident = "--->";
-    if ( $t->nlevel == 5 ) $ident = "---->";
-    $liste_groupes .= ','."\'".$t->id.'\':\''.$ident." ".addslashes(addslashes($t->title))."\'";;
+    if ( in_array($t->id,$_SESSION['groupes_visibles']) ) {
+        if ( $t->nlevel == 1 ) $ident = ">";
+        if ( $t->nlevel == 2 ) $ident = "->";
+        if ( $t->nlevel == 3 ) $ident = "-->";
+        if ( $t->nlevel == 4 ) $ident = "--->";
+        if ( $t->nlevel == 5 ) $ident = "---->";
+        $liste_groupes .= ','."\'".$t->id.'\':\''.$ident." ".addslashes(addslashes($t->title))."\'";
+    }
 }
 
 //construire la liste des niveaux de complexités
@@ -59,7 +61,7 @@ echo '
                     //récup $t->parent_id
                     $res = mysql_query("SELECT title FROM ".$k['prefix']."nested_tree WHERE id = ".$t->parent_id);
                     $data = mysql_fetch_row($res);
-                    if ( $t->nlevel == 1 ) $data[0] = "Racine";
+                    if ( $t->nlevel == 1 ) $data[0] = $txt['root'];
                     
                     //récup les droits associés à ce groupe
                     $tab_droits=array();
@@ -150,16 +152,18 @@ echo '
         echo '<option value="0">'.$txt['root'].'</option>';
         $prev_level = 0;
         foreach($tst as $t){
-            $ident="";
-            for($x=1;$x<$t->nlevel;$x++) $ident .= "&nbsp;&nbsp;";
-            if ( $prev_level < $t->nlevel ){
-                echo '<option value="'.$t->id.'">'.$ident.$t->title.'</option>';
-            }else if ( $prev_level == $t->nlevel ){
-               echo '<option value="'.$t->id.'">'.$ident.$t->title.'</option>';
-            }else{
-                echo '<option value="'.$t->id.'">'.$ident.$t->title.'</option>';
+            if ( in_array($t->id,$_SESSION['groupes_visibles']) ) {
+                $ident="";
+                for($x=1;$x<$t->nlevel;$x++) $ident .= "&nbsp;&nbsp;";
+                if ( $prev_level < $t->nlevel ){
+                    echo '<option value="'.$t->id.'">'.$ident.$t->title.'</option>';
+                }else if ( $prev_level == $t->nlevel ){
+                   echo '<option value="'.$t->id.'">'.$ident.$t->title.'</option>';
+                }else{
+                    echo '<option value="'.$t->id.'">'.$ident.$t->title.'</option>';
+                }
+                $prev_level = $t->nlevel;
             }
-            $prev_level = $t->nlevel;
         }
     echo '
     </select>

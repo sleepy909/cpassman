@@ -106,7 +106,7 @@ while( $res_groups = mysql_fetch_row($data_groups) )
                 
                 //Get list of forbiden groups
                     $list_forb_grps = "";
-                    $list = explode(';',$data['groupes_visibles']);
+                    $list = explode(';',$data['groupes_interdits']);
                     foreach($list as $elem){
                         if ( !empty($elem) ) $list_forb_grps .= '<img src="includes/images/arrow-000-small.png" />'.$arr_groups[$elem]."<br />";
                     }

@@ -563,7 +563,7 @@ switch($_POST['type'])
     ### CASE ####
     ### Get complexity level of a group
     case "recup_complex":
-        $res = mysql_query("SELECT valeur FROM ".$k['prefix']."misc WHERE type='complex' AND intitule = '".$_POST['groupe']."'");
+        $res = mysql_query("SELECT valeur FROM ".$k['prefix']."misc WHERE type='complex' AND intitule = '".$_POST['groupe']."'") or die(mysql_error());
         $data = mysql_fetch_row($res);
         echo 'document.getElementById("complexite_groupe").value = "'.$data[0].'";'; 
         
@@ -586,7 +586,7 @@ switch($_POST['type'])
             else
                 echo 'document.getElementById("new_item_salt_key").style.display = "none";';
         }
-        echo 'document.getElementById("'.$div.'").innerHTML = "<b>', empty($data[0]) ? $txt['not_defined'] : $mdp_complexite[$data[0]][1], '</b>";';
+        echo 'document.getElementById("'.$div.'").innerHTML = "<b>', (!empty($data[0]) || $data[0] == 0) ? $mdp_complexite[$data[0]][1] : $txt['not_defined'], '</b>";';
                 
         //afficher la visibilité
         $visibilite = "";

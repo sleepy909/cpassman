@@ -189,7 +189,7 @@ if ( !empty($_POST['type']) ){
             $val = str_replace(';',',',$_POST['list']);
             $data = mysql_query("SELECT title FROM ".$k['prefix']."nested_tree WHERE id IN (".$val.")");
             while ( $res = mysql_fetch_row($data) ){
-                $text .= $res[0]."<br />";
+                $text .= '<img src=\"includes/images/arrow-000-small.png\" />'.$res[0]."<br />";
             }
              echo 'document.getElementById("list_autgroups_function_'.$_POST['id'].'").innerHTML = "'.$text.'";';
             //refresh matrix
@@ -242,9 +242,10 @@ if ( !empty($_POST['type']) ){
             $val = str_replace(';',',',$_POST['list']);
             $data = mysql_query("SELECT title FROM ".$k['prefix']."nested_tree WHERE id IN (".$val.")");
             while ( $res = mysql_fetch_row($data) ){
-                $text .= $res[0]."<br />";
+                $text .= '<img src=\"includes/images/arrow-000-small.png\" />'.$res[0]."<br />";
             }
              echo 'document.getElementById("list_forgroups_function_'.$_POST['id'].'").innerHTML = "'.$text.'";';
+             echo '$("#div_loading").hide()';  //hide loading div
         break;
     }
 }else if ( !empty($_POST['edit_fonction']) ){

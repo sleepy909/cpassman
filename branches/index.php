@@ -38,7 +38,13 @@ if ( (isset($_POST['menu_action']) && $_POST['menu_action'] == "deconnexion") ||
     session_destroy();
 
     // REDIRECTION PAGE ERREUR
-    header("Location:index.php");
+    //header("Location:index.php");
+    echo '
+    <script language="javascript" type="text/javascript">
+    <!--
+    document.location.href="index.php";
+    -->
+    </script>';
     exit;
 }
 
@@ -66,12 +72,15 @@ if ( isset($_SESSION['user_id']) && ( empty($_SESSION['fin_session']) || $_SESSI
     // erase session table
     $_SESSION = array();
     
+    // Kill session
+    session_destroy();
+    
     //Redirection
     //header("Location:index.php");
     echo '
     <script language="javascript" type="text/javascript">
     <!--
-    document.main_form.submit();
+    document.location.href="index.php";
     -->
     </script>';
 }  

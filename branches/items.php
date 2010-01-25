@@ -1096,7 +1096,7 @@ echo '
                 height: 100,
                 title: "<?php echo $txt['item_menu_del_elem'];?>",
                 buttons: {
-                    "<?php echo $txt['save_button'];?>": function() {
+                    "<?php echo $txt['del_button'];?>": function() {
                         var data = "type=del_item"+
                                     "&groupe="+document.getElementById('hid_cat').value+
                                     "&id="+document.getElementById('id_item').value;
