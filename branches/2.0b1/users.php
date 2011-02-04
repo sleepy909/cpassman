@@ -1,12 +1,20 @@
 <?php
-####################################################################################################
-## File : users.php
-## Author : Nils Laumaillé
-## Description : Users page
-##
-## DON'T CHANGE !!!
-##
-####################################################################################################
+/**
+ * @file 		users.php
+ * @author		Nils Laumaillé
+ * @version 	2.0
+ * @copyright 	(c) 2009-2011 Nils Laumaillé
+ * @licensing 	CC BY-NC-ND (http://creativecommons.org/licenses/by-nc-nd/3.0/legalcode)
+ * @link		http://cpassman.org
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
+if ($_SESSION['CPM'] != 1)
+	die('Hacking attempt...');
+
 
 //load help
 require_once('includes/language/'.$_SESSION['user_language'].'_admin_help.php');
@@ -45,7 +53,7 @@ echo '
                     <th title="'.$txt['god'].'"><img src="includes/images/user-black.png" /></th>
                     <th title="'.$txt['gestionnaire'].'"><img src="includes/images/user-worker.png" /></th>
                     <th title="'.$txt['can_create_root_folder'].'"><img src="includes/images/folder-network.png" /></th>
-                    ', (isset($_SESSION['settings']['enable_pf_feature']) && $_SESSION['settings']['enable_pf_feature']==1) ? '<th title="'.$txt['enable_personal_folder'].'"><img src="includes/images/folder-open-document-text.png" /></th>' : '', '                    
+                    ', (isset($_SESSION['settings']['enable_pf_feature']) && $_SESSION['settings']['enable_pf_feature']==1) ? '<th title="'.$txt['enable_personal_folder'].'"><img src="includes/images/folder-open-document-text.png" /></th>' : '', '
                     <th title="'.$txt['user_del'].'"><img src="includes/images/user--minus.png" /></th>
                     <th title="'.$txt['pw_change'].'"><img src="includes/images/lock__pencil.png" /></th>
                     <th title="'.$txt['email_change'].'"><img src="includes/images/mail.png" /></th>
@@ -95,12 +103,12 @@ echo '
                         }
                     }
                 }
-            
+
             //is user locked?
             if ($reccord['disabled'] == 1) {
-                
+
             }
-            
+
             //Display Grid
             //if ($_SESSION['user_gestionnaire'] == 1 && $reccord['admin'] == 1){
             echo '<tr', $reccord['disabled'] == 1 ? ' style="background-color:#FF8080;font-size:11px;"' : ' class="ligne'.($x%2).'"', '>
@@ -275,6 +283,6 @@ echo '
 echo '
 <div id="manager_dialog" style="display:none;">
     <div style="text-align:center;padding:2px;display:none;" class="ui-state-error ui-corner-all" id="manager_dialog_error"></div>
-    
+
 </div>';
 ?>

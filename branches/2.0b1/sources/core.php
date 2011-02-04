@@ -1,12 +1,21 @@
 <?php
-####################################################################################################
-## File : core.php
-## Author : Nils Laumaillé
-## Description : this page contains the core functionalities of cpassman
-##
-## DON'T CHANGE !!!
-##
-####################################################################################################
+/**
+ * @file 		items.queries.php
+ * @author		Nils Laumaillé
+ * @version 	2.0
+ * @copyright 	(c) 2009-2011 Nils Laumaillé
+ * @licensing 	CC BY-NC-ND (http://creativecommons.org/licenses/by-nc-nd/3.0/legalcode)
+ * @link		http://cpassman.org
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
+session_start();
+if ($_SESSION['CPM'] != 1)
+	die('Hacking attempt...');
+
 
 /* CHECK IF UPDATE IS NEEDED */
     if ( isset($_SESSION['settings']['update_needed']) && ($_SESSION['settings']['update_needed'] != false || empty($_SESSION['settings']['update_needed'])) ){

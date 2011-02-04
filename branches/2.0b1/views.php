@@ -1,12 +1,20 @@
 <?php
-####################################################################################################
-## File : views.php
-## Author : Nils Laumaillé
-## Description : Views page
-## 
-## DON'T CHANGE !!!
-## 
-####################################################################################################
+/**
+ * @file 		views.php
+ * @author		Nils Laumaillé
+ * @version 	2.0
+ * @copyright 	(c) 2009-2011 Nils Laumaillé
+ * @licensing 	CC BY-NC-ND (http://creativecommons.org/licenses/by-nc-nd/3.0/legalcode)
+ * @link		http://cpassman.org
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
+if ($_SESSION['CPM'] != 1)
+	die('Hacking attempt...');
+
 ?>
 <script type="text/javascript">
 $(function() {
@@ -15,7 +23,7 @@ $(function() {
         regional: 'fr',
         dateFormat : 'dd/mm/yy'
     });
-    
+
     ListerElemDel();
 });
 
@@ -38,7 +46,7 @@ function restoreDeletedItems(){
             if ( list == "" ) list = $(this).val();
             else list = list+';'+$(this).val();
         });
-        
+
         var data = "type=restore_deleted__items&list="+list;
         httpRequest("sources/views.queries.php",data);
     }
@@ -51,13 +59,13 @@ function reallyDeleteItems(){
             if ( list == "" ) list = $(this).val();
             else list = list+';'+$(this).val();
         });
-        
+
         var data = "type=really_delete_items&list="+list;
         httpRequest("sources/views.queries.php",data);
     }
 }
 
-function displayLogs(type,page){    
+function displayLogs(type,page){
     LoadingPage();  //show waiting GIF
     //Show or not the column URL
     if ( type == "errors_logs" ) $("#th_url").show();
@@ -76,7 +84,7 @@ function generate_renewal_listing(){
 
 //FUNCTION permits to generate a PDF file
 function generate_renewal_pdf(){
-    LoadingPage();  //show waiting GIF 
+    LoadingPage();  //show waiting GIF
     var data = "type=generate_renewal_pdf&text="+document.getElementById("list_renewal_items_pdf").value;
     httpRequest("sources/views.queries.php",data);
 }
@@ -92,7 +100,7 @@ echo '
         <li><a href="#tabs-3">'.$txt['logs'].'</a></li>
         <li><a href="#tabs-4">'.$txt['renewal_menu'].'</a></li>
     </ul>';
-    
+
     //TAB 1 - Log password
     echo '
     <div id="tabs-1">
@@ -101,14 +109,14 @@ echo '
         </p>
         <div id="lien_pdf" style="text-align:center; width:100%; margin-top:15px;"></div>
     </div>';
-    
+
     //TAB 2 - DELETION
     echo '
     <div id="tabs-2">
         <h3>'.$txt['deletion_title'].'</h3>
         <div id="liste_elems_del" style="margin-left:30px;margin-top:10px;"></div>
     </div>';
-    
+
     //TAB 3 - LOGS
     echo '
     <div id="tabs-3">
@@ -129,7 +137,7 @@ echo '
         <div id="log_pages" style="margin-top:10px;"></div>
         </div>
     </div>';
-    
+
     //TAB 4 - RENEWAL
     echo '
     <div id="tabs-4">
@@ -145,7 +153,7 @@ echo '
         <div id="list_renewal_items" style="width:700px;margin:10px auto 0 auto;"></div>
         <input type="hidden" id="list_renewal_items_pdf" />
     </div>';
-    
+
     echo '
 </div>
 ';

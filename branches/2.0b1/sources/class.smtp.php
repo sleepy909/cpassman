@@ -1,4 +1,22 @@
 <?php
+/**
+ * @file 		class.smtp.php
+ * @author		Nils Laumaillé
+ * @version 	2.0
+ * @copyright 	(c) 2009-2011 Nils Laumaillé
+ * @licensing 	CC BY-NC-ND (http://creativecommons.org/licenses/by-nc-nd/3.0/legalcode)
+ * @link		http://cpassman.org
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
+session_start();
+if ($_SESSION['CPM'] != 1)
+
+	die('Hacking attempt...');
+
 ////////////////////////////////////////////////////
 // SMTP - PHP SMTP class
 //
@@ -28,13 +46,13 @@ class SMTP
   @var int
      */
     var $SMTP_PORT = 25;
-    
+
     /**
   SMTP reply line ending
   @var string
      */
     var $CRLF = "\r\n";
-    
+
     /**
   Sets whether debugging is turned on
   @var bool
@@ -508,7 +526,7 @@ class SMTP
         }
 
         $this->helo_rply = $rply;
-        
+
         return true;
     }
 

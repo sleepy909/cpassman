@@ -1,12 +1,20 @@
 <?php
-####################################################################################################
-## File : load.php
-## Author : Nils Laumaillé
-## Description : Loads things depending on the pages. It is called by index.php page.
-##
-## DON'T CHANGE !!!
-##
-####################################################################################################
+/**
+ * @file 		load.php
+ * @author		Nils Laumaillé
+ * @version 	2.0
+ * @copyright 	(c) 2009-2011 Nils Laumaillé
+ * @licensing 	CC BY-NC-ND (http://creativecommons.org/licenses/by-nc-nd/3.0/legalcode)
+ * @link		http://cpassman.org
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
+if ($_SESSION['CPM'] != 1)
+	die('Hacking attempt...');
+
 
 //Common elements
 $htmlHeaders = '

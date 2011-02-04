@@ -1,12 +1,20 @@
 <?php
-####################################################################################################
-## File : roles.php
-## Author : Nils Laumaillé
-## Description : Groups page
-##
-## DON'T CHANGE !!!
-##
-####################################################################################################
+/**
+ * @file 		roles.php
+ * @author		Nils Laumaillé
+ * @version 	2.0
+ * @copyright 	(c) 2009-2011 Nils Laumaillé
+ * @licensing 	CC BY-NC-ND (http://creativecommons.org/licenses/by-nc-nd/3.0/legalcode)
+ * @link		http://cpassman.org
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
+if ($_SESSION['CPM'] != 1)
+	die('Hacking attempt...');
+
 
 /* load help*/
 require_once('includes/language/'.$_SESSION['user_language'].'_admin_help.php');
