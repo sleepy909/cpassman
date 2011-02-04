@@ -2,20 +2,23 @@
 /**
  * @file 		main.queries.php
  * @author		Nils Laumaillé
- * @version 	$version$
- * @copyright 	2009-2011
- * @licensing 	CC
+ * @version 	2.0
+ * @copyright 	(c) 2009-2011 Nils Laumaillé
+ * @licensing 	CC BY-NC-ND (http://creativecommons.org/licenses/by-nc-nd/3.0/legalcode)
+ * @link		http://cpassman.org
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+
+session_start();
+if ($_SESSION['CPM'] != 1)
+	die('Hacking attempt...');
 
 global $k, $settings;
 include('../includes/settings.php');
 header("Content-type: text/html; charset=".$k['charset']);
-session_start();
 error_reporting (E_ERROR);
 require_once('main.functions.php');
 

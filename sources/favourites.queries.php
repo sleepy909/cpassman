@@ -1,23 +1,30 @@
 <?php
-####################################################################################################
-## File : favourites.queries.php
-## Author : Nils Laumaillé
-## Description : File contains queries for ajax
-## 
-## DON'T CHANGE !!!
-## 
-####################################################################################################
+/**
+ * @file 		favourites.queries.php
+ * @author		Nils Laumaillé
+ * @version 	2.0
+ * @copyright 	(c) 2009-2011 Nils Laumaillé
+ * @licensing 	CC BY-NC-ND (http://creativecommons.org/licenses/by-nc-nd/3.0/legalcode)
+ * @link		http://cpassman.org
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
 
 session_start();
+if ($_SESSION['CPM'] != 1)
+	die('Hacking attempt...');
 
-include('../includes/language/'.$_SESSION['user_language'].'.php'); 
+
+include('../includes/language/'.$_SESSION['user_language'].'.php');
 include('../includes/settings.php');
-header("Content-type: text/html; charset=".$k['charset']); 
+header("Content-type: text/html; charset=".$k['charset']);
 
-// connect to the server 
-require_once("class.database.php"); 
+// connect to the server
+require_once("class.database.php");
 $db = new Database($server, $user, $pass, $database, $pre);
-$db->connect(); 
+$db->connect();
 
 // Construction de la requ?te en fonction du type de valeur
 if ( !empty($_POST['type']) ){

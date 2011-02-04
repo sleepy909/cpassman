@@ -1,13 +1,20 @@
 <?php
+/**
+ * @file 		kb.php
+ * @author		Nils Laumaillé
+ * @version 	2.0
+ * @copyright 	(c) 2009-2011 Nils Laumaillé
+ * @licensing 	CC BY-NC-ND (http://creativecommons.org/licenses/by-nc-nd/3.0/legalcode)
+ * @link		http://cpassman.org
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
 
-/*******************************************************************************
-* File : kb.php
-* Author : Nils Laumaillé
-* Description : Users page
-*
-* DON'T CHANGE !!!
-*
-*******************************************************************************/
+if ($_SESSION['CPM'] != 1)
+	die('Hacking attempt...');
+
 
 //load language
 require_once('includes/language/'.$_SESSION['user_language'].'_kb.php');
@@ -80,7 +87,7 @@ echo '
 	    <label for="kb_description" class="label">'.$txt['description'].'</label>
 		<textarea rows="5" name="kb_description" id="kb_description" class="input"></textarea>
 	</div>
-    
+
     <div style="float:left;width:100%;margin-top:15px;">
         <label for="kb_associated_to" class="label">'.$txt['associate_kb_to_items'].'</label>
         <select id="kb_associated_to" class="multiselect" multiple="multiple" name="kb_associated_to[]" style="width: 860px; height: 150px;">';

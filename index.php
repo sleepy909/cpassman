@@ -25,14 +25,20 @@
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <?php
-/*******************************************************************************
-*  File : index.php
-*  Author : Nils Laumaillé
-*  Description : main page
-*
-*  DON'T CHANGE !!!
-*
-*******************************************************************************/
+/**
+ * @file 		index.php
+ * @author		Nils Laumaillé
+ * @version 	2.0
+ * @copyright 	(c) 2009-2011 Nils Laumaillé
+ * @licensing 	CC BY-NC-ND (http://creativecommons.org/licenses/by-nc-nd/3.0/legalcode)
+ * @link		http://cpassman.org
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
+$_SESSION['CPM'] = 1;
 
 //Test if settings.file exists, if not then install
 if (!file_exists('includes/settings.php')) {
@@ -44,7 +50,7 @@ if (!file_exists('includes/settings.php')) {
     </script>';
 }
 
-//Laod languages files
+//Load languages files
 require_once('includes/language/'.$_SESSION['user_language'].'.php');
 if (isset($_GET['page']) && $_GET['page'] == "kb") {
 	require_once('includes/language/'.$_SESSION['user_language'].'_kb.php');

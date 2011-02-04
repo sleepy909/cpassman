@@ -1,12 +1,19 @@
 <?php
-####################################################################################################
-## File : admin.php
-## Author : Nils Laumaillé
-## Description : Admin page
-## 
-## DON'T CHANGE !!!
-## 
-####################################################################################################
+/**
+ * @file 		admin.php
+ * @author		Nils Laumaillé
+ * @version 	2.0
+ * @copyright 	(c) 2009-2011 Nils Laumaillé
+ * @licensing 	CC BY-NC-ND (http://creativecommons.org/licenses/by-nc-nd/3.0/legalcode)
+ * @link		http://cpassman.org
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
+if ($_SESSION['CPM'] != 1)
+	die('Hacking attempt...');
 
 echo '
     <div class="title ui-widget-content ui-corner-all">'.$txt['admin'].'</div>
@@ -15,9 +22,9 @@ echo '
     // Div for tool info
     echo '
         <div id="CPM_infos" style="float:left;margin-top:10px;margin-left:15px;width:500px;">'.$txt['admin_info_loading'].'&nbsp;<img src="includes/images/ajax-loader.gif" alt="" /></div>';
-     
+
      //div for information
-     echo '   
+     echo '
         <div style="float:right;width:300px;padding:10px;" class="ui-state-highlight ui-corner-all">
             <span class="ui-icon ui-icon-comment" style="float: left; margin-right: .3em;">&nbsp;</span>'.$txt['support_page'].'
             <br />
@@ -29,7 +36,7 @@ echo '
                 '.$txt['thku'].'
             </div>
         </div>';
-     
+
     // Display the readme file
     $Fnm = "readme.txt";
     if (file_exists($Fnm)) {
@@ -49,12 +56,12 @@ echo '
                 echo '...<br /><br /><b><a href="readme.txt" target="_blank">'.$txt['readme_open'].'</a></b>';
                 break;
             }
-            if ( substr_count($val,"CHANGELOG") == 1 && $show == false ) $show = true;         
+            if ( substr_count($val,"CHANGELOG") == 1 && $show == false ) $show = true;
         }
         echo '
         </div></div>';
     }
     echo '
     </div>';
-    
+
 ?>
