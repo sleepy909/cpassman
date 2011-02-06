@@ -200,6 +200,7 @@ else if ( (isset($_POST['step']) && $_POST['step'] == 4) || (isset($_GET['step']
                         <tr><td>Add table "kb"</td><td><span id="tbl_10"></span></td></tr>
                         <tr><td>Add table "kb_categories"</td><td><span id="tbl_11"></span></td></tr>
                         <tr><td>Add table "kb_items"</td><td><span id="tbl_12"></span></td></tr>
+                        <tr><td>Add table "restriction_to_roles"</td><td><span id="tbl_13"></span></td></tr>
                     </table>
 
                     <div style="margin-top:20px;font-weight:bold;text-align:center;height:27px;" id="res_step4"></div>
