@@ -500,6 +500,22 @@ if ( isset($_POST['type']) ){
                 break;
             }
 
+        	## TABLE restriction_to_roles
+        	$res = mysql_query("
+        	    CREATE TABLE IF NOT EXISTS `".$_SESSION['tbl_prefix']."restriction_to_roles` (
+                `role_id` tinyint(12) NOT NULL,
+                `item_id` tinyint(12) NOT NULL
+                ) CHARSET=utf8;");
+        	if ( $res ){
+        		echo 'document.getElementById("tbl_13").innerHTML = "<img src=\"images/tick.png\">";';
+        	}else{
+        		echo 'document.getElementById("res_step4").innerHTML = "An error appears on table restriction_to_roles!";';
+        		echo 'document.getElementById("tbl_13").innerHTML = "<img src=\"images/exclamation-red.png\">";';
+        		echo 'document.getElementById("loader").style.display = "none";';
+        		mysql_close($db_tmp);
+        		break;
+        	}
+
             //CLEAN UP ITEMS TABLE
             $allowed_tags = '<b><i><sup><sub><em><strong><u><br><br /><a><strike><ul><blockquote><blockquote><img><li><h1><h2><h3><h4><h5><ol><small><font>';
             $clean_res = mysql_query("SELECT id,description FROM `".$_SESSION['tbl_prefix']."items`");

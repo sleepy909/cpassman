@@ -261,6 +261,7 @@ if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
                         <tr><td>Add table "kb"</td><td><span id="tbl_15"></span></td></tr>
                         <tr><td>Add table "kb_categories"</td><td><span id="tbl_16"></span></td></tr>
                         <tr><td>Add table "kb_items"</td><td><span id="tbl_17"></span></td></tr>
+                        <tr><td>Add table "restriction_to_roles"</td><td><span id="tbl_18"></span></td></tr>
                     </table>
                     </fieldset>
 
