@@ -343,7 +343,7 @@ echo '
                 <tr>
                     <td valign="top" class="td_title"><span class="ui-icon ui-icon-carat-1-e" style="float: left; margin-right: .3em;">&nbsp;</span>'.$txt['history'].' :</td>
                     <td>
-                        <div onclick="ouvrir_div(\'id_info\')" style="cursor:pointer">
+                        <div onclick="OpenDiv(\'id_info\')" style="cursor:pointer">
                             <img src="includes/images/layout_split_vertical.png" />
                         </div>
                         <div id="id_info" style="font-size:8pt;margin-top:4px;display:none;"></div>

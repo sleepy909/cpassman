@@ -110,7 +110,7 @@ require_once("load.php");
                 <button title="'.$txt['find'].'" onclick="MenuAction(\'find\');">
                     <img src="includes/images/binocular.png" alt="" />
                 </button>
-                <button title="'.$txt['last_items_icon_title'].'" onclick="ouvrir_div(\'div_last_items\')">
+                <button title="'.$txt['last_items_icon_title'].'" onclick="OpenDiv(\'div_last_items\')">
                     <img src="includes/images/tag_blue.png" alt="" />
                 </button>';
 
@@ -387,7 +387,29 @@ require_once("load.php");
             $_SESSION['error'] = "1001";    //page don't exists
             include("error.php");
         }
-    }else if (empty($_SESSION['user_id'])) {
+    }
+
+    //Case where user has asked new PW
+    else if (empty($_SESSION['user_id']) && isset($_GET['action']) && $_GET['action'] == "password_recovery") {
+    echo '
+    	<div style="width:400px;margin:50px auto 50px auto;padding:25px;" class="ui-state-highlight ui-corner-all">
+    		<div style="text-align:center;font-weight:bold;margin-bottom:20px;">
+    			'.$txt['pw_recovery_asked'].'
+    		</div>
+    		<div id="generate_new_pw_error" style="color:red;display:none;text-align:center;margin:5px;"></div>
+    		<div style="margin-bottom:3px;">
+    			'.$txt['pw_recovery_info'].'
+			</div>
+			<div style="margin:15px; text-align:center;">
+    			<input type="button" id="but_generate_new_password" onclick="GenerateNewPassword(\''.$_GET['key'] .'\',\''.$_GET['login'] .'\')" style="padding:3px;cursor:pointer;" class="ui-state-default ui-corner-all" value="'.$txt['pw_recovery_button'].'" />
+				<br /><br />
+				<img id="ajax_loader_send_mail" style="display:none;" src="includes/images/ajax-loader.gif" alt="" />
+    		</div>
+    	</div>';
+    }
+
+    //When user is not identified
+    else if (empty($_SESSION['user_id'])) {
         //Automatic redirection
         if (strpos($_SERVER["REQUEST_URI"], "?") > 0) {
             $nextUrl = substr($_SERVER["REQUEST_URI"], strpos($_SERVER["REQUEST_URI"], "?"));
@@ -453,6 +475,9 @@ require_once("load.php");
                 <div style="margin:5px auto 5px auto;">'.$txt['forgot_my_pw_text'].'</div>
                 <label for="forgot_pw_email">'.$txt['email'].'</label>
                 <input type="text" size="40" name="forgot_pw_email" id="forgot_pw_email" />
+				<br />
+				<label for="forgot_pw_login">'.$txt['login'].'</label>
+                <input type="text" size="20" name="forgot_pw_login" id="forgot_pw_login" />
             </div>';
     }else {
         //PAGE BY DEFAULT

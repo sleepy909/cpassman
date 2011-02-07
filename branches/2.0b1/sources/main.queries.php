@@ -332,38 +332,154 @@ switch($_POST['type'])
 
     //Used in order to send the password to the user by email
     case "send_pw_by_email":
-        //found account and pw associated to email
-        $data = $db->fetch_row("SELECT COUNT(*) FROM ".$pre."users WHERE email = '".mysql_real_escape_string(stripslashes(($_POST['email'])))."'");
-        if ( $data[0] != 0 ){
-            $data = $db->fetch_array("SELECT login,pw FROM ".$pre."users WHERE email = '".mysql_real_escape_string(stripslashes(($_POST['email'])))."'");
+    	echo '$("#div_forgot_pw_alert").removeClass("ui-state-error");';
+    	//found account and pw associated to email
+    	$data = $db->fetch_row("SELECT COUNT(*) FROM ".$pre."users WHERE email = '".mysql_real_escape_string(stripslashes(($_POST['email'])))."'");
+    	if ( $data[0] != 0 ){
+    		$data = $db->fetch_array("SELECT login,pw FROM ".$pre."users WHERE email = '".mysql_real_escape_string(stripslashes(($_POST['email'])))."'");
 
-            //load library
-            require_once("class.phpmailer.php");
+    		// Generate a ramdom ID
+    		$key = "";
+    		include('../includes/libraries/pwgen/pwgen.class.php');
+    		$pwgen = new PWGen();
+    		$pwgen->setLength(50);
+    		$pwgen->setSecure(true);
+    		$pwgen->setSymbols(false);
+    		$pwgen->setCapitalize(true);
+    		$pwgen->setNumerals(true);
+    		$key = $pwgen->generate();
 
-            //send to user
-            $mail = new PHPMailer();
-            $mail->SetLanguage("en","../includes/libraries/phpmailer/language");
-            $mail->IsSMTP();                                   // send via SMTP
-            $mail->Host     = $smtp_server; // SMTP servers
-            $mail->SMTPAuth = $smtp_auth;     // turn on SMTP authentication
-            $mail->Username = $smtp_auth_username;  // SMTP username
-            $mail->Password = $smtp_auth_password; // SMTP password
-            $mail->From     = $email_from;
-            $mail->FromName = $email_from_name;
-            $mail->AddAddress($mail_destinataire);     //Destinataire
-            $mail->WordWrap = 80;                              // set word wrap
-            $mail->IsHTML(true);                               // send as HTML
-            $mail->Subject  =  $txt['forgot_pw_email_subject'];
-            $mail->AltBody  =  $txt['forgot_pw_email_altbody_1']." ".$txt['at_login']." : ".$data['login']." - ".$txt['index_password']." : ".md5($data['pw']);
-            $mail->Body     =  $txt['forgot_pw_email_body_1']." ".$txt['at_login']." : ".$data['login']." <br /> ".$txt['index_password']." : ".md5($data['pw']);
-            $mail->Send();
+    		//load library
+    		require_once("../includes/libraries/phpmailer/class.phpmailer.php");
 
-            //inform user that email is sent
-            echo '$("#forgot_pw_email").val("'.$txt['forgot_my_pw_email_sent'].'");$("#div_forgot_pw").dialog("close");';
+    		//send to user
+    		$mail = new PHPMailer();
+    		$mail->SetLanguage("en","../includes/libraries/phpmailer/language/");
+    		$mail->IsSMTP();	// send via SMTP
+    		$mail->Host     = $smtp_server; // SMTP servers
+    		$mail->SMTPAuth = $smtp_auth;     // turn on SMTP authentication
+    		$mail->Username = $smtp_auth_username;  // SMTP username
+    		$mail->Password = $smtp_auth_password; // SMTP password
+    		$mail->From     = $email_from;
+    		$mail->FromName = $email_from_name;
+    		$mail->AddAddress($_POST['email']);     //Destinataire
+    		$mail->WordWrap = 80;                              // set word wrap
+    		$mail->IsHTML(true);                               // send as HTML
+    		$mail->Subject  =  $txt['forgot_pw_email_subject'];
+    		$mail->AltBody  =  $txt['forgot_pw_email_altbody_1']." ".$txt['at_login']." : ".$data['login']." - ".$txt['index_password']." : ".md5($data['pw']);
+    		$mail->Body     =  $txt['forgot_pw_email_body_1']." ".$_SESSION['settings']['cpassman_url']."/index.php?action=password_recovery&key=".$key."&login=".$_POST['login'];
+
+    		//Check if email has already a key in DB
+    		$data = $db->fetch_row("SELECT COUNT(*) FROM ".$pre."misc WHERE intitule = '".$_POST['login']."' AND type = 'password_recovery'");
+    		if ( $data[0] != 0 ){
+    			$db->query_update(
+	    			"misc",
+	    			array(
+	    			    'valeur' => $key
+	    			),
+	    			array(
+		    			'type' => 'password_recovery',
+		    			'intitule' => $_POST['login']
+		    		)
+    			);
+    		}else{
+    			//store in DB the password recovery informations
+    			$db->query_insert(
+	    			'misc',
+	    			array(
+	    			    'type' => 'password_recovery',
+	    			    'intitule' => $_POST['login'],
+	    			    'valeur' => $key
+	    			)
+    			);
+    		}
+
+			//send email
+    		if(!$mail->Send())
+    		{
+    			echo '$("#div_forgot_pw_alert").html("'.$mail->ErrorInfo.'").addClass("ui-state-error").show();';
+    		}
+    		else
+    		{
+    			echo '$("#div_forgot_pw_alert").html("'.$txt['forgot_my_pw_email_sent'].'");$("#div_forgot_pw").dialog("close");';
+    		}
         }else{
             //no one has this email ... alert
-            echo '$("#div_forgot_pw_alert").val("'.$txt['forgot_my_pw_error_email_not_exist'].'");$("#div_forgot_pw_alert").show();';
+            echo '$("#div_forgot_pw_alert").html("'.$txt['forgot_my_pw_error_email_not_exist'].'").addClass("ui-state-error").show();';
         }
+    break;
+
+    //Send to user his new pw if key is conform
+    case "generate_new_password":
+    	//check if key is okay
+    	$data = $db->fetch_row("SELECT valeur FROM ".$pre."misc WHERE intitule = '".$_POST['login']."' AND type = 'password_recovery'");
+    	if($_POST['key'] == $data[0]) {
+    		//Generate and change pw
+    		$new_pw = "";
+    		include('../includes/libraries/pwgen/pwgen.class.php');
+    		$pwgen = new PWGen();
+    		$pwgen->setLength(10);
+    		$pwgen->setSecure(true);
+    		$pwgen->setSymbols(false);
+    		$pwgen->setCapitalize(true);
+    		$pwgen->setNumerals(true);
+    		$new_pw_not_crypted = $pwgen->generate();
+    		$new_pw = encrypt(string_utf8_decode($new_pw_not_crypted));
+
+    		//update DB
+    		$db->query_update(
+    		"users",
+    		array(
+    			'pw' => $new_pw
+    		),
+    		"login = '".$_POST['login']."'"
+    		);
+
+    		//Delete recovery in DB
+    		$db->query_delete(
+    		"misc",
+    		array(
+    			'type' => 'password_recovery',
+    			'intitule' => $_POST['login'],
+    			'valeur' => $key
+    		)
+    		);
+
+    		//Get email
+    		$data_user = $db->query_first("SELECT email FROM ".$pre."users WHERE login = '".$_POST['login']."'");
+
+    		$_SESSION['validite_pw'] = false;
+
+    		//load library
+    		require_once("../includes/libraries/phpmailer/class.phpmailer.php");
+
+    		//send to user
+    		$mail = new PHPMailer();
+    		$mail->SetLanguage("en","../includes/libraries/phpmailer/language/");
+    		$mail->IsSMTP();						// send via SMTP
+    		$mail->Host     = $smtp_server; 		// SMTP servers
+    		$mail->SMTPAuth = $smtp_auth;     		// turn on SMTP authentication
+    		$mail->Username = $smtp_auth_username;  // SMTP username
+    		$mail->Password = $smtp_auth_password; 	// SMTP password
+    		$mail->From     = $email_from;
+    		$mail->FromName = $email_from_name;
+    		$mail->AddAddress($data_user['email']); //Destinataire
+    		$mail->WordWrap = 80;					// set word wrap
+    		$mail->IsHTML(true);					// send as HTML
+    		$mail->Subject  =  $txt['forgot_pw_email_subject_confirm'];
+    		$mail->AltBody  =  strip_tags($txt['forgot_pw_email_body'])." ".$new_pw_not_crypted;
+    		$mail->Body     =  $txt['forgot_pw_email_body']." ".$new_pw_not_crypted;
+
+    		//send email
+    		if($mail->Send())
+    		{
+    			echo 'done';
+    		}
+    		else
+    		{
+    			echo $mail->ErrorInfo;
+    		}
+    	}
     break;
 
     case "get_folders_list":

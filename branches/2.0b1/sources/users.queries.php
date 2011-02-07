@@ -371,7 +371,32 @@ if ( !empty($_POST['type']) ){
                 ),
                 "id = ".$_POST['id']
             );
-        break;
+        	break;
+
+    	/*
+    	* Check the domain
+    	*/
+    	case "check_domain":
+    		$return = array();
+
+    		//Check if folder exists
+    		$data = $db->fetch_row("SELECT COUNT(*) FROM ".$pre."nested_tree WHERE title = '".$_POST['domain']."' AND parent_id = 0");
+    		if ( $data[0] != 0 ){
+    			$return["folder"] = "exists";
+    		}else{
+    			$return["folder"] = "not_exists";
+    		}
+
+    		//Check if role exists
+    		$data = $db->fetch_row("SELECT COUNT(*) FROM ".$pre."roles_title WHERE title = '".$_POST['domain']."'");
+    		if ( $data[0] != 0 ){
+    			$return["role"] = "exists";
+    		}else{
+    			$return["role"] = "not_exists";
+    		}
+
+    		echo json_encode($return);
+    		break;
     }
 }
 
