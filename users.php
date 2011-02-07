@@ -226,7 +226,9 @@ echo '
 	<input type="text" id="new_pwd" class="input_text text ui-widget-content ui-corner-all" />', '
 
    	<label for="new_email" class="label_cpm">'.$txt['email'].'</label>
-	<input type="text" id="new_email" class="input_text text ui-widget-content ui-corner-all" />
+	<input type="text" id="new_email" class="input_text text ui-widget-content ui-corner-all" onchange="check_domain(this.value)" />
+	&nbsp;<img id="ajax_loader_new_mail" style="display:none;" src="includes/images/ajax-loader.gif" alt="" />
+	<br />
 
 	<input type="checkbox" id="new_admin"', $_SESSION['user_admin'] == 1 ? '':' disabled', ' />
    	<label for="new_admin">'.$txt['is_admin'].'</label>
@@ -236,6 +238,14 @@ echo '
 	<br />
 	<input type="checkbox" id="new_personal_folder"', isset($_SESSION['settings']['enable_pf_feature']) && $_SESSION['settings']['enable_pf_feature'] == 1 ? 'checked':'', ' />
    	<label for="new_personal_folder">'.$txt['personal_folder'].'</label>
+	<div id="auto_create_folder" style="display:none;">
+		<input type="checkbox" id="new_folder_domain" />
+	   	<label for="new_folder_domain">'.$txt['create_new_folder_domain'].'`<span id="auto_create_folder_span"></span>`</label>
+	</div>
+	<div id="auto_create_role" style="display:none;">
+		<input type="checkbox" id="new_role_domain" />
+	   	<label for="new_folder_domain">'.$txt['create_new_role_domain'].'`<span id="auto_create_role_span"></span>`</label>
+	</div>
 </div>';
 
 // DIV FOR DELETING A USER

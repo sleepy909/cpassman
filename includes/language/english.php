@@ -1,5 +1,13 @@
 <?php
 //ENGLISH
+$txt['create_new_folder_domain'] = "Auto create domain ";
+$txt['create_new_role_domain'] = "Auto create folder ";
+$txt['pw_recovery_asked'] = "You have asked for a password recovery";
+$txt['pw_recovery_info'] = "By clicking on the next button, you will receive an email that contains the new password for your account.";
+$txt['pw_recovery_button'] = "Send me my new password";
+$txt['forgot_pw_email_subject_confirm'] = "cPassMan - Your password step 2";
+$txt['forgot_pw_email_body'] = "Hi,<br /><br />Your new password for cPassMan is :";
+$txt['forgot_pw_email_altbody'] = "Hi,\n\nYour new password for cPassMan is :";
 $txt['restricted_to_roles'] = "Allow to restrict items to Users and Roles";
 $txt['folders'] = "Folders";
 $txt['users'] = "Users";

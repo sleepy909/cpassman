@@ -76,7 +76,8 @@ if ( isset($_GET['page']) && $_GET['page'] == "manage_settings")
 else
 if ( isset($_GET['page']) && ( $_GET['page'] == "manage_users" ||$_GET['page'] == "manage_folders") )
     $htmlHeaders .= '
-        <script src="includes/js/jquery.jeditable.js" type="text/javascript"></script>';
+        <script src="includes/js/jquery.jeditable.js" type="text/javascript"></script>
+        <script type="text/javascript" src="includes/js/json-minified.js"></script>';
 
 else
 if ( isset($_GET['page']) && ($_GET['page'] == "find" || $_GET['page'] == "kb"))
@@ -168,7 +169,29 @@ $htmlHeaders .= '
         }
     }
 
-    function ouvrir_div(div){
+	/*
+	* Manage generation of new password
+	*/
+    function GenerateNewPassword(key, login){
+    	$("#ajax_loader_send_mail").show();
+		//send query
+		$.post("sources/main.queries.php", {
+				type :	"generate_new_password",
+				login:	login,
+				key :	key
+			},
+			function(data){
+				if (data == "done"){
+					window.location.href="index.php";
+				}else{
+					$("#generate_new_pw_error").show().html(data);
+				}
+				$("#ajax_loader_send_mail").hide();
+			}
+		);
+	}
+
+    function OpenDiv(div){
         $("#"+div).slideToggle("slow");
     }
 
@@ -312,14 +335,16 @@ if ( !isset($_GET['page']) ){
             modal: true,
             autoOpen: false,
             width: 300,
-            height: 190,
+            height: 250,
             title: "'.$txt['forgot_my_pw'].'",
             buttons: {
                 "'.$txt['send'].'": function() {
-                    var data = "type=send_pw_by_email&email="+document.getElementById("forgot_pw_email").value;
+					$("#div_forgot_pw_alert").html("");
+                    var data = "type=send_pw_by_email&email="+$("#forgot_pw_email").val()+"&login="+$("#forgot_pw_login").val();
                     httpRequest("sources/main.queries.php",data);
                 },
                 "'.$txt['cancel_button'].'": function() {
+					$("#div_forgot_pw_alert").html("");
                     $("#forgot_pw_email").val("");
                     $(this).dialog("close");
                 }
@@ -1129,7 +1154,35 @@ if ( isset($_GET['page']) && $_GET['page'] == "manage_users" ){
                 document.form_utilisateurs.submit();
             }
         );
-    }
+    };
+
+	function check_domain(email){
+		$("#ajax_loader_new_mail").show();
+
+		//extract domain from email
+		var ind=email.indexOf("@");
+		var domain=email.substr((ind+1));
+
+		//check if domain exists
+		$.post("sources/users.queries.php",
+            {
+                type    	: "check_domain",
+                domain      : domain
+            },
+            function(data){
+            	data = jsonParse(data);alert(data.folder);
+                if (data.folder == "not_exists") {
+                	$("#auto_create_folder").show();
+                	$("#auto_create_folder_span").html(domain);
+                }
+                if (data.role == "not_exists") {
+                	$("#auto_create_role").show();
+                	$("#auto_create_role_span").html(domain);
+                }
+                $("#ajax_loader_new_mail").hide();
+            }
+        );
+	}
     ';
 }
 

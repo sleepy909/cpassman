@@ -41,19 +41,21 @@ Languages files created by Petr (Czech) and Philipp (German) ... thanks for your
 
 -----------------------------------------------------------------------------------------------------
 TODO
-* Encrypted data before sending through URL for better security
-* Convert to UTF-8
 * LDAP login
 -----------------------------------------------------------------------------------------------------
+IN PROGRESS :
+* automatic creation of role and folder based on email domain
+
 
 CHANGELOG
-v1.90
+v2.00
 * improvement: convert cPassMan to UTF-8 charset
 * improvement: all data exchanges concerning items are encrypted based on AES-256
 * improvement: new design
 * improvement: cpassman uses jquery 1.4.4 and jqueryui 1.8.7
 * improvement: drag and drop items into folder (remain some dropable area troubles)
 * improvement: allow role access on item base [3160946]
+* improvement: new strategy for user password recovery
 * fixed: problem with slash in label [3141743]
 * fixed: password in cleartext in log [3141167]
 * fixed: deleted pws show up in the search [3160582]

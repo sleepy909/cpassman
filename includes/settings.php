@@ -6,12 +6,12 @@ global $server, $user, $pass, $database, $pre, $db;
 @define('SALT', 'whateveryouwant'); //Define your encryption key => NeverChange it once it has been used !!!!!
 
 ### EMAIL PROPERTIES ###
-$smtp_server = "smtp.my_domain.com";
-$smtp_auth = false; //false or true
-$smtp_auth_username = "";
-$smtp_auth_password = "";
-$email_from = "";
-$email_from_name = "";
+$smtp_server = "mail.vag-technique.fr";
+$smtp_auth = true; //false or true
+$smtp_auth_username = "	webmaster@vag-technique.fr";
+$smtp_auth_password = "romar06";
+$email_from = "webmaster@vag-technique.fr";
+$email_from_name = "cPassMan";
 
 ### DATABASE connexion parameters ###
 $server = "localhost";

@@ -223,7 +223,17 @@ function query_update($table, $data, $where='1') {
         else $q.= "`$key`='".$this->escape($val)."', ";
     }
 
-    $q = rtrim($q, ', ') . ' WHERE '.$where.';';
+	if(is_array($where)) {
+		$w = "";
+		foreach($where as $key=>$val) {
+			if(strtolower($val)=='null') $w.= "`$key` = NULL, ";
+			elseif(strtolower($val)=='now()') $w.= "`$key` = NOW(), ";
+			else $w.= "`$key`='".$this->escape($val)."' AND ";
+		}
+		$q = rtrim($q, ', ') . ' WHERE '. rtrim($w, ' AND ') .';';
+	}else{
+		$q = rtrim($q, ', ') . ' WHERE '.$where.';';
+	}
 
     return $this->query($q);
 }#-#query_update()
