@@ -477,4 +477,35 @@ function CPMStats(){
         "type='admin' AND intitule = 'send_stats_time'"
     );
 }
+
+
+/**
+ * SendEmail()
+ *
+ * @return
+ */
+function SendEmail($subject, $mail, $email){
+
+	//load library
+	require_once("../includes/libraries/phpmailer/class.phpmailer.php");
+
+	//send to user
+	$mail = new PHPMailer();
+	$mail->SetLanguage("en","../includes/libraries/phpmailer/language/");
+	$mail->IsSMTP();						// send via SMTP
+	$mail->Host     = $smtp_server; 		// SMTP servers
+	$mail->SMTPAuth = $smtp_auth;     		// turn on SMTP authentication
+	$mail->Username = $smtp_auth_username;  // SMTP username
+	$mail->Password = $smtp_auth_password; 	// SMTP password
+	$mail->From     = $email_from;
+	$mail->FromName = $email_from_name;
+	$mail->AddAddress($data_user['email']); //Destinataire
+	$mail->WordWrap = 80;					// set word wrap
+	$mail->IsHTML(true);					// send as HTML
+	$mail->Subject  =  $subject;
+	$mail->Body     =  $mail;
+
+	//send email
+	$mail->Send();
+}
 ?>

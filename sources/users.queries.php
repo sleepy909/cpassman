@@ -94,7 +94,7 @@ if ( !empty($_POST['type']) ){
             $data = $db->fetch_array();
             if ( empty($data['id']) ){
                 //Add user in DB
-                $new_id = $db->query_insert(
+                $new_user_id = $db->query_insert(
                     "users",
                     array(
                         'login' => mysql_real_escape_string(stripslashes($_POST['login'])),
@@ -116,12 +116,73 @@ if ( !empty($_POST['type']) ){
                         "nested_tree",
                         array(
                             'parent_id' => '0',
-                            'title' => $new_id,
+                            'title' => $new_user_id,
                             'bloquer_creation' => '0',
                             'bloquer_modification' => '0',
                             'personal_folder' => '1'
                         )
                     );
+
+            	//Create folder and role for domain
+            	if ($_POST['new_folder_role_domain']=="true") {
+            		//create folder
+            		$new_folder_id=$db->query_insert(
+	            		"nested_tree",
+	            		array(
+	            		    'parent_id' => 0,
+	            		    'title' => mysql_real_escape_string(stripslashes($_POST['domain'])),
+	            		    'personal_folder' => 0,
+	            		    'renewal_period' => 0,
+	            		    'bloquer_creation' => '0',
+	            		    'bloquer_modification' => '0'
+	            		)
+            		);
+
+            		//Add complexity
+            		$db->query_insert(
+	            		"misc",
+	            		array(
+	            		    'type' => 'complex',
+	            		    'intitule' => $new_folder_id,
+	            		    'valeur' => 50
+	            		)
+            		);
+
+            		//Create role
+            		$new_role_id = $db->query_insert(
+            			"roles_title",
+ 						array(
+ 							'title' => mysql_real_escape_string(stripslashes(($_POST['domain'])))
+ 						)
+            		);
+
+            		//Associate new role to new folder
+            		$db->query_insert(
+	            		'roles_values',
+	            		array(
+	            		    'folder_id' => $new_folder_id,
+	            		    'role_id' => $new_role_id
+	            		)
+            		);
+
+            		//Add the new user to this role
+            		$db->query_update(
+	            		'users',
+	            		array(
+	            		    'fonction_id' => $new_role_id
+	            		),
+	            		"id=".$new_user_id
+            		);
+            	}
+
+            	//Send mail to new user
+/*
+SendEmail(
+            		$txt['email_subject_new_user'],
+            		$txt['email_text_new_user'].mysql_real_escape_string(stripslashes($_POST['login']))." - ".string_utf8_decode($_POST['pw']),
+            		$_POST['email']
+            	);
+*/
 
                 //reload page
                 echo 'document.form_utilisateurs.submit();';

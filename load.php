@@ -946,21 +946,28 @@ if ( isset($_GET['page']) && $_GET['page'] == "manage_users" ){
             bgiframe: true,
             modal: true,
             autoOpen: false,
-            width: 280,
+            width: 320,
             height: 380,
             title: "'.$txt['new_user_title'].'",
             buttons: {
                 "'.$txt['save_button'].'": function() {
-                    LoadingPage();  //show loading div
-                    var data = "type=add_new_user&"+
-                        "&login="+escape(document.getElementById("new_login").value)+
-                        "&pw="+encodeURIComponent($("#new_pwd").val())+
-                        "&email="+document.getElementById("new_email").value+
-                        "&admin="+document.getElementById("new_admin").checked+
-                        "&manager="+document.getElementById("new_manager").checked+
-                        "&personal_folder="+document.getElementById("new_personal_folder").checked;
-                    httpRequest("sources/users.queries.php",data);
-                    $(this).dialog("close");
+					if ($("#new_login").val() == "" || $("#new_pwd").val()=="" || $("#new_email").val()==""){
+						$("#add_new_user_error").show().html("'.$txt['error_must_enter_all_fields'].'");
+					}else{
+	                    LoadingPage();  //show loading div
+	                    var data = "type=add_new_user&"+
+	                        "&login="+escape($("#new_login").val())+
+	                        "&pw="+encodeURIComponent($("#new_pwd").val())+
+	                        "&email="+$("#new_email").val()+
+	                        "&admin="+$("#new_admin").attr("checked")+
+	                        "&manager="+$("#new_manager").attr("checked")+
+	                        "&personal_folder="+$("#new_personal_folder").attr("checked")+
+	                        "&new_folder_role_domain="+$("#new_folder_role_domain").attr("checked")+
+	                        "&domain="+$("#new_domain").val();
+	                    httpRequest("sources/users.queries.php",data);
+	                    $("#add_new_user_error").hide();
+	                    $(this).dialog("close");
+	                }
                 },
                 "'.$txt['cancel_button'].'": function() {
                     $(this).dialog("close");
@@ -1160,8 +1167,8 @@ if ( isset($_GET['page']) && $_GET['page'] == "manage_users" ){
 		$("#ajax_loader_new_mail").show();
 
 		//extract domain from email
-		var ind=email.indexOf("@");
-		var domain=email.substr((ind+1));
+		var atsign = email.substring(0,email.lastIndexOf("@")+1);
+		var domain = email.substring(atsign.length,email.length+1);
 
 		//check if domain exists
 		$.post("sources/users.queries.php",
@@ -1170,14 +1177,11 @@ if ( isset($_GET['page']) && $_GET['page'] == "manage_users" ){
                 domain      : domain
             },
             function(data){
-            	data = jsonParse(data);alert(data.folder);
-                if (data.folder == "not_exists") {
-                	$("#auto_create_folder").show();
-                	$("#auto_create_folder_span").html(domain);
-                }
-                if (data.role == "not_exists") {
-                	$("#auto_create_role").show();
-                	$("#auto_create_role_span").html(domain);
+            	data = jsonParse(data);
+                if (data.folder == "not_exists" && data.role == "not_exists") {
+                	$("#auto_create_folder_role").show();
+                	$("#auto_create_folder_role_span").html(domain);
+                	$("#new_domain").val(domain);
                 }
                 $("#ajax_loader_new_mail").hide();
             }
