@@ -194,7 +194,11 @@ SendEmail(
 
         ## DELETE USER ##
         case "supprimer_user":
+        	//delete user in database
             $db->query("DELETE FROM ".$pre."users WHERE id = ".$_POST['id']);
+
+        	//kill session of user if logged
+
             //reload page
             echo 'document.form_utilisateurs.submit();';
         break;

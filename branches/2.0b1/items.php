@@ -90,7 +90,7 @@ echo '
 	        $prev_level = 1;
 	        $first_group = "";
 
-			if (count($_SESSION['list_folders_limited']) > 0) {
+			if (isset($_SESSION['list_folders_limited']) && count($_SESSION['list_folders_limited']) > 0) {
 				$list_folders_limited_keys = @array_keys($_SESSION['list_folders_limited']);
 	        }else{
 	        	$list_folders_limited_keys = array();

@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-session_start();
+//session_start();
 if ($_SESSION['CPM'] != 1)
 	die('Hacking attempt...');
 
@@ -171,6 +171,7 @@ function IdentifyUserRights($groupes_visibles_user,$groupes_interdits_user,$is_a
             if ( !empty($role_id) ){
             	//Get allowed folders for each Role
             	$rows = $db->fetch_all_array("SELECT folder_id FROM ".$pre."roles_values WHERE role_id=".$role_id);
+            	//print_r($rows);
 				foreach($rows as $reccord){
 	            	if (isset($reccord['folder_id']) && !in_array($record['folder_id'], $list_allowed_folders)) {
 	            		array_push($list_allowed_folders, $reccord['folder_id']);
