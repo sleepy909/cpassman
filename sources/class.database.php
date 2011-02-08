@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-session_start();
+//session_start();
 if ($_SESSION['CPM'] != 1)
 	die('Hacking attempt...');
 

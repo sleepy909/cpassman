@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-session_start();
+//session_start();
 if ($_SESSION['CPM'] != 1)
 	die('Hacking attempt...');
 
@@ -83,21 +83,26 @@ if ($_SESSION['CPM'] != 1)
         $row = $db->query($sql);
         $data = $db->fetch_array($row);
 
-        // update user's rights
-        $_SESSION['user_admin'] = $data['admin'];
-        $_SESSION['user_gestionnaire'] = $data['gestionnaire'];
-        $_SESSION['groupes_visibles'] = array();
-        $_SESSION['groupes_interdits'] = array();
-        if ( !empty($data['groupes_visibles'])) $_SESSION['groupes_visibles'] = @implode(';',$data['groupes_visibles']);
-        if ( !empty($data['groupes_interdits'])) $_SESSION['groupes_interdits'] = @implode(';',$data['groupes_interdits']);
+    	//Check if user has been deleted or unlogged
+		if (empty($data) == 0) {
+			//$_GET['session'] = "expiree";
+		}else{
+			// update user's rights
+			$_SESSION['user_admin'] = $data['admin'];
+			$_SESSION['user_gestionnaire'] = $data['gestionnaire'];
+			$_SESSION['groupes_visibles'] = array();
+			$_SESSION['groupes_interdits'] = array();
+			if ( !empty($data['groupes_visibles'])) $_SESSION['groupes_visibles'] = @implode(';',$data['groupes_visibles']);
+			if ( !empty($data['groupes_interdits'])) $_SESSION['groupes_interdits'] = @implode(';',$data['groupes_interdits']);
 
-        // get access rights
-        IdentifyUserRights($data['groupes_visibles'],$data['groupes_interdits'],$data['admin'],$data['fonction_id'],false);
+			// get access rights
+			IdentifyUserRights($data['groupes_visibles'],$data['groupes_interdits'],$data['admin'],$data['fonction_id'],false);
+		}
     }
 
 
 /* CHECK IF LOGOUT IS ASKED OR IF SESSION IS EXPIRED */
-    if ( (isset($_POST['menu_action']) && $_POST['menu_action'] == "deconnexion") || (isset($_GET['session']) && $_GET['session'] == "expiree") ){
+    if ( (isset($_POST['menu_action']) && $_POST['menu_action'] == "deconnexion") || (isset($_GET['session']) && $_GET['session'] == "expiree")){
         // Update table by deleting ID
         if ( isset($_SESSION['user_id']) )
             $db->query_update(

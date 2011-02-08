@@ -13,7 +13,8 @@
  */
 
 session_start();
-if ($_SESSION['CPM'] != 1)
+if ($_SESSION['CPM'] != 1)
+
 
 	die('Hacking attempt...');
 
