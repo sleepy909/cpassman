@@ -1,7 +1,9 @@
 <?php
 //ENGLISH
-$txt['create_new_folder_domain'] = "Auto create domain ";
-$txt['create_new_role_domain'] = "Auto create folder ";
+$txt['email_subject_new_user'] = "[cPassMan] Your account creation";
+$txt['email_text_new_user'] = "Hi,<br /><br />Your account has been created in cPassMan.<br />You can now access ".$_SESSION['settings']['cpassman_url']." using the next credentials:<br />";
+$txt['error_must_enter_all_fields'] = "You must fill in each fields!";
+$txt['auto_create_folder_role'] = "Create folder and role for ";
 $txt['pw_recovery_asked'] = "You have asked for a password recovery";
 $txt['pw_recovery_info'] = "By clicking on the next button, you will receive an email that contains the new password for your account.";
 $txt['pw_recovery_button'] = "Send me my new password";

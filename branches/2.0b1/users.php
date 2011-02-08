@@ -238,13 +238,10 @@ echo '
 	<br />
 	<input type="checkbox" id="new_personal_folder"', isset($_SESSION['settings']['enable_pf_feature']) && $_SESSION['settings']['enable_pf_feature'] == 1 ? 'checked':'', ' />
    	<label for="new_personal_folder">'.$txt['personal_folder'].'</label>
-	<div id="auto_create_folder" style="display:none;">
-		<input type="checkbox" id="new_folder_domain" />
-	   	<label for="new_folder_domain">'.$txt['create_new_folder_domain'].'`<span id="auto_create_folder_span"></span>`</label>
-	</div>
-	<div id="auto_create_role" style="display:none;">
-		<input type="checkbox" id="new_role_domain" />
-	   	<label for="new_folder_domain">'.$txt['create_new_role_domain'].'`<span id="auto_create_role_span"></span>`</label>
+	<div id="auto_create_folder_role" style="display:none;">
+		<input type="checkbox" id="new_folder_role_domain" />
+	   	<label for="new_folder_role_domain">'.$txt['auto_create_folder_role'].'`<span id="auto_create_folder_role_span"></span>`</label>
+		<input type="hidden" id="new_domain">
 	</div>
 </div>';
 
