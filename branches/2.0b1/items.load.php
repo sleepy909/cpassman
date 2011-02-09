@@ -838,9 +838,9 @@ function open_edit_item_div() {
         selectedList: 7,
         minWidth: 430,
         height: 145,
-        checkAllText: "'.$txt['check_all_text'].'",
-        uncheckAllText: "<?php echo$txt['uncheck_all_text'];?>",
-        noneSelectedText: "<?php echo$txt['none_selected_text'];?>"
+        checkAllText: "<?php echo $txt['check_all_text'];?>",
+        uncheckAllText: "<?php echo $txt['uncheck_all_text'];?>",
+        noneSelectedText: "<?php echo $txt['none_selected_text'];?>"
     });
 
     //open dialog
