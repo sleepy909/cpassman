@@ -99,8 +99,6 @@ switch($_POST['type'])
     break;
 
     case "identify_user":
-        session_start();
-
         require_once ("main.functions.php");
         require_once ("../sources/NestedTree.class.php");
 

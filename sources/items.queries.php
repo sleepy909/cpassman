@@ -694,7 +694,11 @@ if ( isset($_POST['type']) ){
                     }
 
 	            	//Manage user restriction
-	            	$arrData['restricted'] = $_POST['restricted'];
+	            	if (isset($_POST['restricted'])) {
+	            		$arrData['restricted'] = $_POST['restricted'];
+	            	}else{
+	            		$arrData['restricted'] = "";
+	            	}
             }else{
                 $arrData['show_details'] = 0;
             }
@@ -947,10 +951,11 @@ if ( isset($_POST['type']) ){
         * List items of a group
         */
         case 'lister_items_groupe':
-            $arbo_html = "";
-        	$folder_is_pf = 0;
-        	$show_error = 0;
+            $arbo_html = $html = "";
+        	$folder_is_pf = $show_error = 0;
+        	$items_id_list = $rights = array();
 
+        	//Manage the restrited_to variable
         	if (isset($_POST['restricted'])) {
         		$restricted_to = $_POST['restricted'];
         	}else{
@@ -1005,7 +1010,7 @@ if ( isset($_POST['type']) ){
                     ORDER BY i.label ASC, l.date DESC");
                 $id_managed = '';
                 $i = 0;
-                $items_id_list = array();
+
                 foreach( $rows as $reccord ) {
                     //exclude all results except the first one returned by query
                     if ( empty($id_managed) || $id_managed != $reccord['id'] ){

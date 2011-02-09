@@ -70,7 +70,7 @@ echo '
                     if ( count($liste_fonctions) > 0 ){
                         foreach($liste_fonctions as $fonction){
                             if ( in_array($fonction['id'],explode(";",$reccord['fonction_id'])) )
-                                $list_allo_fcts .= '<img src="includes/images/arrow-000-small.png" />'.@htmlspecialchars($fonction['title'],ENT_COMPAT,$k['charset']).'<br />';
+                                $list_allo_fcts .= '<img src="includes/images/arrow-000-small.png" />'.@htmlspecialchars($fonction['title'],ENT_COMPAT, "UTF-8").'<br />';
                         }
                     }
                     if ( empty($list_allo_fcts) ) $list_allo_fcts = '<img src="includes/images/error.png" title="'.$txt['user_alarm_no_function'].'" />';
@@ -84,7 +84,7 @@ echo '
                             if ( @!in_array($t->id,$_SESSION['groupes_interdits']) && in_array($t->id,$_SESSION['groupes_visibles']) ){
                                 $ident="";
                                 if ( in_array($t->id,explode(";",$reccord['groupes_visibles'])) )
-                                    $list_allo_grps .= '<img src="includes/images/arrow-000-small.png" />'.@htmlspecialchars($ident.$t->title,ENT_COMPAT,$k['charset']).'<br />';
+                                    $list_allo_grps .= '<img src="includes/images/arrow-000-small.png" />'.@htmlspecialchars($ident.$t->title,ENT_COMPAT, "UTF-8").'<br />';
                                 $prev_level = $t->nlevel;
                             }
                         }
@@ -98,7 +98,7 @@ echo '
                         foreach($tree_desc as $t){
                             $ident="";
                             if ( in_array($t->id,explode(";",$reccord['groupes_interdits'])) )
-                                $list_forb_grps .= '<img src="includes/images/arrow-000-small.png" />'.@htmlspecialchars($ident.$t->title,ENT_COMPAT,$k['charset']).'<br />';
+                                $list_forb_grps .= '<img src="includes/images/arrow-000-small.png" />'.@htmlspecialchars($ident.$t->title,ENT_COMPAT, "UTF-8").'<br />';
                             $prev_level = $t->nlevel;
                         }
                     }

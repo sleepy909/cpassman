@@ -173,7 +173,7 @@ function IdentifyUserRights($groupes_visibles_user,$groupes_interdits_user,$is_a
             	$rows = $db->fetch_all_array("SELECT folder_id FROM ".$pre."roles_values WHERE role_id=".$role_id);
             	if (count($rows) > 0) {
             		foreach($rows as $reccord){
-            			if (isset($reccord['folder_id']) && !in_array($record['folder_id'], $list_allowed_folders)) {
+            			if (isset($reccord['folder_id']) && !in_array($reccord['folder_id'], $list_allowed_folders)) {
             				array_push($list_allowed_folders, $reccord['folder_id']);
             			}
             		}
@@ -335,7 +335,8 @@ function UpdateCacheTable($action, $id){
         $sql = "SELECT label, description, id_tree, perso, restricted_to, login
                 FROM ".$pre."items
                 WHERE id=".$id;
-        $row = $db->fetch_array($sql);
+    	$row = $db->query($sql);
+    	$data = $db->fetch_array($row);
 
         //Get all TAGS
         $tags = "";
@@ -357,13 +358,13 @@ function UpdateCacheTable($action, $id){
         $db->query_update(
                 "cache",
                 array(
-                    'label'   =>  $row['label'],
-                    'description'    =>  $row['description'],
+                    'label'   =>  $data['label'],
+                    'description'    =>  $data['description'],
                     'tags'    =>  $tags,
-                    'id_tree' =>  $row['id_tree'],
-                    'perso' =>  $row['perso'],
-                    'restricted_to' =>  $row['restricted_to'],
-                    'login' => $row['login'],
+                    'id_tree' =>  $data['id_tree'],
+                    'perso' =>  $data['perso'],
+                    'restricted_to' =>  $data['restricted_to'],
+                    'login' => $data['login'],
                     'folder' => $folder,
                 ),
                 "id='".$id."'"
