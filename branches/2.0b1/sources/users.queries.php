@@ -197,6 +197,30 @@ SendEmail(
         	//delete user in database
             $db->query("DELETE FROM ".$pre."users WHERE id = ".$_POST['id']);
 
+        	//delete personal folder and items
+        	require_once ("NestedTree.class.php");
+        	$tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
+
+        	// Get through each subfolder
+        	$folders = $tree->getDescendants($_POST['id'],true);
+        	foreach($folders as $folder){
+        		//delete folder
+        		$db->query("DELETE FROM ".$pre."nested_tree WHERE id = ".$folder->id);
+
+        		//delete items & logs
+        		$items = $db->fetch_all_array("SELECT id FROM ".$pre."items WHERE id_tree='".$folder->id."'");
+        		foreach( $items as $item ) {
+        			//Delete item
+        			$db->query("DELETE FROM ".$pre."items WHERE id = ".$item['id']);
+        			//log
+        			$db->query("DELETE FROM ".$pre."log_items WHERE id_item = ".$item['id']);
+        		}
+        	}
+
+        	//rebuild tree
+        	$tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
+        	$tree->rebuild();
+
         	//kill session of user if logged
 
             //reload page

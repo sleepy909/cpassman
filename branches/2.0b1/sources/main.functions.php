@@ -171,24 +171,25 @@ function IdentifyUserRights($groupes_visibles_user,$groupes_interdits_user,$is_a
             if ( !empty($role_id) ){
             	//Get allowed folders for each Role
             	$rows = $db->fetch_all_array("SELECT folder_id FROM ".$pre."roles_values WHERE role_id=".$role_id);
-            	//print_r($rows);
-				foreach($rows as $reccord){
-	            	if (isset($reccord['folder_id']) && !in_array($record['folder_id'], $list_allowed_folders)) {
-	            		array_push($list_allowed_folders, $reccord['folder_id']);
-	            	}
-				}
-            	//Check for the users roles if some specific rights exist on items
-            	$rows = $db->fetch_all_array("
+            	if (count($rows) > 0) {
+            		foreach($rows as $reccord){
+            			if (isset($reccord['folder_id']) && !in_array($record['folder_id'], $list_allowed_folders)) {
+            				array_push($list_allowed_folders, $reccord['folder_id']);
+            			}
+            		}
+            		//Check for the users roles if some specific rights exist on items
+            		$rows = $db->fetch_all_array("
 					SELECT i.id_tree, r.item_id
 					FROM ".$pre."items AS i
 					INNER JOIN ".$pre."restriction_to_roles AS r ON (r.item_id=i.id)
 					WHERE r.role_id=".$role_id."
 					ORDER BY i.id_tree ASC");
-            	$x=0;
-            	foreach($rows as $reccord){
-            		if (isset($reccord['id_tree'])) {
-            			$list_folders_limited[$reccord['id_tree']][$x] = $reccord['item_id'];
-            			$x++;
+            		$x=0;
+            		foreach($rows as $reccord){
+            			if (isset($reccord['id_tree'])) {
+            				$list_folders_limited[$reccord['id_tree']][$x] = $reccord['item_id'];
+            				$x++;
+            			}
             		}
             	}
             }
@@ -276,7 +277,7 @@ function logEvents($type, $label, $who){
 #################
 #### FUNCTION permits to update the CACHE table
 #################
-function UpdateCacheTable($action, $id=""){
+function UpdateCacheTable($action, $id){
     global $db, $server, $user, $pass, $database, $pre;
 
 	//include librairies
@@ -373,7 +374,8 @@ function UpdateCacheTable($action, $id=""){
         $sql = "SELECT label, description, id_tree, perso, restricted_to, id, login
                 FROM ".$pre."items
                 WHERE id=".$id;
-        $row = $db->fetch_array($sql);
+    	$row = $db->query($sql);
+        $data = $db->fetch_array($row);
 
         //Get all TAGS
         $tags = "";
@@ -395,20 +397,20 @@ function UpdateCacheTable($action, $id=""){
         $db->query_insert(
             "cache",
             array(
-                'id'   =>  $row['id'],
-                'label'   =>  $row['label'],
-                'description'    =>  $row['description'],
+                'id'   =>  $data['id'],
+                'label'   =>  $data['label'],
+                'description'    =>  $data['description'],
                 'tags'    =>  $tags,
-                'id_tree' =>  $row['id_tree'],
-                'perso' =>  $row['perso'],
-	            'restricted_to' =>  $row['restricted_to'],
-	            'login' => $row['login'],
+                'id_tree' =>  $data['id_tree'],
+                'perso' =>  $data['perso'],
+	            'restricted_to' =>  $data['restricted_to'],
+	            'login' => $data['login'],
 	            'folder' => $folder,
             )
         );
     //DELETE an item
     }else if ( $action == "delete_value"){
-        mysql_query("DELETE FROM ".$pre."items WHERE id = ".$id);
+        mysql_query("DELETE FROM ".$pre."cache WHERE id = ".$id);
     }
 }
 

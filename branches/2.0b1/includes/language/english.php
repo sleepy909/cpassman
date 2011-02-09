@@ -1,5 +1,6 @@
 <?php
 //ENGLISH
+$txt['at_import'] = "Importation";
 $txt['email_subject_new_user'] = "[cPassMan] Your account creation";
 $txt['email_text_new_user'] = "Hi,<br /><br />Your account has been created in cPassMan.<br />You can now access ".@$_SESSION['settings']['cpassman_url']." using the next credentials:<br />";
 $txt['error_must_enter_all_fields'] = "You must fill in each fields!";
