@@ -20,7 +20,7 @@ if ($_SESSION['CPM'] != 1)
 include('../includes/language/'.$_SESSION['user_language'].'.php');
 include('../includes/settings.php');
 include('../includes/include.php');
-header("Content-type: text/html; charset=".$k['charset']);
+header("Content-type: text/html; charset=utf-8");
 include('main.functions.php');
 
 // connect to the server

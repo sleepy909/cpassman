@@ -41,11 +41,10 @@ Languages files created by Petr (Czech) and Philipp (German) ... thanks for your
 
 -----------------------------------------------------------------------------------------------------
 TODO
-* LDAP login
+* IMAP login
 -----------------------------------------------------------------------------------------------------
 IN PROGRESS :
-* automatic creation of role and folder based on email domain
-
+* LDAP login
 
 CHANGELOG
 v2.00
@@ -56,10 +55,13 @@ v2.00
 * improvement: drag and drop items into folder (remain some dropable area troubles)
 * improvement: allow role access on item base [3160946]
 * improvement: new strategy for user password recovery
+* improvement: automatic creation of role and folder based on email domain
+* improvement: when deleting a user, personal folder and items are deleted
 * fixed: problem with slash in label [3141743]
 * fixed: password in cleartext in log [3141167]
 * fixed: deleted pws show up in the search [3160582]
 * fixed: GUI corrections [3160611]
+* fixed: delete session of a deleted user [16]
 
 v1.80
 * improvement: an item can be modified by anyone if activated [3040120]

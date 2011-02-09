@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-//session_start();
+session_start();
 if ($_SESSION['CPM'] != 1)
 	die('Hacking attempt...');
 
@@ -53,16 +53,16 @@ if ( isset($_POST['type']) ){
             $tags = htmlspecialchars_decode($data_received['tags']);
 
             //check if element doesn't already exist
-            $item_exists = false;
+            $item_exists = 0;
             $new_id = "";
         	$data = $db->fetch_row("SELECT COUNT(*) FROM ".$pre."items WHERE label = '".addslashes($label)."' AND inactif=0");
         	if ( $data[0] != 0 ){
-        		$item_exists = true;
+        		$item_exists = 1;
         	}else{
-        		$item_exists = false;
+        		$item_exists = 0;
         	}
 
-            if ( (isset($_SESSION['settings']['duplicate_item']) && $_SESSION['settings']['duplicate_item'] == 0 && $item_exists = false)
+            if ( (isset($_SESSION['settings']['duplicate_item']) && $_SESSION['settings']['duplicate_item'] == 0 && $item_exists == 0)
             	||
             	(isset($_SESSION['settings']['duplicate_item']) && $_SESSION['settings']['duplicate_item'] == 1)
             ){
@@ -84,9 +84,9 @@ if ( isset($_POST['type']) ){
 	                    'id_tree' => $data_received['categorie'],
 	                    'login' => $login,
 	                    'inactif' => '0',
-	                 'restricted_to' => $data_received['resticted_to'],
-	                 'perso' => ( $data_received['salt_key_set']==1 && isset($data_received['salt_key_set']) && $data_received['is_pf']==1 && isset($data_received['is_pf'])) ? '1' : '0',
-	                 'anyone_can_modify' => (isset($data_received['anyone_can_modify']) && $data_received['anyone_can_modify'] == "on") ? '1' : '0'
+						'restricted_to' => isset($data_received['resticted_to']) ? $data_received['resticted_to'] : '',
+						'perso' => ( $data_received['salt_key_set']==1 && isset($data_received['salt_key_set']) && $data_received['is_pf']==1 && isset($data_received['is_pf'])) ? '1' : '0',
+						'anyone_can_modify' => (isset($data_received['anyone_can_modify']) && $data_received['anyone_can_modify'] == "on") ? '1' : '0'
 	                )
 	            );
 
@@ -177,8 +177,13 @@ if ( isset($_POST['type']) ){
 	            }
 
                 //return data
-                echo '[ { "item_exists": "'.$item_exists.'", "new_id": "'.$new_id.'" } ]';
+                echo '[ { "item_exists": "'.$item_exists.'", "new_id": "'.$new_id.'", "error" : "no" } ]';
             }
+
+        	else if (isset($_SESSION['settings']['duplicate_item']) && $_SESSION['settings']['duplicate_item'] == 0 && $item_exists == 1) {
+        		//return data
+        		echo '[ { "error" : "item_exists" } ]';
+        	}
         break;
 
         /*
@@ -946,6 +951,12 @@ if ( isset($_POST['type']) ){
         	$folder_is_pf = 0;
         	$show_error = 0;
 
+        	if (isset($_POST['restricted'])) {
+        		$restricted_to = $_POST['restricted'];
+        	}else{
+        		$restricted_to = "";
+        	}
+
             //Prepare tree
             require_once ("NestedTree.class.php");
             $tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
@@ -1026,7 +1037,7 @@ if ( isset($_POST['type']) ){
                             $perso = '<img src="includes/images/tag-small-alert.png">';
                             //echo '$("#recherche_group_pf").val("1");';
                         	$recherche_group_pf = 1;
-                            $action = 'AfficherDetailsItem(\''.$reccord['id'].'\', \'1\', \''.$expired_item.'\', \''.$_POST['restricted'].'\')';
+                            $action = 'AfficherDetailsItem(\''.$reccord['id'].'\', \'1\', \''.$expired_item.'\', \''.$restricted_to.'\')';
                             $display_item = $need_sk = $can_move = 1;
                         }else
                         //CAse where item is restricted to a group of users included user
@@ -1034,13 +1045,13 @@ if ( isset($_POST['type']) ){
                             $perso = '<img src="includes/images/tag-small-yellow.png">';
                             //echo 'document.getElementById("recherche_group_pf").value = "0";';
                         	$recherche_group_pf = 0;
-                            $action = 'AfficherDetailsItem(\''.$reccord['id'].'\',\'0\',\''.$expired_item.'\', \''.$_POST['restricted'].'\')';
+                            $action = 'AfficherDetailsItem(\''.$reccord['id'].'\',\'0\',\''.$expired_item.'\', \''.$restricted_to.'\')';
                             $display_item = 1;
                         }else
                         //CAse where item is restricted to a group of users included user
                         if ( $reccord['perso'] == 1 || (!empty($reccord['restricted_to']) && !in_array($_SESSION['user_id'],$restricted_users_array)) ){
                             $perso = '<img src="includes/images/tag-small-red.png">';
-                            $action = 'AfficherDetailsItem(\''.$reccord['id'].'\',\'0\',\''.$expired_item.'\', \''.$_POST['restricted'].'\')';
+                            $action = 'AfficherDetailsItem(\''.$reccord['id'].'\',\'0\',\''.$expired_item.'\', \''.$restricted_to.'\')';
                             //reinit in case of not personal group
                             if ( $init_personal_folder == false ){
                             	$recherche_group_pf = "";
@@ -1053,7 +1064,7 @@ if ( isset($_POST['type']) ){
                         //Case where item can be seen by user
                         else{
                             $perso = '<img src="includes/images/tag-small-green.png">';
-                            $action = 'AfficherDetailsItem(\''.$reccord['id'].'\',\'0\',\''.$expired_item.'\', \''.$_POST['restricted'].'\')';
+                            $action = 'AfficherDetailsItem(\''.$reccord['id'].'\',\'0\',\''.$expired_item.'\', \''.$restricted_to.'\')';
                             $display_item = 1;
                             //reinit in case of not personal group
                             if ( $init_personal_folder == false ){

@@ -84,8 +84,20 @@ if ($_SESSION['CPM'] != 1)
         $data = $db->fetch_array($row);
 
     	//Check if user has been deleted or unlogged
-		if (empty($data) == 0) {
-			//$_GET['session'] = "expiree";
+		if (empty($data)) {
+			// erase session table
+			$_SESSION = array();
+
+			// Kill session
+			session_destroy();
+
+			//redirection to index
+			echo '
+	        <script language="javascript" type="text/javascript">
+	        <!--
+	        document.location.href="index.php";
+	        -->
+	        </script>';
 		}else{
 			// update user's rights
 			$_SESSION['user_admin'] = $data['admin'];

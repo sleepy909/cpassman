@@ -218,6 +218,8 @@ function RecupComplexite(val,edit){
 }
 
 function AjouterItem(){
+	LoadingPage();
+
     document.getElementById('error_detected').value = '';   //Refresh error foolowup
     var erreur = "";
     var  reg=new RegExp("[.|;|:|!|=|+|-|*|/|#|\"|'|&|]");
@@ -282,6 +284,7 @@ function AjouterItem(){
             '", "annonce":"'+annonce+'", "diffusion":"'+diffusion+'", "id":"'+$('#id_item').val()+'", '+
             '"anyone_can_modify":"'+$('#anyone_can_modify:checked').val()+'", "tags":"'+protectString($('#item_tags').val())+'"}';
 
+
             //Send query
             $.post(
                 "sources/items.queries.php",
@@ -290,9 +293,8 @@ function AjouterItem(){
 					data :	aes_encrypt(data)
                 },
                 function(data){
-                    LoadingPage();
                     //Check errors
-                    if (data[0].item_exists == "1") {
+                    if (data[0].error == "item_exists") {
                         $("#div_formulaire_saisi").dialog("open");
                         $("#new_show_error").html('<?php echo $txt['error_item_exists'];?>');
                         $("#new_show_error").show();
