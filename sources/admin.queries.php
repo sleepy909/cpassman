@@ -342,5 +342,15 @@ switch($_POST['type'])
         echo '$("#result_admin_action_purge_old_files").html("<img src=\"includes/images/tick.png\" alt=\"\" />&nbsp;'.$nb_files_deleted.$txt['admin_action_purge_old_files_result'].'");';
         echo 'LoadingPage();';
     break;
+
+	/*
+	* Reload the Cache table
+	*/
+	case "admin_action_reload_cache_table":
+		require_once("main.functions.php");
+		UpdateCacheTable("reload", "");
+		echo 'LoadingPage();';
+	break;
+
 }
 ?>

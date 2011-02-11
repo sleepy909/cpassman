@@ -159,9 +159,7 @@ function IdentifyUserRights($groupes_visibles_user,$groupes_interdits_user,$is_a
         $new_liste_gp_visibles = array();
     	$liste_gp_interdits = array();
 
-    	$list_allowed_folders = array();
-    	$list_forbiden_folders = array();
-    	$list_folders_limited = array();
+    	$list_allowed_folders = $list_forbiden_folders = $list_folders_limited = $list_folders_editable_by_role = array();
         //build Tree
         require_once ("NestedTree.class.php");
         $tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
@@ -170,7 +168,11 @@ function IdentifyUserRights($groupes_visibles_user,$groupes_interdits_user,$is_a
         foreach($fonctions_associees as $role_id){
             if ( !empty($role_id) ){
             	//Get allowed folders for each Role
-            	$rows = $db->fetch_all_array("SELECT folder_id FROM ".$pre."roles_values WHERE role_id=".$role_id);
+            	$rows = $db->fetch_all_array("
+					SELECT folder_id
+					FROM ".$pre."roles_values
+					WHERE role_id=".$role_id
+            	);
             	if (count($rows) > 0) {
             		foreach($rows as $reccord){
             			if (isset($reccord['folder_id']) && !in_array($reccord['folder_id'], $list_allowed_folders)) {
@@ -179,11 +181,12 @@ function IdentifyUserRights($groupes_visibles_user,$groupes_interdits_user,$is_a
             		}
             		//Check for the users roles if some specific rights exist on items
             		$rows = $db->fetch_all_array("
-					SELECT i.id_tree, r.item_id
-					FROM ".$pre."items AS i
-					INNER JOIN ".$pre."restriction_to_roles AS r ON (r.item_id=i.id)
-					WHERE r.role_id=".$role_id."
-					ORDER BY i.id_tree ASC");
+						SELECT i.id_tree, r.item_id
+						FROM ".$pre."items AS i
+						INNER JOIN ".$pre."restriction_to_roles AS r ON (r.item_id=i.id)
+						WHERE r.role_id=".$role_id."
+						ORDER BY i.id_tree ASC
+					");
             		$x=0;
             		foreach($rows as $reccord){
             			if (isset($reccord['id_tree'])) {
@@ -191,6 +194,15 @@ function IdentifyUserRights($groupes_visibles_user,$groupes_interdits_user,$is_a
             				$x++;
             			}
             		}
+            	}
+            	//Check if this group is allowed to modify any pw in allowed folders
+            	$tmp = $db->query_first("
+            		SELECT allow_pw_change
+            		FROM ".$pre."roles_title
+            		WHERE id = ".$role_id
+            	);
+            	if ($tmp['allow_pw_change'] == 1 && !in_array($tmp['allow_pw_change'], $list_folders_editable_by_role)) {
+            		array_push($list_folders_editable_by_role, $tmp['allow_pw_change']);
             	}
             }
         }
@@ -248,13 +260,16 @@ function IdentifyUserRights($groupes_visibles_user,$groupes_interdits_user,$is_a
         $_SESSION['groupes_visibles_list'] = implode(',', $list_allowed_folders);
 
     	$_SESSION['list_folders_limited'] = $list_folders_limited;
+    	$_SESSION['list_folders_editable_by_role'] = $list_folders_editable_by_role;
     }
 }
 
 
-#################
-#### FUNCTION permits to log events into DB
-#################
+/**
+ * logEvents()
+ *
+ * permits to log events into DB
+ */
 function logEvents($type, $label, $who){
     global $server, $user, $pass, $database, $pre;
 
@@ -274,9 +289,12 @@ function logEvents($type, $label, $who){
     );
 }
 
-#################
-#### FUNCTION permits to update the CACHE table
-#################
+
+/**
+ * UpdateCacheTable()
+ *
+ * Update the CACHE table
+ */
 function UpdateCacheTable($action, $id){
     global $db, $server, $user, $pass, $database, $pre;
 

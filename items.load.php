@@ -90,7 +90,7 @@ function ListerItems(groupe_id, restricted){
         	},
         	function(data){
                 //decrypt data
-                data = jsonParse(aes_decrypt(data));
+                data = $.parseJSON(aes_decrypt(data));
 
                 $("#recherche_group_pf").val(data.saltkey_is_required);
 
@@ -392,7 +392,7 @@ function EditerItem(){
                 },
                 function(data){
                     //decrypt data
-                    data = jsonParse(aes_decrypt(data));
+                    data = $.parseJSON(aes_decrypt(data));
 
                     //check if format error
                     if (data.error == "format") {
@@ -534,7 +534,7 @@ function AfficherDetailsItem(id, salt_key_required, expired_item, restricted){
             },
             function(data){
                 //decrypt data
-                data = jsonParse(aes_decrypt(data));
+                data = $.parseJSON(aes_decrypt(data));
 
                 //Change the class of this selected item
                 if ( $("#selected_items").val() != "") {
@@ -867,7 +867,7 @@ function open_copy_item_div() {
 			item_id : $('#id_item').val()
 		},
 		function(data){
-			data = jsonParse(data);
+			data = $.parseJSON(data);
 			//check if format error
             if (data.error == "no_item") {
                 $("#div_loading").hide();
@@ -985,7 +985,6 @@ $(function() {
     $('#menu_button_edit_item,#menu_button_del_item,#menu_button_add_fav,#menu_button_del_fav').attr('disabled', 'disabled');
 
     // Autoresize Textareas
-    //$("#desc, #edit_desc").autoResizable();
     $(".items_tree, #items_content, #item_details_ok").addClass("ui-corner-all");
 
     //automatic height

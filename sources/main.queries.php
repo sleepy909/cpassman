@@ -12,6 +12,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+$debug_ldap = 0;	//Can be used in order to debug LDAP authentication
+
 session_start();
 if ($_SESSION['CPM'] != 1)
 	die('Hacking attempt...');
@@ -119,17 +121,21 @@ switch($_POST['type'])
     	$tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
 
         /* LDAP connection */
-    	//create temp file
-    	$dbg_ldap = fopen("../files/ldap.debug.txt","w");
+    	if ($debug_ldap == 1) {
+    		$dbg_ldap = fopen("../files/ldap.debug.txt","w");	//create temp file
+    	}
 
         if ( isset($_SESSION['settings']['ldap_mode']) && $_SESSION['settings']['ldap_mode'] == 1 ){
-        	fputs($dbg_ldap, "Get all ldap params : \n".
-        		'base_dn : ' . $_SESSION['settings']['ldap_domain_dn'] . "\n".
-        		'account_suffix : ' . $_SESSION['settings']['ldap_suffix'] . "\n".
-        		'domain_controllers : ' . $_SESSION['settings']['ldap_domain_controler'] . "\n".
-        		'use_ssl : ' . $_SESSION['settings']['ldap_ssl'] . "\n".
-        		'use_tls : ' . $_SESSION['settings']['ldap_tls'] . "\n*********\n\n"
-        	);	//Debug
+        	if ($debug_ldap == 1) {
+        		fputs($dbg_ldap, "Get all ldap params : \n".
+	        		'base_dn : ' . $_SESSION['settings']['ldap_domain_dn'] . "\n".
+	        		'account_suffix : ' . $_SESSION['settings']['ldap_suffix'] . "\n".
+	        		'domain_controllers : ' . $_SESSION['settings']['ldap_domain_controler'] . "\n".
+	        		'use_ssl : ' . $_SESSION['settings']['ldap_ssl'] . "\n".
+	        		'use_tls : ' . $_SESSION['settings']['ldap_tls'] . "\n*********\n\n"
+	        	);
+        	}
+
             require_once ("../includes/libraries/adLDAP/adLDAP.php");
             $adldap = new adLDAP(array(
             	'base_dn' => $_SESSION['settings']['ldap_domain_dn'],
@@ -138,16 +144,20 @@ switch($_POST['type'])
 	            'use_ssl' => $_SESSION['settings']['ldap_ssl'],
 	            'use_tls' => $_SESSION['settings']['ldap_tls']
             ));
-        	fputs($dbg_ldap, "Create new adldap object : ".$adldap->get_last_error()."\n\n\n");	//Debug
+        	if ($debug_ldap == 1) {
+        		fputs($dbg_ldap, "Create new adldap object : ".$adldap->get_last_error()."\n\n\n");	//Debug
+        	}
 
             //authenticate the user
-            if ($adldap -> authenticate($username,$password)){
+            if ($adldap -> authenticate($username,$received_password)){
                 $ldap_connection = true;
             }else{
                 $ldap_connection = false;
             }
-        	fputs($dbg_ldap, "After authenticate : ".$adldap->get_last_error()."\n\n\n".
+        	if ($debug_ldap == 1) {
+        		fputs($dbg_ldap, "After authenticate : ".$adldap->get_last_error()."\n\n\n".
         		"ldap status : ".$ldap_connection."\n\n\n");	//Debug
+        	}
         }
 
         $sql="SELECT * FROM ".$pre."users WHERE login = '".$username."'";
@@ -513,7 +523,7 @@ switch($_POST['type'])
 
     case "print_out_items":
         echo 'LoadingPage();';
-    	include('main.functions.php');
+
     	$full_listing = array();
 
     	foreach (explode(';', $_POST['ids']) as $id){
@@ -569,20 +579,24 @@ switch($_POST['type'])
     	//Build PDF
     	if (!empty($full_listing)) {
     		//Prepare the PDF file
-    		include('../includes/libraries/fpdf/pdf.fonctions.php');
-    		$pdf=new FPDF();
+    		include('../includes/libraries/tfpdf/tfpdf.php');
+    		$pdf=new tFPDF();
+
+    		//Add font for utf-8
+    		$pdf->AddFont('DejaVu','','DejaVuSansCondensed.ttf',true);
+
     		$pdf->AliasNbPages();
     		$pdf->AddPage();
-    		$pdf->SetFont('Arial','B',16);
+    		$pdf->SetFont('DejaVu','',16);
     		$pdf->Cell(0,10,$txt['print_out_pdf_title'],0,1,'C',false);
-    		$pdf->SetFont('Arial','I',12);
+    		$pdf->SetFont('DejaVu','I',12);
     		$pdf->Cell(0,10,$txt['pdf_del_date'].date($_SESSION['settings']['date_format']." ".$_SESSION['settings']['time_format'],mktime(date("H"),date("i"),date("s"),date("m"),date("d"),date("Y"))).' '.$txt['by'].' '.$_SESSION['login'],0,1,'C',false);
-    		$pdf->SetFont('Arial','B',10);
+    		$pdf->SetFont('DejaVu','',10);
     		$pdf->SetFillColor(192,192,192);
     		$pdf->cell(65,6,$txt['label'],1,0,"C",1);
     		$pdf->cell(55,6,$txt['login'],1,0,"C",1);
     		$pdf->cell(70,6,$txt['pw'],1,1,"C",1);
-    		$pdf->SetFont('Arial','',9);
+    		$pdf->SetFont('DejaVu','',9);
 
     		foreach( $full_listing as $item ){
    				$pdf->cell(65,6,stripslashes($item['label']),1,0,"L");

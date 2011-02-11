@@ -240,7 +240,7 @@ echo '
    	<label for="new_personal_folder">'.$txt['personal_folder'].'</label>
 	<div id="auto_create_folder_role" style="display:none;">
 		<input type="checkbox" id="new_folder_role_domain" />
-	   	<label for="new_folder_role_domain">'.$txt['auto_create_folder_role'].'`<span id="auto_create_folder_role_span"></span>`</label>
+	   	<label for="new_folder_role_domain">'.$txt['auto_create_folder_role'].'&nbsp;`<span id="auto_create_folder_role_span"></span>`</label>
 		<input type="hidden" id="new_domain">
 	</div>
 </div>';

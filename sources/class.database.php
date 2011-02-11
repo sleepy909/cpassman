@@ -149,6 +149,8 @@ function fetch_array($query_id=-1) {
         $this->oops("Invalid query_id: <b>$this->query_id</b>. Records could not be fetched.");
     }
 
+	$this->free_result($query_id);
+
     return $record;
 }#-#fetch_array()
 
