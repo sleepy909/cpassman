@@ -460,6 +460,15 @@ echo '
                     <span id="result_admin_action_purge_old_files" style="margin-left:10px;"></span>
                 </div>';
 
+				//Reload Cache Table
+				echo '
+				<div style="margin-bottom:3px">
+				    <span class="ui-icon ui-icon-gear" style="float: left; margin-right: .3em;">&nbsp;</span>
+				    <a href="#" onclick="LaunchAdminActions(\'admin_action_reload_cache_table\')" style="cursor:pointer;">'.$txt['admin_action_reload_cache_table'].'</a>
+				    <span style="margin-left:0px;"><img src="includes/images/question-small-white.png" class="tip" alt="" title="'.$txt['admin_action_reload_cache_table_tip'].'" /></span>
+				    <span id="result_admin_action_reload_cache_table" style="margin-left:10px;"></span>
+				</div>';
+
             echo '
             </div>';
             // --------------------------------------------------------------------------------

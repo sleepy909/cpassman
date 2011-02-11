@@ -44,7 +44,7 @@ TODO
 * IMAP login
 -----------------------------------------------------------------------------------------------------
 IN PROGRESS :
-* LDAP login
+* CSV and KP import : add modification by "roles" option
 
 CHANGELOG
 v2.00
@@ -57,6 +57,7 @@ v2.00
 * improvement: new strategy for user password recovery
 * improvement: automatic creation of role and folder based on email domain
 * improvement: when deleting a user, personal folder and items are deleted
+* improvement: LDAP login (thanks to Paul)
 * fixed: problem with slash in label [3141743]
 * fixed: password in cleartext in log [3141167]
 * fixed: deleted pws show up in the search [3160582]

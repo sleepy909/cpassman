@@ -1032,6 +1032,14 @@ if ( isset($_POST['type']) ){
                         $item_login = "";
                         $display_item = $need_sk = $can_move = 0;
 
+                    	if (isset($_SESSION['list_folders_editable_by_role']) && in_array($_POST['id'], $_SESSION['list_folders_editable_by_role'])) {
+                    		if (empty($restricted_to)) {
+                    			$restricted_to = $_SESSION['user_id'];
+                    		}else{
+                    			$restricted_to .= ','.$_SESSION['user_id'];
+                    		}
+                    	}
+
                     	//Can user modify it?*
                     	if ($reccord['anyone_can_modify'] == 1 || ($_SESSION['user_id'] == $reccord['log_user'])) {
                     		$can_move = 1;
@@ -1040,21 +1048,19 @@ if ( isset($_POST['type']) ){
                         //Case where item is in own personal folder
                         if ( in_array($_POST['id'],$_SESSION['personal_visible_groups']) && $reccord['perso'] == 1 ){
                             $perso = '<img src="includes/images/tag-small-alert.png">';
-                            //echo '$("#recherche_group_pf").val("1");';
                         	$recherche_group_pf = 1;
                             $action = 'AfficherDetailsItem(\''.$reccord['id'].'\', \'1\', \''.$expired_item.'\', \''.$restricted_to.'\')';
                             $display_item = $need_sk = $can_move = 1;
                         }else
                         //CAse where item is restricted to a group of users included user
-                        if ( !empty($reccord['restricted_to']) && in_array($_SESSION['user_id'],$restricted_users_array) ){
+                        if ( !empty($reccord['restricted_to']) && in_array($_SESSION['user_id'],$restricted_users_array) || (isset($_SESSION['list_folders_editable_by_role']) && in_array($_POST['id'], $_SESSION['list_folders_editable_by_role']))){
                             $perso = '<img src="includes/images/tag-small-yellow.png">';
-                            //echo 'document.getElementById("recherche_group_pf").value = "0";';
                         	$recherche_group_pf = 0;
                             $action = 'AfficherDetailsItem(\''.$reccord['id'].'\',\'0\',\''.$expired_item.'\', \''.$restricted_to.'\')';
                             $display_item = 1;
                         }else
                         //CAse where item is restricted to a group of users included user
-                        if ( $reccord['perso'] == 1 || (!empty($reccord['restricted_to']) && !in_array($_SESSION['user_id'],$restricted_users_array)) ){
+                        if ( $reccord['perso'] == 1 || (!empty($reccord['restricted_to']) && !in_array($_SESSION['user_id'],$restricted_users_array))){
                             $perso = '<img src="includes/images/tag-small-red.png">';
                             $action = 'AfficherDetailsItem(\''.$reccord['id'].'\',\'0\',\''.$expired_item.'\', \''.$restricted_to.'\')';
                             //reinit in case of not personal group

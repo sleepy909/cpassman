@@ -54,8 +54,6 @@ if ( isset($_GET['page']) && $_GET['page'] == "items")
         <script type="text/javascript" src="includes/libraries/uploadify/jquery.uploadify.v2.1.4.min.js"></script>
         <script type="text/javascript" src="includes/libraries/uploadify/swfobject.js"></script>
 
-        <script type="text/javascript" src="includes/js/jquery.autoResizable.min.js"></script>
-
 		<script type="text/javascript" src="includes/libraries/ckeditor/ckeditor.js"></script>
 		<script type="text/javascript" src="includes/libraries/ckeditor/dialog-patch.js"></script>
 		<script type="text/javascript" src="includes/libraries/ckeditor/adapters/jquery.js"></script>
@@ -63,8 +61,7 @@ if ( isset($_GET['page']) && $_GET['page'] == "items")
 		<link rel="stylesheet" type="text/css" href="includes/libraries/multiselect/jquery.multiselect.css" />
         <script type="text/javascript" src="includes/libraries/multiselect/jquery.multiselect.min.js"></script>
 
-        <script type="text/javascript" src="includes/libraries/crypt/aes.min.js"></script>
-        <script type="text/javascript" src="includes/js/json-minified.js"></script>';
+        <script type="text/javascript" src="includes/libraries/crypt/aes.min.js"></script>';
 
 else
 if ( isset($_GET['page']) && $_GET['page'] == "manage_settings")
@@ -1177,7 +1174,7 @@ if ( isset($_GET['page']) && $_GET['page'] == "manage_users" ){
                 domain      : domain
             },
             function(data){
-            	data = jsonParse(data);
+            	data = $.parseJSON(data);
                 if (data.folder == "not_exists" && data.role == "not_exists") {
                 	$("#auto_create_folder_role").show();
                 	$("#auto_create_folder_role_span").html(domain);

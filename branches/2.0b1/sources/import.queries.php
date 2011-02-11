@@ -147,6 +147,9 @@ switch($_POST['type'])
             echo '$(\'#item_all_selection\').click(function(){if ( $(\'#item_all_selection\').attr(\'checked\') ) { $("input[type=\'checkbox\']:not([disabled=\'disabled\'])").attr(\'checked\', true); } else { $("input[type=\'checkbox\']:not([disabled=\'disabled\'])").removeAttr(\'checked\');  }}); ';
         }
 
+    	//reload Cache table
+    	UpdateCacheTable("reload", "");
+
         // close ajax loader
         echo '$(\'#import_status_ajax_loader\').hide();';
     break;
@@ -187,6 +190,9 @@ switch($_POST['type'])
                     'action' => 'at_creation'
                 )
             );
+
+        	//reload Cache table
+        	UpdateCacheTable("reload", "");
 
             //after inserted, disable the checkbox in order to prevent against new insert
             echo '$("#item_to_import-'.$item[5].'").attr("disabled", true);$("#item_text-'.$item[5].'").css("textDecoration", "line-through");$(\'#import_status_ajax_loader\').hide();';
@@ -639,6 +645,9 @@ switch($_POST['type'])
             //Delete cache file
             fclose($cacheFile);
             unlink($cacheFile_name);
+
+        	//reload Cache table
+        	UpdateCacheTable("reload", "");
 
             //Display all messages to user
             echo '$(\'#import_status\').html(\''.$text.'\');$(\'#import_status_ajax_loader\').hide();';

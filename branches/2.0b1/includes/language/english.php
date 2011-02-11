@@ -1,10 +1,17 @@
 <?php
+if (!isset($_SESSION['settings'])) {
+	$cpassman_url = "";
+}else{
+	$cpassman_url = $_SESSION['settings']['cpassman_url'];
+}
 //ENGLISH
+$txt['admin_action_reload_cache_table'] = "Reload Cache table";
+$txt['admin_action_reload_cache_table_tip'] = "This permits to reload the full content of table Cache. Can be usefull to be done sometimes.";
 $txt['at_import'] = "Importation";
 $txt['email_subject_new_user'] = "[cPassMan] Your account creation";
-$txt['email_text_new_user'] = "Hi,<br /><br />Your account has been created in cPassMan.<br />You can now access ".@$_SESSION['settings']['cpassman_url']." using the next credentials:<br />";
+$txt['email_text_new_user'] = "Hi,<br /><br />Your account has been created in cPassMan.<br />You can now access $cpassman_url using the next credentials:<br />";
 $txt['error_must_enter_all_fields'] = "You must fill in each fields!";
-$txt['auto_create_folder_role'] = "Create folder and role for ";
+$txt['auto_create_folder_role'] = "Create folder and role for";
 $txt['pw_recovery_asked'] = "You have asked for a password recovery";
 $txt['pw_recovery_info'] = "By clicking on the next button, you will receive an email that contains the new password for your account.";
 $txt['pw_recovery_button'] = "Send me my new password";
