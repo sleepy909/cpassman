@@ -178,6 +178,16 @@ function IdentifyUserRights($groupes_visibles_user,$groupes_interdits_user,$is_a
             			if (isset($reccord['folder_id']) && !in_array($reccord['folder_id'], $list_allowed_folders)) {
             				array_push($list_allowed_folders, $reccord['folder_id']);
             			}
+
+            			//Check if this group is allowed to modify any pw in allowed folders
+            			$tmp = $db->query_first("
+            				SELECT allow_pw_change
+		            		FROM ".$pre."roles_title
+		            		WHERE id = ".$role_id
+            			);
+            			if ($tmp['allow_pw_change'] == 1 && !in_array($tmp['allow_pw_change'], $list_folders_editable_by_role)) {
+            				array_push($list_folders_editable_by_role, $reccord['folder_id']);
+            			}
             		}
             		//Check for the users roles if some specific rights exist on items
             		$rows = $db->fetch_all_array("
@@ -194,15 +204,6 @@ function IdentifyUserRights($groupes_visibles_user,$groupes_interdits_user,$is_a
             				$x++;
             			}
             		}
-            	}
-            	//Check if this group is allowed to modify any pw in allowed folders
-            	$tmp = $db->query_first("
-            		SELECT allow_pw_change
-            		FROM ".$pre."roles_title
-            		WHERE id = ".$role_id
-            	);
-            	if ($tmp['allow_pw_change'] == 1 && !in_array($tmp['allow_pw_change'], $list_folders_editable_by_role)) {
-            		array_push($list_folders_editable_by_role, $tmp['allow_pw_change']);
             	}
             }
         }
@@ -328,7 +329,11 @@ function UpdateCacheTable($action, $id){
         	$arbo = $tree->getPath($reccord['id_tree'], true);
 			foreach($arbo as $elem){
 				if ( $elem->title == $_SESSION['user_id'] && $elem->nlevel == 1 ) $elem->title = $_SESSION['login'];
-				$folder .= htmlspecialchars(stripslashes($elem->title), ENT_QUOTES)." > ";
+				if (empty($folder)) {
+					$folder = htmlspecialchars(stripslashes($elem->title), ENT_QUOTES);
+				}else{
+					$folder .= " » ".htmlspecialchars(stripslashes($elem->title), ENT_QUOTES);
+				}
 			}
 
             //store data
@@ -369,7 +374,11 @@ function UpdateCacheTable($action, $id){
     	$arbo = $tree->getPath($row['id_tree'], true);
     	foreach($arbo as $elem){
     		if ( $elem->title == $_SESSION['user_id'] && $elem->nlevel == 1 ) $elem->title = $_SESSION['login'];
-    		$folder .= htmlspecialchars(stripslashes($elem->title), ENT_QUOTES)." > ";
+    		if (empty($folder)) {
+    			$folder = htmlspecialchars(stripslashes($elem->title), ENT_QUOTES);
+    		}else{
+    			$folder .= " » ".htmlspecialchars(stripslashes($elem->title), ENT_QUOTES);
+    		}
     	}
 
         //finaly update
@@ -409,7 +418,12 @@ function UpdateCacheTable($action, $id){
     	$arbo = $tree->getPath($row['id_tree'], true);
     	foreach($arbo as $elem){
     		if ( $elem->title == $_SESSION['user_id'] && $elem->nlevel == 1 ) $elem->title = $_SESSION['login'];
-    		$folder .= htmlspecialchars(stripslashes($elem->title), ENT_QUOTES)." > ";
+    		if (empty($folder)) {
+    			$folder = htmlspecialchars(stripslashes($elem->title), ENT_QUOTES);
+    		}else{
+    			$folder .= " » ".htmlspecialchars(stripslashes($elem->title), ENT_QUOTES);
+    		}
+
     	}
 
         //finaly update

@@ -248,7 +248,7 @@ require_once("load.php");
             <br />' : '', '
             <button title="'.$txt['item_menu_add_elem'].'" id="menu_button_add_item" onclick="open_add_item_div()"><img src="includes/images/key__plus.png" alt="" /></button>
             <br />
-            <button title="'.$txt['item_menu_edi_elem'].'" id="menu_button_edit_item" onclick="open_edit_item_div()"><img src="includes/images/key__pencil.png" alt="" /></button>
+            <button title="'.$txt['item_menu_edi_elem'].'" id="menu_button_edit_item" onclick="open_edit_item_div(', isset($_SESSION['settings']['restricted_to_roles']) && $_SESSION['settings']['restricted_to_roles'] == 1 ? 1 : 0 , ')"><img src="includes/images/key__pencil.png" alt="" /></button>
             <br />
             <button title="'.$txt['item_menu_del_elem'].'" id="menu_button_del_item" onclick="open_del_item_div()"><img src="includes/images/key__minus.png" alt="" /></button>
             <br />

@@ -569,9 +569,10 @@ if ( isset($_POST['type']) ){
             ){
             	//Allow show details
                 $arrData['show_details'] = 1;
+//print_r($_SESSION['list_folders_editable_by_role']);echo $data_item['id_tree'];
 
                 //Display menu icon for deleting if user is allowed
-                if ($data_item['id_user'] == $_SESSION['user_id'] || $_SESSION['is_admin'] == 1 || ($_SESSION['user_gestionnaire'] == 1 && $_SESSION['settings']['manager_edit'] == 1) || $data_item['anyone_can_modify']==1){
+                if ($data_item['id_user'] == $_SESSION['user_id'] || $_SESSION['is_admin'] == 1 || ($_SESSION['user_gestionnaire'] == 1 && $_SESSION['settings']['manager_edit'] == 1) || $data_item['anyone_can_modify']==1 || in_array($data_item['id_tree'], $_SESSION['list_folders_editable_by_role'])){
                     //$return_values .= '"user_can_modify": "1", ';
                     $arrData['user_can_modify'] = 1;
                     $user_is_allowed_to_modify = true;
@@ -971,7 +972,11 @@ if ( isset($_POST['type']) ){
             		$elem->title = $_SESSION['login'];
             		$folder_is_pf = 1;
             	}
-                $arbo_html .= $elem->title." > ";
+            	if (empty($arbo_html)) {
+            		$arbo_html = htmlspecialchars(stripslashes($elem->title), ENT_QUOTES);
+            	}else{
+            		$arbo_html .= " » ".htmlspecialchars(stripslashes($elem->title), ENT_QUOTES);
+            	}
             }
 
 
@@ -984,6 +989,13 @@ if ( isset($_POST['type']) ){
         	if (isset($_POST['restricted']) && $_POST['restricted'] == 1) {
         		$data_count[0] = count($_SESSION['list_folders_limited'][$_POST['id']]);
         		$where_arg = " AND i.id IN (".implode(',', $_SESSION['list_folders_limited'][$_POST['id']]).")";
+        	}
+			//check if this folder is visible
+        	else if (!in_array($_POST['id'], $_SESSION['groupes_visibles'])) {
+        		require_once '../includes/libraries/crypt/aes.class.php';     // AES PHP implementation
+        		require_once '../includes/libraries/crypt/aesctr.class.php';  // AES Counter Mode implementation
+        		echo AesCtr::encrypt(json_encode(array("error" => "not_authorized"), JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_HEX_AMP), $_SESSION['cle_session'], 256);
+        		break;
         	}else{
         		$data_count = $db->fetch_row("SELECT COUNT(*) FROM ".$pre."items WHERE inactif = 0");
         		$where_arg = " AND i.id_tree=".$_POST['id'];

@@ -43,7 +43,6 @@ if ( isset($_GET['page']) && $_GET['page'] == "items")
         <script type="text/javascript" src="includes/libraries/jstree/jquery.cookie.js"></script>
         <script type="text/javascript" src="includes/libraries/jstree/jquery.jstree.pack.js"></script>
 
-        <script type="text/javascript" src="includes/js/jquery.search.js"></script>
         <script type="text/javascript" src="includes/libraries/zeroclipboard/ZeroClipboard.js"></script>
 
         <link rel="stylesheet" type="text/css" href="includes/css/jquery.autocomplete.css" />
@@ -786,8 +785,26 @@ if ( isset($_GET['page']) && $_GET['page'] == "manage_roles" ){
         httpRequest("sources/roles.queries.php",data);
     }
 
-    $(function() {
+    function allow_pw_change_for_role(id, value){
+    	$("#div_loading").show();
+    	//Send query
+		$.post("sources/roles.queries.php",
+		    {
+		        type    : "allow_pw_change_for_role",
+		        id      : id,
+		        value  	: value
+		    },
+		    function(data){
+		    	if (value == 0)
+		    		$("#img_apcfr_"+id).attr("src","includes/images/ui-text-field-password-red.png");
+		    	else
+		    		$("#img_apcfr_"+id).attr("src","includes/images/ui-text-field-password-green.png");
+		    	$("#div_loading").hide();
+		    }
+		);
+    }
 
+    $(function() {
         $("#add_new_role").dialog({
             bgiframe: true,
             modal: true,

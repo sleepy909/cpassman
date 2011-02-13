@@ -29,7 +29,8 @@ $db->connect();
 $aColumns = array( 'id', 'label', 'description', 'tags', 'id_tree', 'folder', 'login' );
 
 //init SQL variables
-$sOrder = $sLimit = $sWhere= "";
+$sOrder = $sLimit = "";
+$sWhere = "id_tree IN(".implode(',', $_SESSION['groupes_visibles']).")";	//limit search to the visible folders
 
 //get list of personal folders
 $array_pf = array();
