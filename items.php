@@ -22,7 +22,7 @@ $tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
 $tree->rebuild();
 $folders = $tree->getDescendants();
 
-//D?finir liste des utilisateurs existants
+//Get list of users
 $liste_utilisateurs = array();
 $users_string = "";
 $rows = $db->fetch_all_array("SELECT id,login,email FROM ".$pre."users ORDER BY login ASC");
@@ -35,6 +35,21 @@ foreach($rows as $record){
     $users_string .= $record['id'].'#'.$record['login'].";";
 }
 
+//Get list of roles
+$arrRoles = array();
+$listRoles = "";
+$rows = $db->fetch_all_array("SELECT id,title FROM ".$pre."roles_title ORDER BY title ASC");
+foreach($rows as $reccord){
+	$arrRoles[$reccord['title']] = array(
+		'id' => $reccord['id'],
+		'title' => $reccord['title']
+	);
+	if (empty($listRoles)) {
+		$listRoles = $reccord['id'].'#'.$reccord['title'];
+	}else{
+		$listRoles. = ';'.$reccord['id'].'#'.$reccord['title'];
+	}
+}
 
 //Build list of visible folders
 $select_visible_folders_options = "";
@@ -45,6 +60,7 @@ echo '
 <input type="hidden" id="complexite_groupe" />
 <input type="hidden" name="selected_items" id="selected_items" />
 <input type="hidden" name="input_liste_utilisateurs" id="input_liste_utilisateurs" value="'.$users_string.'" />
+<input type="hidden" name="input_list_roles" id="input_list_roles" value="'.$listRoles.'" />
 <input type="hidden" id="bloquer_creation_complexite" />
 <input type="hidden" id="bloquer_modification_complexite" />
 <input type="hidden" id="error_detected" />
@@ -353,17 +369,17 @@ echo '
             </div>
         </div>';
 
-        ## NOT ALLOWED
-        echo '
-        <div id="item_details_nok" style="display:none;float:left;background-color:white; margin:30px;">
-            <div class="ui-state-highlight ui-corner-all" style="padding:10px;">
-                <img src="includes/images/lock.png" alt="" />&nbsp;<b>'.$txt['not_allowed_to_see_pw'].'</b>
-            </div>
-        </div>';
+		## NOT ALLOWED
+		echo '
+		<div id="item_details_nok" style="display:none; width:300px; margin:20px auto 20px auto;">
+		    <div class="ui-state-highlight ui-corner-all" style="padding:10px;">
+		        <img src="includes/images/lock.png" alt="" />&nbsp;<b>'.$txt['not_allowed_to_see_pw'].'</b>
+		    </div>
+		</div>';
 
         //DATA EXPIRED
         echo '
-        <div id="item_details_expired_full" style="display:none;float:left;background-color:white; margin:30px;">
+        <div id="item_details_expired_full" style="display:none; width:300px; margin:20px auto 20px auto;">
 			<div class="ui-state-error ui-corner-all" style="padding:10px;">
 				<img src="includes/images/error.png" alt="" />&nbsp;<b>'.$txt['pw_is_expired_-_update_it'].'</b>
 			</div>
@@ -371,15 +387,19 @@ echo '
 
 		## NOT ALLOWED
 		echo '
-		<div id="item_details_no_personal_saltkey" style="display:none;float:left; margin:30px; height:180px;">
+		<div id="item_details_no_personal_saltkey" style="display:none; width:300px; margin:20px auto 20px auto; height:180px;">
 		    <div class="ui-state-highlight ui-corner-all" style="padding:10px;">
 		        <img src="includes/images/lock.png" alt="" />&nbsp;<b>'.$txt['home_personal_saltkey_info'].'</b>
 		    </div>
 		</div>';
 
     echo '
-    </div>
+    </div>';
+
+    echo '
 </div>';
+
+
 
 //Formulaire NOUVEAU
 echo '

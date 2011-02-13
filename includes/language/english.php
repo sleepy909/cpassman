@@ -1,10 +1,14 @@
 <?php
-if (!isset($_SESSION['settings'])) {
+if (!isset($_SESSION['settings']['cpassman_url'])) {
 	$cpassman_url = "";
 }else{
 	$cpassman_url = $_SESSION['settings']['cpassman_url'];
 }
 //ENGLISH
+$txt['import_csv_anyone_can_modify_txt'] = "Set \"anyone can modify\" right on all imported items.";
+$txt['import_csv_anyone_can_modify_in_role_txt'] = "Set \"anyone in the same role can modify\" right on all imported items.";
+$txt['role_can_modify_all_seen_items'] = "Set this role allowed to modify all accessible items (not secure setting)";
+$txt['role_cannot_modify_all_seen_items'] = "Set this role not allowed to modify all accessible items (normal setting)";
 $txt['admin_action_reload_cache_table'] = "Reload Cache table";
 $txt['admin_action_reload_cache_table_tip'] = "This permits to reload the full content of table Cache. Can be usefull to be done sometimes.";
 $txt['at_import'] = "Importation";

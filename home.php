@@ -146,14 +146,18 @@ echo '
 
                         //error div
                         echo '
-                        <div style="height:20px;text-align:center;margin:2px;display:none;" id="import_from_file_info" class="ui-state-error ui-corner-all"></div>';
+                        <div style="margin:2px;display:none;" id="import_from_file_info" class="ui-state-error ui-corner-all"></div>';
 
                         // CSV import type
                         echo '
                         <div id="import_type_csv">
                             <div style="margin-bottom:5px;margin-top:5px;padding:5px;" class="ui-widget ui-state-active ui-corner-all">'.$txt['import_csv_dialog_info'].'</div>
                             <!-- show input file + uploadify call -->
-                            <div style="text-align:center;margin-top:10px;"><input id="fileInput_csv" name="fileInput_csv" type="file" /></div>
+                            <div style="text-align:center;margin-top:10px;">
+                            	<input id="fileInput_csv" name="fileInput_csv" type="file" /><br />
+								<input type="checkbox" id="import_csv_anyone_can_modify" /><label for="import_csv_anyone_can_modify">'.$txt['import_csv_anyone_can_modify_txt'].'</label><br />
+								<input type="checkbox" id="import_csv_anyone_can_modify_in_role" /><label for="import_csv_anyone_can_modify_in_role">'.$txt['import_csv_anyone_can_modify_in_role_txt'].'</label>
+                            </div>
                         </div>';
 
                         // KEEPASS import type

@@ -61,7 +61,20 @@ if ( !empty($_POST['type']) ){
             );
             //reload matrix
             echo 'var data = "type=rafraichir_matrice";httpRequest("sources/roles.queries.php",data);';
-        break;
+        	break;
+
+       	/******************************************
+       	*CASE editing a role
+       	*/
+        case "allow_pw_change_for_role":
+        	$db->query_update(
+	        	"roles_title",
+	        	array(
+	        	    'allow_pw_change' => $_POST['value']
+	        	),
+	        	'id = '.$_POST['id']
+        	);
+        	break;
 
 
         #-------------------------------------------
@@ -81,9 +94,14 @@ if ( !empty($_POST['type']) ){
 
 
         	//Display table header
-            $rows = $db->fetch_all_array("SELECT title,id FROM ".$pre."roles_title ORDER BY title ASC");
+            $rows = $db->fetch_all_array("SELECT id, title, allow_pw_change FROM ".$pre."roles_title ORDER BY title ASC");
             foreach( $rows as $reccord ){
-            	$texte .= '<th style="font-size:10px;" class="edit_role">'.$reccord['title'].'<br><img src=\'includes/images/ui-tab--pencil.png\' onclick=\'edit_this_role('.$reccord['id'].',"'.$reccord['title'].'")\' style=\'cursor:pointer;\' \>&nbsp;<img src=\'includes/images/ui-tab--minus.png\' onclick=\'delete_this_role('.$reccord['id'].',"'.$reccord['title'].'")\' style=\'cursor:pointer;\' \></th>';
+            	if ($reccord['allow_pw_change'] == 1) {
+            		$allow_pw_change = '&nbsp;<img id="img_apcfr_'.$reccord['id'].'" src=\'includes/images/ui-text-field-password-green.png\' onclick=\'allow_pw_change_for_role('.$reccord['id'].', 0)\' style=\'cursor:pointer;\' title=\''.$txt['role_cannot_modify_all_seen_items'].'\' \>';
+            	}else{
+            		$allow_pw_change = '&nbsp;<img id="img_apcfr_'.$reccord['id'].'" src=\'includes/images/ui-text-field-password-red.png\' onclick=\'allow_pw_change_for_role('.$reccord['id'].', 1)\' style=\'cursor:pointer;\' title=\''.$txt['role_can_modify_all_seen_items'].'\' \>';
+            	}
+            	$texte .= '<th style="font-size:10px;" class="edit_role">'.$reccord['title'].'<br><img src=\'includes/images/ui-tab--pencil.png\' onclick=\'edit_this_role('.$reccord['id'].',"'.$reccord['title'].'")\' style=\'cursor:pointer;\' \>&nbsp;<img src=\'includes/images/ui-tab--minus.png\' onclick=\'delete_this_role('.$reccord['id'].',"'.$reccord['title'].'")\' style=\'cursor:pointer;\' \>' .$allow_pw_change. '</th>';
 
             	array_push($arrRoles, $reccord['id']);
             }

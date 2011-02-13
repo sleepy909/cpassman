@@ -92,17 +92,19 @@ function ListerItems(groupe_id, restricted){
                 //decrypt data
                 data = $.parseJSON(aes_decrypt(data));
 
-                $("#recherche_group_pf").val(data.saltkey_is_required);
-
 				if (data.error == "is_pf_but_no_saltkey") {
 					//warn user about his saltkey
 					$("#item_details_no_personal_saltkey").show();
+					$("#item_details_ok, #item_details_nok").hide();
+				}if (data.error == "not_authorized") {
+					//warn user
+					$("#item_details_nok").show();
 					$("#item_details_ok").hide();
 				}else{
+                	$("#recherche_group_pf").val(data.saltkey_is_required);
 					//Display items
-					$("#item_details_no_personal_saltkey").hide();
-					$("#item_details_ok").show();
-	        		$("#items_list").show();
+					$("#item_details_no_personal_saltkey, #item_details_nok").hide();
+					$("#item_details_ok, #items_list").show();
 	        		$("#items_list").html(data.items_html);
 	        		$("#items_path").html(data.arborescence);
 	        		$("#items_list").val("");
@@ -780,7 +782,7 @@ function open_add_item_div() {
 //###########
 //## FUNCTION : prepare editing item dialogbox
 //###########
-function open_edit_item_div() {
+function open_edit_item_div(restricted_to_roles) {
     LoadingPage();
     $('#edit_display_title').html($('#hid_label').val());
     $('#edit_label').val($('#hid_label').val());
@@ -809,6 +811,9 @@ function open_edit_item_div() {
 	//Get list of people in restriction list
 	var myselect = document.getElementById('edit_restricted_to_list');
 	myselect.options.length = 0;
+	if (restricted_to_roles == 1) {
+		$("#myselect").
+	}
 	var liste = document.getElementById('input_liste_utilisateurs').value.split(';');
 	for (var i=0; i<liste.length; i++) {
 	    var elem = liste[i].split('#');
@@ -1097,7 +1102,7 @@ $(function() {
         modal: true,
         autoOpen: false,
         width: 505,
-        height: 600,
+        height: 650,
         title: "<?php echo $txt['item_menu_add_elem'];?>",
         buttons: {
             "<?php echo $txt['save_button'];?>": function() {
@@ -1126,7 +1131,7 @@ $(function() {
         modal: true,
         autoOpen: false,
         width: 505,
-        height: 600,
+        height: 650,
         title: "<?php echo $txt['item_menu_edi_elem'];?>",
         buttons: {
             "<?php echo $txt['save_button'];?>": function() {
