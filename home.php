@@ -165,8 +165,9 @@ echo '
                         <div id="import_type_keepass" style="display:none;">
                             <div style="margin-bottom:5px;margin-top:5px;padding:5px;" class="ui-widget ui-state-active ui-corner-all">'.$txt['import_keepass_dialog_info'].'</div>
                              <!-- Prepare a list of all folders that the user can choose -->
-                            <div style="margin-top:10px;"><label><b>'.$txt['import_keepass_to_folder'].'</b>
-                                </label>&nbsp;<select id="import_keepass_items_to">
+                            <div style="margin-top:10px;">
+                            	<label><b>'.$txt['import_keepass_to_folder'].'</b></label>&nbsp;
+                                <select id="import_keepass_items_to">
                                     <option value="0">'.$txt['root'].'</option>';
                             $prev_level = "";
                             foreach($full_tree as $t){
@@ -184,7 +185,12 @@ echo '
                                 }
                             }
                         echo '
-                            </select></div>
+	                            </select><br />
+								<input type="checkbox" id="import_kps_anyone_can_modify" /><label for="import_kps_anyone_can_modify">'.$txt['import_csv_anyone_can_modify_txt'].'</label><br />
+								<input type="checkbox" id="import_kps_anyone_can_modify_in_role" /><label for="import_kps_anyone_can_modify_in_role">'.$txt['import_csv_anyone_can_modify_in_role_txt'].'</label>
+	                        </div>';
+
+            			echo '
                             <!-- show input file + uploadify call -->
                             <div style="text-align:center;margin-top:10px;"><input id="fileInput_keepass" name="fileInput_keepass" type="file" /></div>
                         </div>';

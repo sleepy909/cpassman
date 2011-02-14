@@ -84,7 +84,7 @@ if ( isset($_POST['type']) ){
 	                    'id_tree' => $data_received['categorie'],
 	                    'login' => $login,
 	                    'inactif' => '0',
-						'restricted_to' => isset($data_received['resticted_to']) ? $data_received['resticted_to'] : '',
+						'restricted_to' => isset($data_received['restricted_to']) ? $data_received['restricted_to'] : '',
 						'perso' => ( $data_received['salt_key_set']==1 && isset($data_received['salt_key_set']) && $data_received['is_pf']==1 && isset($data_received['is_pf'])) ? '1' : '0',
 						'anyone_can_modify' => (isset($data_received['anyone_can_modify']) && $data_received['anyone_can_modify'] == "on") ? '1' : '0'
 	                )
@@ -94,11 +94,11 @@ if ( isset($_POST['type']) ){
 	        	if (isset($data_received['restricted_to_roles'])) {
 	        		foreach (array_filter(explode(';', $data_received['restricted_to_roles'])) as $role){
 	        			$db->query_insert(
-	         			'restriction_to_roles',
-	         			array(
-	         			    'role_id' => $role,
-	         			    'item_id' => $new_id
-	         			)
+		         			'restriction_to_roles',
+		         			array(
+		         			    'role_id' => $role,
+		         			    'item_id' => $new_id
+		         			)
 	        			);
 	        		}
 	        	}
@@ -250,6 +250,29 @@ if ( isset($_POST['type']) ){
                     ),
                     "id='".$data_received['id']."'"
                 );
+
+
+            	//Manage retriction_to_roles
+            	if (isset($data_received['restricted_to_roles'])) {
+            		//delete previous values
+            		$db->query_delete(
+	            		'restriction_to_roles',
+	            		array(
+		            		'item_id' => $data_received['id']
+		            	)
+            		);
+            		//add roles for item
+            		foreach (array_filter(explode(';', $data_received['restricted_to_roles'])) as $role){
+            			$db->query_insert(
+            			'restriction_to_roles',
+            			array(
+            			    'role_id' => $role,
+            			    'item_id' => $data_received['id']
+            			)
+            			);
+            		}
+            	}
+
 
                 //Update CACHE table
                 UpdateCacheTable("update_value",$data_received['id']);
@@ -431,7 +454,8 @@ if ( isset($_POST['type']) ){
             	    "files_edit" => str_replace('"','&quot;',$files_edit),
             	    "id_tree" => $data_item['id_tree'],
             	    "id" => $data_item['id'],
-            	    "reload_page" => $reload_page
+            	    "reload_page" => $reload_page,
+            	    "restriction_to" => $data_received['restricted_to'].$data_received['restricted_to_roles']
                 );
                 //print_r($arrData);
                 //Encrypt JSON data to return
@@ -598,7 +622,7 @@ if ( isset($_POST['type']) ){
                         $historique .= "<br />".date("d/m/Y H:i:s",$reccord['date'])." - ". $reccord['login']  ." - ".$txt[$reccord['action']]." - ".(!empty($reccord['raison']) ? (count($reason) > 1 ? $txt[trim($reason[0])].' : '.$reason[1] : $txt[trim($reason[0])] ):'');
                 }
 
-                //Get restriction list
+                //Get restriction list for users
                 $liste = explode(";",$data_item['restricted_to']);
                 $liste_restriction = "";
                 foreach($liste as $elem){
@@ -607,6 +631,18 @@ if ( isset($_POST['type']) ){
                         $liste_restriction .= $data2[0].";";
                     }
                 }
+
+            	//Get restriction list for roles
+            	$liste_restriction_roles = "";
+            	$rows = $db->fetch_all_array("
+					SELECT t.title
+					FROM ".$pre."roles_title AS t
+					INNER JOIN ".$pre."roles_values AS v ON (t.id=v.role_id)
+					WHERE folder_id = ".$data_item['id_tree']."
+					ORDER BY t.title ASC");
+				foreach($rows as $reccord){
+					$liste_restriction_roles .= $reccord['title'].";";
+				}
 
                 //Prepare DIalogBox data
                 if ( $item_is_expired == false ) {
@@ -628,6 +664,7 @@ if ( isset($_POST['type']) ){
                 $arrData['login'] = str_replace('"','&quot;',$data_item['login']);
                 $arrData['historique'] = str_replace('"','&quot;',$historique);
                 $arrData['id_restricted_to'] = $liste_restriction;
+            	$arrData['id_restricted_to_roles'] = $liste_restriction_roles;
                 $arrData['tags'] = str_replace('"','&quot;',$tags);
                 $arrData['folder'] = $data_item['id_tree'];
                 $arrData['anyone_can_modify'] = $data_item['anyone_can_modify'];
@@ -956,13 +993,6 @@ if ( isset($_POST['type']) ){
         	$folder_is_pf = $show_error = 0;
         	$items_id_list = $rights = array();
 
-        	//Manage the restrited_to variable
-        	if (isset($_POST['restricted'])) {
-        		$restricted_to = $_POST['restricted'];
-        	}else{
-        		$restricted_to = "";
-        	}
-
             //Prepare tree
             require_once ("NestedTree.class.php");
             $tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
@@ -1043,6 +1073,13 @@ if ( isset($_POST['type']) ){
                         $item_pw = "";
                         $item_login = "";
                         $display_item = $need_sk = $can_move = 0;
+
+                    	//Manage the restricted_to variable
+                    	if (isset($_POST['restricted'])) {
+                    		$restricted_to = $_POST['restricted'];
+                    	}else{
+                    		$restricted_to = "";
+                    	}
 
                     	if (isset($_SESSION['list_folders_editable_by_role']) && in_array($_POST['id'], $_SESSION['list_folders_editable_by_role'])) {
                     		if (empty($restricted_to)) {

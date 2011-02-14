@@ -47,7 +47,7 @@ foreach($rows as $reccord){
 	if (empty($listRoles)) {
 		$listRoles = $reccord['id'].'#'.$reccord['title'];
 	}else{
-		$listRoles. = ';'.$reccord['id'].'#'.$reccord['title'];
+		$listRoles .= ';'.$reccord['id'].'#'.$reccord['title'];
 	}
 }
 
@@ -343,7 +343,7 @@ echo '
                 <tr>
                     <td valign="top" class="td_title"><span class="ui-icon ui-icon-carat-1-e" style="float: left; margin-right: .3em;">&nbsp;</span>'.$txt['restricted_to'].' :</td>
                     <td>
-                        <div id="id_restricted_to" style="display:inline;"></div><input type="hidden" id="hid_restricted_to" />
+                        <div id="id_restricted_to" style="display:inline;"></div><input type="hidden" id="hid_restricted_to" /><input type="hidden" id="hid_restricted_to_roles" />
                     </td>
                 </tr>';
                 //Line fot TAGS
@@ -634,9 +634,10 @@ echo '
 
             <label for="" class="cpm_label">'.$txt['restricted_to'].' : </label><br />
             <select name="edit_restricted_to_list" id="edit_restricted_to_list" multiple="multiple">
-            	<option value="">-- '.$txt['all'].' --</option>
+            	<!--<option value="">-- '.$txt['all'].' --</option>-->
             </select>
             <input type="hidden" size="50" name="edit_restricted_to" id="edit_restricted_to" />
+            <input type="hidden" size="50" name="edit_restricted_to_roles" id="edit_restricted_to_roles" />
             <div style="line-height:10px;">&nbsp;</div>
 
             <label for="" class="cpm_label">'.$txt['tags'].' : </label>
