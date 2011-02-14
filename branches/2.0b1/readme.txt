@@ -58,6 +58,8 @@ v2.00
 * improvement: automatic creation of role and folder based on email domain
 * improvement: when deleting a user, personal folder and items are deleted
 * improvement: LDAP login (thanks to Paul)
+* improvement: setting "allow modification for this role" in roles matrix
+* improvement: when importing items, 2 options permits to set restriction arguments
 * fixed: problem with slash in label [3141743]
 * fixed: password in cleartext in log [3141167]
 * fixed: deleted pws show up in the search [3160582]

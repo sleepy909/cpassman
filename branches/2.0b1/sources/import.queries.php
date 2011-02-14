@@ -35,8 +35,7 @@ require_once('../includes/language/'.$_SESSION['user_language'].'.php');
 switch($_POST['type'])
 {
     //Check if import CSV file format is what expected
-    case "import_file_format_csv":
-        //clean divs
+	case "import_file_format_csv":        //clean divs
         echo '$(\'#import_status\').html(\'\');$(\'#import_from_file_info\').html(\'\').hide();';
 
         //Call nestedtree library and load full tree
@@ -52,10 +51,9 @@ switch($_POST['type'])
         $enclosure = '"';
         $fields_expected = array("Account","Login Name","Password","Web Site","Comments");  //requiered fields from CSV
         $importation_possible = true;
-        $text = "";
         $display = "<table>";
-        $line_number = 0;
-        $account = "";
+        $line_number = $prev_level = 0;
+        $account = $text = "";
         $continue_on_next_line = false;
 
         // Open file
@@ -65,13 +63,6 @@ switch($_POST['type'])
                 //Check number of fields. MUST be 5. if not stop importation
                 if ( $line_number == 0 ){
                     if ( count($line) != 5 ) $importation_possible = false;
-                    //if 1st line, then check that expected fields are in CSV. IF not then stop importation
-                    /*for ($c=0; $c<5; $c++) {
-                        if ( !in_array(str_replace('"','',trim($line[$c])),$fields_expected) ){
-                            $importation_possible = false;
-                            break;
-                        }
-                    }*/
                     //Stop if file has not expected structure
                     if ( $importation_possible == false ){
                         echo '$(\'#import_from_file_info\').html(\''.addslashes($txt['import_error_no_read_possible']).'\').show();';
@@ -91,7 +82,7 @@ switch($_POST['type'])
                         if ( !empty($line[0]) && !empty($line[2]) && !empty($account) ){
                         if ( $continue_on_next_line == false ){
                             // Prepare listing that will be shown to user
-                            $display .= '<tr><td><input type="checkbox" id="item_to_import-'.$line_number.'" /></td><td><span id="item_text-'.$line_number.'">'.$account.'</span><input type="hidden" value="'.$account.'@|@'.$login.'@|@'.$pw.'@|@'.$url.'@|@'.$comment.'@|@'.$line_number.'" id="item_to_import_values-'.$line_number.'" /></td></tr>';
+                            $display .= '<tr><td><input type="checkbox" class="item_checkbox" id="item_to_import-'.$line_number.'" /></td><td><span id="item_text-'.$line_number.'">'.$account.'</span><input type="hidden" value="'.$account.'@|@'.$login.'@|@'.$pw.'@|@'.$url.'@|@'.$comment.'@|@'.$line_number.'" id="item_to_import_values-'.$line_number.'" /></td></tr>';
 
                             // Initialize this variable in order to restart from scratch
                             $account = "";
@@ -120,6 +111,9 @@ switch($_POST['type'])
         }
 
         if ( $line_number > 0 ){
+        	//add last line
+        	$display .= '<tr><td><input type="checkbox" class="item_checkbox" id="item_to_import-'.$line_number.'" /></td><td><span id="item_text-'.$line_number.'">'.$account.'</span><input type="hidden" value="'.$account.'@|@'.$login.'@|@'.$pw.'@|@'.$url.'@|@'.$comment.'@|@'.$line_number.'" id="item_to_import_values-'.$line_number.'" /></td></tr>';
+
             // Add a checkbox for select/unselect all others
             $display .= '<tr><td><input type="checkbox" id="item_all_selection" /></td><td>'.$txt['all'].'</td></tr>';
             //echo 'function selectAll() {$("input[type=\'checkbox\']:not([disabled=\'disabled\'])").attr(\'checked\', true);}';
@@ -130,9 +124,9 @@ switch($_POST['type'])
                 if ( in_array($t->id,$_SESSION['groupes_visibles']) ){
                     $ident="";
                     for($x=1;$x<$t->nlevel;$x++) $ident .= "&nbsp;&nbsp;";
-                    if ( $prev_level < $t->nlevel ){
+                    if ($prev_level != NULL && $prev_level < $t->nlevel ){
                         $display .= '<option value="'.$t->id.'">'.$ident.str_replace("&","&amp;",addslashes(utf8_decode($t->title))).'</option>';
-                    }else if ( $prev_level == $t->nlevel ){
+                    }else if ($prev_level != NULL && $prev_level == $t->nlevel ){
                        $display .= '<option value="'.$t->id.'">'.$ident.str_replace("&","&amp;",addslashes(utf8_decode($t->title))).'</option>';
                     }else{
                         $display .= '<option value="'.$t->id.'">'.$ident.str_replace("&","&amp;",addslashes(utf8_decode($t->title))).'</option>';
@@ -144,11 +138,8 @@ switch($_POST['type'])
 
             // Show results to user.
             echo '$(\'#import_status\').html(\''.$display.'\');';
-            echo '$(\'#item_all_selection\').click(function(){if ( $(\'#item_all_selection\').attr(\'checked\') ) { $("input[type=\'checkbox\']:not([disabled=\'disabled\'])").attr(\'checked\', true); } else { $("input[type=\'checkbox\']:not([disabled=\'disabled\'])").removeAttr(\'checked\');  }}); ';
+            echo '$(\'#item_all_selection\').click(function(){if ( $(\'#item_all_selection\').attr(\'checked\') ) { $("input[class=\'item_checkbox\']:not([disabled=\'disabled\'])").attr(\'checked\', true); } else { $("input[class=\'item_checkbox\']:not([disabled=\'disabled\'])").removeAttr(\'checked\');  }}); ';
         }
-
-    	//reload Cache table
-    	UpdateCacheTable("reload", "");
 
         // close ajax loader
         echo '$(\'#import_status_ajax_loader\').hide();';
@@ -173,11 +164,23 @@ switch($_POST['type'])
                     'pw' => encrypt($item[2]),
                     'url' => $item[3],
                     'id_tree' => $_POST['folder'],
-                    'perso' => 1,
                     'login' => $item[1],
-                    'restricted_to' => $_SESSION['user_id']
+                    'anyone_can_modify' => $_POST['import_csv_anyone_can_modify'] == "true" ? 1 : 0
                 )
             );
+
+        	//if asked, anyone in role can modify
+        	if (isset($_POST['import_csv_anyone_can_modify_in_role']) && $_POST['import_csv_anyone_can_modify_in_role'] == "true") {
+        		foreach($_SESSION['arr_roles'] as $role){
+        			$db->query_insert(
+        			'restriction_to_roles',
+        			array(
+        			    'role_id' => $role['id'],
+        			    'item_id' => $new_id
+        			)
+        			);
+        		}
+        	}
 
 
             // Insert new item in table LOGS_ITEMS
@@ -187,7 +190,7 @@ switch($_POST['type'])
                     'id_item' => $new_id,
                     'date' => mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y')),
                     'id_user' => $_SESSION['user_id'],
-                    'action' => 'at_creation'
+                    'action' => 'at_importation'
                 )
             );
 
@@ -613,9 +616,23 @@ switch($_POST['type'])
                                 'pw' => encrypt($item[3]),
                                 'url' => utf8_decode(stripslashes($item[6])),
                                 'id_tree' => $folders_array[$item[1]]['id'],
-                                'login' => utf8_decode(stripslashes($item[4]))
+	                            'login' => utf8_decode(stripslashes($item[4])),
+	                            'anyone_can_modify' => $_POST['import_kps_anyone_can_modify'] == "true" ? 1 : 0
                             )
                         );
+
+                    	//if asked, anyone in role can modify
+                    	if (isset($_POST['import_kps_anyone_can_modify_in_role']) && $_POST['import_kps_anyone_can_modify_in_role'] == "true") {
+                    		foreach($_SESSION['arr_roles'] as $role){
+                    			$db->query_insert(
+                    			'restriction_to_roles',
+                    			array(
+                    			    'role_id' => $role['id'],
+                    			    'item_id' => $new_id
+                    			)
+                    			);
+                    		}
+                    	}
 
                         //Add log
                         $db->query_insert(
@@ -624,7 +641,7 @@ switch($_POST['type'])
                                 'id_item' => $new_id,
                                 'date' => mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y')),
                                 'id_user' => $_SESSION['user_id'],
-                                'action' => 'at_import'
+                                'action' => 'at_creation'
                             )
                         );
                         //show

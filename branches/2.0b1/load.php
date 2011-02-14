@@ -453,7 +453,7 @@ if ( !isset($_GET['page']) ){
         var items = "";
 
         //Get data checked
-        $("input[type=checkbox]:checked").each(function() {
+        $("input[class=item_checkbox]:checked").each(function() {
             var elem = $(this).attr("id").split("-");
             if ( items == "") items = $("#item_to_import_values-"+elem[1]).val();
             else items = items + "@_#sep#_@" + $("#item_to_import_values-"+elem[1]).val();
@@ -461,7 +461,11 @@ if ( !isset($_GET['page']) ){
         });
 
         //Lauchn ajax query that will insert items into DB
-        var data = "type=import_items&folder="+document.getElementById("import_items_to").value+"&data="+escape(items);
+        var data = "type=import_items"+
+        	"&folder="+document.getElementById("import_items_to").value+
+        	"&data="+escape(items)+
+        	"&import_csv_anyone_can_modify="+$("#import_csv_anyone_can_modify").attr("checked")+
+        	"&import_csv_anyone_can_modify_in_role="+$("#import_csv_anyone_can_modify_in_role").attr("checked");
         httpRequest("sources/import.queries.php",data);
     }
 
