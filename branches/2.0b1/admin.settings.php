@@ -239,6 +239,11 @@ if (isset($_POST['save_button'])) {
 	if ( @$_SESSION['settings']['restricted_to_roles'] != $_POST['restricted_to_roles'] ){
 		UpdateSettings('restricted_to_roles',$_POST['restricted_to_roles']);
 	}
+
+	//Update copy_to_clipboard_small_icons
+	if ( @$_SESSION['settings']['copy_to_clipboard_small_icons'] != $_POST['copy_to_clipboard_small_icons'] ){
+		UpdateSettings('copy_to_clipboard_small_icons',$_POST['copy_to_clipboard_small_icons']);
+	}
 }
 
 echo '
@@ -657,6 +662,22 @@ echo '
 				    <div class="div_radio">
 						<input type="radio" id="restricted_to_roles_radio1" name="restricted_to_roles" value="1"', isset($_SESSION['settings']['restricted_to_roles']) && $_SESSION['settings']['restricted_to_roles'] == 1 ? ' checked="checked"' : '', ' /><label for="restricted_to_roles_radio1">'.$txt['yes'].'</label>
 						<input type="radio" id="restricted_to_roles_radio2" name="restricted_to_roles" value="0"', isset($_SESSION['settings']['restricted_to_roles']) && $_SESSION['settings']['restricted_to_roles'] != 1 ? ' checked="checked"' : (!isset($_SESSION['settings']['restricted_to_roles']) ? ' checked="checked"':''), ' /><label for="restricted_to_roles_radio2">'.$txt['no'].'</label>
+					</div>
+				</td</tr>';
+
+
+				//enable show copy to clipboard small icons
+				echo '
+				<tr><td>
+				    <span class="ui-icon ui-icon-wrench" style="float: left; margin-right: .3em;">&nbsp;</span>
+				    <label>
+				    	'.$txt['copy_to_clipboard_small_icons'].'
+						<span style="margin-left:0px;"><img src="includes/images/question-small-white.png" class="tip" alt="" title="'.$txt['copy_to_clipboard_small_icons_tip'].'" /></span>
+					</label>
+				    </td><td>
+				    <div class="div_radio">
+						<input type="radio" id="copy_to_clipboard_small_icons_radio1" name="copy_to_clipboard_small_icons" value="1"', isset($_SESSION['settings']['copy_to_clipboard_small_icons']) && $_SESSION['settings']['copy_to_clipboard_small_icons'] == 1 ? ' checked="checked"' : '', ' /><label for="copy_to_clipboard_small_icons_radio1">'.$txt['yes'].'</label>
+						<input type="radio" id="copy_to_clipboard_small_icons_radio2" name="copy_to_clipboard_small_icons" value="0"', isset($_SESSION['settings']['copy_to_clipboard_small_icons']) && $_SESSION['settings']['copy_to_clipboard_small_icons'] != 1 ? ' checked="checked"' : (!isset($_SESSION['settings']['copy_to_clipboard_small_icons']) ? ' checked="checked"':''), ' /><label for="copy_to_clipboard_small_icons_radio2">'.$txt['no'].'</label>
 					</div>
 				</td</tr>';
 

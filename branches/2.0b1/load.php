@@ -43,7 +43,7 @@ if ( isset($_GET['page']) && $_GET['page'] == "items")
         <script type="text/javascript" src="includes/libraries/jstree/jquery.cookie.js"></script>
         <script type="text/javascript" src="includes/libraries/jstree/jquery.jstree.pack.js"></script>
 
-        <script type="text/javascript" src="includes/libraries/zeroclipboard/ZeroClipboard.js"></script>
+        <script type="text/javascript" src="includes/libraries/zclip/jquery.zclip.min.js"></script>
 
         <link rel="stylesheet" type="text/css" href="includes/css/jquery.autocomplete.css" />
         <script type="text/javascript" src="includes/js/jquery.bgiframe.min.js"></script>
@@ -490,14 +490,6 @@ if ( !isset($_GET['page']) ){
         httpRequest("sources/main.queries.php",data);
 	}
 	';
-}
-
-else
-//JAVASCRIPT FOR ITEMS PAGE
-if ( isset($_GET['page']) && $_GET['page'] == "items"){
-    $htmlHeaders .= '
-    //Launch the copy in clipboard script
-    ZeroClipboard.setMoviePath( "'.$_SESSION['settings']['cpassman_url'].'/includes/libraries/zeroclipboard/ZeroClipboard.swf");';
 }
 
 else
