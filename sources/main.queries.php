@@ -436,21 +436,21 @@ switch($_POST['type'])
 
     		//update DB
     		$db->query_update(
-    		"users",
-    		array(
-    			'pw' => $new_pw
-    		),
-    		"login = '".$_POST['login']."'"
+	    		"users",
+	    		array(
+	    			'pw' => $new_pw
+	    		),
+	    		"login = '".$_POST['login']."'"
     		);
 
     		//Delete recovery in DB
     		$db->query_delete(
-    		"misc",
-    		array(
-    			'type' => 'password_recovery',
-    			'intitule' => $_POST['login'],
-    			'valeur' => $key
-    		)
+	    		"misc",
+	    		array(
+	    			'type' => 'password_recovery',
+	    			'intitule' => $_POST['login'],
+	    			'valeur' => $key
+	    		)
     		);
 
     		//Get email

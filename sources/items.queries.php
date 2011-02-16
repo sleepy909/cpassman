@@ -21,6 +21,8 @@ require_once('../includes/language/'.$_SESSION['user_language'].'.php');
 include('../includes/settings.php');
 require_once('../includes/include.php');
 header("Content-type: text/html; charset=utf-8");
+header("Cache-Control: no-cache, must-revalidate");
+header("Pragma: no-cache");
 include('main.functions.php');
 
 $allowed_tags = '<b><i><sup><sub><em><strong><u><br><br /><a><strike><ul><blockquote><blockquote><img><li><h1><h2><h3><h4><h5><ol><small><font>';
@@ -1147,16 +1149,19 @@ if ( isset($_POST['type']) ){
                         $html .= '</a>';
 
                         // display quick icon shortcuts ?
-                    	$item_login = '<img src="includes/images/mini_user_disable.png" id="icon_login_'.$reccord['id'].'" />';
-                    	$item_pw = '<img src="includes/images/mini_lock_disable.png" id="icon_pw_'.$reccord['id'].'" />';
-                    	if ($display_item == true) {
-                    		if (!empty($reccord['login'])) {
-                    			$item_login = '<img src="includes/images/mini_user_enable.png" id="icon_login_'.$reccord['id'].'" title="'.$txt['item_menu_copy_login'].'" />';
-                    		}
-                    		if (!empty($reccord['pw'])) {
-                    			$item_pw = '<img src="includes/images/mini_lock_enable.png" id="icon_pw_'.$reccord['id'].'" title="'.$txt['item_menu_copy_pw'].'" />';
+                    	if (isset($_SESSION['settings']['copy_to_clipboard_small_icons']) && $_SESSION['settings']['copy_to_clipboard_small_icons'] == 1) {
+                    		$item_login = '<img src="includes/images/mini_user_disable.png" id="icon_login_'.$reccord['id'].'" />';
+                    		$item_pw = '<img src="includes/images/mini_lock_disable.png" id="icon_pw_'.$reccord['id'].'" class="copy_clipboard" />';
+                    		if ($display_item == true) {
+                    			if (!empty($reccord['login'])) {
+                    				$item_login = '<img src="includes/images/mini_user_enable.png" id="icon_login_'.$reccord['id'].'" class="copy_clipboard" title="'.$txt['item_menu_copy_login'].'" />';
+                    			}
+                    			if (!empty($reccord['pw'])) {
+                    				$item_pw = '<img src="includes/images/mini_lock_enable.png" id="icon_pw_'.$reccord['id'].'" class="copy_clipboard" title="'.$txt['item_menu_copy_pw'].'" />';
+                    			}
                     		}
                     	}
+
 
                     	//mini icon for collab
                     	if (isset($_SESSION['settings']['anyone_can_modify']) && $_SESSION['settings']['anyone_can_modify'] == 1) {
@@ -1183,13 +1188,19 @@ if ( isset($_POST['type']) ){
 
                         $html .= '</span>'.$item_collab.'</span></li>';
 
-                        // increment array for icons shortcuts
-                    	if ($need_sk == true && isset($_SESSION['my_sk'])) {
-                    		$pw = decrypt($reccord['pw'],mysql_real_escape_string(stripslashes($_SESSION['my_sk'])));
+                        // increment array for icons shortcuts (don't do if option is not enabled)
+                    	if (isset($_SESSION['settings']['copy_to_clipboard_small_icons']) && $_SESSION['settings']['copy_to_clipboard_small_icons'] == 1) {
+	                    	if ($need_sk == true && isset($_SESSION['my_sk'])) {
+	                    		$pw = decrypt($reccord['pw'],mysql_real_escape_string(stripslashes($_SESSION['my_sk'])));
+	                    	}else{
+	                    		$pw = decrypt($reccord['pw']);
+	                    	}
                     	}else{
-                    		$pw = decrypt($reccord['pw']);
+                    		$pw = "";
                     	}
-                        array_push($items_id_list,array($reccord['id'],$pw,$reccord['login'],$display_item));
+
+                    	//Build array with items
+                        array_push($items_id_list,array($reccord['id'], $pw, $reccord['login'], $display_item));
 
                         $i ++;
                     }
@@ -1197,25 +1208,6 @@ if ( isset($_POST['type']) ){
 
                 }
                 $html .= '</ul>';
-                /*echo 'document.getElementById(\'liste_des_items\').style.display = "";';
-                echo 'document.getElementById(\'liste_des_items\').innerHTML = "'.addslashes($html).'";';
-                echo 'document.getElementById(\'arborescence\').innerHTML = "'.addslashes(substr($arbo_html,0,strlen($arbo_html)-3)).'";';
-                echo 'document.getElementById(\'selected_items\').value = "";';
-                echo 'document.getElementById(\'hid_cat\').value = "'.$_POST['id'].'";';
-
-                // Build clipboard for pw
-                foreach($items_id_list as $cb_item){
-                	if (!empty($cb_item[1]) && $cb_item[3] == 1 && !empty($cb_item[3])){
-                		echo 'var clip = new ZeroClipboard.Client(); clip.setText( "'.CleanString(addslashes($cb_item[1])).'" ); clip.addEventListener( "onMouseDown", function(client) {$("#message_box").html("'.$txt['pw_copied_clipboard'].'").show().fadeOut(1000);});clip.glue(\'icon_pw_'.$cb_item[0].'\');';
-                	}else {
-                		echo 'var clip = new ZeroClipboard.Client(); clip.setText(""); clip.glue(\'icon_pw_'.$cb_item[0].'\');';
-                	}
-                	if (!empty($cb_item[2]) && $cb_item[3] == 1 && !empty($cb_item[3])) {
-                		echo 'var clip = new ZeroClipboard.Client(); clip.setText( "'.addslashes($cb_item[2]).'" ); clip.addEventListener( "onMouseDown", function(client) {$("#message_box").html("'.$txt['login_copied_clipboard'].'").show().fadeOut(1000);});clip.glue(\'icon_login_'.$cb_item[0].'\');';
-                	}else {
-                		echo 'var clip = new ZeroClipboard.Client(); clip.setText(""); clip.glue(\'icon_login_'.$cb_item[0].'\');';
-                	}
-                }*/
 
                 $rights = RecupDroitCreationSansComplexite($_POST['id']);
             }else{
@@ -1236,8 +1228,10 @@ if ( isset($_POST['type']) ){
         		"array_items" => $items_id_list,
         		"items_html" => $html,
         		"error" => $show_error,
-        		"saltkey_is_required" => $folder_is_pf
+	        	"saltkey_is_required" => $folder_is_pf,
+	        	"show_clipboard_small_icons" => isset($_SESSION['settings']['copy_to_clipboard_small_icons']) && $_SESSION['settings']['copy_to_clipboard_small_icons'] == 1 ? 1 : 0
 			);
+
 
         	//Check if $rights is not null
         	if (count( $rights) > 0) {
@@ -1353,27 +1347,6 @@ if ( isset($_POST['type']) ){
                 $return_values['dialog'] = '$("#div_formulaire_saisi").dialog("open");';
 
             echo $return_values;
-        break;
-
-
-        /*
-        * CASE
-        * Get password for an ITEM
-        */
-        case "copy_to_clipboard":
-            //Get all informations for this item
-            $sql = "SELECT pw
-                    FROM ".$pre."items
-                    WHERE id=".$_POST['item_id'];
-            $data_item = $db->query_first($sql);
-
-            //Uncrypt PW
-            $pw = decrypt($data_item['pw']);
-
-            //Display clipboard flash elemnt
-            echo 'var clip = new ZeroClipboard.Client();clip.setText( "'.addslashes($pw).'" );clip.addEventListener( "onMouseDown", function(client) {$("#message_box").html("'.$txt['pw_copied_clipboard'].'").show().fadeOut(1000);}); clip.glue(\'icon_cp_pw_'.$_POST['icon_id'].'\'); ';
-            echo '$("#clipboard_loaded_'.$_POST['icon_id'].'").val("true");';
-
         break;
 
 

@@ -44,14 +44,14 @@ TODO
 * IMAP login
 -----------------------------------------------------------------------------------------------------
 IN PROGRESS :
-* CSV and KP import : add modification by "roles" option
+* ...
 
 CHANGELOG
 v2.00
 * improvement: convert cPassMan to UTF-8 charset
 * improvement: all data exchanges concerning items are encrypted based on AES-256
 * improvement: new design
-* improvement: cpassman uses jquery 1.4.4 and jqueryui 1.8.7
+* improvement: cpassman uses jquery 1.4.4 and jqueryui 1.8.9
 * improvement: drag and drop items into folder (remain some dropable area troubles)
 * improvement: allow role access on item base [3160946]
 * improvement: new strategy for user password recovery
@@ -60,6 +60,7 @@ v2.00
 * improvement: LDAP login (thanks to Paul)
 * improvement: setting "allow modification for this role" in roles matrix
 * improvement: when importing items, 2 options permits to set restriction arguments
+* improvement: "copy to clipboard" items are deleted for memory optimization []
 * fixed: problem with slash in label [3141743]
 * fixed: password in cleartext in log [3141167]
 * fixed: deleted pws show up in the search [3160582]

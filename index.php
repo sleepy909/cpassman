@@ -254,13 +254,13 @@ require_once("load.php");
             <br />
             <button title="'.$txt['item_menu_copy_elem'].'" id="menu_button_copy_item" onclick="open_copy_item_div()" style="margin-bottom:5px;"><img src="includes/images/key_copy.png" alt="" /></button>
             <br />
-            <button title="'.$txt['pw_copy_clipboard'].'" id="menu_button_copy_pw" ><img src="includes/images/ui-text-field-password.png" id="div_copy_pw" alt="" /></button>
+            <button title="'.$txt['pw_copy_clipboard'].'" id="menu_button_copy_pw" class="copy_clipboard"><img src="includes/images/ui-text-field-password.png" id="div_copy_pw" alt="" /></button>
             <br />
-            <button title="'.$txt['login_copy'].'" style="margin-bottom:5px;" id="menu_button_copy_login"><img src="includes/images/ui-text-field.png" id="div_copy_login" alt="" /></button>
+            <button title="'.$txt['login_copy'].'" style="margin-bottom:5px;" id="menu_button_copy_login" class="copy_clipboard"><img src="includes/images/ui-text-field.png" id="div_copy_login" alt="" /></button>
             <br />
             <button title="'.$txt['mask_pw'].'" style="margin-bottom:5px;" id="menu_button_show_pw" onclick="ShowPassword()"><img src="includes/images/eye.png" alt="" /></button>
             <br />
-            <button title="'.$txt['link_copy'].'" id="menu_button_copy_link"><img src="includes/images/target.png" id="div_copy_link" alt="" /></button>
+            <button title="'.$txt['link_copy'].'" id="menu_button_copy_link" class="copy_clipboard"><img src="includes/images/target.png" id="div_copy_link" alt="" /></button>
         </div>';
     }
 

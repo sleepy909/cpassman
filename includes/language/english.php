@@ -5,12 +5,14 @@ if (!isset($_SESSION['settings']['cpassman_url'])) {
 	$cpassman_url = $_SESSION['settings']['cpassman_url'];
 }
 //ENGLISH
+$txt['copy_to_clipboard_small_icons'] = "Enable copy to clipboard small icons in items page";
+$txt['copy_to_clipboard_small_icons_tip'] = "<span style='font-size:11px;max-width:300px;'>This could help preventing memory usage if users have no recent computer.<br /> Indeed, the clipboard is not loaded with items informations. But no quick copy of password and login is possible.</span>";
 $txt['import_csv_anyone_can_modify_txt'] = "Set \"anyone can modify\" right on all imported items.";
 $txt['import_csv_anyone_can_modify_in_role_txt'] = "Set \"anyone in the same role can modify\" right on all imported items.";
 $txt['role_can_modify_all_seen_items'] = "Set this role allowed to modify all accessible items (not secure setting)";
 $txt['role_cannot_modify_all_seen_items'] = "Set this role not allowed to modify all accessible items (normal setting)";
 $txt['admin_action_reload_cache_table'] = "Reload Cache table";
-$txt['admin_action_reload_cache_table_tip'] = "This permits to reload the full content of table Cache. Can be usefull to be done sometimes.";
+$txt['admin_action_reload_cache_table_tip'] = "<span style='font-size:11px;max-width:300px;'>This permits to reload the full content of table Cache. Can be usefull to be done sometimes.</span>";
 $txt['at_import'] = "Importation";
 $txt['email_subject_new_user'] = "[cPassMan] Your account creation";
 $txt['email_text_new_user'] = "Hi,<br /><br />Your account has been created in cPassMan.<br />You can now access $cpassman_url using the next credentials:<br />";
@@ -37,10 +39,10 @@ $txt['admin_action_check_pf'] = "Actualize Personal Folders for all users (creat
 $txt['admin_action_db_backup'] = "Create a backup of the database";
 $txt['admin_action_db_backup_key_tip'] = "Please enter the encryption key. Save it somewhere, it will be asked when restoring. (leave empty to not encrypt)";
 $txt['admin_action_db_backup_start_tip'] = "Start";
-$txt['admin_action_db_backup_tip'] = "It is a good practice to create a backup that could be used to restore your database.";
+$txt['admin_action_db_backup_tip'] = "<span style='font-size:11px;max-width:300px;'>It is a good practice to create a backup that could be used to restore your database.</span>";
 $txt['admin_action_db_clean_items'] = "Remove orphan items from database";
 $txt['admin_action_db_clean_items_result'] = "items have been deleted.";
-$txt['admin_action_db_clean_items_tip'] = "This will only delete those items and associated logs that have not been deleted after the associated folder has been deleted. It is suggested to create a backup before.";
+$txt['admin_action_db_clean_items_tip'] = "<span style='font-size:11px;max-width:300px;'>This will only delete those items and associated logs that have not been deleted after the associated folder has been deleted. It is suggested to create a backup before.</span>";
 $txt['admin_action_db_optimize'] = "Optimize the database";
 $txt['admin_action_db_restore'] = "Restore the database";
 $txt['admin_action_db_restore_key'] = "Please enter the encryption key.";
