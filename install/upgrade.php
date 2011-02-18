@@ -50,7 +50,7 @@ session_start();
                 if ( step == "step3" ){
                     document.getElementById("res_step3").innerHTML = '<img src="images/ajax-loader.gif" alt="" />';
                     var data = "type="+step+
-                    "&prefix_before_convert="+$("#prefix_before_convert:checked").val();
+                    "&prefix_before_convert="+document.getElementById("prefix_before_convert").checked;
                     document.getElementById("loader").style.display = "";
                 }else
                 if ( step == "step4" ){
@@ -72,16 +72,16 @@ require_once("../includes/language/english.php");
 require_once("../includes/include.php");
 
 if (isset($_POST['db_host'])) {
-    $_SESSION['db_host'] = $_POST['db_host'];
-    $_SESSION['db_bdd'] = $_POST['db_bdd'];
-    $_SESSION['db_login'] = $_POST['db_login'];
-    $_SESSION['db_pw'] = $_POST['db_pw'];
-    $_SESSION['tbl_prefix'] = $_POST['tbl_prefix'];
-    if (isset($_POST['send_stats'])) {
-        $_SESSION['send_stats'] = $_POST['send_stats'];
-    }else{
-        $_SESSION['send_stats'] = "";
-    }
+	$_SESSION['db_host'] = $_POST['db_host'];
+	$_SESSION['db_bdd'] = $_POST['db_bdd'];
+	$_SESSION['db_login'] = $_POST['db_login'];
+	$_SESSION['db_pw'] = $_POST['db_pw'];
+	$_SESSION['tbl_prefix'] = $_POST['tbl_prefix'];
+	if (isset($_POST['send_stats'])) {
+		$_SESSION['send_stats'] = $_POST['send_stats'];
+	}else{
+		$_SESSION['send_stats'] = "";
+	}
 }
 
 // LOADER
@@ -104,135 +104,137 @@ echo '
                     <input type="hidden" id="cpm_is_utf8" name="cpm_is_utf8" value="', isset($_POST['cpm_is_utf8']) ? $_POST['cpm_is_utf8']:'', '" />';
 
 if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
-   //ETAPE O
-    echo '
-                    <h2>This page will help you to upgrade the cPassMan\'s database</h2>
+	//ETAPE O
+	echo '
+	                 <h2>This page will help you to upgrade the cPassMan\'s database</h2>
 
-                    Before starting, be sure to:<br />
-                    - upload the complete package on the server and overwrite existing files,<br />
-                    - have the database connection informations,<br />
-                    - get some CHMOD rights on the server.<br />
-                    <br /><br /><br />
-                    <span style="font-weight:bold; font-size:14px;color:#C60000;"><img src="../includes/images/error.png" />&nbsp;ALWAYS BE SURE TO CREATE A DUMP OF YOUR DATABASE BEFORE UPGRADING</span>';
+	                 Before starting, be sure to:<br />
+	                 - upload the complete package on the server and overwrite existing files,<br />
+	                 - have the database connection informations,<br />
+	                 - get some CHMOD rights on the server.<br />
+	                 <br /><br /><br />
+	                 <span style="font-weight:bold; font-size:14px;color:#C60000;"><img src="../includes/images/error.png" />&nbsp;ALWAYS BE SURE TO CREATE A DUMP OF YOUR DATABASE BEFORE UPGRADING</span>';
 
 }else if ( (isset($_POST['step']) && $_POST['step'] == 1) || (isset($_GET['step']) && $_GET['step'] == 1) ){
-   //ETAPE 1
-   echo '
-                    <h3>Step 1 - Check server</h3>
+	//ETAPE 1
+	echo '
+	                 <h3>Step 1 - Check server</h3>
 
-                    <fieldset><legend>Please give me</legend>
-                    <label for="root_path" style="width:300px;">Absolute path to cPassMan folder :</label><input type="text" id="root_path" name="root_path" class="step" style="width:560px;" /><br />
-                    </fieldset>
+	                 <fieldset><legend>Please give me</legend>
+	                 <label for="root_path" style="width:300px;">Absolute path to cPassMan folder :</label><input type="text" id="root_path" name="root_path" class="step" style="width:560px;" /><br />
+	                 </fieldset>
 
-                    <h4>Next elements will be checked.</h4>
-                    <div style="margin:15px;" id="res_step1">
-                    <span style="padding-left:30px;font-size:13pt;">File "settings.php" is writable</span><br />
-                    <span style="padding-left:30px;font-size:13pt;">Directory "/install/" is writable</span><br />
-                    <span style="padding-left:30px;font-size:13pt;">Directory "/includes/" is writable</span><br />
-                    <span style="padding-left:30px;font-size:13pt;">Directory "/files/" is writable</span><br />
-                    <span style="padding-left:30px;font-size:13pt;">Directory "/upload/" is writable</span><br />
-                    <span style="padding-left:30px;font-size:13pt;">PHP extension "mcrypt" is loaded</span><br />
-                    </div>
-                    <div style="margin-top:20px;font-weight:bold;text-align:center;height:27px;" id="res_step1"></div>
-                    <input type="hidden" id="step1" name="step1" value="" />';
+	                 <h4>Next elements will be checked.</h4>
+	                 <div style="margin:15px;" id="res_step1">
+	                 <span style="padding-left:30px;font-size:13pt;">File "settings.php" is writable</span><br />
+	                 <span style="padding-left:30px;font-size:13pt;">Directory "/install/" is writable</span><br />
+	                 <span style="padding-left:30px;font-size:13pt;">Directory "/includes/" is writable</span><br />
+	                 <span style="padding-left:30px;font-size:13pt;">Directory "/files/" is writable</span><br />
+	                 <span style="padding-left:30px;font-size:13pt;">Directory "/upload/" is writable</span><br />
+	                 <span style="padding-left:30px;font-size:13pt;">PHP extension "mcrypt" is loaded</span><br />
+	                 </div>
+	                 <div style="margin-top:20px;font-weight:bold;text-align:center;height:27px;" id="res_step1"></div>
+	                 <input type="hidden" id="step1" name="step1" value="" />';
 
 
 }else if ( (isset($_POST['step']) && $_POST['step'] == 2) || (isset($_GET['step']) && $_GET['step'] == 2) ){
-   //ETAPE 2
-   echo '
-                    <h3>Step 2</h3>
-                    <fieldset><legend>Database Informations</legend>
-                    <label for="db_host">Host :</label><input type="text" id="db_host" name="db_host" class="step" /><br />
-                    <label for="db_db">Database name :</label><input type="text" id="db_bdd" name="db_bdd" class="step" /><br />
-                    <label for="db_login">Login :</label><input type="text" id="db_login" name="db_login" class="step" /><br />
-                    <label for="db_pw">Password :</label><input type="text" id="db_pw" name="db_pw" class="step" /><br />
-                    <label for="tbl_prefix">Table prefix :</label><input type="text" id="tbl_prefix" name="tbl_prefix" class="step" value="cpassman_" />
-                    </fieldset>
+	//ETAPE 2
+	echo '
+	                 <h3>Step 2</h3>
+	                 <fieldset><legend>Database Informations</legend>
+	                 <label for="db_host">Host :</label><input type="text" id="db_host" name="db_host" class="step" /><br />
+	                 <label for="db_db">Database name :</label><input type="text" id="db_bdd" name="db_bdd" class="step" /><br />
+	                 <label for="db_login">Login :</label><input type="text" id="db_login" name="db_login" class="step" /><br />
+	                 <label for="db_pw">Password :</label><input type="text" id="db_pw" name="db_pw" class="step" /><br />
+	                 <label for="tbl_prefix">Table prefix :</label><input type="text" id="tbl_prefix" name="tbl_prefix" class="step" value="cpassman_" />
+	                 </fieldset>
 
-                    <fieldset><legend>Anonymous statistics</legend>
-                    <input type="checkbox" name="send_stats" id="send_stats" />Send monthly anonymous statistics.<br />
-                    Please considere sending your statistics as a way to contribute to futur improvments of cPassMan. Indeed this will help the creator to evaluate how the tool is used and by this way how to improve the tool. When enabled, the tool will automatically send once by month a bunch of statistics without any action from you. Of course, those data are absolutely anonymous and no data is exported, just the next informations : number of users, number of folders, number of items, tool version, ldap enabled, and personal folders enabled.<br>
-                    This option can be enabled or disabled through the administration panel.
-                    </fieldset>
+	                 <fieldset><legend>Anonymous statistics</legend>
+	                 <input type="checkbox" name="send_stats" id="send_stats" />Send monthly anonymous statistics.<br />
+	                 Please considere sending your statistics as a way to contribute to futur improvments of cPassMan. Indeed this will help the creator to evaluate how the tool is used and by this way how to improve the tool. When enabled, the tool will automatically send once by month a bunch of statistics without any action from you. Of course, those data are absolutely anonymous and no data is exported, just the next informations : number of users, number of folders, number of items, tool version, ldap enabled, and personal folders enabled.<br>
+	                 This option can be enabled or disabled through the administration panel.
+	                 </fieldset>
 
-                    <div style="margin-top:20px;font-weight:bold;text-align:center;height:27px;" id="res_step2"></div>
-                    <input type="hidden" id="step2" name="step2" value="" />';
+	                 <div style="margin-top:20px;font-weight:bold;text-align:center;height:27px;" id="res_step2"></div>
+	                 <input type="hidden" id="step2" name="step2" value="" />';
 }
 
 else if ( (isset($_POST['step']) && $_POST['step'] == 3 || isset($_GET['step']) && $_GET['step'] == 3) && (isset($_POST['actual_cpm_version'])) ){
-   //ETAPE 3
-   echo '
-                    <h3>Step 3 - Converting database to UTF-8</h3>';
+	//ETAPE 3
+	echo '
+	                 <h3>Step 3 - Converting database to UTF-8</h3>';
 
-	if (version_compare($_POST['actual_cpm_version'], $k['version'], ">")) {
+	if (version_compare($_POST['actual_cpm_version'], $k['version'], "<")) {
 		echo '
 			Notice that cPassMan is now only using UTF-8 charset.
-                    This step will convert the database to this charset.<br />
-                    <p>
-                        <input type="checkbox" name="prefix_before_convert" id="prefix_before_convert" />Save previous tables before converting (prefix "old_" will be used).
-                    </p>
-                    Click on the button when ready.
+			This step will convert the database to this charset.<br />
+			<p>
+				Save previous tables before converting (prefix "old_" will be used)&nbsp;&nbsp;<input type="checkbox" id="prefix_before_convert" />
+			</p>
+			Click on the button when ready.
 
-                    <div style="margin-top:20px;font-weight:bold;text-align:center;height:27px;" id="res_step3"></div>  ';
+			<div style="margin-top:20px;font-weight:bold;text-align:center;height:27px;" id="res_step3"></div>  ';
+		$conversion_utf8 = true;
 	}else{
 		echo '
 			The database seems already in UTF-8 charset';
+		$conversion_utf8 = false;
 	}
-
 }
 
 else if ( (isset($_POST['step']) && $_POST['step'] == 4) || (isset($_GET['step']) && $_GET['step'] == 4) ){
-   //ETAPE 4
+	//ETAPE 4
 
-   echo '
-                    <h3>Step 4</h3>
+	echo '
+	                 <h3>Step 4</h3>
 
-                    The upgrader will now update your database.
-                    <table>
-                        <tr><td>Misc table will be populated with new values</td><td><span id="tbl_1"></span></td></tr>
-                        <tr><td>Users table will be altered with news fields</td><td><span id="tbl_2"></span></td></tr>
-                        <tr><td>Nested_Tree table will be altered with news fields</td><td><span id="tbl_5"></span></td></tr>
-                        <tr><td>Table "tags" will be created</td><td><span id="tbl_3"></span></td></tr>
-                        <tr><td>Table "log_system" will be created</td><td><span id="tbl_4"></span></td></tr>
-                        <tr><td>Table "files" will be created</td><td><span id="tbl_6"></span></td></tr>
-                        <tr><td>Table "cache" will be created</td><td><span id="tbl_7"></span></td></tr>
-                        <tr><td>Change table "functions" to "roles"</td><td><span id="tbl_9"></span></td></tr>
-                        <tr><td>Add table "kb"</td><td><span id="tbl_10"></span></td></tr>
-                        <tr><td>Add table "kb_categories"</td><td><span id="tbl_11"></span></td></tr>
-                        <tr><td>Add table "kb_items"</td><td><span id="tbl_12"></span></td></tr>
-                        <tr><td>Add table "restriction_to_roles"</td><td><span id="tbl_13"></span></td></tr>
-                    </table>
+	                 The upgrader will now update your database.
+	                 <table>
+	                     <tr><td>Misc table will be populated with new values</td><td><span id="tbl_1"></span></td></tr>
+	                     <tr><td>Users table will be altered with news fields</td><td><span id="tbl_2"></span></td></tr>
+	                     <tr><td>Nested_Tree table will be altered with news fields</td><td><span id="tbl_5"></span></td></tr>
+	                     <tr><td>Table "tags" will be created</td><td><span id="tbl_3"></span></td></tr>
+	                     <tr><td>Table "log_system" will be created</td><td><span id="tbl_4"></span></td></tr>
+	                     <tr><td>Table "files" will be created</td><td><span id="tbl_6"></span></td></tr>
+	                     <tr><td>Table "cache" will be created</td><td><span id="tbl_7"></span></td></tr>
+	                     <tr><td>Change table "functions" to "roles"</td><td><span id="tbl_9"></span></td></tr>
+	                     <tr><td>Add table "kb"</td><td><span id="tbl_10"></span></td></tr>
+	                     <tr><td>Add table "kb_categories"</td><td><span id="tbl_11"></span></td></tr>
+	                     <tr><td>Add table "kb_items"</td><td><span id="tbl_12"></span></td></tr>
+	                     <tr><td>Add table "restriction_to_roles"</td><td><span id="tbl_13"></span></td></tr>
+	                 </table>
 
-                    <div style="margin-top:20px;font-weight:bold;text-align:center;height:27px;" id="res_step4"></div>
-                    <input type="hidden" id="step4" name="step4" value="" />';
+	                 <div style="margin-top:20px;font-weight:bold;text-align:center;height:27px;" id="res_step4"></div>
+	                 <input type="hidden" id="step4" name="step4" value="" />';
 }
 
 else if ( (isset($_POST['step']) && $_POST['step'] == 5) || (isset($_GET['step']) && $_GET['step'] == 5) ){
-   //ETAPE 5
-   echo '
-                    <h3>Step 5 - Update setting file</h3>
-                    This step will write the new setting.php file for your server configuration.<br />
-                    Click on the button when ready.
+	//ETAPE 5
+	echo '
+	                 <h3>Step 5 - Update setting file</h3>
+	                 This step will write the new setting.php file for your server configuration.<br />
+	                 Click on the button when ready.
 
-                    <div style="margin-top:20px;font-weight:bold;text-align:center;height:27px;" id="res_step5"></div>  ';
+	                 <div style="margin-top:20px;font-weight:bold;text-align:center;height:27px;" id="res_step5"></div>  ';
 }
 
 else if ( (isset($_POST['step']) && $_POST['step'] == 6) || (isset($_GET['step']) && $_GET['step'] == 6) ){
-   //ETAPE 5
-   echo '
-                    <h3>Step 6</h3>
-                    Upgrade is now finished!<br />
-                    You can delete "Install" directory from your server for more security.<br /><br />
-                    For news, help and information, visit the <a href="http://cpassman.org" target="_blank">cPassMan website</a>.';
+	//ETAPE 5
+	echo '
+	                 <h3>Step 6</h3>
+	                 Upgrade is now finished!<br />
+	                 You can delete "Install" directory from your server for more security.<br /><br />
+	                 For news, help and information, visit the <a href="http://cpassman.org" target="_blank">cPassMan website</a>.';
 }
+
 
 //buttons
 if ( !isset($_POST['step']) ){
-       echo '
-                    <div id="buttons_bottom">
-                        <input type="button" id="but_next" onclick="goto_next_page(\'1\')" style="padding:3px;cursor:pointer;font-size:20px;" class="ui-state-default ui-corner-all" value="NEXT" />
-                    </div>';
-}elseif ( $_POST['step'] == 3 && version_compare($_POST['actual_cpm_version'], $k['version'], "<")){
+	echo '
+	             <div id="buttons_bottom">
+	                 <input type="button" id="but_next" onclick="goto_next_page(\'1\')" style="padding:3px;cursor:pointer;font-size:20px;" class="ui-state-default ui-corner-all" value="NEXT" />
+	             </div>';
+}elseif ( $_POST['step'] == 3 && $conversion_utf8 == false){
 	echo '
                     <div style="width:900px;margin:auto;margin-top:30px;">
                         <div id="progressbar" style="float:left;margin-top:9px;"></div>
@@ -240,13 +242,8 @@ if ( !isset($_POST['step']) ){
                             <input type="button" id="but_next" onclick="goto_next_page(\''. (intval($_POST['step'])+1) . '\')" style="padding:3px;cursor:pointer;font-size:20px;" class="ui-state-default ui-corner-all" value="NEXT" />
                         </div>
                     </div>';
-}elseif ( $_POST['step'] == 6 ){
-       echo '
-                    <div id="buttons_bottom">
-                        <input type="button" id="but_next" onclick="javascript:window.location.href=\'http://' . $_SERVER['HTTP_HOST'].substr($_SERVER['PHP_SELF'],0,strrpos($_SERVER['PHP_SELF'],'/')-8) . '\';" style="padding:3px;cursor:pointer;font-size:20px;" class="ui-state-default ui-corner-all" value="Open cPassMan" />
-                    </div>';
-}else{
-   echo '
+}elseif ( $_POST['step'] == 3 && $conversion_utf8 == true){
+	echo '
                     <div style="width:900px;margin:auto;margin-top:30px;">
                         <div id="progressbar" style="float:left;margin-top:9px;"></div>
                         <div id="buttons_bottom">
@@ -254,6 +251,20 @@ if ( !isset($_POST['step']) ){
                             <input type="button" id="but_next" onclick="goto_next_page(\''. (intval($_POST['step'])+1) . '\')" style="padding:3px;cursor:pointer;font-size:20px;" class="ui-state-default ui-corner-all" value="NEXT" disabled="disabled" />
                         </div>
                     </div>';
+}elseif ( $_POST['step'] == 6 ){
+	echo '
+	             <div id="buttons_bottom">
+	                 <input type="button" id="but_next" onclick="javascript:window.location.href=\'http://' . $_SERVER['HTTP_HOST'].substr($_SERVER['PHP_SELF'],0,strrpos($_SERVER['PHP_SELF'],'/')-8) . '\';" style="padding:3px;cursor:pointer;font-size:20px;" class="ui-state-default ui-corner-all" value="Open cPassMan" />
+	             </div>';
+}else{
+	echo '
+	                 <div style="width:900px;margin:auto;margin-top:30px;">
+	                     <div id="progressbar" style="float:left;margin-top:9px;"></div>
+	                     <div id="buttons_bottom">
+	                         <input type="button" id="but_launch" onclick="Check(\'step'.$_POST['step'] .'\')" style="padding:3px;cursor:pointer;font-size:20px;" class="ui-state-default ui-corner-all" value="LAUNCH" />
+	                         <input type="button" id="but_next" onclick="goto_next_page(\''. (intval($_POST['step'])+1) . '\')" style="padding:3px;cursor:pointer;font-size:20px;" class="ui-state-default ui-corner-all" value="NEXT" disabled="disabled" />
+	                     </div>
+	                 </div>';
 }
 
 echo '
@@ -261,8 +272,8 @@ echo '
             </div>
             </div>';
 //FOOTER
-    // DON'T MODIFY THE FOOTER
-    echo '
+// DON'T MODIFY THE FOOTER
+echo '
     <div id="footer">
         <div style="width:500px;">
             cPassMan '.$k['version'].' &#169; copyright 2009-2010

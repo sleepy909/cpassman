@@ -184,15 +184,17 @@ require_once("load.php");
         echo '
         <div style="float:right;margin:-8px 3px 0px 0px;">
             <dl id="flags" class="dropdown" title="'.$txt['select_language'].'">
-                <dt><img src="includes/images/flag_'.$flag.'.png" alt="" /></dt>
+                <dt><img src="includes/images/'.$flag.'.png" alt="" /></dt>
                 <dd>
                     <ul>
-                        <!--<li><a href="#"><img class="flag" src="includes/images/flag_cz.png" alt="Czech" onclick="ChangeLanguage(\'czech\')" /></a></li>-->
-                        <li><a href="#"><img class="flag" src="includes/images/flag_us.png" alt="English" onclick="ChangeLanguage(\'english\')" /></a></li>
-                        <li><a href="#"><img class="flag" src="includes/images/flag_fr.png" alt="French" onclick="ChangeLanguage(\'french\')" /></a></li>
-                        <li><a href="#"><img class="flag" src="includes/images/flag_de.png" alt="German" onclick="ChangeLanguage(\'german\')" /></a></li>
-                        <!--<li><a href="#"><img class="flag" src="includes/images/flag_es.png" alt="Spanish" onclick="ChangeLanguage(\'spanish\')" /></a></li>-->
-                        <!--<li><a href="#"><img class="flag" src="includes/images/flag_ru.png" alt="Russian" onclick="ChangeLanguage(\'russian\')" /></a></li>-->
+                        <li><a href="#"><img class="flag" src="includes/images/flags/cz.png" alt="Czech" onclick="ChangeLanguage(\'czech\')" /></a></li>
+                        <li><a href="#"><img class="flag" src="includes/images/flags/us.png" alt="English" onclick="ChangeLanguage(\'english\')" /></a></li>
+                        <li><a href="#"><img class="flag" src="includes/images/flags/fr.png" alt="French" onclick="ChangeLanguage(\'french\')" /></a></li>
+                        <li><a href="#"><img class="flag" src="includes/images/flags/de.png" alt="German" onclick="ChangeLanguage(\'german\')" /></a></li>
+                        <li><a href="#"><img class="flag" src="includes/images/flags/es.png" alt="Spanish" onclick="ChangeLanguage(\'spanish\')" /></a></li>
+                        <!--<li><a href="#"><img class="flag" src="includes/images/flags/ru.png" alt="Russian" onclick="ChangeLanguage(\'russian\')" /></a></li>
+                        <li><a href="#"><img class="flag" src="includes/images/flags/hu.png" alt="Hungarian" onclick="ChangeLanguage(\'hungarian\')" /></a></li>
+                        <li><a href="#"><img class="flag" src="includes/images/flags/tr.png" alt="Turkish" onclick="ChangeLanguage(\'turkish\')" /></a></li>-->
                     </ul>
                 </dd>
             </dl>
