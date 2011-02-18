@@ -173,7 +173,7 @@ require_once("load.php");
         }
 
         //Display language menu
-        $langues = array("french" => "fr","spanish" => "sp","german" => "de","english" => "us","czech" => "cz","russian" => "ru");
+        $langues = array("french" => "fr","spanish" => "es","german" => "de","english" => "us","czech" => "cz","russian" => "ru","hungarian" => "hu","turkish" => "tr");
         foreach ($langues as $lang => $abrev) {
             if ($_SESSION['user_language'] == $lang) {
                 $flag = $abrev;
@@ -182,9 +182,9 @@ require_once("load.php");
         }
 
         echo '
-        <div style="float:right;margin:-8px 3px 0px 0px;">
+        <div style="float:right;margin:-8px 3px 0px 0px;">ICI
             <dl id="flags" class="dropdown" title="'.$txt['select_language'].'">
-                <dt><img src="includes/images/'.$flag.'.png" alt="" /></dt>
+                <dt><img src="includes/images/flags/'.$flag.'.png" alt="" /></dt>
                 <dd>
                     <ul>
                         <li><a href="#"><img class="flag" src="includes/images/flags/cz.png" alt="Czech" onclick="ChangeLanguage(\'czech\')" /></a></li>
