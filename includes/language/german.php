@@ -123,7 +123,8 @@ $txt['connection'] = "Verbindungsaufbau";
 $txt['connections'] = "Verbindungen";
 $txt['copy'] = "Kopieren";
 $txt['copy_to_clipboard_small_icons'] = "Enable copy to clipboard small icons in items page";
-$txt['copy_to_clipboard_small_icons_tip'] = "<span style='font-size:11px;max-width:300px;'>This could help preventing memory usage if users have no recent computer.<br /> Indeed, the clipboard is not loaded with items informations. But no quick copy of password and login is possible.</span>
+$txt['copy_to_clipboard_small_icons_tip'] = "<span style='font-size:11px;max-width:300px;'>This could help preventing memory usage if users have no recent computer.<br /> Indeed, the clipboard is not loaded with items informations. But no quick copy of password and login is possible.</span>
+
 ";
 $txt['creation_date'] = "Erstellungsdatum";
 $txt['csv_import_button_text'] = "CSV-Datei suchen";
@@ -237,8 +238,8 @@ $txt['importing_details'] = "Detailliste";
 $txt['importing_folders'] = "Ordner werden importiert";
 $txt['importing_items'] = "Elemente werden importiert";
 $txt['import_button'] = "Importieren";
-$txt['import_csv_anyone_can_modify_in_role_txt'] = "Set \\"anyone in the same role can modify\\" right on all imported items.";
-$txt['import_csv_anyone_can_modify_txt'] = "Set \\"anyone can modify\\" right on all imported items.";
+$txt['import_csv_anyone_can_modify_in_role_txt'] = "Set \"anyone in the same role can modify\" right on all imported items.";
+$txt['import_csv_anyone_can_modify_txt'] = "Set \"anyone can modify\" right on all imported items.";
 $txt['import_csv_dialog_info'] = "Hinweis: der Importvorgang muss aus einer CSV-Datei durchgeführt werden. Aus KeePass exportierte Dateien haben normalerweise die erforderliche Struktur.<br>Wenn Sie eine von einem anderen Programm erstellte Datei nutzen, überprüfen Sie die Struktur der CSV Datei: `Bezeichnung`,`Benutzername`,`Passwort`,`Webseite`,`Kommentare`.";
 $txt['import_csv_menu_title'] = "Elemente importieren aus Datei (CSV/KeePass XML)";
 $txt['import_error_no_file'] = "Sie müssen eine Datei auswählen!";

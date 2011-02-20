@@ -123,7 +123,8 @@ $txt['connection'] = "Conexion";
 $txt['connections'] = "Conexiones";
 $txt['copy'] = "Copiar";
 $txt['copy_to_clipboard_small_icons'] = "Enable copy to clipboard small icons in items page";
-$txt['copy_to_clipboard_small_icons_tip'] = "<span style='font-size:11px;max-width:300px;'>This could help preventing memory usage if users have no recent computer.<br /> Indeed, the clipboard is not loaded with items informations. But no quick copy of password and login is possible.</span>
+$txt['copy_to_clipboard_small_icons_tip'] = "<span style='font-size:11px;max-width:300px;'>This could help preventing memory usage if users have no recent computer.<br /> Indeed, the clipboard is not loaded with items informations. But no quick copy of password and login is possible.</span>
+
 ";
 $txt['creation_date'] = "Fecha de creacion";
 $txt['csv_import_button_text'] = "Navegar archivo CSV";
@@ -237,8 +238,8 @@ $txt['importing_details'] = "Lista de detalles";
 $txt['importing_folders'] = "Importando carpetas";
 $txt['importing_items'] = "Importando elementos";
 $txt['import_button'] = "Importar";
-$txt['import_csv_anyone_can_modify_in_role_txt'] = "Set \\"anyone in the same role can modify\\" right on all imported items.";
-$txt['import_csv_anyone_can_modify_txt'] = "Set \\"anyone can modify\\" right on all imported items.";
+$txt['import_csv_anyone_can_modify_in_role_txt'] = "Set \"anyone in the same role can modify\" right on all imported items.";
+$txt['import_csv_anyone_can_modify_txt'] = "Set \"anyone can modify\" right on all imported items.";
 $txt['import_csv_dialog_info'] = "Informacion: La importacion debe ser hecha usando un archivo CSV. Generalmente un archivo exportado desde KeePass tiene la estructura esperada.<br />Si usted usa un archivo generado por otra herramienta, por favor chequee que la estructura CSV sea la siguiente: 'Cuenta','Nombre de usuario','Clave','Sitio web','Comentarios'.";
 $txt['import_csv_menu_title'] = "Importar elementos desde archivo (CSV/KeePass XML)";
 $txt['import_error_no_file'] = "Debe seleccionar un archivo!";

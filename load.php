@@ -60,7 +60,9 @@ if ( isset($_GET['page']) && $_GET['page'] == "items")
 		<link rel="stylesheet" type="text/css" href="includes/libraries/multiselect/jquery.multiselect.css" />
         <script type="text/javascript" src="includes/libraries/multiselect/jquery.multiselect.min.js"></script>
 
-        <script type="text/javascript" src="includes/libraries/crypt/aes.min.js"></script>';
+        <script type="text/javascript" src="includes/libraries/crypt/aes.min.js"></script>
+
+        <script type="text/javascript" src="includes/libraries/jquery.scrollbar.min.js"></script>';
 
 else
 if ( isset($_GET['page']) && $_GET['page'] == "manage_settings")
