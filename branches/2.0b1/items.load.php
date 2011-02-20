@@ -68,12 +68,15 @@ if ($_SESSION['CPM'] != 1)
 //###########
 //## FUNCTION : Launch the listing of all items of one category
 //###########
-function ListerItems(groupe_id, restricted){
+function ListerItems(groupe_id, restricted, start){
     if ( groupe_id != undefined ){
         LoadingPage();
 
         //clean form
-        $('#id_label, #id_pw, #id_url, #id_desc, #id_login, #id_info, #id_restricted_to, #id_files, #id_tags, #items_list').html("");
+        $('#id_label, #id_pw, #id_url, #id_desc, #id_login, #id_info, #id_restricted_to, #id_files, #id_tags').html("");
+        if (start == 0) {
+        	$("#items_list").html("");
+        }
         $("#items_list").css("display", "");
         $("#selected_items").val("");
         $("#hid_cat").val(groupe_id);
@@ -86,7 +89,9 @@ function ListerItems(groupe_id, restricted){
         	{
         		type 	: "lister_items_groupe",
         		id 		: groupe_id,
-        		restricted : restricted
+        		restricted : restricted,
+        		start	: start,
+        		nb_items_to_display_once : $("#nb_items_to_display_once").val()
         	},
         	function(data){
                 //decrypt data
@@ -105,9 +110,24 @@ function ListerItems(groupe_id, restricted){
 					//Display items
 					$("#item_details_no_personal_saltkey, #item_details_nok").hide();
 					$("#item_details_ok, #items_list").show();
-	        		$("#items_list").html(data.items_html);
 	        		$("#items_path").html(data.arborescence);
-	        		$("#items_list").val("");
+	        		//$("#items_list").val("");
+
+	        		$("#more_items").remove();
+
+	        		if (data.list_to_be_continued == "yes") {
+	        			$("#items_list").append(data.items_html);
+	        			//set next start for query
+						$("#query_next_start").val(data.next_start);
+	        		}else{
+	        			$("#items_list").append(data.items_html);
+	        			$("#query_next_start").val(data.list_to_be_continued);
+	        		}
+/*
+	        		if ($("#query_next_start").val() <= $("#nb_items_to_display_once").val() && data.list_to_be_continued == "yes") {
+	        			//$("#items_list").append('<div id="more_items" style="float:right"><a href="#" onclick="ListerItems($(\'#hid_cat\').val(),\'\', $(\'#query_next_start\').val());" class="small_text"><img src="includes/images/control-skip-270.png" style="margin-right:10px;" /></a></div>');
+	        		}
+*/
 
 	        		//If restriction for role
 	        		if (restricted == 1) {
@@ -115,9 +135,6 @@ function ListerItems(groupe_id, restricted){
 	        		}else{
 	        			$("#menu_button_add_item, #menu_button_copy_item").removeAttr('disabled');
 	        		}
-
-					var clip;
-					//clip.setHandCursor( true );
 
 					//If no data then empty
 					if (data.array_items == null) {
@@ -185,6 +202,7 @@ function ListerItems(groupe_id, restricted){
         		//hide ajax loader
         		$("#div_loading").hide();
                 delete data;
+
         	}
         );
     }
@@ -1013,6 +1031,7 @@ PreviewImage = function(uri,title) {
 //## EXECUTE WHEN PAGE IS LOADED
 //###########
 $(function() {
+
     //Disable menu buttons
     $('#menu_button_edit_item,#menu_button_del_item,#menu_button_add_fav,#menu_button_del_fav').attr('disabled', 'disabled');
 
@@ -1027,6 +1046,13 @@ $(function() {
     $(".items_tree").height(hauteur-160);
     $("#jstree").height(hauteur-185);
 
+
+	//Evaluate number of items to display - depends on screen height
+	$("#nb_items_to_display_once").val(Math.round($('#items_list')[0].scrollHeight/23));
+
+
+	//Launch items loading
+	ListerItems($("#hid_cat").val(),'', $("#query_next_start").val());
 
     // Build buttons
     $("#custom_pw, #edit_custom_pw").buttonset();
@@ -1294,4 +1320,16 @@ function htmlspecialchars_decode (string, quote_style) {
 
     return string;
 }
+
+
+/*
+* Forces load Items when user reaches end of scrollbar
+*/
+$('#items_list').scroll(function() {
+	if ($("#query_next_start").val() != "end" && $('#items_list').scrollTop() + $('#items_list').outerHeight() == $('#items_list')[0].scrollHeight) {
+		ListerItems($("#hid_cat").val(),'', $("#query_next_start").val());
+	}
+
+});
+
 </script>

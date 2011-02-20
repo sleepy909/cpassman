@@ -392,6 +392,8 @@ if ( isset($_POST['type']) ){
                 `id` int(12) NOT NULL,
                 `title` varchar(50) NOT NULL
                 );");
+			add_column_if_not_exist($_SESSION['tbl_prefix']."roles_title","allow_pw_change","TINYINT(1) NOT NULL DEFAULT '0'");
+
 			$res10 = mysql_query("
                 CREATE TABLE IF NOT EXISTS `".$_SESSION['tbl_prefix']."roles_values` (
                 `role_id` int(12) NOT NULL,
@@ -432,6 +434,7 @@ if ( isset($_POST['type']) ){
 				//Now alter table roles_title in order to create a primary index
 				mysql_query("ALTER TABLE `".$_SESSION['tbl_prefix']."roles_title` ADD PRIMARY KEY(`id`)");
 				mysql_query("ALTER TABLE `".$_SESSION['tbl_prefix']."roles_title` CHANGE `id` `id` INT( 12 ) NOT NULL AUTO_INCREMENT ");
+				add_column_if_not_exist($_SESSION['tbl_prefix']."roles_title","allow_pw_change","TINYINT(1) NOT NULL DEFAULT '0'");
 
 				//Drop old table
 				mysql_query("DROP TABLE ".$_SESSION['tbl_prefix']."functions");

@@ -190,7 +190,7 @@ switch($_POST['type'])
                     'id_item' => $new_id,
                     'date' => mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y')),
                     'id_user' => $_SESSION['user_id'],
-                    'action' => 'at_importation'
+                    'action' => 'at_creation'
                 )
             );
 

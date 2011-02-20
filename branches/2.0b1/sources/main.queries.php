@@ -589,8 +589,8 @@ switch($_POST['type'])
     		$pdf->AddPage();
     		$pdf->SetFont('DejaVu','',16);
     		$pdf->Cell(0,10,$txt['print_out_pdf_title'],0,1,'C',false);
-    		$pdf->SetFont('DejaVu','I',12);
-    		$pdf->Cell(0,10,$txt['pdf_del_date'].date($_SESSION['settings']['date_format']." ".$_SESSION['settings']['time_format'],mktime(date("H"),date("i"),date("s"),date("m"),date("d"),date("Y"))).' '.$txt['by'].' '.$_SESSION['login'],0,1,'C',false);
+    		$pdf->SetFont('DejaVu','',12);
+    		$pdf->Cell(0,10,$txt['pdf_del_date']." ".date($_SESSION['settings']['date_format']." ".$_SESSION['settings']['time_format'],mktime(date("H"),date("i"),date("s"),date("m"),date("d"),date("Y"))).' '.$txt['by'].' '.$_SESSION['login'],0,1,'C',false);
     		$pdf->SetFont('DejaVu','',10);
     		$pdf->SetFillColor(192,192,192);
     		$pdf->cell(65,6,$txt['label'],1,0,"C",1);

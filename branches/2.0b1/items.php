@@ -15,8 +15,6 @@
 if ($_SESSION['CPM'] != 1)
 	die('Hacking attempt...');
 
-
-
 require_once ("sources/NestedTree.class.php");
 $tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
 $tree->rebuild();
@@ -66,7 +64,9 @@ echo '
 <input type="hidden" id="error_detected" />
 <input type="hidden" name="random_id" id="random_id" />
 <input type="hidden" id="edit_wysiwyg_displayed" value="" />
-<input type="hidden" id="richtext_on" value="', isset($_SESSION['settings']['richtext']) && $_SESSION['settings']['richtext'] == 1 ? "1" : "", '" />';
+<input type="hidden" id="richtext_on" value="', isset($_SESSION['settings']['richtext']) && $_SESSION['settings']['richtext'] == 1 ? "1" : "", '" />
+<input type="hidden" id="query_next_start" value="0" />
+<input type="hidden" id="nb_items_to_display_once" value="" />';
 
 //Afficher mdp suite ? recherche
 if ( isset($_GET['group']) && isset($_GET['id']) ){
@@ -147,11 +147,11 @@ echo '
 					<li class="jstree-open">';
 				            	if (in_array($folder->id,$_SESSION['groupes_visibles'])) {
 				            		echo '
-							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\');">'.str_replace("&","&amp;",$folder->title).' ('.$nb_items.')</a>';
+							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\', \'\', 0);">'.str_replace("&","&amp;",$folder->title).' ('.$nb_items.')</a>';
 				            	//case for restriction_to_roles
 				            	}elseif (in_array($folder->id, $list_folders_limited_keys)) {
 				            		echo '
-							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\');">'.str_replace("&","&amp;",$folder->title).' ('.count($_SESSION['list_folders_limited'][$folder->id]).')</a>';
+							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\', \'\', 0);">'.str_replace("&","&amp;",$folder->title).' ('.count($_SESSION['list_folders_limited'][$folder->id]).')</a>';
 				            	}else{
 				            		echo '
 							<a id="fld_'.$folder->id.'">'.str_replace("&","&amp;",$folder->title).'</a>';
@@ -171,11 +171,11 @@ echo '
 					<li class="jstree-open">';
 				                	if (in_array($folder->id,$_SESSION['groupes_visibles'])) {
 				                		echo '
-							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\');">'.str_replace("&","&amp;",$folder->title).' ('.$nb_items.')</a>';
+							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\', \'\', 0);">'.str_replace("&","&amp;",$folder->title).' ('.$nb_items.')</a>';
 				                	//case for restriction_to_roles
 				                	}elseif (in_array($folder->id, $list_folders_limited_keys)) {
 				                		echo '
-							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\');">'.str_replace("&","&amp;",$folder->title).' ('.count($_SESSION['list_folders_limited'][$folder->id]).')</a>';
+							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\', \'\', 0);">'.str_replace("&","&amp;",$folder->title).' ('.count($_SESSION['list_folders_limited'][$folder->id]).')</a>';
 				                	}else{
 				                		echo '
 							<a id="fld_'.$folder->id.'">'.str_replace("&","&amp;",$folder->title).'</a>';
@@ -195,11 +195,11 @@ echo '
 					<li class="jstree-open">';
 				                	if (in_array($folder->id,$_SESSION['groupes_visibles'])) {
 				                		echo '
-							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\');">'.str_replace("&","&amp;",$folder->title).' ('.$nb_items.')</a>';
+							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\', \'\', 0);">'.str_replace("&","&amp;",$folder->title).' ('.$nb_items.')</a>';
 				                	//case for restriction_to_roles
 				                	}elseif (in_array($folder->id, $list_folders_limited_keys)) {
 				                		echo '
-							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\', 1);">'.str_replace("&","&amp;",$folder->title).' ('.count($_SESSION['list_folders_limited'][$folder->id]).')</a>';
+							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\', 1, 0);">'.str_replace("&","&amp;",$folder->title).' ('.count($_SESSION['list_folders_limited'][$folder->id]).')</a>';
 				                	}else{
 				                		echo '
 							<a id="fld_'.$folder->id.'">'.str_replace("&","&amp;",$folder->title).'</a>';
@@ -222,11 +222,11 @@ echo '
 					<li class="jstree-open">';
 				                	if (in_array($folder->id,$_SESSION['groupes_visibles'])) {
 				                		echo '
-							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\');">'.str_replace("&","&amp;",$folder->title).' ('.$nb_items.')</a>';
+							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\', \'\', 0);">'.str_replace("&","&amp;",$folder->title).' ('.$nb_items.')</a>';
 				                	//case for restriction_to_roles
 				                	}elseif (in_array($folder->id, $list_folders_limited_keys)) {
 				                		echo '
-							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\');">'.str_replace("&","&amp;",$folder->title).' ('.count($_SESSION['list_folders_limited'][$folder->id]).')</a>';
+							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\', \'\', 0);">'.str_replace("&","&amp;",$folder->title).' ('.count($_SESSION['list_folders_limited'][$folder->id]).')</a>';
 				                	}else{
 				                		echo '
 							<a id="fld_'.$folder->id.'">'.str_replace("&","&amp;",$folder->title).'</a>';
@@ -260,7 +260,7 @@ echo '
 	    </div>
     </div>';
 
-    ##
+    //Zone top right - items list
     echo '
     <div id="items_content">
         <div id="items_center">
@@ -268,7 +268,7 @@ echo '
             <div id="items_list"></div>
         </div>';
 
-    ## ITEM DETAIL
+    // Zone ITEM DETAIL
     echo '
         <div id="item_details_ok">';
 

@@ -60,7 +60,8 @@ v2.00
 * improvement: LDAP login (thanks to Paul)
 * improvement: setting "allow modification for this role" in roles matrix
 * improvement: when importing items, 2 options permits to set restriction arguments
-* improvement: "copy to clipboard" items are deleted for memory optimization []
+* improvement: "copy to clipboard" items are deleted for memory optimization [3177788]
+* improvement: dynamic load of items list (to optimze time loading)
 * fixed: problem with slash in label [3141743]
 * fixed: password in cleartext in log [3141167]
 * fixed: deleted pws show up in the search [3160582]

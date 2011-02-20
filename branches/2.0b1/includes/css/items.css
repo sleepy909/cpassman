@@ -16,6 +16,10 @@ button{
     cursor: pointer;
 }
 
+.small_text{
+	font-size: 10px;
+    font-style: italic;
+}
 
 .liste_items a.file, .liste_items a.fileselected {
     padding: 2px 1px 1px 16px;
