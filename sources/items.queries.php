@@ -1265,7 +1265,8 @@ if ( isset($_POST['type']) ){
 	        	"saltkey_is_required" => $folder_is_pf,
 	        	"show_clipboard_small_icons" => isset($_SESSION['settings']['copy_to_clipboard_small_icons']) && $_SESSION['settings']['copy_to_clipboard_small_icons'] == 1 ? 1 : 0,
 	        	"next_start" => $_POST['nb_items_to_display_once'] + $start,
-	        	"list_to_be_continued" => $list_to_be_continued
+	        	"list_to_be_continued" => $list_to_be_continued,
+	        	"items_count" => $count_items[0]
 			);
 
 

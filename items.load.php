@@ -199,10 +199,11 @@ function ListerItems(groupe_id, restricted, start){
 					}
 	            }
 
-        		//hide ajax loader
-        		$("#div_loading").hide();
+				//Delete data
                 delete data;
 
+        		//hide ajax loader
+        		$("#div_loading").hide();
         	}
         );
     }
@@ -1046,10 +1047,10 @@ $(function() {
     $(".items_tree").height(hauteur-160);
     $("#jstree").height(hauteur-185);
 
-
 	//Evaluate number of items to display - depends on screen height
 	$("#nb_items_to_display_once").val(Math.round($('#items_list')[0].scrollHeight/23));
 
+	//$('#items_list').tinyscrollbar();
 
 	//Launch items loading
 	ListerItems($("#hid_cat").val(),'', $("#query_next_start").val());

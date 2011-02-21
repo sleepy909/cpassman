@@ -60,9 +60,7 @@ if ( isset($_GET['page']) && $_GET['page'] == "items")
 		<link rel="stylesheet" type="text/css" href="includes/libraries/multiselect/jquery.multiselect.css" />
         <script type="text/javascript" src="includes/libraries/multiselect/jquery.multiselect.min.js"></script>
 
-        <script type="text/javascript" src="includes/libraries/crypt/aes.min.js"></script>
-
-        <script type="text/javascript" src="includes/libraries/jquery.scrollbar.min.js"></script>';
+        <script type="text/javascript" src="includes/libraries/crypt/aes.min.js"></script>';
 
 else
 if ( isset($_GET['page']) && $_GET['page'] == "manage_settings")
@@ -110,16 +108,17 @@ $htmlHeaders .= '
     //deconnexion
     function MenuAction(val){
         if ( val == "deconnexion" ) {
-            document.getElementById("menu_action").value = val;
+            $("#menu_action").val(val);
             document.main_form.submit();
         }
         else {
+        	$("#menu_action").val("action");
             if ( val == "") document.location.href="index.php";
             else document.location.href="index.php?page="+val;
         }
     }
 
-    //Identifier l"utilisateur
+    //Identify user
     function identifyUser(redirect){
         $("#erreur_connexion").hide();
         if ( redirect == undefined ) redirect = ""; //Check if redirection
@@ -196,6 +195,20 @@ $htmlHeaders .= '
     function OpenDialogBox(id){
         $("#"+id).dialog("open");
     }
+
+    /*
+    * Clean disconnection of user for security reasons.
+    */
+   	$(window).bind("beforeunload", function(){
+		if ( $("#menu_action").val() == ""){
+			//Forces the disconnection of the user
+			$.ajax({
+				type: "POST",
+				url : "error.php",
+				data : "session=expired"
+            });
+		}
+	});
 
     $(function() {
         //TOOLTIPS
@@ -295,7 +308,10 @@ $htmlHeaders .= '
                     $(".dropdown dd ul").hide();
             });
         //END
-    });';
+    });
+
+
+	';
 
 if ( !isset($_GET['page']) ){
     $htmlHeaders .= '

@@ -122,10 +122,8 @@ $txt['confirm_edit_role'] = "Bitte geben Sie den neuen Namen für folgende Rolle
 $txt['connection'] = "Verbindungsaufbau";
 $txt['connections'] = "Verbindungen";
 $txt['copy'] = "Kopieren";
-$txt['copy_to_clipboard_small_icons'] = "Enable copy to clipboard small icons in items page";
-$txt['copy_to_clipboard_small_icons_tip'] = "<span style='font-size:11px;max-width:300px;'>This could help preventing memory usage if users have no recent computer.<br /> Indeed, the clipboard is not loaded with items informations. But no quick copy of password and login is possible.</span>
-
-";
+$txt['copy_to_clipboard_small_icons'] = "Kleine Symbole bei Kopieren in Zwischenspeicher aktivieren";
+$txt['copy_to_clipboard_small_icons_tip'] = "<span style='font-size:11px;max-width:300px;'>Dies kann die Speicheranforderungen für Benutzer älterer Computer reduzieren.<br /> Die Elementinformationen werden nicht in den Zwischenspeicher geladen. Schnelles Kopieren von Benutzernamen und Passwörtern ist jedoch nicht möglich.</span> ";
 $txt['creation_date'] = "Erstellungsdatum";
 $txt['csv_import_button_text'] = "CSV-Datei suchen";
 $txt['date'] = "Datum";
@@ -238,8 +236,8 @@ $txt['importing_details'] = "Detailliste";
 $txt['importing_folders'] = "Ordner werden importiert";
 $txt['importing_items'] = "Elemente werden importiert";
 $txt['import_button'] = "Importieren";
-$txt['import_csv_anyone_can_modify_in_role_txt'] = "Set \"anyone in the same role can modify\" right on all imported items.";
-$txt['import_csv_anyone_can_modify_txt'] = "Set \"anyone can modify\" right on all imported items.";
+$txt['import_csv_anyone_can_modify_in_role_txt'] = "Benutzerrecht \"Änderbar durch alle derselben Rolle\" für alle importierten Elemente setzen";
+$txt['import_csv_anyone_can_modify_txt'] = "Benutzerrecht \"Änderbar durch alle\" für alle importierten Elemente setzen";
 $txt['import_csv_dialog_info'] = "Hinweis: der Importvorgang muss aus einer CSV-Datei durchgeführt werden. Aus KeePass exportierte Dateien haben normalerweise die erforderliche Struktur.<br>Wenn Sie eine von einem anderen Programm erstellte Datei nutzen, überprüfen Sie die Struktur der CSV Datei: `Bezeichnung`,`Benutzername`,`Passwort`,`Webseite`,`Kommentare`.";
 $txt['import_csv_menu_title'] = "Elemente importieren aus Datei (CSV/KeePass XML)";
 $txt['import_error_no_file'] = "Sie müssen eine Datei auswählen!";
@@ -372,8 +370,8 @@ $txt['restricted_to'] = "Sichtbar für";
 $txt['restricted_to_roles'] = "Einschränkung von Elementen auf Benutzer und Rollen erlauben";
 $txt['rights_matrix'] = "Matrix der Benutzerrechte";
 $txt['roles'] = "Rollen";
-$txt['role_cannot_modify_all_seen_items'] = "Set this role not allowed to modify all accessible items (normal setting)";
-$txt['role_can_modify_all_seen_items'] = "Set this role allowed to modify all accessible items (not secure setting)";
+$txt['role_cannot_modify_all_seen_items'] = "Dieser Rolle das Ändern aller erreichbaren Elemente verbieten (normale Einstellung)";
+$txt['role_can_modify_all_seen_items'] = "Dieser Rolle das Ändern aller erreichbaren Elemente erlauben (unsichere Einstellung)";
 $txt['root'] = "Root";
 $txt['save_button'] = "Speichern";
 $txt['secure'] = "Sicher";
