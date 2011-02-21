@@ -198,7 +198,7 @@ $htmlHeaders .= '
 
     /*
     * Clean disconnection of user for security reasons.
-    */
+    *
    	$(window).bind("beforeunload", function(){
 		if ( $("#menu_action").val() == ""){
 			//Forces the disconnection of the user
@@ -208,7 +208,7 @@ $htmlHeaders .= '
 				data : "session=expired"
             });
 		}
-	});
+	});*/
 
     $(function() {
         //TOOLTIPS
@@ -1206,8 +1206,9 @@ if ( isset($_GET['page']) && $_GET['page'] == "manage_users" ){
             },
             function(data){
             	data = $.parseJSON(data);
+            	$("#new_folder_role_domain").attr("disabled", "disabled");
                 if (data.folder == "not_exists" && data.role == "not_exists") {
-                	$("#auto_create_folder_role").show();
+                	$("#new_folder_role_domain").attr("disabled", "");
                 	$("#auto_create_folder_role_span").html(domain);
                 	$("#new_domain").val(domain);
                 }

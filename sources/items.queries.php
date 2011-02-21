@@ -771,7 +771,7 @@ if ( isset($_POST['type']) ){
             // Include at least one symbol in the password
             $pwgen->setSymbols( ($_POST['symb'] == "true")? true : false);
             // Complete random, hard to memorize password
-            if ($_POST['secure'] == "true"){
+            if (isset($_POST['secure']) && $_POST['secure'] == "true"){
                 $pwgen->setSecure(true);
                 $pwgen->setSymbols(true);
                 $pwgen->setCapitalize(true);

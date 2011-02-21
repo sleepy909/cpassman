@@ -40,9 +40,9 @@ LANGUAGES:
 * FRENCH 	by Nils
 * CZECH 	by Petr and Philipp
 * GERMAN 	by Philipp
-* RUSSIAN 	by Anton
-* TURKISH 	by Ahmet
-* NORWEGIAN by Kai
+* RUSSIAN 	by Anton (to be finished)
+* TURKISH 	by Ahmet (to be finished)
+* NORWEGIAN by Kai (to be finished)
 
 ------------------------------------------  THANKS TO  ----------------------------------------------
 Enrique, shauninja, seskahin, tstd0, Tommi, Petr and Philipp.

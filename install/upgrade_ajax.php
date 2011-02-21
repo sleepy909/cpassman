@@ -390,7 +390,8 @@ if ( isset($_POST['type']) ){
 			$res9 = mysql_query("
                 CREATE TABLE IF NOT EXISTS `".$_SESSION['tbl_prefix']."roles_title` (
                 `id` int(12) NOT NULL,
-                `title` varchar(50) NOT NULL
+                `title` varchar(50) NOT NULL,
+                `allow_pw_change` TINYINT(1) NOT NULL DEFAULT '0'
                 );");
 			add_column_if_not_exist($_SESSION['tbl_prefix']."roles_title","allow_pw_change","TINYINT(1) NOT NULL DEFAULT '0'");
 
