@@ -210,7 +210,7 @@ require_once("load.php");
             foreach ($_SESSION['latest_items_tab'] as $item) {
             	if (!empty($item)) {
             		echo '
-                    <span class="last_seen_item" onclick="javascript:window.location.href = \''.$item['url'].'\'"><img src="includes/images/tag-small.png" alt="" />'.stripslashes($item['label']).'</span>';
+                    <span class="last_seen_item" onclick="javascript:$(\'#menu_action\').val(\'action\');window.location.href = \''.$item['url'].'\'"><img src="includes/images/tag-small.png" alt="" />'.stripslashes($item['label']).'</span>';
             	}
             }
         }else echo $txt['no_last_items'];

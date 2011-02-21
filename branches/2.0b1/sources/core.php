@@ -114,7 +114,7 @@ if ($_SESSION['CPM'] != 1)
 
 
 /* CHECK IF LOGOUT IS ASKED OR IF SESSION IS EXPIRED */
-    if ( (isset($_POST['menu_action']) && $_POST['menu_action'] == "deconnexion") || (isset($_GET['session']) && $_GET['session'] == "expiree")){
+    if ( (isset($_POST['menu_action']) && $_POST['menu_action'] == "deconnexion") || (isset($_GET['session']) && $_GET['session'] == "expiree") || (isset($_POST['session']) && $_POST['session'] == "expired")){
         // Update table by deleting ID
         if ( isset($_SESSION['user_id']) )
             $db->query_update(

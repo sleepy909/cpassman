@@ -22,31 +22,37 @@ a8"     ""  88""""""'    ""     `Y8  I8[    ""  I8[    ""  88  `8b   d8'  88  ""
 *****************************************************************************************************
 
 ----------------------------------------  INFORMATIONS  ---------------------------------------------
-Website : http://cpassman.org/
-Hosted at SourceForge : https://sourceforge.net/projects/communitypasswo/
+Website: http://cpassman.org/
+Hosted at Google Code: http://code.google.com/p/cpassman/
 
-BUGS :
-*For bugs discovery, please report in SourceForge Tracker (https://sourceforge.net/tracker/?group_id=280505&atid=1190333).
+BUGS & SUGGESTIONS:
+*For bugs discovery or any suggestions, please report in Google Code Issues (http://code.google.com/p/cpassman/issues/list).
 
-INSTALLATION :
+INSTALLATION:
 * http://cpassman.org/help
 * Once uploaded, launch install/install.php and follow instructions.
 
-UPDATE :
+UPDATE:
 * Once uploaded, launch install/upgrade.php and follow instructions.
------------------------------------------------------------------------------------------------------
 
-THANKS TO Enrique, shauninja, seskahin, tstd0, Tommi, Petr and Philipp.
-Languages files created by Petr (Czech) and Philipp (German) ... thanks for your work.
+LANGUAGES:
+* ENGLISH 	by Nils and Petr
+* FRENCH 	by Nils
+* CZECH 	by Petr and Philipp
+* GERMAN 	by Philipp
+* RUSSIAN 	by Anton
+* TURKISH 	by Ahmet
+* NORWEGIAN by Kai
 
------------------------------------------------------------------------------------------------------
-TODO
+------------------------------------------  THANKS TO  ----------------------------------------------
+Enrique, shauninja, seskahin, tstd0, Tommi, Petr and Philipp.
+
+--------------------------------------------  TODO  -------------------------------------------------
 * IMAP login
------------------------------------------------------------------------------------------------------
-IN PROGRESS :
-* ...
+* translations
+* PostgreSQL database support
 
-CHANGELOG
+------------------------------------------  CHANGELOG  ----------------------------------------------
 v2.00
 * improvement: convert cPassMan to UTF-8 charset
 * improvement: all data exchanges concerning items are encrypted based on AES-256
@@ -62,6 +68,7 @@ v2.00
 * improvement: when importing items, 2 options permits to set restriction arguments
 * improvement: "copy to clipboard" items are deleted for memory optimization [3177788]
 * improvement: dynamic load of items list (to optimze time loading)
+* improvement: on cpassman exit, user is fully disconnected
 * fixed: problem with slash in label [3141743]
 * fixed: password in cleartext in log [3141167]
 * fixed: deleted pws show up in the search [3160582]
