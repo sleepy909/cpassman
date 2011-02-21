@@ -19,7 +19,7 @@ if ($_SESSION['CPM'] != 1)
 
 include('../includes/settings.php');
 require_once('../includes/include.php');
-header("Content-type: text/html; charset=".$k['charset']);
+header("Content-type: text/html; charset=utf8");
 
 require_once('main.functions.php');
 

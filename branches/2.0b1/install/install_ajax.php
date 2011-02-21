@@ -370,6 +370,7 @@ if ( isset($_POST['type']) ){
                 CREATE TABLE IF NOT EXISTS `".$_SESSION['tbl_prefix']."roles_title` (
                   `id` int(12) NOT NULL AUTO_INCREMENT,
                   `title` varchar(50) NOT NULL,
+            	  `allow_pw_change` TINYINT(1) NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`)
                 ) CHARSET=utf8;");
             if ( $res13 ){
