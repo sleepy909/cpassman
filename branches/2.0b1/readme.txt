@@ -16,7 +16,7 @@ a8"     ""  88""""""'    ""     `Y8  I8[    ""  I8[    ""  88  `8b   d8'  88  ""
 ***** 	  																						*****
 ***** 	  								LICENCE AGREEMENT										*****
 ***** 	  Before installing and using cPassMan, you must accept its licence defined				*****
-*****	as "Creative Commons 3.0 BY-NC-ND" (http://creativecommons.org/licenses/by-nc-nd/3.0/)	*****
+*****	as "Creative Commons 3.0 BY-ND" (http://creativecommons.org/licenses/by-nd/3.0/)	*****
 ***** 	  																						*****
 *****************************************************************************************************
 
@@ -53,6 +53,7 @@ Enrique, shauninja, seskahin, tstd0, Tommi, Petr and Philipp.
 
 ------------------------------------------  CHANGELOG  ----------------------------------------------
 v2.00
+* Licence has changed from CC BY-NC-ND to CC BY-ND
 * improvement: convert cPassMan to UTF-8 charset
 * improvement: all data exchanges concerning items are encrypted based on AES-256
 * improvement: new design

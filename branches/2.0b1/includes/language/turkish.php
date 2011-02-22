@@ -81,7 +81,7 @@ $txt['auth_creation_without_complexity'] = "şifre karmaşıklığına bakmaksı
 $txt['auth_modification_without_complexity'] = "şifre karmaşıklığına bakmaksızın öğe değiştirilmesine izin ver";
 $txt['auto_create_folder_role'] = "Klasör ve Rol oluştur";
 $txt['block_last_created'] = "En son oluşturulan";
-$txt['bugs_page'] = "Herhangi bir hata bulursanız, direk olarak <a href='https://sourceforge.net/tracker/?group_id=280505&amp;atid=1190333' target='_blank'><u>Hata Forumuna</u></a> gönderebilirsiniz.";
+$txt['bugs_page'] = "Herhangi bir hata bulursanız, direk olarak <a href='http://code.google.com/p/cpassman/issues/list' target='_blank'><u>Hata Forumuna</u></a> gönderebilirsiniz.";
 $txt['by'] = "Tarafından";
 $txt['cancel'] = "Vazgeç";
 $txt['cancel_button'] = "Vazgeç";
@@ -410,7 +410,7 @@ $txt['show_last_items'] = "Show last items block on main page";
 $txt['size'] = "Boyut";
 $txt['start_upload'] = "Dosyaları yüklemeye başla";
 $txt['sub_group_of'] = "bağımlı";
-$txt['support_page'] = "Herhangi bir konuda destek için, Lütfen <a href='https://sourceforge.net/projects/communitypasswo/forums' target='_blank'><u>Forumu</u></a> kullanınız.";
+$txt['support_page'] = "Herhangi bir konuda destek için, Lütfen <a href='http://code.google.com/p/cpassman/' target='_blank'><u>Forumu</u></a> kullanınız.";
 $txt['symbols'] = "Semboller";
 $txt['tags'] = "Etiketler";
 $txt['thku'] = "cPassMan'i kullandığınız için teşekkürler";

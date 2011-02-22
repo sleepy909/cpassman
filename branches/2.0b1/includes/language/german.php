@@ -81,7 +81,7 @@ $txt['auth_creation_without_complexity'] = "Erstellung von Passwörtern ungeacht
 $txt['auth_modification_without_complexity'] = "Bearbeitung von Elemente ungeachtet der eingestellten Passwortskomplexität zulassen";
 $txt['auto_create_folder_role'] = "Ordner und Rolle erstellen für";
 $txt['block_last_created'] = "Zuletzt erstellt";
-$txt['bugs_page'] = "Falls Sie in cPassman einen Fehler entdecken, können Sie ihn direkt posten unter <a href='https://sourceforge.net/tracker/?group_id=280505&amp;atid=1190333' target='_blank'><u>Bugs Forum</u></a>.";
+$txt['bugs_page'] = "Falls Sie in cPassman einen Fehler entdecken, können Sie ihn direkt posten unter <a href='http://code.google.com/p/cpassman/issues/list' target='_blank'><u>Bugs Forum</u></a>.";
 $txt['by'] = "von";
 $txt['cancel'] = "Abbrechen";
 $txt['cancel_button'] = "Abbrechen";
@@ -407,7 +407,7 @@ $txt['show_last_items'] = "Zuletzt betrachtete Elemente auf der Startseite anzei
 $txt['size'] = "Länge";
 $txt['start_upload'] = "Beginne die Dateien hochzuladen";
 $txt['sub_group_of'] = "Abhängig von";
-$txt['support_page'] = "Falls Sie Unterstützung benötigen, benutzen Sie bitte <a href='https://sourceforge.net/projects/communitypasswo/forums' target='_blank'><u>Forum</u></a>.";
+$txt['support_page'] = "Falls Sie Unterstützung benötigen, benutzen Sie bitte <a href='http://code.google.com/p/cpassman/' target='_blank'><u>Forum</u></a>.";
 $txt['symbols'] = "Symbole";
 $txt['tags'] = "Tags";
 $txt['thku'] = "Danke, dass Sie cPassMan verwenden!";
