@@ -30,9 +30,6 @@ echo '
             <br />
             <span class="ui-icon ui-icon-wrench" style="float: left; margin-right: .3em;">&nbsp;</span>'.$txt['bugs_page'].'
             <div style="text-align:center;margin-top:10px;">
-                <div style="margin:5px;"><script type="text/javascript" src="' , !empty($_SERVER['HTTPS']) ? 'https' : 'http' , '://www.ohloh.net/p/468653/widgets/project_thin_badge.js"></script></div>
-                <div style="margin:5px;"><a href="://sourceforge.net/projects/communitypasswo" target="_blank"><img src="' , !empty($_SERVER['HTTPS']) ? 'https' : 'http' , '://sflogo.sourceforge.net/sflogo.php?group_id=280505&amp;type=12" width="120" height="30" alt="Get cPassMan at SourceForge.net. Fast, secure and Free Open Source software downloads" style="border:0;" /></a></div>
-                <div style="margin:5px;"><a href="http://sourceforge.net/donate/index.php?group_id=280505" target="_blank"><img src="' , !empty($_SERVER['HTTPS']) ? 'https' : 'http' , '://images.sourceforge.net/images/project-support.jpg" width="88" height="32" border="0" alt="Support This Project" /> </a></div>
                 '.$txt['thku'].'
             </div>
         </div>';

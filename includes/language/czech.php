@@ -81,7 +81,7 @@ $txt['auth_creation_without_complexity'] = "Povolit tvorbu položek bez ohledu n
 $txt['auth_modification_without_complexity'] = "Povolit změnu položek bez ohledu na požadovanou komplexitu hesla";
 $txt['auto_create_folder_role'] = "Vytvořit složku a roli pro";
 $txt['block_last_created'] = "Nově vytvořeno";
-$txt['bugs_page'] = "Objevíte-li v aplikaci chybu, můžete ji přímo oznámit na <a href=\"https://sourceforge.net/tracker/?group_id=280505&amp;atid=1190333\" target=\"_blank\"><u>Fórum chyb</u></a>.";
+$txt['bugs_page'] = "Objevíte-li v aplikaci chybu, můžete ji přímo oznámit na <a href=\"http://code.google.com/p/cpassman/issues/list\" target=\"_blank\"><u>Fórum chyb</u></a>.";
 $txt['by'] = "od";
 $txt['cancel'] = "Zrušit";
 $txt['cancel_button'] = "Zrušit";
@@ -407,7 +407,7 @@ $txt['show_last_items'] = "Zobrazit nejnovější položky na hlavní stránce";
 $txt['size'] = "Délka";
 $txt['start_upload'] = "Spustit natahování souboru";
 $txt['sub_group_of'] = "Umístit do";
-$txt['support_page'] = "Potřebujete-li podporu, obraťte se prosím na <a href=\"%5C%22https://sourceforge.net/projects/communitypasswo/forums%5C%22\" target=\"\&quot;_blank\&quot;\"><u>Fórum</u></a>.";
+$txt['support_page'] = "Potřebujete-li podporu, obraťte se prosím na <a href=\"%5C%22http://code.google.com/p/cpassman/%5C%22\" target=\"\&quot;_blank\&quot;\"><u>Fórum</u></a>.";
 $txt['symbols'] = "Nealfanumerické znaky";
 $txt['tags'] = "Záložky";
 $txt['thku'] = "Děkuji, že používáte cPassMan!";

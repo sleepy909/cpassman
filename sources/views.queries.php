@@ -40,21 +40,25 @@ switch($_POST['type'])
         $tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
 
         //Prepare the PDF file
-        include('../includes/libraries/fpdf/pdf.fonctions.php');
-        $pdf=new FPDF();
+        include('../includes/libraries/tfpdf/tfpdf.php');
+    	$pdf=new tFPDF();
+
+    	//Add font for utf-8
+    	$pdf->AddFont('DejaVu','','DejaVuSansCondensed.ttf',true);
+
         $pdf->AliasNbPages();
         $pdf->AddPage();
-        $pdf->SetFont('Arial','B',16);
+        $pdf->SetFont('DejaVu','',16);
         $pdf->Cell(0,10,$txt['pdf_del_title'],0,1,'C',false);
-        $pdf->SetFont('Arial','I',12);
+        $pdf->SetFont('DejaVu','',12);
         $pdf->Cell(0,10,$txt['pdf_del_date'].date($_SESSION['settings']['date_format']." ".$_SESSION['settings']['time_format'],mktime(date("H"),date("i"),date("s"),date("m"),date("d"),date("Y"))),0,1,'C',false);
-        $pdf->SetFont('Arial','B',10);
+        $pdf->SetFont('DejaVu','',10);
         $pdf->SetFillColor(15,86,145);
         $pdf->cell(80,6,$txt['label'],1,0,"C",1);
         $pdf->cell(75,6,$txt['group'],1,0,"C",1);
         $pdf->cell(21,6,$txt['date'],1,0,"C",1);
         $pdf->cell(15,6,$txt['author'],1,1,"C",1);
-        $pdf->SetFont('Arial','',10);
+        $pdf->SetFont('DejaVu','',10);
 
         $rows = $db->fetch_all_array("
             SELECT u.login AS login, i.label AS label, i.id_tree AS id_tree
@@ -316,22 +320,26 @@ switch($_POST['type'])
         $tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
 
         //Prepare the PDF file
-        include('../includes/libraries/fpdf/pdf.fonctions.php');
-        $pdf=new FPDF();
+    	include('../includes/libraries/tfpdf/tfpdf.php');
+    	$pdf=new tFPDF();
+
+    	//Add font for utf-8
+    	$pdf->AddFont('DejaVu','','DejaVuSansCondensed.ttf',true);
+
         $pdf->AliasNbPages();
         $pdf->AddPage();
-        $pdf->SetFont('Arial','B',16);
+        $pdf->SetFont('DejaVu','',16);
         $pdf->Cell(0,10,$txt['renewal_needed_pdf_title'],0,1,'C',false);
-        $pdf->SetFont('Arial','I',12);
+        $pdf->SetFont('DejaVu','',12);
         $pdf->Cell(0,10,$txt['pdf_del_date'].date($_SESSION['settings']['date_format']." ".$_SESSION['settings']['time_format'],mktime(date("H"),date("i"),date("s"),date("m"),date("d"),date("Y"))),0,1,'C',false);
-        $pdf->SetFont('Arial','B',10);
+        $pdf->SetFont('DejaVu','',10);
         $pdf->SetFillColor(192,192,192);
         $pdf->cell(70,6,$txt['label'],1,0,"C",1);
         $pdf->cell(25,6,$txt['creation_date'],1,0,"C",1);
         $pdf->cell(25,6,$txt['expiration_date'],1,0,"C",1);
         $pdf->cell(45,6,$txt['group'],1,0,"C",1);
         $pdf->cell(25,6,$txt['author'],1,1,"C",1);
-        $pdf->SetFont('Arial','',9);
+        $pdf->SetFont('DejaVu','',9);
 
 
         foreach( explode('@|@',addslashes($_POST['text'])) as $line ){

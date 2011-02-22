@@ -497,7 +497,7 @@ require_once("load.php");
             <a href="http://cpassman.org" target="_blank" style="color:#F0F0F0;">cPassMan</a> '.$k['version'].' &copy; copyright 2009-2011
         </div>
         <div style="float:right;margin-top:-22px;">
-            <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/" title="Collaborative Passwords Manager by Nils Laumaill&#233; is licensed under a Creative Commons Attribution-Noncommercial-No Derivative Works 3.0 License" target="_blank"><img src="includes/images/canevas/cc.3.0.png" alt="" /></a>
+            <a rel="license" href="http://creativecommons.org/licenses/by-nd/3.0/" title="Collaborative Passwords Manager by Nils Laumaill&#233; is licensed under a Creative Commons Attribution-No Derivative Works 3.0 License" target="_blank"><img src="includes/images/canevas/cc.3.0.png" alt="" /></a>
         </div>
     </div>';
 

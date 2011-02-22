@@ -81,7 +81,7 @@ $txt['auth_creation_without_complexity'] = "Autoriser la création d'un item san
 $txt['auth_modification_without_complexity'] = "Autoriser la modification d'un item sans que le niveau de complexité soit atteint";
 $txt['auto_create_folder_role'] = "Créer le répertoire et le rôle pour ";
 $txt['block_last_created'] = "Derniers créés";
-$txt['bugs_page'] = "Si vous découvrais un bug, vous pouvez directement le reporter dans la section <a href='https://sourceforge.net/tracker/?group_id=280505&amp;atid=1190333' target='_blank'><u>Bugs du Forum</u></a>.";
+$txt['bugs_page'] = "Si vous découvrais un bug, vous pouvez directement le reporter dans la section <a href='http://code.google.com/p/cpassman/issues/list' target='_blank'><u>Bugs du Forum</u></a>.";
 $txt['by'] = "par";
 $txt['cancel'] = "Annuler";
 $txt['cancel_button'] = "Annuler";
@@ -407,7 +407,7 @@ $txt['show_last_items'] = "Montrer le block 'Récents' sur la page d'accueil";
 $txt['size'] = "Taille";
 $txt['start_upload'] = "Lancer le chargement des nouveaux fichier";
 $txt['sub_group_of'] = "Sous répertoire de";
-$txt['support_page'] = "Pour toute aide, merci d'utiliser le <a href='https://sourceforge.net/projects/communitypasswo/forums' target='_blank'><u>Forum</u></a>.";
+$txt['support_page'] = "Pour toute aide, merci d'utiliser le <a href='http://code.google.com/p/cpassman/' target='_blank'><u>Forum</u></a>.";
 $txt['symbols'] = "Symboles";
 $txt['tags'] = "Mots clé";
 $txt['thku'] = "Merci d'utiliser cPassMan !";

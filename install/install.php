@@ -121,7 +121,8 @@ echo '
 
 #Hidden things
 echo '
-                    <input type="hidden" id="step" name="step" value="', isset($_POST['step']) ? $_POST['step']:'', '" />';
+                    <input type="hidden" id="step" name="step" value="', isset($_POST['step']) ? $_POST['step']:'', '" />
+					<input type="hidden" name="menu_action" id="menu_action" value="" />';
 
 if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
    //ETAPE O

@@ -101,7 +101,8 @@ echo '
 echo '
                     <input type="hidden" id="step" name="step" value="', isset($_POST['step']) ? $_POST['step']:'', '" />
                     <input type="hidden" id="actual_cpm_version" name="actual_cpm_version" value="', isset($_POST['actual_cpm_version']) ? $_POST['actual_cpm_version']:'', '" />
-                    <input type="hidden" id="cpm_is_utf8" name="cpm_is_utf8" value="', isset($_POST['cpm_is_utf8']) ? $_POST['cpm_is_utf8']:'', '" />';
+                    <input type="hidden" id="cpm_is_utf8" name="cpm_is_utf8" value="', isset($_POST['cpm_is_utf8']) ? $_POST['cpm_is_utf8']:'', '" />
+					<input type="hidden" name="menu_action" id="menu_action" value="" />';
 
 if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
 	//ETAPE O
