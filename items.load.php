@@ -675,7 +675,7 @@ function AfficherDetailsItem(id, salt_key_required, expired_item, restricted){
                     //prepare link to clipboard
                     $("#menu_button_copy_link").zclip({
                			path : "includes/libraries/zclip/ZeroClipboard.swf",
-               			copy : "<?php echo $_SESSION['settings']['cpassman_url'];?>index.php?page=items&group="+data.folder+"&id="+data.id,
+               			copy : "<?php echo $_SESSION['settings']['cpassman_url'];?>/index.php?page=items&group="+data.folder+"&id="+data.id,
                			afterCopy:function(){
                				$("#message_box").html("<?php echo $txt['url_copied'];?>").show().fadeOut(1000);
                			}
@@ -717,11 +717,11 @@ function AfficherDetailsItem(id, salt_key_required, expired_item, restricted){
 
 //G?rer l'affichage d'une recherche
 function AfficherRecherche(){
-    if ( document.getElementById('recherche_id').value != "" ){
-        ListerItems(document.getElementById('recherche_groupe').value);
-        AfficherDetailsItem(document.getElementById('recherche_id').value);
-    }else if ( document.getElementById('recherche_groupe').value != "" ){
-        ListerItems(document.getElementById('recherche_groupe').value);
+    if ( document.getElementById('open_id').value != "" ){
+        ListerItems(document.getElementById('open_folder').value);
+        AfficherDetailsItem(document.getElementById('open_id').value);
+    }else if ( document.getElementById('open_folder').value != "" ){
+        ListerItems(document.getElementById('open_folder').value);
     }else
         ListerItems(<?php echo $first_group;?>);
 }
@@ -1053,7 +1053,11 @@ $(function() {
 	//$('#items_list').tinyscrollbar();
 
 	//Launch items loading
-	ListerItems($("#hid_cat").val(),'', $("#query_next_start").val());
+	var first_group = <?php echo $first_group;?>;
+	if ($("#hid_cat").val() != "") {
+		first_group = $("#hid_cat").val();
+	}
+	ListerItems(first_group,'', $("#query_next_start").val());
 
     // Build buttons
     $("#custom_pw, #edit_custom_pw").buttonset();
@@ -1248,7 +1252,7 @@ $(function() {
     //<=
 
     //display first group items
-    AfficherRecherche();
+    //AfficherRecherche();
 
     //CALL TO UPLOADIFY FOR FILES UPLOAD in EDIT ITEM
     $("#item_edit_files_upload").uploadify({

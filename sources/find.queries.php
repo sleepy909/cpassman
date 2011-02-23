@@ -82,6 +82,7 @@ if ( isset( $_GET['iSortCol_0'] ) )
  */
 if ( $_GET['sSearch'] != "" )
 {
+	$sWhere .= " AND ";
     for ( $i=0 ; $i<count($aColumns) ; $i++ )
     {
             $sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string( $_GET['sSearch'] )."%' OR ";
@@ -93,6 +94,8 @@ if ( $_GET['sSearch'] != "" )
 if ( !empty($list_pf) ) {
     if (!empty($sWhere)) $sWhere .= " AND ";
     $sWhere = "WHERE ".$sWhere."id_tree NOT IN (".$list_pf.") ";
+}else{
+	$sWhere = "WHERE ".$sWhere;
 }
 
 $sql = "SELECT SQL_CALC_FOUND_ROWS *

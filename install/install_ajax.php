@@ -1,6 +1,6 @@
 <?php
 session_start();
-header("Content-type: text/html; charset=utf8");
+header("Content-type: text/html; charset=utf-8");
 if ( isset($_POST['type']) ){
     switch( $_POST['type'] ){
         case "step1":
