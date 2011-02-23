@@ -74,6 +74,8 @@ v2.00
 * fixed: deleted pws show up in the search [3160582]
 * fixed: GUI corrections [3160611]
 * fixed: delete session of a deleted user [16]
+* fixed: charset problem on install under IE [17]
+* fixed: JSON error on search page [18]
 
 v1.80
 * improvement: an item can be modified by anyone if activated [3040120]

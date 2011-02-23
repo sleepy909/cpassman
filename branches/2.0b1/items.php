@@ -54,7 +54,7 @@ $select_visible_folders_options = "";
 
 //Hidden things
 echo '
-<input type="hidden" name="hid_cat" id="hid_cat" />
+<input type="hidden" name="hid_cat" id="hid_cat" value="', isset($_GET['group']) ? $_GET['group'] : "", '" />
 <input type="hidden" id="complexite_groupe" />
 <input type="hidden" name="selected_items" id="selected_items" />
 <input type="hidden" name="input_liste_utilisateurs" id="input_liste_utilisateurs" value="'.$users_string.'" />
@@ -70,16 +70,16 @@ echo '
 
 //Afficher mdp suite ? recherche
 if ( isset($_GET['group']) && isset($_GET['id']) ){
-    echo '<input type="hidden" name="recherche_groupe" id="recherche_groupe" value="'.$_GET['group'].'" />';
-    echo '<input type="hidden" name="recherche_id" id="recherche_id" value="'.$_GET['id'].'" />';
+    echo '<input type="hidden" name="open_folder" id="open_folder" value="'.$_GET['group'].'" />';
+    echo '<input type="hidden" name="open_id" id="open_id" value="'.$_GET['id'].'" />';
     echo '<input type="hidden" name="recherche_group_pf" id="recherche_group_pf" value="', in_array($_GET['group'],$_SESSION['personal_visible_groups']) ? '1' : '', '" />';
 }elseif ( isset($_GET['group']) && !isset($_GET['id']) ){
-    echo '<input type="hidden" name="recherche_groupe" id="recherche_groupe" value="'.$_GET['group'].'" />';
-    echo '<input type="hidden" name="recherche_id" id="recherche_id" value="" />';
+    echo '<input type="hidden" name="open_folder" id="open_folder" value="'.$_GET['group'].'" />';
+    echo '<input type="hidden" name="open_id" id="open_id" value="" />';
     echo '<input type="hidden" name="recherche_group_pf" id="recherche_group_pf" value="', in_array($_GET['group'],$_SESSION['personal_visible_groups']) ? '1' : '', '" />';
 }else{
-    echo '<input type="hidden" name="recherche_groupe" id="recherche_groupe" value="" />';
-    echo '<input type="hidden" name="recherche_id" id="recherche_id" value="" />';
+    echo '<input type="hidden" name="open_folder" id="open_folder" value="" />';
+    echo '<input type="hidden" name="open_id" id="open_id" value="" />';
     echo '<input type="hidden" name="recherche_group_pf" id="recherche_group_pf" value="" />';
 }
 
