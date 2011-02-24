@@ -88,7 +88,7 @@ if ( isset($_GET['page']) && ($_GET['page'] == "find" || $_GET['page'] == "kb"))
         <script type="text/javascript" src="includes/libraries/datatable/jquery.dataTables.min.js"></script>
 
         <link rel="stylesheet" type="text/css" href="includes/libraries/ui-multiselect/css/ui.multiselect.css" />
-        <script type="text/javascript" src="includes/libraries/ui-multiselect/js/ui.multiselect.js"></script>';
+        <script type="text/javascript" src="includes/libraries/ui-multiselect/js/ui.multiselect.min.js"></script>';
 
 else
 if ( !isset($_GET['page']) )
