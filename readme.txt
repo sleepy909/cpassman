@@ -31,6 +31,9 @@ INSTALLATION:
 * http://cpassman.org/help
 * Once uploaded, launch install/install.php and follow instructions.
 
+NEEDS:
+* Apache, MySQL, PHP 5.3.0 (or higher) and mcrypt extension
+
 UPDATE:
 * Once uploaded, launch install/upgrade.php and follow instructions.
 
@@ -76,6 +79,7 @@ v2.00
 * fixed: delete session of a deleted user [16]
 * fixed: charset problem on install under IE [17]
 * fixed: JSON error on search page [18]
+* fixed: PHP version is checked during upgrade and isntall [19]
 
 v1.80
 * improvement: an item can be modified by anyone if activated [3040120]

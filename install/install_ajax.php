@@ -29,9 +29,9 @@ if ( isset($_POST['type']) ){
                 $txt .= '<span style=\"padding-left:30px;font-size:13pt;\">PHP extension \"mcrypt\"&nbsp;&nbsp;<img src=\"images/tick-circle.png\"></span><br />';
             }
 
-        	if (version_compare(phpversion(), '5.2.0', '<')) {
+        	if (version_compare(phpversion(), '5.3.0', '<')) {
         		$ok_version = false;
-        		$txt .= '<span style=\"padding-left:30px;font-size:13pt;\">PHP version '.phpversion().' is not OK (minimum is 5.2.0) &nbsp;&nbsp;<img src=\"images/minus-circle.png\"></span><br />';
+        		$txt .= '<span style=\"padding-left:30px;font-size:13pt;\">PHP version '.phpversion().' is not OK (minimum is 5.3.0) &nbsp;&nbsp;<img src=\"images/minus-circle.png\"></span><br />';
         	}else{
         		$txt .= '<span style=\"padding-left:30px;font-size:13pt;\">PHP version '.phpversion().' is OK&nbsp;&nbsp;<img src=\"images/tick-circle.png\"></span><br />';
         	}

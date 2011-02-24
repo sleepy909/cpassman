@@ -34,7 +34,7 @@ switch($_POST['type'])
     case "cpm_status":
         $text = "<ul>";
         // Chemin vers le fichier distant
-        $remote_file = 'web/pmc/pmc_config.txt';
+        $remote_file = 'web/pmc/cpm2_config.txt';
         $local_file = '../files/localfile.txt';
 
         // Ouverture du fichier pour ?criture

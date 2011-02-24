@@ -160,7 +160,7 @@ if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
                     <span style="padding-left:30px;font-size:13pt;">Directory "/files/" is writable</span><br />
                     <span style="padding-left:30px;font-size:13pt;">Directory "/upload/" is writable</span><br />
                     <span style="padding-left:30px;font-size:13pt;">PHP extension "mcrypt" is loaded</span><br />
-                    <span style="padding-left:30px;font-size:13pt;">PHP version is gretter or equal to 5.2.0</span><br />
+                    <span style="padding-left:30px;font-size:13pt;">PHP version is gretter or equal to 5.3.0</span><br />
                     </div>
                     <div style="margin-top:20px;font-weight:bold;text-align:center;height:27px;" id="status_step1"></div>';
 
