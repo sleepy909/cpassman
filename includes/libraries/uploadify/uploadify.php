@@ -1,4 +1,5 @@
 <?php
+session_start();
 /*
 Uploadify v2.1.4
 Release Date: November 8, 2010
@@ -23,24 +24,83 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+/**
+ * @file 		uploadify.php adapted for cPassMan
+ * @author		Nils Laumaillé
+ * @version 	2.0
+ * @copyright 	(c) 2009-2011 Nils Laumaillé
+ * @licensing 	CC BY-ND (http://creativecommons.org/licenses/by-nd/3.0/legalcode)
+ * @link		http://cpassman.org
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
+
+
+// Permits to extract the file extension
+function findexts ($filename)
+{
+	$filename = strtolower($filename) ;
+	$exts = split("[/\\.]", $filename) ;
+	$n = count($exts)-1;
+	$exts = $exts[$n];
+	return $exts;
+}
+
 if (!empty($_FILES)) {
-	$tempFile = $_FILES['Filedata']['tmp_name'];
-	$targetPath = $_SERVER['DOCUMENT_ROOT'] . $_REQUEST['folder'] . '/';
-	$targetFile =  str_replace('//','/',$targetPath) . $_FILES['Filedata']['name'];
-	
-	// $fileTypes  = str_replace('*.','',$_REQUEST['fileext']);
-	// $fileTypes  = str_replace(';','|',$fileTypes);
-	// $typesArray = split('\|',$fileTypes);
-	// $fileParts  = pathinfo($_FILES['Filedata']['name']);
-	
-	// if (in_array($fileParts['extension'],$typesArray)) {
-		// Uncomment the following line if you want to make the directory if it doesn't exist
-		// mkdir(str_replace('//','/',$targetPath), 0755, true);
-		
-		move_uploaded_file($tempFile,$targetFile);
-		echo str_replace($_SERVER['DOCUMENT_ROOT'],'',$targetFile);
-	// } else {
-	// 	echo 'Invalid file type.';
-	// }
+	//Case where upload is an attached file for one item
+	if ( !isset($_POST['type_upload']) || $_POST['type_upload'] != "import_items_from_file" ){
+		// Get some variables
+		$file_random_id = md5($_FILES['Filedata']['name']);
+		$tempFile = $_FILES['Filedata']['tmp_name'];
+		$targetPath = $_SERVER['DOCUMENT_ROOT'] . $_REQUEST['folder'] . '/';
+		$targetFile =  str_replace('//','/',$targetPath) . $file_random_id;
+
+		include($_SESSION['settings']['cpassman_url'].'/includes/settings.php');
+
+		//Connect to mysql server
+		include($_SESSION['settings']['cpassman_url']."/sources/class.database.php");
+		$db = new Database($server, $user, $pass, $database, $pre);
+		$db->connect();
+
+		// Store to database
+		$db->query_insert(
+			'files',
+			array(
+			    'id_item' => $_POST['post_id'],
+			    'name' => str_replace(' ','_',$_FILES['Filedata']['name']),
+			    'size' => $_FILES['Filedata']['size'],
+			    'extension' => findexts($_FILES['Filedata']['name']),
+			    'type' => $_FILES['Filedata']['type'],
+			    'file' => $file_random_id
+			)
+		);
+
+		// Log upload into databse - only log for a modification
+		if ( $_POST['type'] == "modification" ){
+			$db->query_insert(
+				'log_items',
+				array(
+				    'id_item' => $_POST['post_id'],
+				    'date' => mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y')),
+				    'id_user' => $_POST['user_id'],
+				    'action' => 'at_modification',
+				    'raison' => 'at_add_file : '.addslashes($_FILES['Filedata']['name'])
+				)
+			);
+		}
+	}else{
+		// Get some variables
+		$tempFile = $_FILES['Filedata']['tmp_name'];
+		$targetPath = $_SERVER['DOCUMENT_ROOT'] . $_REQUEST['folder'] . '/';
+		$targetFile =  str_replace('//','/',$targetPath) . $_FILES['Filedata']['name'];
+	}
+
+	//move
+	move_uploaded_file($tempFile,$targetFile);
+	echo "1";
+
 }
 ?>

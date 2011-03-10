@@ -4,7 +4,7 @@
  * @author		Nils Laumaillé
  * @version 	2.0
  * @copyright 	(c) 2009-2011 Nils Laumaillé
- * @licensing 	CC BY-NC-ND (http://creativecommons.org/licenses/by-nc-nd/3.0/legalcode)
+ * @licensing 	CC BY-ND (http://creativecommons.org/licenses/by-nd/3.0/legalcode)
  * @link		http://cpassman.org
  *
  * This library is distributed in the hope that it will be useful,
@@ -72,8 +72,7 @@ if ( isset($_GET['page']) && $_GET['page'] == "manage_settings")
 else
 if ( isset($_GET['page']) && ( $_GET['page'] == "manage_users" ||$_GET['page'] == "manage_folders") )
     $htmlHeaders .= '
-        <script src="includes/js/jquery.jeditable.js" type="text/javascript"></script>
-        <script type="text/javascript" src="includes/js/json-minified.js"></script>';
+		<script type="text/javascript" src="includes/libraries/crypt/aes.min.js"></script>';
 
 else
 if ( isset($_GET['page']) && ($_GET['page'] == "find" || $_GET['page'] == "kb"))
@@ -1217,122 +1216,6 @@ if ( isset($_GET['page']) && $_GET['page'] == "manage_users" ){
         );
 	}
     ';
-}
-
-else
-//JAVASCRIPT FOR MANAGE FOLDERS PAGE
-if ( isset($_GET['page']) && $_GET['page'] == "manage_folders" ){
-    $htmlHeaders .= '
-    $(function() {
-        //inline editing
-        $(".editable_textarea").editable("sources/folders.queries.php", {
-              indicator : "<img src=\'includes/images/loading.gif\' />",
-              type   : "textarea",
-              select : true,
-              submit : " <img src=\'includes/images/disk_black.png\' />",
-              cancel : " <img src=\'includes/images/cross.png\' />",
-              name : "newtitle",
-              width : "240"
-          });
-
-          //inline editing
-        $(".renewal_textarea").editable("sources/folders.queries.php", {
-              indicator : "<img src=\'includes/images/loading.gif\' />",
-              type   : "textarea",
-              select : true,
-              submit : " <img src=\'includes/images/disk_black.png\' />",
-              cancel : " <img src=\'includes/images/cross.png\' />",
-              name : "renewal_period",
-              width : "40"
-          });
-
-          //Prepare creation dialogbox
-          $("#open_add_group_div").click(function() {
-                $("#div_add_group").dialog("open");
-          });
-
-          $("#div_add_group").dialog({
-            bgiframe: true,
-            modal: true,
-            autoOpen: false,
-            width: 250,
-            height: 330,
-            title: "'.$txt['add_new_group'].'",
-            buttons: {
-                "'.$txt['save_button'].'": function() {
-                    ajouter_groupe();
-                },
-                "'.$txt['cancel_button'].'": function() {
-                    $(this).dialog("close");
-                }
-            }
-        });
-
-        $("#help_on_folders").dialog({
-            bgiframe: false,
-            modal: false,
-            autoOpen: false,
-            width: 850,
-            height: 500,
-            title: "'. $txt["admin_help"] .'",
-            buttons: {
-                "'.$txt["close"].'": function() {
-                    $(this).dialog("close");
-                }
-            },
-            open: function(){
-                $("#accordion").accordion({ autoHeight: false, navigation: true, collapsible: true, active: false });
-            }
-        });
-    });
-
-
-
-    function ajouter_groupe(){
-        //Check if renewal_period is an integer
-        if ( isInteger(document.getElementById("add_node_renewal_period").value) == false ){
-            document.getElementById("addgroup_show_error").innerHTML = "'.$txt['error_renawal_period_not_integer'].'";
-            $("#addgroup_show_error").show();
-        }else{
-            if ( document.getElementById("new_rep_complexite").value == "" ){
-                document.getElementById("addgroup_show_error").innerHTML = "'.$txt['error_group_complex'].'";
-                $("#addgroup_show_error").show();
-            }else{
-                if ( document.getElementById("ajouter_groupe_titre").value != "" && document.getElementById("parent_id").value != "na" ){
-                    $("#addgroup_show_error").hide();
-                    var data = "type=add_folder"+
-                                "&title="+escape(document.getElementById("ajouter_groupe_titre").value)+
-                                "&complex="+document.getElementById("new_rep_complexite").value+
-                                "&renewal_period="+document.getElementById("add_node_renewal_period").value+
-                                "&parent_id="+document.getElementById("parent_id").value;
-                    httpRequest("sources/folders.queries.php",data);
-                    $("#div_add_group").dialog("close");
-                }else{
-                    document.getElementById("addgroup_show_error").innerHTML = "'.$txt['error_fields_2'].'";
-                    $("#addgroup_show_error").show();
-                }
-            }
-        }
-    }
-
-    function supprimer_groupe(id){
-        if ( confirm("'.$txt['confirm_delete_group'].'") ){
-            var data = "type=supprimer_groupe&id="+id;
-            httpRequest("sources/folders.queries.php",data);
-        }
-    }
-
-    function Changer_Droit_Complexite(id,type){
-        var droit = 0;
-        if ( type == "creation" ){
-            if ( document.getElementById("cb_droit_"+id).checked == true ) droit = 1;
-            var data = "type=modif_droit_autorisation_sans_complexite&id="+id+"&droit="+droit;
-        }else if ( type == "modification" ){
-            if ( document.getElementById("cb_droit_modif_"+id).checked == true ) droit = 1;
-            var data = "type=modif_droit_modification_sans_complexite&id="+id+"&droit="+droit;
-        }
-        httpRequest("sources/folders.queries.php",data);
-    }';
 }
 
 $htmlHeaders .= '

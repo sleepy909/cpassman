@@ -72,6 +72,9 @@ v2.00
 * improvement: "copy to clipboard" items are deleted for memory optimization [3177788]
 * improvement: dynamic load of items list (to optimze time loading)
 * improvement: on cpassman exit, user is fully disconnected
+* improvement: timezone is customizable by admin [19]
+* improvement: LDAP extension is checked before activating this functionality [25]
+* improvement: manage folders page has been reviewed [30]
 * fixed: problem with slash in label [3141743]
 * fixed: password in cleartext in log [3141167]
 * fixed: deleted pws show up in the search [3160582]
@@ -79,7 +82,9 @@ v2.00
 * fixed: delete session of a deleted user [16]
 * fixed: charset problem on install under IE [17]
 * fixed: JSON error on search page [18]
-* fixed: PHP version is checked during upgrade and isntall [19]
+* fixed: PHP version is checked during upgrade and install [19]
+* fixed: if no roles and folders then some buttons are disabled [20]
+* fixed: if no http:// prefix on url then it is added [29]
 
 v1.80
 * improvement: an item can be modified by anyone if activated [3040120]

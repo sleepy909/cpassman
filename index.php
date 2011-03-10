@@ -30,7 +30,7 @@
  * @author		Nils Laumaillé
  * @version 	2.0
  * @copyright 	(c) 2009-2011 Nils Laumaillé
- * @licensing 	CC BY-NC-ND (http://creativecommons.org/licenses/by-nc-nd/3.0/legalcode)
+ * @licensing 	CC BY-ND (http://creativecommons.org/licenses/by-nd/3.0/legalcode)
  * @link		http://cpassman.org
  *
  * This library is distributed in the hope that it will be useful,
@@ -104,10 +104,10 @@ require_once("load.php");
                 <button title="'.$txt['home'].'" onclick="MenuAction(\'\');">
                     <img src="includes/images/home.png" alt="" />
                 </button>
-                <button style="margin-left:10px;" title="'.$txt['pw'].'" onclick="MenuAction(\'items\');">
+                <button style="margin-left:10px;" title="'.$txt['pw'].'" onclick="MenuAction(\'items\');"', (isset($_SESSION['nb_folders']) && $_SESSION['nb_folders'] == 0) || (isset($_SESSION['nb_roles']) && $_SESSION['nb_roles'] == 0) ? ' disabled="disabled"' : '', '>
                     <img src="includes/images/menu_key.png" alt="" />
                 </button>
-                <button title="'.$txt['find'].'" onclick="MenuAction(\'find\');">
+                <button title="'.$txt['find'].'" onclick="MenuAction(\'find\');"', (isset($_SESSION['nb_folders']) && $_SESSION['nb_folders'] == 0) || (isset($_SESSION['nb_roles']) && $_SESSION['nb_roles'] == 0) ? ' disabled="disabled"' : '', '>
                     <img src="includes/images/binocular.png" alt="" />
                 </button>
                 <button title="'.$txt['last_items_icon_title'].'" onclick="OpenDiv(\'div_last_items\')">
@@ -182,7 +182,7 @@ require_once("load.php");
         }
 
         echo '
-        <div style="float:right;margin:-8px 3px 0px 0px;">ICI
+        <div style="float:right;margin:-8px 3px 0px 0px;">
             <dl id="flags" class="dropdown" title="'.$txt['select_language'].'">
                 <dt><img src="includes/images/flags/'.$flag.'.png" alt="" /></dt>
                 <dd>

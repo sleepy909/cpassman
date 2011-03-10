@@ -4,7 +4,7 @@
  * @author		Nils Laumaillé
  * @version 	2.0
  * @copyright 	(c) 2009-2011 Nils Laumaillé
- * @licensing 	CC BY-NC-ND (http://creativecommons.org/licenses/by-nc-nd/3.0/legalcode)
+ * @licensing 	CC BY-ND (http://creativecommons.org/licenses/by-nd/3.0/legalcode)
  * @link		http://cpassman.org
  *
  * This library is distributed in the hope that it will be useful,
@@ -41,12 +41,6 @@ foreach($tst as $t){
     }
 }
 
-/* Build complexity level list */
-$complexity_list = "";
-foreach($mdp_complexite as $comp){
-    if ( empty($complexity_list) ) $complexity_list = "\'".$comp[0].'\':\''.$comp[1].'\'';
-    else $complexity_list .= ",\'".$comp[0].'\':\''.$comp[1].'\'';
-}
 
 /* Display header */
 echo '
@@ -54,6 +48,10 @@ echo '
     $txt['admin_groups'].'&nbsp;&nbsp;&nbsp;<img src="includes/images/folder--plus.png" id="open_add_group_div" title="'.$txt['item_menu_add_rep'].'" style="cursor:pointer;" />
     <span style="float:right;margin-right:5px;"><img src="includes/images/question-white.png" style="cursor:pointer" title="'.$txt['show_help'].'" onclick="OpenDialog(\'help_on_folders\')" /></span>
 </div>';
+
+//Hidden things
+echo '
+<input type="hidden" id="folder_id_to_edit" value="" />';
 
 echo '
 <form name="form_groupes" method="post" action="">
@@ -102,22 +100,22 @@ echo '
                 );
 
 
-                echo '<tr class="ligne0" id="row_'.$t->id.'">
+                echo '<tr class="ligne0" id="row_'.$t->id.'" onclick="open_edit_folder_dialog('.$t->id.')">
                         <td align="center">'.$t->id.'</td>
                         <td width="50%">
-                            '.$ident.'<span class="editable_textarea" style="" id="title_'.$t->id.'">'.$t->title.'</span>
+                            '.$ident.'<span id="title_'.$t->id.'">'.$t->title.'</span>
                         </td>
                         <td align="center">
-                            <span class="editable_select" id="complexite_'.$t->id.'">'.$mdp_complexite[$node_data[0]][1].'</span>
+                            <span id="complexite_'.$t->id.'">'.$mdp_complexite[$node_data[0]][1].'</span>
                         </td>
                         <td align="center">
-                            <span class="editable_select" id="parent_'.$t->id.'">'.$data[0].'</span>
+                            <span id="parent_'.$t->id.'">'.$data[0].'</span>
                         </td>
                         <td align="center">
                             '.$t->nlevel.'
                         </td>
                         <td align="center">
-                            <span class="renewal_textarea" id="renewal_'.$t->id.'">'.$node_data[1].'</span>
+                            <span id="renewal_'.$t->id.'">'.$node_data[1].'</span>
                         </td>
                         <td align="center">
                             <img src="includes/images/folder--minus.png" onclick="supprimer_groupe(\''.$t->id.'\')" style="cursor:pointer;" />
@@ -130,6 +128,10 @@ echo '
                         </td>
                         <td align="center">
                             <input type="checkbox" id="cb_droit_modif_'.$t->id.'" onchange="Changer_Droit_Complexite(\''.$t->id.'\',\'modification\')"', isset($data3[1]) && $data3[1]==1 ? 'checked' : '', ' />
+                        </td>
+                        <td>
+                        	<input type="hidden"  id="parent_id_'.$t->id.'" value="'.$t->parent_id.'" />
+							<input type="hidden"  id="renewal_id_'.$t->id.'" value="'.$node_data[0].'" />
                         </td>
                 </tr>';
                 array_push($arr_ids,$t->id);
@@ -151,27 +153,6 @@ echo '
     <div>'.$txt['help_on_folders'].'</div>
 </div>';
 
-//Launch Editable script on DOM elements
-foreach($arr_ids as $id)
-    echo '
-    <script type="text/javascript">
-        $("#complexite_'.$id.'").editable("sources/folders.queries.php", {
-            indicator : "<img src=\'includes/images/loading.gif\' />",
-            data   : "{'.$complexity_list.', \'selected\':\''.$mdp_complexite[$node_data[0]][1].'\'}",
-            type   : "select",
-            submit : "<img src=\'includes/images/disk_black.png\' />",
-            cancel : " <img src=\'includes/images/cross.png\' />",
-            name : "changer_complexite"
-          });
-          $("#parent_'.$id.'").editable("sources/folders.queries.php", {
-            indicator : "<img src=\'includes/images/loading.gif\' />",
-            data   : "{'.$folders_list.', \'selected\':\''.$data[0].'\'}",
-            type   : "select",
-            submit : "<img src=\'includes/images/disk_black.png\' />",
-            cancel : " <img src=\'includes/images/cross.png\' />",
-            name : "newparent_id"
-          });
-    </script>';
 
 /* Form Add a folder */
 echo '
@@ -216,4 +197,50 @@ echo '
     <label for="add_node_renewal_period" class="label_cpm">'.$txt['group_pw_duration'].' :</label>
     <input type="text" id="add_node_renewal_period" value="0" class="input_text text ui-widget-content ui-corner-all" />
 </div>';
+
+/* Form EDIT a folder */
+echo '
+<div id="div_edit_folder" style="display:none;">
+    <div id="edit_folder_show_error" style="text-align:center;margin:2px;display:none;" class="ui-state-error ui-corner-all"></div>
+
+    <label for="edit_folder_title" class="label_cpm">'.$txt['group_title'].' :</label>
+    <input type="text" id="edit_folder_title" class="input_text text ui-widget-content ui-corner-all" />
+
+    <label for="edit_parent_id" class="label_cpm">'.$txt['group_parent'].' :</label>
+    <select id="edit_parent_id" class="input_text text ui-widget-content ui-corner-all">';
+echo '<option value="na">---'.$txt['select'].'---</option>';
+if ($_SESSION['is_admin'] == 1 || $_SESSION['can_create_root_folder'] == 1) {
+	echo '<option value="0">'.$txt['root'].'</option>';
+}
+$prev_level = 0;
+foreach($tst as $t){
+	if ( in_array($t->id,$_SESSION['groupes_visibles']) && !in_array($t->id, $_SESSION['personal_visible_groups'])) {
+		$ident="";
+		for($x=1;$x<$t->nlevel;$x++) $ident .= "&nbsp;&nbsp;";
+		if ( $prev_level < $t->nlevel ){
+			echo '<option value="'.$t->id.'">'.$ident.$t->title.'</option>';
+		}else if ( $prev_level == $t->nlevel ){
+			echo '<option value="'.$t->id.'">'.$ident.$t->title.'</option>';
+		}else{
+			echo '<option value="'.$t->id.'">'.$ident.$t->title.'</option>';
+		}
+		$prev_level = $t->nlevel;
+	}
+}
+echo '
+    </select>
+
+    <label for="edit_folder_complexite" class="label_cpm">'.$txt['complex_asked'].' :</label>
+    <select id="edit_folder_complexite" class="input_text text ui-widget-content ui-corner-all">
+<option value="">---</option>';
+foreach($mdp_complexite as $complex)
+	echo '<option value="'.$complex[0].'">'.$complex[1].'</option>';
+echo '
+    </select>
+
+    <label for="edit_folder_renewal_period" class="label_cpm">'.$txt['group_pw_duration'].' :</label>
+    <input type="text" id="edit_folder_renewal_period" value="0" class="input_text text ui-widget-content ui-corner-all" />
+</div>';
+
+require_once("folders.load.php");
 ?>

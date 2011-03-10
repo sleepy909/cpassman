@@ -4,7 +4,7 @@
  * @author		Nils Laumaillé
  * @version 	2.0
  * @copyright 	(c) 2009-2011 Nils Laumaillé
- * @licensing 	CC BY-NC-ND (http://creativecommons.org/licenses/by-nc-nd/3.0/legalcode)
+ * @licensing 	CC BY-ND (http://creativecommons.org/licenses/by-nd/3.0/legalcode)
  * @link		http://cpassman.org
  *
  * This library is distributed in the hope that it will be useful,
@@ -18,7 +18,7 @@ if ($_SESSION['CPM'] != 1)
 
 include('../includes/language/'.$_SESSION['user_language'].'.php');
 include('../includes/settings.php');
-header("Content-type: text/html; charset=".$k['charset']);
+header("Content-type: text/html; charset==utf-8");
 include('main.functions.php');
 require_once ("NestedTree.class.php");
 
@@ -34,7 +34,7 @@ if ( isset($_POST['newtitle']) ){
     $db->query_update(
         'nested_tree',
         array(
-            'title' => mysql_real_escape_string(stripslashes(utf8_decode($_POST['newtitle'])))
+            'title' => mysql_real_escape_string(stripslashes(($_POST['newtitle'])))
         ),
         "id=".$id[1]
     );
@@ -51,7 +51,7 @@ else if ( isset($_POST['renewal_period']) && !isset($_POST['type']) ){
         $db->query_update(
             'nested_tree',
             array(
-                'renewal_period' => mysql_real_escape_string(stripslashes(utf8_decode($_POST['renewal_period'])))
+                'renewal_period' => mysql_real_escape_string(stripslashes(($_POST['renewal_period'])))
             ),
             "id=".$id[1]
         );
@@ -160,21 +160,31 @@ else if ( isset($_POST['type']) ){
 
         //CASE where ADDING a new group
         case "add_folder":
+        	$error = "";
+
+        	//decrypt and retreive data in JSON format
+        	require_once '../includes/libraries/crypt/aes.class.php';     // AES PHP implementation
+        	require_once '../includes/libraries/crypt/aesctr.class.php';  // AES Counter Mode implementation
+        	$data_received = json_decode((AesCtr::decrypt($_POST['data'], $_SESSION['cle_session'], 256)), true);
+
+        	//Prepare variables
+        	$title = htmlspecialchars_decode($data_received['title']);
+        	$complexity = htmlspecialchars_decode($data_received['complexity']);
+        	$parent_id = htmlspecialchars_decode($data_received['parent_id']);
+        	$renewal_period = htmlspecialchars_decode($data_received['renewal_period']);
+
+
             //Check if title doesn't contains html codes
-            if (preg_match_all("|<[^>]+>(.*)</[^>]+>|U",$_POST['title'],$out)) {
-                echo '$("#div_add_group").dialog("open");';
-                echo 'document.getElementById("addgroup_show_error").innerHTML = "'.$txt['error_html_codes'].'";';
-                echo '$("#addgroup_show_error").show();';
+            if (preg_match_all("|<[^>]+>(.*)</[^>]+>|U", $title, $out)) {
+            	$error = 'error_html_codes';
             }
 
             //Check if duplicate folders name are allowed
             $create_new_folder = true;
             if ( isset($_SESSION['settings']['duplicate_folder']) && $_SESSION['settings']['duplicate_folder'] == 0 ){
-                $data = $db->fetch_row("SELECT COUNT(*) FROM ".$pre."nested_tree WHERE title = '".mysql_real_escape_string(stripslashes(($_POST['title'])))."'");
+                $data = $db->fetch_row("SELECT COUNT(*) FROM ".$pre."nested_tree WHERE title = '".addslashes($title)."'");
                 if ( $data[0] != 0 ){
-                    echo '$("#div_add_group").dialog("open");';
-                    echo 'document.getElementById("addgroup_show_error").innerHTML = "'.$txt['error_group_exist'].'";';
-                    echo '$("#addgroup_show_error").show();';
+                	$error = 'error_group_exist';
                     $create_new_folder = false;
                 }
             }
@@ -183,10 +193,10 @@ else if ( isset($_POST['type']) ){
                 $new_id=$db->query_insert(
                     "nested_tree",
                     array(
-                        'parent_id' => $_POST['parent_id'],
-                        'title' => mysql_real_escape_string(stripslashes($_POST['title'])),
+                        'parent_id' => $parent_id,
+                        'title' => $title,
                         'personal_folder' => 0,
-                        'renewal_period' => mysql_real_escape_string(stripslashes($_POST['renewal_period'])),
+                        'renewal_period' => $renewal_period,
                         'bloquer_creation' => '0',
                         'bloquer_modification' => '0'
                     )
@@ -198,7 +208,7 @@ else if ( isset($_POST['type']) ){
                     array(
                         'type' => 'complex',
                         'intitule' => $new_id,
-                        'valeur' => $_POST['complex']
+                        'valeur' => $complexity
                     )
                 );
 
@@ -220,10 +230,69 @@ else if ( isset($_POST['type']) ){
                 //Get user's rights
                 IdentifyUserRights($_SESSION['groupes_visibles'].';'.$new_id,$_SESSION['groupes_interdits'],$_SESSION['is_admin'],$_SESSION['fonction_id'],true);
 
-                //Reload page
-                echo 'RefreshPage("form_groupes");';
+            	echo '[ { "error" : "'.$error.'" } ]';
+
             }
         break;
+
+        //CASE where UPDATING a new group
+        case "update_folder":
+        	$error = "";
+
+        	//decrypt and retreive data in JSON format
+        	require_once '../includes/libraries/crypt/aes.class.php';     // AES PHP implementation
+        	require_once '../includes/libraries/crypt/aesctr.class.php';  // AES Counter Mode implementation
+        	$data_received = json_decode((AesCtr::decrypt($_POST['data'], $_SESSION['cle_session'], 256)), true);
+
+        	//Prepare variables
+        	$title = htmlspecialchars_decode($data_received['title']);
+        	$complexity = htmlspecialchars_decode($data_received['complexity']);
+        	$parent_id = htmlspecialchars_decode($data_received['parent_id']);
+        	$renewal_period = htmlspecialchars_decode($data_received['renewal_period']);
+
+
+        	//Check if title doesn't contains html codes
+        	if (preg_match_all("|<[^>]+>(.*)</[^>]+>|U", $title, $out)) {
+        		$error = 'error_html_codes';
+        	}
+
+       		$db->query_update(
+        		"nested_tree",
+        		array(
+        		    'parent_id' => $parent_id,
+        		    'title' => $title,
+        		    'personal_folder' => 0,
+        		    'renewal_period' => $renewal_period,
+        		    'bloquer_creation' => '0',
+        		    'bloquer_modification' => '0'
+	        	),
+        		"id='".$data_received['id']."'"
+       		);
+
+       		//Add complexity
+       		$db->query_update(
+        		"misc",
+        		array(
+        		    'valeur' => $complexity
+	        	),
+       			array(
+       				'intitule' => $data_received['id'],
+       				'type' => 'complex'
+				)
+       		);
+
+
+       		require_once('NestedTree.class.php');
+       		$tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
+       		$tree->rebuild();
+
+       		//Get user's rights
+       		IdentifyUserRights($_SESSION['groupes_visibles'].';'.$data_received['id'],$_SESSION['groupes_interdits'],$_SESSION['is_admin'],$_SESSION['fonction_id'],true);
+
+
+
+        	echo '[ { "error" : "'.$error.'" } ]';
+        	break;
 
 
         //CASE where to update the associated Function
