@@ -4,7 +4,7 @@
  * @author		Nils Laumaillé
  * @version 	2.0
  * @copyright 	(c) 2009-2011 Nils Laumaillé
- * @licensing 	CC BY-NC-ND (http://creativecommons.org/licenses/by-nc-nd/3.0/legalcode)
+ * @licensing 	CC BY-ND (http://creativecommons.org/licenses/by-nd/3.0/legalcode)
  * @link		http://cpassman.org
  *
  * This library is distributed in the hope that it will be useful,
@@ -830,7 +830,7 @@ if ( isset($_POST['type']) ){
        	* CASE
        	* Create a new Group
        	*/
-        case "new_rep":
+        /*case "new_rep":
             //Check if title doesn't contains html codes
             if (preg_match_all("|<[^>]+>(.*)</[^>]+>|U",$_POST['title'],$out)) {
                 echo '$("#div_ajout_rep").dialog("open");';
@@ -893,7 +893,7 @@ if ( isset($_POST['type']) ){
                 //Reload page
                 echo 'window.location.href = "index.php?page=items";';
             }
-        break;
+        break;*/
 
 
        	/*

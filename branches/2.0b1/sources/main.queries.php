@@ -4,7 +4,7 @@
  * @author		Nils Laumaillé
  * @version 	2.0
  * @copyright 	(c) 2009-2011 Nils Laumaillé
- * @licensing 	CC BY-NC-ND (http://creativecommons.org/licenses/by-nc-nd/3.0/legalcode)
+ * @licensing 	CC BY-ND (http://creativecommons.org/licenses/by-nd/3.0/legalcode)
  * @link		http://cpassman.org
  *
  * This library is distributed in the hope that it will be useful,
@@ -20,7 +20,7 @@ if ($_SESSION['CPM'] != 1)
 
 global $k, $settings;
 include('../includes/settings.php');
-header("Content-type: text/html; charset=".$k['charset']);
+header("Content-type: text/html; charset=utf-8");
 error_reporting (E_ERROR);
 require_once('main.functions.php');
 
@@ -606,7 +606,7 @@ switch($_POST['type'])
 
     		$pdf_file = "print_out_pdf_".date("Y-m-d",mktime(0,0,0,date('m'),date('d'),date('y'))).".pdf";
     		//send the file
-    		$pdf->Output($_SESSION['settings']['cpassman_dir']."\\files\\".$pdf_file);
+    		$pdf->Output($_SESSION['settings']['cpassman_dir']."/files/".$pdf_file);
     		//Open PDF
     		echo 'window.open(\''.$_SESSION['settings']['cpassman_url'].'/files/'.$pdf_file.'\', \'_blank\');';
     		//reload

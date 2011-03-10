@@ -4,7 +4,7 @@
  * @author		Nils Laumaillé
  * @version 	2.0
  * @copyright 	(c) 2009-2011 Nils Laumaillé
- * @licensing 	CC BY-NC-ND (http://creativecommons.org/licenses/by-nc-nd/3.0/legalcode)
+ * @licensing 	CC BY-ND (http://creativecommons.org/licenses/by-nd/3.0/legalcode)
  * @link		http://cpassman.org
  *
  * This library is distributed in the hope that it will be useful,
@@ -244,6 +244,11 @@ if (isset($_POST['save_button'])) {
 	if ( @$_SESSION['settings']['copy_to_clipboard_small_icons'] != $_POST['copy_to_clipboard_small_icons'] ){
 		UpdateSettings('copy_to_clipboard_small_icons',$_POST['copy_to_clipboard_small_icons']);
 	}
+
+	//Update timezone_selection
+	if ( @$_SESSION['settings']['timezone'] != $_POST['timezone'] ){
+		UpdateSettings('timezone',$_POST['timezone']);
+	}
 }
 
 echo '
@@ -302,9 +307,35 @@ echo '
                 </tr>
             </table>';
 
+            echo '
+			<table>';
+
+            //TIMEZONE
+            //get list of all timezones
+			$zones = timezone_identifiers_list();
+			echo '
+			    <tr style="margin-bottom:3px">
+				    <td>
+	                    <span class="ui-icon ui-icon-disk" style="float: left; margin-right: .3em;">&nbsp;</span>
+	                    <label for="timezone">'.$txt['timezone_selection'].'</label>
+					</td>
+					<td>
+						<select id="timezone" name="timezone" class="text ui-widget-content ui-corner-all">
+							<option value="">-- '.$txt['select'].' --</option>';
+							foreach ($zones as $zone){
+								echo '
+								<option value="'.$zone.'"', isset($_SESSION['settings']['timezone']) && $_SESSION['settings']['timezone'] == $zone ? ' selected="selected"' : '', '>'.$zone.'</option>';
+							}
+			echo '
+						</select>
+			    	<td>
+			    </tr>';
+/*
+
+*/
+
                 //DATE format
                 echo '
-			<table>
                 <tr style="margin-bottom:3px">
 				    <td>
 	                    <span class="ui-icon ui-icon-disk" style="float: left; margin-right: .3em;">&nbsp;</span>
@@ -691,18 +722,30 @@ echo '
 			echo '
 			<div id="tabs-4">';
 
-			//Enable LDAP mode
-			echo '
-			<div style="margin-bottom:3px">
-			    <label for="ldap_mode">'.
-			        $txt['settings_ldap_mode'].'
-			        &nbsp;<img src="includes/images/question-small-white.png" class="tip" alt="" title="'.$txt['settings_ldap_mode_tip'].'" />
-                </label>
-			    <span class="div_radio">
-					<input type="radio" id="ldap_mode_radio1" name="ldap_mode" value="1"', isset($_SESSION['settings']['ldap_mode']) && $_SESSION['settings']['ldap_mode'] == 1 ? ' checked="checked"' : '', ' onclick="javascript:$(\'#div_ldap_configuration\').show();" /><label for="ldap_mode_radio1">'.$txt['yes'].'</label>
-					<input type="radio" id="ldap_mode_radio2" name="ldap_mode" value="0"', isset($_SESSION['settings']['ldap_mode']) && $_SESSION['settings']['ldap_mode'] != 1 ? ' checked="checked"' : (!isset($_SESSION['settings']['ldap_mode']) ? ' checked="checked"':''), ' onclick="javascript:$(\'#div_ldap_configuration\').hide();" /><label for="ldap_mode_radio2">'.$txt['no'].'</label>
-				</span>
-            </div>';
+			//Check if LDAP extension is loaded
+			if (!extension_loaded('ldap')) {
+				echo '
+				<div style="margin-bottom:3px;">
+					<div class="ui-widget-content ui-corner-all" style="padding:10px;">
+						<img src="includes/images/error.png" alt="">&nbsp;&nbsp;'.$txt['ldap_extension_not_loaded'].'
+					</div>
+				</div>';
+			}
+			else
+			{
+				//Enable LDAP mode
+				echo '
+				<div style="margin-bottom:3px;">
+				    <label for="ldap_mode">'.
+						$txt['settings_ldap_mode'].'
+						&nbsp;<img src="includes/images/question-small-white.png" class="tip" alt="" title="'.$txt['settings_ldap_mode_tip'].'" />
+	                </label>
+				    <span class="div_radio">
+						<input type="radio" id="ldap_mode_radio1" name="ldap_mode" value="1"', isset($_SESSION['settings']['ldap_mode']) && $_SESSION['settings']['ldap_mode'] == 1 ? ' checked="checked"' : '', ' onclick="javascript:$(\'#div_ldap_configuration\').show();" /><label for="ldap_mode_radio1">'.$txt['yes'].'</label>
+						<input type="radio" id="ldap_mode_radio2" name="ldap_mode" value="0"', isset($_SESSION['settings']['ldap_mode']) && $_SESSION['settings']['ldap_mode'] != 1 ? ' checked="checked"' : (!isset($_SESSION['settings']['ldap_mode']) ? ' checked="checked"':''), ' onclick="javascript:$(\'#div_ldap_configuration\').hide();" /><label for="ldap_mode_radio2">'.$txt['no'].'</label>
+					</span>
+	            </div>';
+			}
 
 			// AD inputs
 			echo '

@@ -6,6 +6,8 @@ $cpassman_url = '';
 $cpassman_url = $_SESSION['settings']['cpassman_url'];
 }
 
+$txt['timezone_selection'] = "Timezone to use";
+$txt['ldap_extension_not_loaded'] = "LDAP extension is not loaded. You can't activate LDAP functionality!";
 $txt['account_is_locked'] = "This is account is locked";
 $txt['add_button'] = "Add";
 $txt['add_new_group'] = "Add a new folder";

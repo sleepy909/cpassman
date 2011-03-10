@@ -4,7 +4,7 @@
  * @author		Nils Laumaillé
  * @version 	2.0
  * @copyright 	(c) 2009-2011 Nils Laumaillé
- * @licensing 	CC BY-NC-ND (http://creativecommons.org/licenses/by-nc-nd/3.0/legalcode)
+ * @licensing 	CC BY-ND (http://creativecommons.org/licenses/by-nd/3.0/legalcode)
  * @link		http://cpassman.org
  *
  * This library is distributed in the hope that it will be useful,
@@ -248,6 +248,12 @@ function AjouterItem(){
     var erreur = "";
     var  reg=new RegExp("[.|;|:|!|=|+|-|*|/|#|\"|'|&|]");
 
+    //Complete url format
+    var url = $("#url").val();
+    if (url.substring(0,7) != "http://") {
+    	url = "http://"+url;
+    }
+
     if ( document.getElementById("label").value == "" ) erreur = "<?php echo $txt['error_label'];?>";
     else if ( document.getElementById("pw1").value == "" ) erreur = "<?php echo $txt['error_pw'];?>";
     else if ( document.getElementById("categorie").value == "na" ) erreur = "<?php echo $txt['error_group'];?>";
@@ -303,7 +309,7 @@ function AjouterItem(){
             //prepare data
             var data = '{"pw":"'+protectString($('#pw1').val())+'", "label":"'+protectString($('#label').val())+'", '+
             '"login":"'+protectString($('#item_login').val())+'", "is_pf":"'+is_pf+'", '+
-            '"description":"'+description+'", "url":"'+protectString($('#url').val())+'", "categorie":"'+$('#categorie').val()+'", '+
+            '"description":"'+description+'", "url":"'+url+'", "categorie":"'+$('#categorie').val()+'", '+
             '"restricted_to":"'+restriction+'", "restricted_to_roles":"'+restriction_role+'", "salt_key_set":"'+$('#personal_sk_set').val()+'", "is_pf":"'+$('#recherche_group_pf').val()+
             '", "annonce":"'+annonce+'", "diffusion":"'+diffusion+'", "id":"'+$('#id_item').val()+'", '+
             '"anyone_can_modify":"'+$('#anyone_can_modify:checked').val()+'", "tags":"'+protectString($('#item_tags').val())+'"}';
@@ -347,6 +353,13 @@ function AjouterItem(){
 function EditerItem(){
     var erreur = "";
     var  reg=new RegExp("[.|,|;|:|!|=|+|-|*|/|#|\"|'|&]");
+
+    //Complete url format
+    var url = $("#edit_url").val();
+    if (url.substring(0,7) != "http://") {
+    	url = "http://"+url;
+    }
+
     if ( document.getElementById("edit_label").value == "" ) erreur = "<?php echo $txt['error_label'];?>";
     else if ( document.getElementById("edit_pw1").value == "" ) erreur = "<?php echo $txt['error_pw'];?>";
     else if ( document.getElementById("edit_pw1").value != document.getElementById("edit_pw2").value ) erreur = "<?php echo $txt['error_confirm'];?>";
@@ -407,7 +420,7 @@ function EditerItem(){
           	//prepare data
             var data = '{"pw":"'+protectString($('#edit_pw1').val())+'", "label":"'+protectString($('#edit_label').val())+'", '+
             '"login":"'+protectString($('#edit_item_login').val())+'", "is_pf":"'+is_pf+'", '+
-            '"description":"'+description+'", "url":"'+protectString($('#edit_url').val())+'", "categorie":"'+$('#edit_categorie').val()+'", '+
+            '"description":"'+description+'", "url":"'+url+'", "categorie":"'+$('#edit_categorie').val()+'", '+
             '"restricted_to":"'+restriction+'", "restricted_to_roles":"'+restriction_role+'", "salt_key_set":"'+$('#personal_sk_set').val()+'", "is_pf":"'+$('#recherche_group_pf').val()+'", '+
             '"annonce":"'+annonce+'", "diffusion":"'+diffusion+'", "id":"'+$('#id_item').val()+'", '+
             '"anyone_can_modify":"'+$('#edit_anyone_can_modify:checked').val()+'", "tags":"'+protectString($('#edit_tags').val())+'"}';
@@ -508,12 +521,36 @@ function AjouterFolder(){
     	}else{
     		role_id = $("#new_rep_role").val();
     	}
-        var data = "type=new_rep"+
-                    "&title="+escape(document.getElementById('new_rep_titre').value)+
-                    "&complexite="+escape(document.getElementById('new_rep_complexite').value)+
-                    "&groupe="+document.getElementById("new_rep_groupe").value+
-                    "&role_id="+role_id;
-        httpRequest("sources/items.queries.php",data);
+
+        //prepare data
+        var data = '{"title":"'+protectString($('#new_rep_titre').val())+'", "complexity":"'+protectString($('#new_rep_complexite').val())+'", '+
+        '"parent_id":"'+protectString($('#new_rep_groupe').val())+'", "renewal_period":"0"}';
+
+        //send query
+        $.post(
+            "sources/folders.queries.php",
+            {
+                type    : "add_folder",
+                data      : aes_encrypt(data)
+            },
+            function(data){
+                //Check errors
+                if (data[0].error == "error_group_exist") {
+                    $("#div_add_group").dialog("open");
+                    $("#addgroup_show_error").html('<?php echo $txt['error_group_exist'];?>');
+                    $("#addgroup_show_error").show();
+                    LoadingPage();
+                }else if (data[0].error == "error_html_codes") {
+                    $("#div_add_group").dialog("open");
+                    $("#addgroup_show_error").html('<?php echo $txt['error_html_codes'];?>');
+                    $("#addgroup_show_error").show();
+                    LoadingPage();
+                }else {
+                    window.location.href = "index.php?page=items";
+                }
+            },
+            "json"
+        );
     }
 }
 
@@ -714,17 +751,6 @@ function AfficherDetailsItem(id, salt_key_required, expired_item, restricted){
     }
 }
 
-
-//G?rer l'affichage d'une recherche
-function AfficherRecherche(){
-    if ( document.getElementById('open_id').value != "" ){
-        ListerItems(document.getElementById('open_folder').value);
-        AfficherDetailsItem(document.getElementById('open_id').value);
-    }else if ( document.getElementById('open_folder').value != "" ){
-        ListerItems(document.getElementById('open_folder').value);
-    }else
-        ListerItems(<?php echo $first_group;?>);
-}
 
 /*
    * FUNCTION
@@ -966,7 +992,7 @@ function upload_attached_files_edit_mode() {
     var post_id = $('#selected_items').val();
     var user_id = $('#form_user_id').val();
 
-    $('#item_edit_files_upload').uploadifySettings('scriptData', {'post_id':post_id,'user_id':user_id,'type':'modification'});
+    $('#item_edit_files_upload').uploadifySettings('scriptData', {'post_id':post_id, 'user_id':user_id, 'type':'modification'});
 
     // Launch upload
     $("#item_edit_files_upload").uploadifyUpload();
@@ -987,7 +1013,14 @@ function upload_attached_files() {
     //Save fake id
     $("#random_id").val(post_id);
 
-    $('#item_files_upload').uploadifySettings('scriptData', {'post_id':post_id,'user_id':user_id,'type':'creation'});
+    $('#item_files_upload').uploadifySettings(
+    	'scriptData',
+    	{
+    		'post_id':post_id,
+    		'user_id':user_id,
+    		'type':'creation'
+    	}
+    );
 
     // Launch upload
     $("#item_files_upload").uploadifyUpload();
@@ -1048,16 +1081,7 @@ $(function() {
     $("#jstree").height(hauteur-185);
 
 	//Evaluate number of items to display - depends on screen height
-	$("#nb_items_to_display_once").val(Math.round($('#items_list')[0].scrollHeight/23));
-
-	//$('#items_list').tinyscrollbar();
-
-	//Launch items loading
-	var first_group = <?php echo $first_group;?>;
-	if ($("#hid_cat").val() != "") {
-		first_group = $("#hid_cat").val();
-	}
-	ListerItems(first_group,'', $("#query_next_start").val());
+	$("#nb_items_to_display_once").val(Math.round((hauteur-420)/23));	//Math.round($('#items_list')[0].scrollHeight/23)
 
     // Build buttons
     $("#custom_pw, #edit_custom_pw").buttonset();
@@ -1251,8 +1275,6 @@ $(function() {
     });
     //<=
 
-    //display first group items
-    //AfficherRecherche();
 
     //CALL TO UPLOADIFY FOR FILES UPLOAD in EDIT ITEM
     $("#item_edit_files_upload").uploadify({
@@ -1264,7 +1286,7 @@ $(function() {
         "folder"    : "upload",
         "sizeLimit" : 16777216,
         "queueID"   : "item_edit_file_queue",
-        "onComplete": function(event, queueID, fileObj, reponse, data){document.getElementById("item_edit_list_files").append(fileObj.name+"<br />");},
+        "onComplete": function(event, queueID, fileObj, reponse, data){$("#item_edit_list_files").append(fileObj.name+"<br />");},
         "buttonText": "<?php echo $txt['upload_button_text'];?>"
     });
 
@@ -1281,6 +1303,19 @@ $(function() {
         "onComplete": function(event, queueID, fileObj, reponse, data){document.getElementById("item_files_upload").append(fileObj.name+"<br />");},
         "buttonText": "<?php echo $txt['upload_button_text'];?>"
     });
+
+
+	//Launch items loading
+	var first_group = <?php echo $first_group;?>;
+	if ($("#hid_cat").val() != "") {
+		first_group = $("#hid_cat").val();
+	}
+	ListerItems(first_group,'', $("#query_next_start").val());
+
+	//Load item if needed
+	if ($("#open_id").val() != "") {
+		AfficherDetailsItem($("#open_id").val());
+	}
 });
 
 function htmlspecialchars_decode (string, quote_style) {
