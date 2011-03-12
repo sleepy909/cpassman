@@ -156,20 +156,28 @@ if (isset($_SESSION['settings']['timezone'])) {
     }
 
 
-/* CHECK PASSWORD VALIDITY */
-    if ( isset($_SESSION['last_pw_change']) ){
-        if ( $_SESSION['settings']['pw_life_duration'] == 0 ){
-            $nb_jours_avant_expiration_du_mdp = "infinite";
-            $_SESSION['validite_pw'] = true;
-        }else{
-            $nb_jours_avant_expiration_du_mdp = $_SESSION['settings']['pw_life_duration'] - round( (mktime(0,0,0,date('m'),date('d'),date('y'))-$_SESSION['last_pw_change'])/(24*60*60) );
-            if ( $nb_jours_avant_expiration_du_mdp <= 0 )
-                $_SESSION['validite_pw'] = false;
-            else
-                $_SESSION['validite_pw'] = true;
-        }
-    }else
-        $_SESSION['validite_pw'] = false;
+/* 
+* CHECK PASSWORD VALIDITY 
+* Don't take into consideration if LDAP in use
+*/
+	if (isset($_SESSION['settings']['ldap_mode']) && $_SESSION['settings']['ldap_mode'] == 1) {
+		$_SESSION['validite_pw'] = true;
+	}else{
+		if ( isset($_SESSION['last_pw_change']) ){
+			if ( $_SESSION['settings']['pw_life_duration'] == 0 ){
+				$nb_jours_avant_expiration_du_mdp = "infinite";
+				$_SESSION['validite_pw'] = true;
+			}else{
+				$nb_jours_avant_expiration_du_mdp = $_SESSION['settings']['pw_life_duration'] - round( (mktime(0,0,0,date('m'),date('d'),date('y'))-$_SESSION['last_pw_change'])/(24*60*60) );
+				if ( $nb_jours_avant_expiration_du_mdp <= 0 )
+					$_SESSION['validite_pw'] = false;
+				else
+					$_SESSION['validite_pw'] = true;
+			}
+		}else{
+			$_SESSION['validite_pw'] = false;
+		}
+	}
 
 
 /* CHECK IF SESSION EXISTS AND IF SESSION IS VALID */

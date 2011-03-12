@@ -448,19 +448,15 @@ echo '
             //Line for folder complexity
             echo'
 			<div style="margin-bottom:10px;">
-	            <label for="" class="form_label_120">'.$txt['complex_asked'].'</label>
-	            <span id="complex_attendue" style="color:#D04806;"></span>
-            </div><br />';
+	            <label for="" class="form_label_180">'.$txt['complex_asked'].'</label>
+	            <span id="complex_attendue" style="color:#D04806; margin-left:40px;"></span>
+            </div>';
             //Line for PW
             echo '
             <label class="label_cpm">'.$txt['used_pw'].' :
 				<span id="pw_wait" style="display:none;margin-left:10px;"><img src="includes/images/ajax-loader.gif" /></span>
 			</label>
-            <div style="width:250px; margin:0px auto 0px auto;">
-                <div id="mypassword_text" style="font-size: 10px;;"></div><input type="hidden" id="mypassword_complex" />
-                <div id="mypassword_bar" style="font-size: 1px; height: 2px; width: 0px; border: 1px solid white;"></div>
-            </div>
-            <input type="text" id="pw1" onkeyup="runPassword(this.value, \'mypassword\');" onchange="runPassword(this.value, \'mypassword\');" class="input_text text ui-widget-content ui-corner-all" />
+            <input type="text" id="pw1" class="input_text text ui-widget-content ui-corner-all" /><input type="hidden" id="mypassword_complex" />
 
             <div style="font-size:9px; text-align:center; width:100%;">
 	            <span id="custom_pw">
@@ -479,7 +475,10 @@ echo '
 				<a href="#" title="'.$txt['copy'].'" onclick="pwCopy(\'\')" class="cpm_button">
 					<img  src="includes/images/paste_plain.png"  />
 				</a>
-			</div>';
+			</div>
+			<div style="width:100%;">
+            	<div id="pw_strength" style="margin:5px 0 5px 120px;"></div>
+            </div>';
             //Line for PW CONFIRMATION
             echo '
             <label for="" class="label_cpm">'.$txt['index_change_pw_confirmation'].' :</label>
@@ -598,18 +597,12 @@ echo '
             </div>';
 
             echo '
-            <label for="" class="label_cpm">'.$txt['used_pw'].' :
-				<span id="edit_pw_wait" style="display:none;margin-left:10px;"><img src="includes/images/ajax-loader.gif" /></span>
-			</label>
-            <div style="width:250px; margin:0px auto 0px auto;">
-                <div id="edit_mypassword_text" style="font-size: 10px;;"></div><input type="hidden" id="edit_mypassword_complex" />
-                <div id="edit_mypassword_bar" style="font-size: 1px; height: 2px; width: 0px; border: 1px solid white;"></div>
-            </div>
-            <input type="text" id="edit_pw1" onkeyup="runPassword(this.value, \'edit_mypassword\');" class="input_text text ui-widget-content ui-corner-all" />
-            <script type="text/javascript">
-            	runPassword(document.getElementById(\'edit_pw1\').value, \'edit_mypassword\');
-            </script>
-
+			<div style="line-height:20px;">
+	            <label for="" class="label_cpm">'.$txt['used_pw'].' :
+					<span id="edit_pw_wait" style="display:none;margin-left:10px;"><img src="includes/images/ajax-loader.gif" /></span>
+				</label>
+	            <input type="text" id="edit_pw1" class="input_text text ui-widget-content ui-corner-all" /><input type="hidden" id="edit_mypassword_complex" />
+			</div>
             <div style="font-size:9px; text-align:center; width:100%;">
 	            <span id="edit_custom_pw">
 	                <input type="checkbox" id="edit_pw_numerics" /><label for="edit_pw_numerics">123</label>
@@ -628,6 +621,9 @@ echo '
 					<img  src="includes/images/paste_plain.png"  />
 				</a>
 			</div>
+			<div style="width:100%;">
+            	<div id="edit_pw_strength" style="margin:5px 0 5px 120px;"></div>
+            </div>
 
             <label for="" class="cpm_label">'.$txt['confirm'].' : </label>
             <input type="text" size="30" id="edit_pw2" class="input_text text ui-widget-content ui-corner-all" />
@@ -733,11 +729,11 @@ echo '
     <table>
         <tr>
             <td>'.$txt['new_label'].' : </td>
-            <td><input type="text" size="20" id="edit_rep_titre" /></td>
+            <td><input type="text" size="20" id="edit_folder_title" /></td>
         </tr>
         <tr>
             <td>'.$txt['group_select'].' : </td>
-            <td><select id="edit_rep_groupe">
+            <td><select id="edit_folder_folder">
             	<option value="0">-choisir-</option>'.
 				$select_visible_folders_options.
 				'
@@ -745,7 +741,7 @@ echo '
         </tr>
         <tr>
             <td>'.$txt['complex_asked'].' : </td>
-            <td><select id="edit_rep_complexite">
+            <td><select id="edit_folder_complexity">
                 <option value="">---</option>';
                 foreach($mdp_complexite as $complex)
                     echo '<option value="'.$complex[0].'">'.$complex[1].'</option>';

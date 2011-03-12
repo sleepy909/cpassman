@@ -30,6 +30,7 @@ if ($_SESSION['is_admin'] == 1 || $_SESSION['can_create_root_folder'] == 1) {
 }else{
     $folders_list = "";
 }
+$ident = "";
 foreach($tst as $t){
     if (in_array($t->id,$_SESSION['groupes_visibles']) && !in_array($t->id, $_SESSION['personal_visible_groups'])) {
         if ( $t->nlevel == 1 ) $ident = ">";

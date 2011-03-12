@@ -28,7 +28,8 @@ $htmlHeaders = '
         <script language="JavaScript" type="text/javascript" src="includes/js/jquery.tooltip.js"></script>
         <link rel="stylesheet" href="includes/css/jquery.tooltip.css" type="text/css" />
 
-        <script language="JavaScript" type="text/javascript" src="includes/js/pwd_strength.js"></script>';
+		<script language="JavaScript" type="text/javascript" src="includes/libraries/simplePassMeter/simplePassMeter.js"></script>
+        <link rel="stylesheet" href="includes/libraries/simplePassMeter/simplePassMeter.css" type="text/css" />';
 
 
 
@@ -72,7 +73,8 @@ if ( isset($_GET['page']) && $_GET['page'] == "manage_settings")
 else
 if ( isset($_GET['page']) && ( $_GET['page'] == "manage_users" ||$_GET['page'] == "manage_folders") )
     $htmlHeaders .= '
-		<script type="text/javascript" src="includes/libraries/crypt/aes.min.js"></script>';
+        <script src="includes/js/jquery.jeditable.js" type="text/javascript"></script>
+        <script type="text/javascript" src="includes/libraries/crypt/aes.min.js"></script>';
 
 else
 if ( isset($_GET['page']) && ($_GET['page'] == "find" || $_GET['page'] == "kb"))
@@ -330,7 +332,7 @@ if ( !isset($_GET['page']) ){
             modal: true,
             autoOpen: false,
             width: 300,
-            height: 190,
+            height: 250,
             title: "'.$txt['index_change_pw'].'",
             buttons: {
                 "'.$txt['index_change_pw_button'].'": function() {
@@ -438,6 +440,45 @@ if ( !isset($_GET['page']) ){
                 }
             }
         });
+
+		//Password meter
+		if ($("#new_pw").length) {
+			$("#new_pw").simplePassMeter({
+				"requirements": {},
+			  	"container": "#pw_strength",
+			  	"defaultText" : "'.$txt['index_pw_level_txt'].'",
+				"ratings": [
+				{"minScore": 0,
+					"className": "meterFail",
+					"text": "'.$txt['complex_level0'].'"
+				},
+				{"minScore": 25,
+					"className": "meterWarn",
+					"text": "'.$txt['complex_level1'].'"
+				},
+				{"minScore": 50,
+					"className": "meterWarn",
+					"text": "'.$txt['complex_level2'].'"
+				},
+				{"minScore": 60,
+					"className": "meterGood",
+					"text": "'.$txt['complex_level3'].'"
+				},
+				{"minScore": 70,
+					"className": "meterGood",
+					"text": "'.$txt['complex_level4'].'"
+				},
+				{"minScore": 80,
+					"className": "meterExcel",
+					"text": "'.$txt['complex_level5'].'"
+				},
+				{"minScore": 90,
+					"className": "meterExcel",
+					"text": "'.$txt['complex_level6'].'"
+				}
+				]
+			});
+		}
     })
 
     //Change the Users password when he asks for
@@ -506,6 +547,7 @@ if ( !isset($_GET['page']) ){
 		var data = "type=store_personal_saltkey&sk="+encodeURIComponent($("#input_personal_saltkey").val());
         httpRequest("sources/main.queries.php",data);
 	}
+
 	';
 }
 

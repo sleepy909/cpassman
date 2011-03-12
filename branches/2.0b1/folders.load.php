@@ -93,11 +93,11 @@ $(function() {
 					function(data){
 						//Check errors
 						if (data[0].error == "error_group_exist") {
-							$("#edit_folder_show_error").html('<?php echo $txt['error_group_exist'];?>');
+							$("#edit_folder_show_error").html("<?php echo $txt['error_group_exist'];?>");
 							$("#edit_folder_show_error").show();
 							LoadingPage();
 						}else if (data[0].error == "error_html_codes") {
-							$("#edit_folder_show_error").html('<?php echo $txt['error_html_codes'];?>');
+							$("#edit_folder_show_error").html("<?php echo $txt['error_html_codes'];?>");
 							$("#edit_folder_show_error").show();
 							LoadingPage();
 						}else{
@@ -173,12 +173,12 @@ function add_new_folder(){
 					//Check errors
 					if (data[0].error == "error_group_exist") {
 						$("#div_add_group").dialog("open");
-						$("#addgroup_show_error").html('<?php echo $txt['error_group_exist'];?>');
+						$("#addgroup_show_error").html("<?php echo $txt['error_group_exist'];?>");
 						$("#addgroup_show_error").show();
 						LoadingPage();
 					}else if (data[0].error == "error_html_codes") {
 						$("#div_add_group").dialog("open");
-						$("#addgroup_show_error").html('<?php echo $txt['error_html_codes'];?>');
+						$("#addgroup_show_error").html("<?php echo $txt['error_html_codes'];?>");
 						$("#addgroup_show_error").show();
 						LoadingPage();
 					}else{
