@@ -221,7 +221,7 @@ require_once("load.php");
 
     /* MAIN PAGE */
     echo '
-    <form action="" name="temp_form" method="post" class="niceform">
+    <form name="temp_form" method="post">
         <input type="text" style="display:none;" id="temps_restant" value="', isset($_SESSION['fin_session']) ? $_SESSION['fin_session'] : '', '" />
         <input type="hidden" name="language" id="language" value="" />
     </form>';

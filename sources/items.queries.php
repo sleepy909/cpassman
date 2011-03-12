@@ -378,9 +378,9 @@ if ( isset($_POST['type']) ){
                 foreach($rows as $reccord){
                     $reason = explode(':',$reccord['raison']);
                     if ( empty($history) )
-                        $history = date("d/m/Y H:i:s",$reccord['date'])." - ". $reccord['login'] ." - ".$txt[$reccord['action']]." - ".(!empty($reccord['raison']) ? (count($reason) > 1 ? $txt[trim($reason[0])].' : '.$reason[1] : $txt[trim($reason[0])] ):'');
+                        $history = date($_SESSION['settings']['date_format']." ".$_SESSION['settings']['time_format'], $reccord['date'])." - ". $reccord['login'] ." - ".$txt[$reccord['action']]." - ".(!empty($reccord['raison']) ? (count($reason) > 1 ? $txt[trim($reason[0])].' : '.$reason[1] : $txt[trim($reason[0])] ):'');
                     else
-                        $history .= "<br />".date("d/m/Y H:i:s",$reccord['date'])." - ". $reccord['login'] ." - ".$txt[$reccord['action']]." - ".(!empty($reccord['raison']) ? (count($reason) > 1 ? $txt[trim($reason[0])].' : '.$reason[1] : $txt[trim($reason[0])] ):'');
+                        $history .= "<br />".date($_SESSION['settings']['date_format']." ".$_SESSION['settings']['time_format'], $reccord['date'])." - ". $reccord['login'] ." - ".$txt[$reccord['action']]." - ".(!empty($reccord['raison']) ? (count($reason) > 1 ? $txt[trim($reason[0])].' : '.$reason[1] : $txt[trim($reason[0])] ):'');
                 }
 
                 //Get list of restriction
@@ -515,10 +515,10 @@ if ( isset($_POST['type']) ){
 	        		)
         		);
 
-        		$return_values = '{"status" : "ok"}, {"new_id" : "'.$new_id.'"}';
+        		$return_values = '[{"status" : "ok"}, {"new_id" : "'.$new_id.'"}]';
         	}else{
         		//no item
-        		$return_values = '{"error" : "no_item"}, {"error_text" : "No item ID"}';
+        		$return_values = '[{"error" : "no_item"}, {"error_text" : "No item ID"}]';
         	}
 
        		//return data
@@ -619,9 +619,9 @@ if ( isset($_POST['type']) ){
                 foreach ( $rows as $reccord ){
                     $reason = explode(':',$reccord['raison']);
                     if ( empty($historique) )
-                        $historique = date("d/m/Y H:i:s",$reccord['date'])." - ". $reccord['login'] ." - ".$txt[$reccord['action']]." - ".(!empty($reccord['raison']) ? (count($reason) > 1 ? $txt[trim($reason[0])].' : '.$reason[1] : $txt[trim($reason[0])] ):'');
+                        $historique = date($_SESSION['settings']['date_format']." ".$_SESSION['settings']['time_format'], $reccord['date'])." - ". $reccord['login'] ." - ".$txt[$reccord['action']]." - ".(!empty($reccord['raison']) ? (count($reason) > 1 ? $txt[trim($reason[0])].' : '.$reason[1] : $txt[trim($reason[0])] ):'');
                     else
-                        $historique .= "<br />".date("d/m/Y H:i:s",$reccord['date'])." - ". $reccord['login']  ." - ".$txt[$reccord['action']]." - ".(!empty($reccord['raison']) ? (count($reason) > 1 ? $txt[trim($reason[0])].' : '.$reason[1] : $txt[trim($reason[0])] ):'');
+                        $historique .= "<br />".date($_SESSION['settings']['date_format']." ".$_SESSION['settings']['time_format'], $reccord['date'])." - ". $reccord['login']  ." - ".$txt[$reccord['action']]." - ".(!empty($reccord['raison']) ? (count($reason) > 1 ? $txt[trim($reason[0])].' : '.$reason[1] : $txt[trim($reason[0])] ):'');
                 }
 
                 //Get restriction list for users
@@ -788,7 +788,7 @@ if ( isset($_POST['type']) ){
             echo 'document.getElementById(\''.$myElem.'\').value = "'.addslashes($key).'";';
 
             if ( !isset($_POST['fixed_elem']) )
-                echo 'runPassword(document.getElementById(\''.$myElem.'\').value, \''.$_POST['elem'].'mypassword\');';
+            	echo '$("#'.$myElem.'").focus();';
 
             echo '$("#'.$_POST['elem'].'pw_wait").hide();';
         break;
@@ -901,31 +901,36 @@ if ( isset($_POST['type']) ){
        	* Update a Group
        	*/
         case "update_rep":
-            //Check if title doesn't contains html codes
-            if (preg_match_all("|<[^>]+>(.*)</[^>]+>|U",$_POST['title'],$out)) $html_codes = true;
-            else $html_codes = false;
+        	//decrypt and retreive data in JSON format
+        	require_once '../includes/libraries/crypt/aes.class.php';     // AES PHP implementation
+        	require_once '../includes/libraries/crypt/aesctr.class.php';  // AES Counter Mode implementation
+        	$data_received = json_decode((AesCtr::decrypt($_POST['data'], $_SESSION['cle_session'], 256)), true);
 
-            if ( $html_codes == true ) {
-                echo '$("#div_editer_rep").dialog("open");';
-                echo 'document.getElementById("edit_rep_show_error").innerHTML = "'.$txt['error_html_codes'].'";';
-                echo '$("#edit_rep_show_error").show();';
+        	//Prepare variables
+        	$title = htmlspecialchars_decode($data_received['title']);
+
+            //Check if title doesn't contains html codes
+            if (preg_match_all("|<[^>]+>(.*)</[^>]+>|U", $title, $out)) {
+            	//send data
+            	echo '[{"error" : "'.$txt['error_html_codes'].'"}]';
             }else{
+
                 //update Folders table
                 $db->query_update(
                     "nested_tree",
                     array(
-                        'title' => mysql_real_escape_string(stripslashes(($_POST['title'])))
+                        'title' => $title
                     ),
-                    'id='.$_POST['groupe']
+                    'id='.$data_received['folder']
                 );
 
                 //update complixity value
                 $db->query_update(
                     "misc",
                     array(
-                        'valeur' => $_POST['complexite']
+                        'valeur' => $data_received['complexity']
                     ),
-                    'intitule = "'.$_POST['groupe'].'" AND type = "complex"'
+                    'intitule = "'.$data_received['folder'].'" AND type = "complex"'
                 );
 
                 //rebuild fuild tree folder
@@ -933,8 +938,8 @@ if ( isset($_POST['type']) ){
                 $tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
                 $tree->rebuild();
 
-                //reload page
-                echo 'window.location.href = "index.php?page=items";';
+                //send data
+                echo '[{"error" : ""}]';
             }
         break;
 

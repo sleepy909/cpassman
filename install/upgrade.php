@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once("../includes/include.php");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -7,7 +8,7 @@ session_start();
         <title>cPassMan Installation</title>
         <link rel="stylesheet" href="install.css" type="text/css" />
         <script type="text/javascript" src="../includes/js/functions.js"></script>
-        <script type="text/javascript" src="../includes/jquery-ui/js/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript" src="../includes/jquery-ui/js/jquery-<?php echo $k['jquery-version'];?>.min.js"></script>
         <script type="text/javascript" src="gauge/gauge.js"></script>
 
         <script type="text/javascript">

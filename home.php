@@ -30,14 +30,11 @@ echo '
                 echo '
                 <div style="margin:auto;padding:4px;width:300px;"  class="ui-state-focus ui-corner-all">
                 	<h3>'.$txt['index_change_pw'].'</h3>
-                    <div style="height:20px;text-align:center;margin:2px;" id="change_pwd_error" class=""></div>
+                    <div style="height:20px;text-align:center;margin:2px;display:none;" id="change_pwd_error" class=""></div>
+                    <div id="pw_strength" style="margin:0 0 10px 30px;"></div>
                     <table>
-                        <tr><td>'.$txt['index_new_pw'].' :</td><td><input type="password" size="10" name="new_pw" id="new_pw" onkeyup="runPassword(this.value, \'mypassword\', \''.$_SESSION['user_language'].'\');" />
-                            <div style="width: 100px; display:inline;">
-                                <div id="mypassword_text" style="font-size: 10px;"></div>
-                                <div id="mypassword_bar" style="font-size: 1px; height: 2px; width: 0px; border: 1px solid white;"></div>
-                            </div>
-                            </td>
+                        <tr>
+                        	<td>'.$txt['index_new_pw'].' :</td><td><input type="password" size="10" name="new_pw" id="new_pw"/></td>
                         </tr>
                         <tr><td>'.$txt['index_change_pw_confirmation'].' :</td><td><input type="password" size="10" name="new_pw2" id="new_pw2" /></td></tr>
                         <tr><td colspan="2"><input type="button" onClick="ChangerMdp(\''.$_SESSION['last_pw'].'\')" value="'.$txt['index_change_pw_button'].'" /></td></tr>
@@ -120,15 +117,11 @@ echo '
                         <div style="height:20px;text-align:center;margin:2px;" id="change_pwd_error" class=""></div>
 
                         <label for="new_pw" class="form_label">'.$txt['index_new_pw'].' :</label>
-                        <input type="password" size="15" name="new_pw" id="new_pw" onkeyup="runPassword(this.value, \'mypassword\');" />
+                        <input type="password" size="15" name="new_pw" id="new_pw" />
                         <label for="new_pw2" class="form_label">'.$txt['index_change_pw_confirmation'].' :</label>
                         <input type="password" size="15" name="new_pw2" id="new_pw2" />
 
-                        '.$txt['index_pw_level_txt'].'&nbsp;
-                        <div style="width: 100px; display:inline;float:right;" id="div_tmp">
-                            <div id="mypassword_text" style="font-size: 10px;"></div>
-                            <div id="mypassword_bar" style="font-size: 1px; height: 2px; width: 0px; border: 1px solid white;"></div>
-                        </div>
+                        <div id="pw_strength" style="margin:10px 0 0 50px;"></div>
 
                     </div>
                 </div>';

@@ -173,6 +173,11 @@ if ( !empty($_POST['type']) ){
 	            		),
 	            		"id=".$new_user_id
             		);
+
+            		//rebuild tree
+            		require_once('NestedTree.class.php');
+            		$tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
+            		$tree->rebuild();
             	}
 
             	//Send mail to new user

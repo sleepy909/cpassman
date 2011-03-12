@@ -537,12 +537,12 @@ function AjouterFolder(){
                 //Check errors
                 if (data[0].error == "error_group_exist") {
                     $("#div_add_group").dialog("open");
-                    $("#addgroup_show_error").html('<?php echo $txt['error_group_exist'];?>');
+                    $("#addgroup_show_error").html("<?php echo $txt['error_group_exist'];?>");
                     $("#addgroup_show_error").show();
                     LoadingPage();
                 }else if (data[0].error == "error_html_codes") {
                     $("#div_add_group").dialog("open");
-                    $("#addgroup_show_error").html('<?php echo $txt['error_html_codes'];?>');
+                    $("#addgroup_show_error").html("<?php echo $txt['error_html_codes'];?>");
                     $("#addgroup_show_error").show();
                     LoadingPage();
                 }else {
@@ -554,18 +554,6 @@ function AjouterFolder(){
     }
 }
 
-function EditerFolder(){
-    if ( document.getElementById("edit_rep_titre").value == "" ) alert("<?php echo $txt['error_group_label'];?>");
-    else if ( document.getElementById("edit_rep_groupe").value == "0" ) alert("<?php echo $txt['error_group'];?>");
-    else if ( document.getElementById("edit_rep_complexite").value == "" ) alert("<?php echo $txt['error_group_complex'];?>");
-    else{
-        var data = "type=update_rep"+
-                    "&title="+escape(document.getElementById('edit_rep_titre').value)+
-                    "&complexite="+escape(document.getElementById('edit_rep_complexite').value)+
-                    "&groupe="+document.getElementById("edit_rep_groupe").value;
-        httpRequest("sources/items.queries.php",data);
-    }
-}
 
 function SupprimerFolder(){
     if ( document.getElementById("delete_rep_groupe").value == "0" ) alert("<?php echo $txt['error_group'];?>");
@@ -666,7 +654,7 @@ function AfficherDetailsItem(id, salt_key_required, expired_item, restricted){
                     $("#hid_restricted_to_roles").val(data.id_restricted_to_roles);
                     $("#id_tags").html(data.tags).html();
                     $("#hid_tags").val($("#id_tags").html());
-                    $("#hid_anyone_can_modify").html(data.anyone_can_modify);
+                    $("#hid_anyone_can_modify").val(data.anyone_can_modify);
                     $("#id_categorie").val(data.folder);
                     $("#id_item").val(data.id);
                     $("#id_files").html(data.files_id).html();
@@ -862,7 +850,7 @@ function open_edit_item_div(restricted_to_roles) {
 	}
 
 	//Get pw complexity level
-	runPassword(document.getElementById('edit_pw1').value, 'edit_mypassword');
+	//runPassword(document.getElementById('edit_pw1').value, 'edit_mypassword');
 
 	//Get complexity level for this folder
 	RecupComplexite(document.getElementById('hid_cat').value,1);
@@ -873,7 +861,7 @@ function open_edit_item_div(restricted_to_roles) {
 		//add optgroup
 		$("#edit_restricted_to_list").append("<option value=''>optgroup</option>");
 		var optgroup = $('<optgroup/>');
-        optgroup.attr('label', '<?php echo $txt['users'];?>');
+        optgroup.attr('label', "<?php echo $txt['users'];?>");
         $("#edit_restricted_to_list option:last").wrapAll(optgroup);
 	}
 	var liste = $('#input_liste_utilisateurs').val().split(';');
@@ -894,7 +882,7 @@ function open_edit_item_div(restricted_to_roles) {
 		//add optgroup
 		$("#edit_restricted_to_list").append("<option value=''>optgroup</option>");
 		var optgroup = $('<optgroup/>');
-        optgroup.attr('label', '<?php echo $txt['roles'];?>');
+        optgroup.attr('label', "<?php echo $txt['roles'];?>");
         $("#edit_restricted_to_list option:last").wrapAll(optgroup);
 
 		var liste = $('#input_list_roles').val().split(';');
@@ -933,6 +921,9 @@ function open_edit_item_div(restricted_to_roles) {
         noneSelectedText: "<?php echo $txt['none_selected_text'];?>"
     });
 
+    //refresh pw complecity
+    $("#edit_pw1").focus();
+
     //open dialog
     $("#div_formulaire_edition_item").dialog("open");
 }
@@ -957,17 +948,16 @@ function open_copy_item_div() {
 			item_id : $('#id_item').val()
 		},
 		function(data){
-			data = $.parseJSON(data);
 			//check if format error
-            if (data.error == "no_item") {
+            if (data[0].error == "no_item") {
                 $("#div_loading").hide();
-                document.getElementById('edit_show_error').innerHTML = data.error_text;
+                document.getElementById('edit_show_error').innerHTML = data[1].error_text;
                 $("#edit_show_error").show();
             }
 
 			//if OK
-			if (data.status == "ok") {
-				window.location.href = "index.php?page=items&group="+$('#categorie').val()+"&id="+data.new_id;
+			if (data[0].status == "ok") {
+				window.location.href = "index.php?page=items&group="+$('#categorie').val()+"&id="+data[1].new_id;
 			}
 			LoadingPage();
 		},
@@ -1146,12 +1136,45 @@ $(function() {
         modal: true,
         autoOpen: false,
         width: 400,
-        height: 200,
+        height: 250,
         title: "<?php echo $txt['item_menu_edi_rep'];?>",
         buttons: {
             "<?php echo $txt['save_button'];?>": function() {
-                EditerFolder();
-                $(this).dialog('close');
+                //Do some checks
+                $("#edit_rep_show_error").hide();
+                if ($("#edit_rep_titre").val() == "") {
+                	$("#edit_rep_show_error").html("<?php echo $txt['error_group_label'];?>");
+                	$("#edit_rep_show_error").show();
+                }else if ($("#edit_rep_groupe").val() == "0") {
+                	$("#edit_rep_show_error").html("<?php echo $txt['error_group'];?>");
+                	$("#edit_rep_show_error").show();
+                }else if ($("#edit_folder_complexity").val() == "") {
+                	$("#edit_rep_show_error").html("<?php echo $txt['error_group_complex'];?>");
+                	$("#edit_rep_show_error").show();
+                }else{
+                	//prepare data
+					var data = '{"title":"'+$('#edit_folder_title').val().replace(/"/g,'&quot;') + '", "complexity":"'+$('#edit_folder_complexity').val()+'", '+
+					'"folder":"'+$('#edit_folder_folder').val()+'"}';
+
+                	//Send query
+					$.post(
+						"sources/items.queries.php",
+						{
+							type    : "update_rep",
+							data      : aes_encrypt(data)
+						},
+						function(data){
+							//check if format error
+							if (data[0].error == "") {
+								window.location.href = "index.php?page=items";
+							}else{
+				                document.getElementById('edit_rep_show_error').innerHTML = data[0].error;
+				                $("#edit_rep_show_error").show();
+				            }
+						},
+						"json"
+					);
+			    }
             },
             "<?php echo $txt['cancel_button'];?>": function() {
                 $(this).dialog('close');
@@ -1316,6 +1339,91 @@ $(function() {
 	if ($("#open_id").val() != "") {
 		AfficherDetailsItem($("#open_id").val());
 	}
+
+    //Password meter for item creation
+	$("#pw1").simplePassMeter({
+		"requirements": {},
+	  	"container": "#pw_strength",
+	  	"defaultText" : "<?php echo $txt['index_pw_level_txt'];?>",
+		"ratings": [
+			{"minScore": 0,
+				"className": "meterFail",
+				"text": "<?php echo $txt['complex_level0'];?>"
+			},
+			{"minScore": 25,
+				"className": "meterWarn",
+				"text": "<?php echo $txt['complex_level1'];?>"
+			},
+			{"minScore": 50,
+				"className": "meterWarn",
+				"text": "<?php echo $txt['complex_level2'];?>"
+			},
+			{"minScore": 60,
+				"className": "meterGood",
+				"text": "<?php echo $txt['complex_level3'];?>"
+			},
+			{"minScore": 70,
+				"className": "meterGood",
+				"text": "<?php echo $txt['complex_level4'];?>"
+			},
+			{"minScore": 80,
+				"className": "meterExcel",
+				"text": "<?php echo $txt['complex_level5'];?>"
+			},
+			{"minScore": 90,
+				"className": "meterExcel",
+				"text": "<?php echo $txt['complex_level6'];?>"
+			}
+		]
+	});
+	$('#pw1').bind({
+		"score.simplePassMeter" : function(jQEvent, score) {
+			$("#mypassword_complex").val(score);
+		}
+	});
+
+	//Password meter for item update
+	$("#edit_pw1").simplePassMeter({
+		"requirements": {},
+	  	"container": "#edit_pw_strength",
+	  	"defaultText" : "<?php echo $txt['index_pw_level_txt'];?>",
+		"ratings": [
+			{"minScore": 0,
+				"className": "meterFail",
+				"text": "<?php echo $txt['complex_level0'];?>"
+			},
+			{"minScore": 25,
+				"className": "meterWarn",
+				"text": "<?php echo $txt['complex_level1'];?>"
+			},
+			{"minScore": 50,
+				"className": "meterWarn",
+				"text": "<?php echo $txt['complex_level2'];?>"
+			},
+			{"minScore": 60,
+				"className": "meterGood",
+				"text": "<?php echo $txt['complex_level3'];?>"
+			},
+			{"minScore": 70,
+				"className": "meterGood",
+				"text": "<?php echo $txt['complex_level4'];?>"
+			},
+			{"minScore": 80,
+				"className": "meterExcel",
+				"text": "<?php echo $txt['complex_level5'];?>"
+			},
+			{"minScore": 90,
+				"className": "meterExcel",
+				"text": "<?php echo $txt['complex_level6'];?>"
+			}
+		]
+	});
+	$('#edit_pw1').bind({
+		"score.simplePassMeter" : function(jQEvent, score) {
+			$("#edit_mypassword_complex").val(score);
+		}
+	});
+
 });
 
 function htmlspecialchars_decode (string, quote_style) {
@@ -1371,5 +1479,7 @@ $('#items_list').scroll(function() {
 	}
 
 });
+
+
 
 </script>
