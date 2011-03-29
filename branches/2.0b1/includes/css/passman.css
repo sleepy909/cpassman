@@ -181,10 +181,10 @@ font-family: serif;
 ul{
 list-style-type:none;
 }
-
+/*
 li{
 cursor: pointer;
-}
+}*/
 
 .error{
     margin-top: 50px;

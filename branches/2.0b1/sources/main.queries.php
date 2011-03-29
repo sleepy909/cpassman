@@ -125,7 +125,7 @@ switch($_POST['type'])
     		$dbg_ldap = fopen("../files/ldap.debug.txt","w");	//create temp file
     	}
 
-        if ( isset($_SESSION['settings']['ldap_mode']) && $_SESSION['settings']['ldap_mode'] == 1 ){
+        if ( isset($_SESSION['settings']['ldap_mode']) && $_SESSION['settings']['ldap_mode'] == 1 && $username != "admin" ){
         	if ($debug_ldap == 1) {
         		fputs($dbg_ldap, "Get all ldap params : \n".
 	        		'base_dn : ' . $_SESSION['settings']['ldap_domain_dn'] . "\n".
@@ -178,9 +178,17 @@ switch($_POST['type'])
                 $data['pw'] = $password;
             }
 
-            if ( (isset($_SESSION['settings']['ldap_mode']) && $_SESSION['settings']['ldap_mode'] == 0 && ($password) == $data['pw'] && $data['disabled'] == 0)
-                 ||
-                 (isset($_SESSION['settings']['ldap_mode']) && $_SESSION['settings']['ldap_mode'] == 1 && $ldap_connection == true && $data['disabled'] == 0)
+        	// Can connect if
+        	// 1- no LDAP mode + user enabled + pw ok
+        	// 2- LDAP mode + user enabled + ldap connection ok + user is not admin
+        	// 3-  LDAP mode + user enabled + pw ok + usre is admin
+        	// This in order to allow admin by default to connect even if LDAP is activated
+            if (
+            	(isset($_SESSION['settings']['ldap_mode']) && $_SESSION['settings']['ldap_mode'] == 0 && $password == $data['pw'] && $data['disabled'] == 0)
+             	||
+             	(isset($_SESSION['settings']['ldap_mode']) && $_SESSION['settings']['ldap_mode'] == 1 && $ldap_connection == true && $data['disabled'] == 0 && $username != "admin")
+            	||
+            	(isset($_SESSION['settings']['ldap_mode']) && $_SESSION['settings']['ldap_mode'] == 1 && $username == "admin" && $password == $data['pw'] && $data['disabled'] == 0)
             ) {
                 $_SESSION['autoriser'] = true;
 

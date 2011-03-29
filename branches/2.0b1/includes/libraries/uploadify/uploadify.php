@@ -1,5 +1,4 @@
 <?php
-session_start();
 /*
 Uploadify v2.1.4
 Release Date: November 8, 2010
@@ -43,7 +42,7 @@ THE SOFTWARE.
 function findexts ($filename)
 {
 	$filename = strtolower($filename) ;
-	$exts = split("[/\\.]", $filename) ;
+	$exts = preg_split("/\./", $filename) ;
 	$n = count($exts)-1;
 	$exts = $exts[$n];
 	return $exts;
@@ -53,15 +52,15 @@ if (!empty($_FILES)) {
 	//Case where upload is an attached file for one item
 	if ( !isset($_POST['type_upload']) || $_POST['type_upload'] != "import_items_from_file" ){
 		// Get some variables
-		$file_random_id = md5($_FILES['Filedata']['name']);
+		$file_random_id = md5($_FILES['Filedata']['name'].mktime(date('h'), date('i'), date('s'), date('m'), date('d'), date('Y')));
 		$tempFile = $_FILES['Filedata']['tmp_name'];
-		$targetPath = $_SERVER['DOCUMENT_ROOT'] . $_REQUEST['folder'] . '/';
+		$targetPath = $_SERVER['DOCUMENT_ROOT'].$_REQUEST['folder'] . '/';
 		$targetFile =  str_replace('//','/',$targetPath) . $file_random_id;
 
-		include($_SESSION['settings']['cpassman_url'].'/includes/settings.php');
+		include('../../settings.php');
 
 		//Connect to mysql server
-		include($_SESSION['settings']['cpassman_url']."/sources/class.database.php");
+		include('../../../sources/class.database.php');
 		$db = new Database($server, $user, $pass, $database, $pre);
 		$db->connect();
 
@@ -94,12 +93,12 @@ if (!empty($_FILES)) {
 	}else{
 		// Get some variables
 		$tempFile = $_FILES['Filedata']['tmp_name'];
-		$targetPath = $_SERVER['DOCUMENT_ROOT'] . $_REQUEST['folder'] . '/';
+		$targetPath = $_SERVER['DOCUMENT_ROOT'].$_REQUEST['folder'] . '/';
 		$targetFile =  str_replace('//','/',$targetPath) . $_FILES['Filedata']['name'];
 	}
 
 	//move
-	move_uploaded_file($tempFile,$targetFile);
+	move_uploaded_file($tempFile, $targetFile);
 	echo "1";
 
 }

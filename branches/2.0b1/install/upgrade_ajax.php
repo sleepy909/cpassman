@@ -587,12 +587,12 @@ global \$server, \$user, \$pass, \$database, \$pre, \$db;
 @define('SALT', '". $_SESSION['encrypt_key'] ."'); //Define your encryption key => NeverChange it once it has been used !!!!!
 
 ### EMAIL PROPERTIES ###
-\$smtp_server = \"". $_SESSION['smtp_server'] ."\";
-\$smtp_auth = ". $_SESSION['smtp_auth'] ."; //false or true
-\$smtp_auth_username = \"". $_SESSION['smtp_auth_username'] ."\";
-\$smtp_auth_password = \"". $_SESSION['smtp_auth_password'] ."\";
-\$email_from = \"". $_SESSION['email_from'] ."\";
-\$email_from_name = \"". $_SESSION['email_from_name'] ."\";
+\$smtp_server = '".$_SESSION['smtp_server']."';
+\$smtp_auth = ".$_SESSION['smtp_auth']."; //false or true
+\$smtp_auth_username = '".str_replace("'", "\'", $_SESSION['smtp_auth_username'])."';
+\$smtp_auth_password = '".str_replace("'", "\'", $_SESSION['smtp_auth_password'])."';
+\$email_from = '".$_SESSION['email_from']."';
+\$email_from_name = '".$_SESSION['email_from_name']."';
 
 ### DATABASE connexion parameters ###
 \$server = \"". $_SESSION['db_host'] ."\";

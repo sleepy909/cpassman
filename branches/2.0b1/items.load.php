@@ -170,18 +170,19 @@ function ListerItems(groupe_id, restricted, start){
 		        		}
 
 		                $(".item_draggable").draggable({
-		                	handle: '.file',
-		                	cursorAt: { left:0 },
+		                	handle: '.grippy',
+		                	cursor: "move",
+							opacity: 0.4,
 		                	appendTo: 'body',
-		                	greedy: true,
-		                	helper: 'clone',
-		                	opacity: 0.3,
 		                	stop: function(event, ui){
 		                		$( this ).removeClass( "ui-state-highlight" );
 		                	},
 		                	start: function(event, ui){
 		                		$( this ).addClass( "ui-state-highlight" );
-		                	}
+		                	},
+		                	helper: function( event ) {
+								return $( "<div class='ui-widget-header'>"+"<?php echo $txt['drag_drop_helper'];?>"+"</div>" );
+							}
 						});
 						$(".folder").droppable({
 							hoverClass: "ui-state-active",
@@ -250,7 +251,7 @@ function AjouterItem(){
 
     //Complete url format
     var url = $("#url").val();
-    if (url.substring(0,7) != "http://") {
+    if (url.substring(0,7) != "http://" && url != "") {
     	url = "http://"+url;
     }
 
@@ -980,7 +981,7 @@ function clear_html_tags(){
 function upload_attached_files_edit_mode() {
     // Pass dynamic ITEM id
     var post_id = $('#selected_items').val();
-    var user_id = $('#form_user_id').val();
+    var user_id = $('#form_user_id').val();//alert(user_id+' - '+post_id);
 
     $('#item_edit_files_upload').uploadifySettings('scriptData', {'post_id':post_id, 'user_id':user_id, 'type':'modification'});
 
@@ -1306,7 +1307,7 @@ $(function() {
         "cancelImg" : "includes/libraries/uploadify/cancel.png",
         "auto"      : false,
         "multi"     : true,
-        "folder"    : "upload",
+        "folder"    : "<?php echo dirname($_SERVER['REQUEST_URI']);?>/upload",
         "sizeLimit" : 16777216,
         "queueID"   : "item_edit_file_queue",
         "onComplete": function(event, queueID, fileObj, reponse, data){$("#item_edit_list_files").append(fileObj.name+"<br />");},
@@ -1320,7 +1321,7 @@ $(function() {
         "cancelImg" : "includes/libraries/uploadify/cancel.png",
         "auto"      : false,
         "multi"     : true,
-        "folder"    : "upload",
+        "folder"    : "<?php echo dirname($_SERVER['REQUEST_URI']);?>/upload",
         "sizeLimit" : 16777216,
         "queueID"   : "item_file_queue",
         "onComplete": function(event, queueID, fileObj, reponse, data){document.getElementById("item_files_upload").append(fileObj.name+"<br />");},
