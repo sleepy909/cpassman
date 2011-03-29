@@ -111,3 +111,11 @@ button{
 	font-family:arial;
 	background-color: #C7D6E5;
 }
+
+.grippy{
+	cursor:move;
+}
+
+.file, .cursor, .folder{
+	cursor:pointer;
+}

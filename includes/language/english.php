@@ -5,7 +5,7 @@ $cpassman_url = '';
 }else{
 $cpassman_url = $_SESSION['settings']['cpassman_url'];
 }
-
+$txt['drag_drop_helper'] = "Drag and drop item";
 $txt['timezone_selection'] = "Timezone to use";
 $txt['ldap_extension_not_loaded'] = "LDAP extension is not loaded. You can't activate LDAP functionality!";
 $txt['account_is_locked'] = "This is account is locked";

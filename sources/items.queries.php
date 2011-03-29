@@ -1158,7 +1158,16 @@ if ( isset($_POST['type']) ){
                         }else{
                         	$html .= 'item';
                         }
-                    	$html .= '" id="'.$reccord['id'].'">'.$expiration_flag.''.$perso.'&nbsp;<a id="fileclass'.$reccord['id'].'" class="file" onclick="'.$action.'">'.stripslashes($reccord['label']);
+
+                    	$html .= '" id="'.$reccord['id'].'">';
+
+                    	if ($can_move == 1) {
+                    		$html .= '<img src="includes/images/grippy.png" style="margin-right:5px;cursor:hand;" alt="" class="grippy"  />';
+                    	}else{
+                    		$html .= '<span style="margin-left:11px;"></span>';
+                    	}
+
+						$html .= $expiration_flag.''.$perso.'&nbsp;<a id="fileclass'.$reccord['id'].'" class="file" onclick="'.$action.'">'.stripslashes($reccord['label']);
                         if (!empty($reccord['description']) )
                             $html .= '&nbsp;<font size=2px>['.strip_tags(stripslashes(substr(CleanString($reccord['description']),0,30))).']</font>';
                         $html .= '</a>';
@@ -1194,7 +1203,7 @@ if ( isset($_POST['type']) ){
                     	$html .= '<span style="float:right;margin:2px 10px 0px 0px;">'.$item_login.'&nbsp;'.$item_pw;
 
                     	// Prepare make Favorite small icon
-                    	$html .= '&nbsp;<span id="quick_icon_fav_'.$reccord['id'].'" title="Manage Favorite">';
+                    	$html .= '&nbsp;<span id="quick_icon_fav_'.$reccord['id'].'" title="Manage Favorite" class="cursor">';
                     	if (in_array($reccord['id'], $_SESSION['favourites'])) {
                     		$html .= '<img src="includes/images/mini_star_enable.png" onclick="ActionOnQuickIcon('.$reccord['id'].',0)" />';
                     	}else {

@@ -26,7 +26,9 @@ function httpRequest(file,data,type){
     var xhr_object = null;
     var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
 
-	document.getElementById("menu_action").value = "action";
+	if (document.getElementById("menu_action") != null) {
+		document.getElementById("menu_action").value = "action";
+	}
 
     if(window.XMLHttpRequest){ // Firefox
         xhr_object = new XMLHttpRequest();
