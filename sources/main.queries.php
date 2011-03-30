@@ -160,9 +160,52 @@ switch($_POST['type'])
         	}
         }
 
+    	//Check if user exists in cpassman
         $sql="SELECT * FROM ".$pre."users WHERE login = '".$username."'";
         $row = $db->query($sql);
+    	$proceed_identification = false;
         if (mysql_num_rows($row) > 0 ){
+        	$proceed_identification = true;
+         }
+    	elseif (mysql_num_rows($row) == 0 && $ldap_connection == true) {
+    		//If LDAP enabled, create user in CPM if doesn't exist
+             $new_user_id = $db->query_insert(
+                     "users",
+                     array(
+                         'login' => $username,
+                         'pw' => $password,
+                         'email' => "",
+                         'admin' => '0',
+                         'gestionnaire' => '0',
+                         'personal_folder' =>  $_SESSION['settings']['enable_pf_feature']=="1" ? '1' : '0',
+                         'fonction_id' =>  '0',
+                         'groupes_interdits' =>  '0',
+                         'groupes_visibles' =>  '0',
+                         'last_pw_change' => mktime(date('h'),date('m'),date('s'),date('m'),date('d'),date('y')),
+                         )
+                     );
+
+    		//Create personnal folder
+    		if ( $_SESSION['settings']['enable_pf_feature']=="1" )
+    			$db->query_insert(
+	    			"nested_tree",
+	    			array(
+	    			    'parent_id' => '0',
+	    			    'title' => $new_user_id,
+	    			    'bloquer_creation' => '0',
+	    			    'bloquer_modification' => '0',
+	    			    'personal_folder' => '1'
+	    			)
+    			);
+
+    		//Get info for user
+			$sql="SELECT * FROM ".$pre."users WHERE login = '".$username."'";
+			$row = $db->query($sql);
+			$proceed_identification = true;
+
+         }
+
+         if ($proceed_identification === true){
             //User exists in the DB
             $data = $db->fetch_array($row);
 

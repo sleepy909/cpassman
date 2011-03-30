@@ -557,7 +557,7 @@ if ( isset($_GET['page']) && $_GET['page'] == "find"){
     $htmlHeaders .= '
     $(function() {
         //Launch the datatables pluggin
-        $("#t_items").dataTable({
+        oTable = $("#t_items").dataTable({
             "aaSorting": [[ 1, "asc" ]],
             "sPaginationType": "full_numbers",
             "bProcessing": true,

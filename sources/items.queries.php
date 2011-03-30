@@ -504,6 +504,26 @@ if ( isset($_POST['type']) ){
         		$query .= " WHERE id=".$new_id;
         		$db->query($query);
 
+        		//Add attached itms
+        		$rows = $db->fetch_all_array(
+        		"SELECT *
+                        FROM ".$pre."files
+                        WHERE id_item=".$new_id
+        		);
+        		foreach ($rows as $reccord){
+        			$db->query_insert(
+	        			'files',
+	        			array(
+	        				'id_item' => $new_id,
+	        				'name' => $reccord['name'],
+	        				'size' => $reccord['size'],
+	        				'extension' => $reccord['extension'],
+	        				'type' => $reccord['type'],
+	        				'file' => $reccord['file']
+	        			)
+        			);
+        		}
+
         		//Add this duplicate in logs
         		$db->query_insert(
 	        		'log_items',
@@ -514,6 +534,10 @@ if ( isset($_POST['type']) ){
 	        		    'action' => 'at_creation'
 	        		)
         		);
+
+        		//reload cache table
+        		require_once("main.functions.php");
+        		UpdateCacheTable("reload", "");
 
         		$return_values = '[{"status" : "ok"}, {"new_id" : "'.$new_id.'"}]';
         	}else{

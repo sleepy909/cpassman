@@ -958,7 +958,7 @@ function open_copy_item_div() {
 
 			//if OK
 			if (data[0].status == "ok") {
-				window.location.href = "index.php?page=items&group="+$('#categorie').val()+"&id="+data[1].new_id;
+				window.location.href = "index.php?page=items&group="+$('#hid_cat').val()+"&id="+data[1].new_id;
 			}
 			LoadingPage();
 		},
@@ -1334,11 +1334,13 @@ $(function() {
 	if ($("#hid_cat").val() != "") {
 		first_group = $("#hid_cat").val();
 	}
-	ListerItems(first_group,'', $("#query_next_start").val());
 
-	//Load item if needed
+	//Load item if needed and display items list
 	if ($("#open_id").val() != "") {
 		AfficherDetailsItem($("#open_id").val());
+		ListerItems(first_group,'', $("#query_next_start").val());
+	}else{
+		ListerItems(first_group,'', $("#query_next_start").val());
 	}
 
     //Password meter for item creation

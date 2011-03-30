@@ -330,9 +330,9 @@ function UpdateCacheTable($action, $id){
 			foreach($arbo as $elem){
 				if ( $elem->title == $_SESSION['user_id'] && $elem->nlevel == 1 ) $elem->title = $_SESSION['login'];
 				if (empty($folder)) {
-					$folder = htmlspecialchars(stripslashes($elem->title), ENT_QUOTES);
+					$folder = stripslashes($elem->title);
 				}else{
-					$folder .= " » ".htmlspecialchars(stripslashes($elem->title), ENT_QUOTES);
+					$folder .= " » ".stripslashes($elem->title);
 				}
 			}
 
