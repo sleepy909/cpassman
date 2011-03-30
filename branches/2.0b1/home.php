@@ -168,11 +168,11 @@ echo '
                                     $ident="&nbsp;&nbsp;";
                                     for($x=1;$x<$t->nlevel;$x++) $ident .= "&nbsp;&nbsp;";
                                     if ( $prev_level < $t->nlevel ){
-                                        echo '<option value="'.$t->id.'">'.$ident.str_replace("&","&amp;",addslashes(utf8_decode($t->title))).'</option>';
+                                        echo '<option value="'.$t->id.'">'.$ident.$t->title.'</option>';
                                     }else if ( $prev_level == $t->nlevel ){
-                                       echo '<option value="'.$t->id.'">'.$ident.str_replace("&","&amp;",addslashes(utf8_decode($t->title))).'</option>';
+                                       echo '<option value="'.$t->id.'">'.$ident.$t->title.'</option>';
                                     }else{
-                                        echo '<option value="'.$t->id.'">'.$ident.str_replace("&","&amp;",addslashes(utf8_decode($t->title))).'</option>';
+                                        echo '<option value="'.$t->id.'">'.$ident.$t->title.'</option>';
                                     }
                                     $prev_level = $t->nlevel;
                                 }

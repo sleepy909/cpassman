@@ -18,7 +18,7 @@ if ($_SESSION['CPM'] != 1)
 
 
 global $k, $settings;
-header("Content-type: text/html; charset==utf-8");
+header("Content-type: text/html; charset=utf-8");
 error_reporting (E_ERROR);
 include('../includes/settings.php');
 
@@ -125,11 +125,11 @@ switch($_POST['type'])
                     $ident="";
                     for($x=1;$x<$t->nlevel;$x++) $ident .= "&nbsp;&nbsp;";
                     if ($prev_level != NULL && $prev_level < $t->nlevel ){
-                        $display .= '<option value="'.$t->id.'">'.$ident.str_replace("&","&amp;",addslashes(utf8_decode($t->title))).'</option>';
+                        $display .= '<option value="'.$t->id.'">'.$ident.str_replace("&","&amp;",addslashes($t->title)).'</option>';
                     }else if ($prev_level != NULL && $prev_level == $t->nlevel ){
-                       $display .= '<option value="'.$t->id.'">'.$ident.str_replace("&","&amp;",addslashes(utf8_decode($t->title))).'</option>';
+                       $display .= '<option value="'.$t->id.'">'.$ident.str_replace("&","&amp;",addslashes($t->title)).'</option>';
                     }else{
-                        $display .= '<option value="'.$t->id.'">'.$ident.str_replace("&","&amp;",addslashes(utf8_decode($t->title))).'</option>';
+                        $display .= '<option value="'.$t->id.'">'.$ident.str_replace("&","&amp;",addslashes($t->title)).'</option>';
                     }
                     $prev_level = $t->nlevel;
                 }
@@ -517,14 +517,14 @@ switch($_POST['type'])
                     }
 
                     //create folder - if not exists at the same level
-                    $data = $db->fetch_row("SELECT COUNT(*) FROM ".$pre."nested_tree WHERE nlevel = ".($folder_level+$start_path_level)." AND title = \"".utf8_decode($fold)."\" AND parent_id = ".$parent_id);
+                    $data = $db->fetch_row("SELECT COUNT(*) FROM ".$pre."nested_tree WHERE nlevel = ".($folder_level+$start_path_level)." AND title = \"".$fold."\" AND parent_id = ".$parent_id);
                     if ( $data[0] == 0 ){
                         //do query
                         $id = $db->query_insert(
                             "nested_tree",
                             array(
                                 'parent_id' => $parent_id,
-                                'title' => utf8_decode(stripslashes($fold)),
+                                'title' => stripslashes($fold),
                                 'nlevel' => $folder_level
                             )
                         );
@@ -604,19 +604,19 @@ switch($_POST['type'])
 
                 if ( !empty($item[2]) ){
                     //check if not exists
-                    $data = $db->fetch_row("SELECT COUNT(*) FROM ".$pre."items WHERE id_tree = '".$folders_array[$item[1]]['id']."' AND label = \"".utf8_decode($item[2])."\"");
+                    $data = $db->fetch_row("SELECT COUNT(*) FROM ".$pre."items WHERE id_tree = '".$folders_array[$item[1]]['id']."' AND label = \"".$item[2]."\"");
 
                     if ( $data[0] == 0 ){
                         //ADD item
                         $new_id = $db->query_insert(
                             'items',
                             array(
-                                'label' => utf8_decode(stripslashes($item[2])),
-                                'description' => utf8_decode(str_replace($line_end_separator,'<br />',$item[5])),
+                                'label' => stripslashes($item[2]),
+                                'description' => str_replace($line_end_separator,'<br />',$item[5]),
                                 'pw' => encrypt($item[3]),
-                                'url' => utf8_decode(stripslashes($item[6])),
+                                'url' => stripslashes($item[6]),
                                 'id_tree' => $folders_array[$item[1]]['id'],
-	                            'login' => utf8_decode(stripslashes($item[4])),
+	                            'login' => stripslashes($item[4]),
 	                            'anyone_can_modify' => $_POST['import_kps_anyone_can_modify'] == "true" ? 1 : 0
                             )
                         );
