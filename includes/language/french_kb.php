@@ -1,14 +1,7 @@
 <?php
-
-/**
- *
- * Knowledge Language file FRENCH
- *
- */
-
-$txt['kb'] = "Base de Connaissances (beta)";
-$txt['kb_form'] = "Gérer les entrées";
-$txt['new_kb'] = "Ajouter une nouvelle entrée";
-$txt['category'] = "Catégorie";
+$txt['category'] = "CatÃ©gorie";
+$txt['kb'] = "Base de Connaissances";
 $txt['kb_anyone_can_modify'] = "Modifiable par tout un chacun";
+$txt['kb_form'] = "GÃ©rer les entrÃ©es";
+$txt['new_kb'] = "Ajouter une nouvelle entrÃ©e";
 ?>

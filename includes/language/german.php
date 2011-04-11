@@ -81,7 +81,7 @@ $txt['auth_creation_without_complexity'] = "Erstellung von Passwörtern ungeacht
 $txt['auth_modification_without_complexity'] = "Bearbeitung von Elemente ungeachtet der eingestellten Passwortskomplexität zulassen";
 $txt['auto_create_folder_role'] = "Ordner und Rolle erstellen für";
 $txt['block_last_created'] = "Zuletzt erstellt";
-$txt['bugs_page'] = "Falls Sie in cPassman einen Fehler entdecken, können Sie ihn direkt posten unter <a href='http://code.google.com/p/cpassman/issues/list' target='_blank'><u>Bugs Forum</u></a>.";
+$txt['bugs_page'] = "Falls Sie in cPassman einen Fehler entdecken, können Sie ihn direkt posten unter <a href='https://sourceforge.net/tracker/?group_id=280505&amp;atid=1190333' target='_blank'><u>Bugs Forum</u></a>.";
 $txt['by'] = "von";
 $txt['cancel'] = "Abbrechen";
 $txt['cancel_button'] = "Abbrechen";
@@ -143,6 +143,7 @@ $txt['disconnect'] = "Abmelden";
 $txt['disconnection'] = "Verbindungsabbruch";
 $txt['div_dialog_message_title'] = "Informationen";
 $txt['done'] = "Fertig";
+$txt['drag_drop_helper'] = "Drag and drop item";
 $txt['duplicate_folder'] = "Mehrere Ordner mit dem selben Namen erlauben.";
 $txt['duplicate_item'] = "Mehrere Elemente mit dem selben Namen erlauben.";
 $txt['email'] = "Email";
@@ -161,6 +162,7 @@ $txt['email_text_new_user'] = "Hallo,<br /><br />Ihr Benutzerkonto in cPassMan w
 $txt['enable_favourites'] = "Benutzern erlauben Favoriten anzulegen";
 $txt['enable_personal_folder'] = "Persönlichen Ordner aktivieren";
 $txt['enable_personal_folder_feature'] = "Aktiviere die Funktion Persönliche Ordner";
+$txt['enable_user_can_create_folders'] = "Users are allowed to manage folders in allowed parent folders";
 $txt['encrypt_key'] = "Verschlüsselungspasswort";
 $txt['errors'] = "Fehler";
 $txt['error_complex_not_enought'] = "Das Passwort ist nicht ausreichend komplex!";
@@ -407,10 +409,11 @@ $txt['show_last_items'] = "Zuletzt betrachtete Elemente auf der Startseite anzei
 $txt['size'] = "Länge";
 $txt['start_upload'] = "Beginne die Dateien hochzuladen";
 $txt['sub_group_of'] = "Abhängig von";
-$txt['support_page'] = "Falls Sie Unterstützung benötigen, benutzen Sie bitte <a href='http://code.google.com/p/cpassman/' target='_blank'><u>Forum</u></a>.";
+$txt['support_page'] = "Falls Sie Unterstützung benötigen, benutzen Sie bitte <a href='https://sourceforge.net/projects/communitypasswo/forums' target='_blank'><u>Forum</u></a>.";
 $txt['symbols'] = "Symbole";
 $txt['tags'] = "Tags";
 $txt['thku'] = "Danke, dass Sie cPassMan verwenden!";
+$txt['timezone_selection'] = "Timezone selection";
 $txt['time_format'] = "Zeitformat";
 $txt['uncheck_all_text'] = "Auswahl aufheben";
 $txt['unlock_user'] = "Benutzer gesperrt. Wollen Sie den Benutzer entsperren?";

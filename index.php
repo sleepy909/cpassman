@@ -46,6 +46,7 @@ if (!file_exists('includes/settings.php')) {
     <script language="javascript" type="text/javascript">
     <!--
     document.location.replace("install/install.php");
+    clearInterval(timer);
     -->
     </script>';
 }
@@ -173,7 +174,7 @@ require_once("load.php");
         }
 
         //Display language menu
-        $langues = array("french" => "fr","spanish" => "es","german" => "de","english" => "us","czech" => "cz","russian" => "ru","hungarian" => "hu","turkish" => "tr");
+        $langues = array("french" => "fr","spanish" => "es","german" => "de","english" => "us","czech" => "cz","russian" => "ru","hungarian" => "hu","turkish" => "tr","norwegian" => "no");
         foreach ($langues as $lang => $abrev) {
             if ($_SESSION['user_language'] == $lang) {
                 $flag = $abrev;
@@ -191,10 +192,13 @@ require_once("load.php");
                         <li><a href="#"><img class="flag" src="includes/images/flags/us.png" alt="English" onclick="ChangeLanguage(\'english\')" /></a></li>
                         <li><a href="#"><img class="flag" src="includes/images/flags/fr.png" alt="French" onclick="ChangeLanguage(\'french\')" /></a></li>
                         <li><a href="#"><img class="flag" src="includes/images/flags/de.png" alt="German" onclick="ChangeLanguage(\'german\')" /></a></li>
+                        <li><a href="#"><img class="flag" src="includes/images/flags/no.png" alt="Norwegian" onclick="ChangeLanguage(\'norwegian\')" /></a></li>
+                        <li><a href="#"><img class="flag" src="includes/images/flags/ru.png" alt="Russian" onclick="ChangeLanguage(\'russian\')" /></a></li>
                         <li><a href="#"><img class="flag" src="includes/images/flags/es.png" alt="Spanish" onclick="ChangeLanguage(\'spanish\')" /></a></li>
-                        <!--<li><a href="#"><img class="flag" src="includes/images/flags/ru.png" alt="Russian" onclick="ChangeLanguage(\'russian\')" /></a></li>
+                        <li><a href="#"><img class="flag" src="includes/images/flags/tr.png" alt="Turkish" onclick="ChangeLanguage(\'turkish\')" /></a></li>
+                        <!--
                         <li><a href="#"><img class="flag" src="includes/images/flags/hu.png" alt="Hungarian" onclick="ChangeLanguage(\'hungarian\')" /></a></li>
-                        <li><a href="#"><img class="flag" src="includes/images/flags/tr.png" alt="Turkish" onclick="ChangeLanguage(\'turkish\')" /></a></li>-->
+                        -->
                     </ul>
                 </dd>
             </dl>
@@ -235,7 +239,11 @@ require_once("load.php");
                 <img src="includes/images/refresh.png" alt="" />
             </button>
             <br />',
-            ((isset($_SESSION['user_admin']) && $_SESSION['user_admin'] == 1) || (isset($_SESSION['user_gestionnaire']) && $_SESSION['user_gestionnaire'] == 1)) ? '
+            (
+            	(isset($_SESSION['user_admin']) && $_SESSION['user_admin'] == 1) ||
+	        	(isset($_SESSION['user_gestionnaire']) && $_SESSION['user_gestionnaire'] == 1) ||
+	        	(isset($_SESSION['settings']['enable_user_can_create_folders']) && $_SESSION['settings']['enable_user_can_create_folders'] == 1)
+            ) ? '
             <button title="'.$txt['item_menu_add_rep'].'" id="menu_button_add_group" onclick="open_add_group_div()">
                 <img src="includes/images/folder__plus.png" alt="" />
             </button>

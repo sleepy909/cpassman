@@ -5,9 +5,7 @@ $cpassman_url = '';
 }else{
 $cpassman_url = $_SESSION['settings']['cpassman_url'];
 }
-$txt['drag_drop_helper'] = "Drag and drop item";
-$txt['timezone_selection'] = "Timezone to use";
-$txt['ldap_extension_not_loaded'] = "LDAP extension is not loaded. You can't activate LDAP functionality!";
+
 $txt['account_is_locked'] = "This is account is locked";
 $txt['add_button'] = "Add";
 $txt['add_new_group'] = "Add a new folder";
@@ -83,7 +81,7 @@ $txt['auth_creation_without_complexity'] = "Allow creating an item without respe
 $txt['auth_modification_without_complexity'] = "Allow modifying an item without respecting the required password complexity";
 $txt['auto_create_folder_role'] = "Create folder and role for ";
 $txt['block_last_created'] = "Last created";
-$txt['bugs_page'] = "If you discover a bug, you can directly post it in <a href='http://code.google.com/p/cpassman/issues/list' target='_blank'><u>Bugs Forum</u></a>.";
+$txt['bugs_page'] = "If you discover a bug, you can directly post it in <a href='https://sourceforge.net/tracker/?group_id=280505&amp;atid=1190333' target='_blank'><u>Bugs Forum</u></a>.";
 $txt['by'] = "by";
 $txt['cancel'] = "Cancel";
 $txt['cancel_button'] = "Cancel";
@@ -147,6 +145,7 @@ $txt['disconnect'] = "Disconnection";
 $txt['disconnection'] = "Disconnection";
 $txt['div_dialog_message_title'] = "Information";
 $txt['done'] = "Done";
+$txt['drag_drop_helper'] = "Drag and drop item";
 $txt['duplicate_folder'] = "Authorize to have several folders with the same name.";
 $txt['duplicate_item'] = "Authorize to have several items with the same name.";
 $txt['email'] = "Email";
@@ -165,6 +164,7 @@ $txt['email_text_new_user'] = "Hi,<br /><br />Your account has been created in c
 $txt['enable_favourites'] = "Enable the Users to store Favourites";
 $txt['enable_personal_folder'] = "Enable Personal folder";
 $txt['enable_personal_folder_feature'] = "Enable Personal folder feature";
+$txt['enable_user_can_create_folders'] = "Users are allowed to manage folders in allowed parent folders";
 $txt['encrypt_key'] = "Encryption key";
 $txt['errors'] = "errors";
 $txt['error_complex_not_enought'] = "Password complexity is not fulfilled!";
@@ -411,10 +411,11 @@ $txt['show_last_items'] = "Show last items block on main page";
 $txt['size'] = "Size";
 $txt['start_upload'] = "Start uploading files";
 $txt['sub_group_of'] = "Dependent on";
-$txt['support_page'] = "For any support, please use the <a href='http://code.google.com/p/cpassman/' target='_blank'><u>Forum</u></a>.";
+$txt['support_page'] = "For any support, please use the <a href='https://sourceforge.net/projects/communitypasswo/forums' target='_blank'><u>Forum</u></a>.";
 $txt['symbols'] = "Symbols";
 $txt['tags'] = "Tags";
 $txt['thku'] = "Thank you for using cPassMan!";
+$txt['timezone_selection'] = "Timezone selection";
 $txt['time_format'] = "Time format";
 $txt['uncheck_all_text'] = "Uncheck all";
 $txt['unlock_user'] = "User is locked. Do you want to unlock this account?";
