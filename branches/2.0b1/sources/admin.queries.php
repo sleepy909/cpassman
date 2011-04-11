@@ -99,7 +99,7 @@ switch($_POST['type'])
             );
 
             //if folder doesn't exist then create it
-            $data = $db->fetch_row("SELECT COUNT(*) FROM ".$pre."nested_tree WHERE title = '".$record['id']."'");
+            $data = $db->fetch_row("SELECT COUNT(*) FROM ".$pre."nested_tree WHERE title = '".$record['id']."' AND parent_id = 0");
             if ( $data[0] == 0 ){
                 //If not exist then add it
                 $db->query_insert(
@@ -117,7 +117,10 @@ switch($_POST['type'])
                     array(
                         'personal_folder' => '1'
                     ),
-                    "title='".$record['id']."'"
+                    array(
+                    	"title" =>$record['id'],
+                    	'parent_id' => '0'
+                    )
                 );
             }
         }
@@ -128,7 +131,7 @@ switch($_POST['type'])
     		FROM ".$pre."nested_tree
     		LEFT JOIN ".$pre."users
     		ON ".$pre."nested_tree.title = ".$pre."users.id
-    		WHERE ".$pre."users.id IS NULL AND ".$pre."nested_tree.title REGEXP ('[0-9]')
+    		WHERE ".$pre."users.id IS NULL  AND ".$pre."nested_tree.parent_id=0 AND ".$pre."nested_tree.title REGEXP ('[0-9]')
     	");
 
     	//rebuild fuild tree folder

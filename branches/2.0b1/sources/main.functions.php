@@ -371,7 +371,7 @@ function UpdateCacheTable($action, $id){
 
     	//form id_tree to full foldername
     	$folder = "";
-    	$arbo = $tree->getPath($row['id_tree'], true);
+    	$arbo = $tree->getPath($data['id_tree'], true);
     	foreach($arbo as $elem){
     		if ( $elem->title == $_SESSION['user_id'] && $elem->nlevel == 1 ) $elem->title = $_SESSION['login'];
     		if (empty($folder)) {

@@ -1,14 +1,7 @@
 <?php
-
-/**
- *
- * Knowledge Language file ENGLISH
- *
- */
-
-$txt['kb'] = "Knowledge Base (beta)";
-$txt['kb_form'] = "Manage entry in KB";
-$txt['new_kb'] = "Add a new KB";
-$txt['category'] = "Category";
-$txt['kb_anyone_can_modify'] = "Anyone can modify it";
+$txt['category'] = "Kategorie";
+$txt['kb'] = "Databáze znalostí";
+$txt['kb_anyone_can_modify'] = "Může být upravováno kýmkoliv";
+$txt['kb_form'] = "Správa položek v databázi znalostí";
+$txt['new_kb'] = "Přidat novou databázi znalostí";
 ?>

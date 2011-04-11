@@ -18,7 +18,7 @@ if ($_SESSION['CPM'] != 1)
 
 header("Content-disposition: attachment; filename=".rawurldecode($_GET['name']));
 header("Content-Type: application/force-download");
-header("Content-Transfer-Encoding: ".$_GET['type']."\n"); // Surtout ne pas enlever le \n
+header("Content-Transfer-Encoding: ".$_GET['type']."\n");
 header("Pragma: no-cache");
 header("Cache-Control: must-revalidate, post-check=0, pre-check=0, public");
 header("Expires: 0");

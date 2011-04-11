@@ -156,12 +156,14 @@ if (isset($_SESSION['settings']['timezone'])) {
     }
 
 
-/* 
-* CHECK PASSWORD VALIDITY 
+/*
+* CHECK PASSWORD VALIDITY
 * Don't take into consideration if LDAP in use
 */
+	$nb_jours_avant_expiration_du_mdp = "";	//initiliaze variable
 	if (isset($_SESSION['settings']['ldap_mode']) && $_SESSION['settings']['ldap_mode'] == 1) {
 		$_SESSION['validite_pw'] = true;
+		$_SESSION['last_pw_change'] = true;
 	}else{
 		if ( isset($_SESSION['last_pw_change']) ){
 			if ( $_SESSION['settings']['pw_life_duration'] == 0 ){

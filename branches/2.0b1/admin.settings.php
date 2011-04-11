@@ -249,6 +249,11 @@ if (isset($_POST['save_button'])) {
 	if ( @$_SESSION['settings']['timezone'] != $_POST['timezone'] ){
 		UpdateSettings('timezone',$_POST['timezone']);
 	}
+
+	//Update enable_user_can_create_folders
+	if ( @$_SESSION['settings']['enable_user_can_create_folders'] != $_POST['enable_user_can_create_folders'] ){
+		UpdateSettings('enable_user_can_create_folders',$_POST['enable_user_can_create_folders']);
+	}
 }
 
 echo '
@@ -710,6 +715,20 @@ echo '
 						<input type="radio" id="copy_to_clipboard_small_icons_radio1" name="copy_to_clipboard_small_icons" value="1"', isset($_SESSION['settings']['copy_to_clipboard_small_icons']) && $_SESSION['settings']['copy_to_clipboard_small_icons'] == 1 ? ' checked="checked"' : '', ' /><label for="copy_to_clipboard_small_icons_radio1">'.$txt['yes'].'</label>
 						<input type="radio" id="copy_to_clipboard_small_icons_radio2" name="copy_to_clipboard_small_icons" value="0"', isset($_SESSION['settings']['copy_to_clipboard_small_icons']) && $_SESSION['settings']['copy_to_clipboard_small_icons'] != 1 ? ' checked="checked"' : (!isset($_SESSION['settings']['copy_to_clipboard_small_icons']) ? ' checked="checked"':''), ' /><label for="copy_to_clipboard_small_icons_radio2">'.$txt['no'].'</label>
 					</div>
+				</td</tr>';
+
+
+
+				//enable USER can create folders
+				echo '
+				<tr><td>
+				    <span class="ui-icon ui-icon-wrench" style="float: left; margin-right: .3em;">&nbsp;</span>
+				    <label>'.$txt['enable_user_can_create_folders'].'</label>
+								    </td><td>
+								    <div class="div_radio">
+										<input type="radio" id="enable_user_can_create_folders_radio1" name="enable_user_can_create_folders" value="1"', isset($_SESSION['settings']['enable_user_can_create_folders']) && $_SESSION['settings']['enable_user_can_create_folders'] == 1 ? ' checked="checked"' : '', ' /><label for="enable_user_can_create_folders_radio1">'.$txt['yes'].'</label>
+										<input type="radio" id="enable_user_can_create_folders_radio2" name="enable_user_can_create_folders" value="0"', isset($_SESSION['settings']['enable_user_can_create_folders']) && $_SESSION['settings']['enable_user_can_create_folders'] != 1 ? ' checked="checked"' : (!isset($_SESSION['settings']['enable_user_can_create_folders']) ? ' checked="checked"':''), ' /><label for="enable_user_can_create_folders_radio2">'.$txt['no'].'</label>
+									</div>
 				</td</tr>';
 
             echo '

@@ -277,7 +277,7 @@ if ( isset($_POST['type']) ){
 
 
                 //Update CACHE table
-                UpdateCacheTable("update_value",$data_received['id']);
+                UpdateCacheTable("update_value", $data_received['id']);
 
                 //Log all modifications done
                     /*LABEL */
@@ -614,7 +614,7 @@ if ( isset($_POST['type']) ){
             	)
             	||
             	(
-            		in_array($_POST['id'], $_SESSION['list_folders_limited'][$_POST['folder_id']])
+            		@in_array($_POST['id'], $_SESSION['list_folders_limited'][$_POST['folder_id']])
             	)
             ){
             	//Allow show details
