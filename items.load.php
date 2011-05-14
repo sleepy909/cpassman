@@ -50,10 +50,11 @@ if ($_SESSION['CPM'] != 1)
 
     //FUNCTION mask/unmask passwords characters
     function ShowPassword(pw){
-        if ( $('#id_pw').html() =='<img src="includes/images/masked_pw.png">' )
+        if ( $('#id_pw').html() == '<img src="includes/images/masked_pw.png">' || $('#id_pw').html() == '<IMG src="includes/images/masked_pw.png">' ){
             $('#id_pw').html($('#hid_pw').val());
-        else
+        }else{
             $('#id_pw').html('<img src="includes/images/masked_pw.png" />');
+        }
     }
 
     function protectString(string){
@@ -101,11 +102,13 @@ function ListerItems(groupe_id, restricted, start){
 					//warn user about his saltkey
 					$("#item_details_no_personal_saltkey").show();
 					$("#item_details_ok, #item_details_nok").hide();
-				}if (data.error == "not_authorized") {
+				}
+				else if (data.error == "not_authorized") {
 					//warn user
 					$("#item_details_nok").show();
 					$("#item_details_ok").hide();
-				}else{
+				}
+				else{
                 	$("#recherche_group_pf").val(data.saltkey_is_required);
 					//Display items
 					$("#item_details_no_personal_saltkey, #item_details_nok").hide();
@@ -251,7 +254,7 @@ function AjouterItem(){
 
     //Complete url format
     var url = $("#url").val();
-    if (url.substring(0,7) != "http://" && url != "") {
+    if (url.substring(0,7) != "http://" && url!="" && url.substring(0,8) != "https://" && url.substring(0,6) != "ftp://") {
     	url = "http://"+url;
     }
 
@@ -297,7 +300,7 @@ function AjouterItem(){
             if (CKEDITOR.instances["desc"]) {
             	var description = CKEDITOR.instances["desc"].getData();
             }else{
-            	var description = protectString($("#desc").val());
+            	var description = protectString($("#desc").val()).replace(/\n/g, '<br />');
             }
 
             //Is PF
@@ -310,12 +313,12 @@ function AjouterItem(){
             //prepare data
             var data = '{"pw":"'+protectString($('#pw1').val())+'", "label":"'+protectString($('#label').val())+'", '+
             '"login":"'+protectString($('#item_login').val())+'", "is_pf":"'+is_pf+'", '+
-            '"description":"'+description+'", "url":"'+url+'", "categorie":"'+$('#categorie').val()+'", '+
+            '"description":"'+(description)+'", "url":"'+url+'", "categorie":"'+$('#categorie').val()+'", '+
             '"restricted_to":"'+restriction+'", "restricted_to_roles":"'+restriction_role+'", "salt_key_set":"'+$('#personal_sk_set').val()+'", "is_pf":"'+$('#recherche_group_pf').val()+
             '", "annonce":"'+annonce+'", "diffusion":"'+diffusion+'", "id":"'+$('#id_item').val()+'", '+
             '"anyone_can_modify":"'+$('#anyone_can_modify:checked').val()+'", "tags":"'+protectString($('#item_tags').val())+'"}';
 
-
+alert(data);
             //Send query
             $.post(
                 "sources/items.queries.php",
@@ -505,11 +508,11 @@ function EditerItem(){
 }
 
 function aes_encrypt(text) {
-    return Aes.Ctr.encrypt(text, "<?php echo $_SESSION['cle_session'];?>", 256);
+    return Aes.Ctr.encrypt(text, "<?php echo $_SESSION['key'];?>", 256);
 }
 
 function aes_decrypt(text) {
-    return Aes.Ctr.decrypt(text, "<?php echo $_SESSION['cle_session'];?>", 256);
+    return Aes.Ctr.decrypt(text, "<?php echo $_SESSION['key'];?>", 256);
 }
 
 function AjouterFolder(){
@@ -565,11 +568,22 @@ function SupprimerFolder(){
     }
 }
 
-function AfficherDetailsItem(id, salt_key_required, expired_item, restricted){
+function AfficherDetailsItem(id, salt_key_required, expired_item, restricted, display){
+	if (display == "no_display") {
+		//Dont show details
+        $("#item_details_nok").show();
+        $("#item_details_ok").hide();
+        $("#item_details_expired").hide();
+        $("#item_details_expired_full").hide();
+        $("#menu_button_edit_item, #menu_button_del_item, #menu_button_copy_item, #menu_button_add_fav, #menu_button_del_fav, #menu_button_show_pw, #menu_button_copy_pw, #menu_button_copy_login, #menu_button_copy_link").attr("disabled","disabled");
+        return false;
+	}
     LoadingPage();  //afficher image de chargement
     if ( document.getElementById("is_admin").value == "1" ){
         $('#menu_button_edit_item,#menu_button_del_item,#menu_button_copy_item').attr('disabled', 'disabled');
     }
+
+    $("#edit_restricted_to").val("");
 
     //Check if personal SK is needed and set
     if ( ($('#recherche_group_pf').val() == 1 && $('#personal_sk_set').val() == 0) && salt_key_required == 1 ){
@@ -833,7 +847,7 @@ function open_edit_item_div(restricted_to_roles) {
     LoadingPage();
     $('#edit_display_title').html($('#hid_label').val());
     $('#edit_label').val($('#hid_label').val());
-    $('#edit_desc').val($('#hid_desc').val());
+    $('#edit_desc').html($('#hid_desc').val().replace (/<br\s*\/>*|<br>*/g, '\n'));
     $('#edit_pw1').val($('#hid_pw').val());
     $('#edit_pw2').val($('#hid_pw').val());
     $('#edit_item_login').val($('#hid_login').val());
@@ -951,9 +965,8 @@ function open_copy_item_div() {
 		function(data){
 			//check if format error
             if (data[0].error == "no_item") {
-                $("#div_loading").hide();
-                document.getElementById('edit_show_error').innerHTML = data[1].error_text;
-                $("#edit_show_error").show();
+                $("#div_dialog_message_text").html(data[1].error_text);
+                $("#div_dialog_message").dialog("open");
             }
 
 			//if OK
@@ -1052,10 +1065,19 @@ PreviewImage = function(uri,title) {
     });
 }
 
+
 //###########
 //## EXECUTE WHEN PAGE IS LOADED
 //###########
 $(function() {
+	//Expend/Collapse jstree
+	$("#jstree_close").click(function() {
+        $("#jstree").jstree("close_all", -1);
+    });
+    $("#jstree_open").click(function() {
+        $("#jstree").jstree("open_all", -1);
+    });
+
 
     //Disable menu buttons
     $('#menu_button_edit_item,#menu_button_del_item,#menu_button_add_fav,#menu_button_del_fav').attr('disabled', 'disabled');
@@ -1098,7 +1120,10 @@ $(function() {
 
 	//Build tree
     $("#jstree").jstree({
-    	"plugins" : ["themes", "html_data", "cookies"]
+    	"core" : { "close_all" : -1 },
+    	"plugins" : ["themes", "html_data", "cookies"],
+    	"save_opened" : "cpassman_jstree_open",
+    	"save_selected" : "cpassman_jstree_select"
     });
 
 

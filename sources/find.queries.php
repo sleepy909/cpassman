@@ -152,9 +152,9 @@ foreach( $rows as $reccord ){
     }else{
         $txt = str_replace(array('\n','<br />','\\'),array(' ',' ',''),strip_tags(mysql_real_escape_string($reccord['description'])));
         if (strlen($txt) > 50) {
-            $sOutput .= '"'.(substr(htmlspecialchars(stripslashes(preg_replace ('/<[^>]*>/', '', $txt)), ENT_QUOTES), 0, 50)).'",';
+            $sOutput .= '"'.(substr(htmlspecialchars(stripslashes(preg_replace ('/<[^>]*>|[\t]/', '', $txt)), ENT_QUOTES), 0, 50)).'",';
         }else{
-            $sOutput .= '"'.(htmlspecialchars(stripslashes(preg_replace ('/<[^>]*>/', '', $txt)), ENT_QUOTES)).'",';
+            $sOutput .= '"'.(htmlspecialchars(stripslashes(preg_replace ('/<[^>]*>|[\t]/', '', $txt)), ENT_QUOTES)).'",';
         }
     }
 

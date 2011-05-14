@@ -188,7 +188,7 @@ if (isset($_SESSION['settings']['timezone'])) {
     }else
         $data_session[0] = "";
 
-    if ( isset($_SESSION['user_id']) && ( empty($_SESSION['fin_session']) || $_SESSION['fin_session'] < time() || empty($_SESSION['cle_session']) || $_SESSION['cle_session'] != $data_session[0] ) ){
+    if ( isset($_SESSION['user_id']) && ( empty($_SESSION['fin_session']) || $_SESSION['fin_session'] < time() || empty($_SESSION['key']) || $_SESSION['key'] != $data_session[0] ) ){
         // Update table by deleting ID
         $db->query_update(
             "users",

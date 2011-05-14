@@ -101,21 +101,21 @@ echo '
                 );
 
 
-                echo '<tr class="ligne0" id="row_'.$t->id.'" onclick="open_edit_folder_dialog('.$t->id.')">
-                        <td align="center">'.$t->id.'</td>
-                        <td width="50%">
+                echo '<tr class="ligne0" id="row_'.$t->id.'">
+                        <td align="center" onclick="open_edit_folder_dialog('.$t->id.')">'.$t->id.'</td>
+                        <td width="50%" onclick="open_edit_folder_dialog('.$t->id.')">
                             '.$ident.'<span id="title_'.$t->id.'">'.$t->title.'</span>
                         </td>
-                        <td align="center">
+                        <td align="center" onclick="open_edit_folder_dialog('.$t->id.')">
                             <span id="complexite_'.$t->id.'">'.$mdp_complexite[$node_data[0]][1].'</span>
                         </td>
-                        <td align="center">
+                        <td align="center" onclick="open_edit_folder_dialog('.$t->id.')">
                             <span id="parent_'.$t->id.'">'.$data[0].'</span>
                         </td>
-                        <td align="center">
+                        <td align="center" onclick="open_edit_folder_dialog('.$t->id.')">
                             '.$t->nlevel.'
                         </td>
-                        <td align="center">
+                        <td align="center" onclick="open_edit_folder_dialog('.$t->id.')">
                             <span id="renewal_'.$t->id.'">'.$node_data[1].'</span>
                         </td>
                         <td align="center">

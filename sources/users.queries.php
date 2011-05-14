@@ -89,6 +89,12 @@ if ( !empty($_POST['type']) ){
 
         ## ADD NEW USER ##
         case "add_new_user":
+        	//Check KEY
+        	if ($_POST['key'] != $_SESSION['key']) {
+        		//error
+        		exit();
+        	}
+
             // Check if user already exists
             $db->query("SELECT id, fonction_id, groupes_interdits, groupes_visibles FROM ".$pre."users WHERE login LIKE '".mysql_real_escape_string(stripslashes($_POST['login']))."'");
             $data = $db->fetch_array();
@@ -199,6 +205,12 @@ SendEmail(
 
         ## DELETE USER ##
         case "supprimer_user":
+        	//Check KEY
+        	if ($_POST['key'] != $_SESSION['key']) {
+        		//error
+        		exit();
+        	}
+
         	//delete user in database
             $db->query("DELETE FROM ".$pre."users WHERE id = ".$_POST['id']);
 
@@ -234,70 +246,106 @@ SendEmail(
 
         ## UPDATE PASSWORD OF USER ##
         case "modif_mdp_user":
-           $db->query_update(
-                "users",
-                array(
-                    'pw' => encrypt(string_utf8_decode($_POST['newmdp']))
-                ),
-                "id = ".$_POST['id']
-            );
+        	//Check KEY
+        	if ($_POST['key'] != $_SESSION['key']) {
+        		//error
+        		exit();
+        	}
 
-            echo '$("#div_loading").hide()';  //hide loading div
+			$db->query_update(
+			     "users",
+			     array(
+			         'pw' => encrypt(string_utf8_decode($_POST['newmdp']))
+			     ),
+			     "id = ".$_POST['id']
+			 );
+
+			 echo '$("#div_loading").hide()';  //hide loading div
         break;
 
         ## UPDATE EMAIL OF USER ##
         case "modif_mail_user":
-           $db->query_update(
-                "users",
-                array(
-                    'email' => $_POST['newemail']
-                ),
-                "id = ".$_POST['id']
-            );
+        	//Check KEY
+        	if ($_POST['key'] != $_SESSION['key']) {
+        		//error
+        		exit();
+        	}
+
+			$db->query_update(
+			     "users",
+			     array(
+			         'email' => $_POST['newemail']
+			     ),
+			     "id = ".$_POST['id']
+			 );
         break;
 
         // UPDATE CAN CREATE ROOT FOLDER RIGHT
         case "can_create_root_folder":
-           $db->query_update(
-                "users",
-                array(
-                    'can_create_root_folder' => $_POST['value']
-                ),
-                "id = ".$_POST['id']
-            );
+        	//Check KEY
+        	if ($_POST['key'] != $_SESSION['key']) {
+        		//error
+        		exit();
+        	}
+
+			$db->query_update(
+			     "users",
+			     array(
+			         'can_create_root_folder' => $_POST['value']
+			     ),
+			     "id = ".$_POST['id']
+			 );
         break;
 
         ## UPDATE MANAGER RIGHTS FOR USER ##
         case "gestionnaire":
-           $db->query_update(
-                "users",
-                array(
-                    'gestionnaire' => $_POST['value']
-                ),
-                "id = ".$_POST['id']
-            );
+        	//Check KEY
+        	if ($_POST['key'] != $_SESSION['key']) {
+        		//error
+        		exit();
+        	}
+
+			$db->query_update(
+			     "users",
+			     array(
+			         'gestionnaire' => $_POST['value']
+			     ),
+			     "id = ".$_POST['id']
+			 );
         break;
 
         ## UPDATE ADMIN RIGHTS FOR USER ##
         case "admin":
-           $db->query_update(
-                "users",
-                array(
-                    'admin' => $_POST['value']
-                ),
-                "id = ".$_POST['id']
-            );
+        	//Check KEY
+        	if ($_POST['key'] != $_SESSION['key']) {
+        		//error
+        		exit();
+        	}
+
+			$db->query_update(
+			     "users",
+			     array(
+			         'admin' => $_POST['value']
+			     ),
+			     "id = ".$_POST['id']
+			 );
         break;
 
         ## UPDATE PERSONNAL FOLDER FOR USER ##
         case "personal_folder":
-           $db->query_update(
-                "users",
-                array(
-                    'personal_folder' => $_POST['value']
-                ),
-                "id = ".$_POST['id']
-            );
+        	//Check KEY
+        	if ($_POST['key'] != $_SESSION['key']) {
+        		//error
+        		exit();
+        	}
+
+			$db->query_update(
+			     "users",
+			     array(
+			         'personal_folder' => $_POST['value']
+			     ),
+			     "id = ".$_POST['id']
+			 );
         break;
 
         //CHANGE USER FUNCTIONS
@@ -324,6 +372,12 @@ SendEmail(
         break;
 
         case "change_user_functions";
+        	//Check KEY
+        	if ($_POST['key'] != $_SESSION['key']) {
+        		//error
+        		exit();
+        	}
+
             //save data
             $db->query_update(
                 "users",
@@ -377,6 +431,12 @@ SendEmail(
         break;
 
         case "change_user_autgroups";
+        	//Check KEY
+        	if ($_POST['key'] != $_SESSION['key']) {
+        		//error
+        		exit();
+        	}
+
             //save data
             $db->query_update(
                 "users",
@@ -403,6 +463,12 @@ SendEmail(
 
         //CHANGE FORBIDDEN GROUPS
         case "open_div_forgroups";
+        	//Check KEY
+        	if ($_POST['key'] != $_SESSION['key']) {
+        		//error
+        		exit();
+        	}
+
             $text = "";
             //Refresh list of existing functions
             $data_user = $db->fetch_row("SELECT groupes_interdits FROM ".$pre."users WHERE id = ".$_POST['id']);
@@ -457,6 +523,12 @@ SendEmail(
 
         ## UNLOCK USER ##
         case "unlock_account":
+        	//Check KEY
+        	if ($_POST['key'] != $_SESSION['key']) {
+        		//error
+        		exit();
+        	}
+
             $db->query_update(
                 "users",
                 array(

@@ -218,6 +218,8 @@ if ( isset($_POST['type']) ){
 			array('admin','nb_bad_authentication',0,0),
 			array('admin','restricted_to_roles',0,0),
 			array('admin','utf8_enabled',1,0),
+			array('admin','custom_logo','',0),
+			array('admin','custom_login_text','',0),
 			array('admin','send_stats', empty($_SESSION['send_stats']) ? '0' : $_SESSION['send_stats'],1));
 			$res1 = "na";
 			foreach($val as $elem){

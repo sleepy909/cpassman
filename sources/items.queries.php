@@ -45,7 +45,7 @@ if ( isset($_POST['type']) ){
             //decrypt and retreive data in JSON format
             require_once '../includes/libraries/crypt/aes.class.php';     // AES PHP implementation
             require_once '../includes/libraries/crypt/aesctr.class.php';  // AES Counter Mode implementation
-            $data_received = json_decode((AesCtr::decrypt($_POST['data'], $_SESSION['cle_session'], 256)), true);
+            $data_received = json_decode((AesCtr::decrypt($_POST['data'], $_SESSION['key'], 256)), true);
 
             //Prepare variables
             $label = htmlspecialchars_decode($data_received['label']);
@@ -200,7 +200,7 @@ if ( isset($_POST['type']) ){
             //decrypt and retreive data in JSON format
             require_once '../includes/libraries/crypt/aes.class.php';     // AES PHP implementation
             require_once '../includes/libraries/crypt/aesctr.class.php';  // AES Counter Mode implementation
-            $data_received = json_decode(AesCtr::decrypt($_POST['data'], $_SESSION['cle_session'], 256), true);
+            $data_received = json_decode(AesCtr::decrypt($_POST['data'], $_SESSION['key'], 256), true);
 
             if (count($data_received) > 0) {
                 //Prepare variables
@@ -463,7 +463,7 @@ if ( isset($_POST['type']) ){
                 //Encrypt JSON data to return
                 require_once '../includes/libraries/crypt/aes.class.php';     // AES PHP implementation
                 require_once '../includes/libraries/crypt/aesctr.class.php';  // AES Counter Mode implementation
-                $return_values = AesCtr::encrypt(json_encode($arrData,JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_HEX_AMP), $_SESSION['cle_session'], 256);
+                $return_values = AesCtr::encrypt(json_encode($arrData,JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_HEX_AMP), $_SESSION['key'], 256);
             }else{
                 //an error appears on JSON format
                 $return_values = '{"error" : "format"}';
@@ -659,7 +659,7 @@ if ( isset($_POST['type']) ){
                 }
 
             	//Get restriction list for roles
-            	$liste_restriction_roles = "";
+            	$liste_restriction_roles = array();
             	$rows = $db->fetch_all_array("
 					SELECT t.title
 					FROM ".$pre."roles_title AS t
@@ -667,7 +667,20 @@ if ( isset($_POST['type']) ){
 					WHERE folder_id = ".$data_item['id_tree']."
 					ORDER BY t.title ASC");
 				foreach($rows as $reccord){
-					$liste_restriction_roles .= $reccord['title'].";";
+					array_push($liste_restriction_roles, $reccord['title']);
+				}
+
+				//Add restriction if item is restricted to roles
+            	$rows = $db->fetch_all_array("
+					SELECT t.title
+					FROM ".$pre."roles_title AS t
+					INNER JOIN ".$pre."restriction_to_roles AS r ON (t.id=r.role_id)
+					WHERE item_id = ".$data_item['id']."
+					ORDER BY t.title ASC");
+				foreach($rows as $reccord){
+					if (!in_array($reccord['title'], $liste_restriction_roles)){
+						array_push($liste_restriction_roles, $reccord['title']);
+					}
 				}
 
                 //Prepare DIalogBox data
@@ -690,7 +703,7 @@ if ( isset($_POST['type']) ){
                 $arrData['login'] = str_replace('"','&quot;',$data_item['login']);
                 $arrData['historique'] = str_replace('"','&quot;',$historique);
                 $arrData['id_restricted_to'] = $liste_restriction;
-            	$arrData['id_restricted_to_roles'] = $liste_restriction_roles;
+            	$arrData['id_restricted_to_roles'] = implode(";", $liste_restriction_roles).";";
                 $arrData['tags'] = str_replace('"','&quot;',$tags);
                 $arrData['folder'] = $data_item['id_tree'];
                 $arrData['anyone_can_modify'] = $data_item['anyone_can_modify'];
@@ -770,7 +783,7 @@ if ( isset($_POST['type']) ){
             //Encrypt data to return
             require_once '../includes/libraries/crypt/aes.class.php';     // AES PHP implementation
             require_once '../includes/libraries/crypt/aesctr.class.php';  // AES Counter Mode implementation
-            $return_values = AesCtr::encrypt(json_encode($arrData,JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_HEX_AMP), $_SESSION['cle_session'], 256);
+            $return_values = AesCtr::encrypt(json_encode($arrData,JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_HEX_AMP), $_SESSION['key'], 256);
 
             //return data
             echo $return_values;
@@ -928,7 +941,7 @@ if ( isset($_POST['type']) ){
         	//decrypt and retreive data in JSON format
         	require_once '../includes/libraries/crypt/aes.class.php';     // AES PHP implementation
         	require_once '../includes/libraries/crypt/aesctr.class.php';  // AES Counter Mode implementation
-        	$data_received = json_decode((AesCtr::decrypt($_POST['data'], $_SESSION['cle_session'], 256)), true);
+        	$data_received = json_decode((AesCtr::decrypt($_POST['data'], $_SESSION['key'], 256)), true);
 
         	//Prepare variables
         	$title = htmlspecialchars_decode($data_received['title']);
@@ -985,13 +998,18 @@ if ( isset($_POST['type']) ){
                 //delete folder
                 $db->query("DELETE FROM ".$pre."nested_tree WHERE id = ".$folder->id);
 
+            	//delete from roles_values
+            	$db->query("DELETE FROM ".$pre."roles_values WHERE folder_id = ".$folder->id);
+
                 //delete items & logs
                 $items = $db->fetch_all_array("SELECT id FROM ".$pre."items WHERE id_tree='".$folder->id."'");
                 foreach( $items as $item ) {
                     //Delete item
                     $db->query("DELETE FROM ".$pre."items WHERE id = ".$item['id']);
                     //log
-                    $db->query("DELETE FROM ".$pre."log_items WHERE id_item = ".$item['id']);
+                	$db->query("DELETE FROM ".$pre."log_items WHERE id_item = ".$item['id']);
+                	//cache
+                	$db->query("DELETE FROM ".$pre."cache WHERE id = ".$item['id']);
                 }
             }
             echo 'window.location.href = "index.php?page=items";';
@@ -1065,7 +1083,7 @@ if ( isset($_POST['type']) ){
         	else if (!in_array($_POST['id'], $_SESSION['groupes_visibles'])) {
         		require_once '../includes/libraries/crypt/aes.class.php';     // AES PHP implementation
         		require_once '../includes/libraries/crypt/aesctr.class.php';  // AES Counter Mode implementation
-        		echo AesCtr::encrypt(json_encode(array("error" => "not_authorized"), JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_HEX_AMP), $_SESSION['cle_session'], 256);
+        		echo AesCtr::encrypt(json_encode(array("error" => "not_authorized"), JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_HEX_AMP), $_SESSION['key'], 256);
         		break;
         	}else{
         		$data_count = $db->fetch_row("SELECT COUNT(*) FROM ".$pre."items WHERE inactif = 0");
@@ -1113,7 +1131,22 @@ if ( isset($_POST['type']) ){
                         $restricted_users_array = explode(';',$reccord['restricted_to']);
                         $item_pw = "";
                         $item_login = "";
-                        $display_item = $need_sk = $can_move = 0;
+                        $display_item = $need_sk = $can_move = $item_is_restricted_to_role = 0;
+
+                        //TODO: Element is restricted to a group. Check if element can be seen by user
+                        //=> récupérer un tableau contenant les roles associés à cet ID (a partir table restriction_to_roles)
+                        $roles = $db->fetch_all_array("SELECT role_id FROM ".$pre."restriction_to_roles WHERE item_id=".$reccord['id']);
+                        if (count($roles) > 0){
+                        	$item_is_restricted_to_role = 1;
+                        	$user_is_included_in_role = 0;
+                        	foreach ($roles as $val){
+                        		if (in_array($val['role_id'], $_SESSION['user_roles'])){
+                        			$user_is_included_in_role = 1;
+                        			break;
+                        		}
+                        	}
+                        }
+
 
                     	//Manage the restricted_to variable
                     	if (isset($_POST['restricted'])) {
@@ -1130,10 +1163,18 @@ if ( isset($_POST['type']) ){
                     		}
                     	}
 
-                    	//Can user modify it?*
+                    	//Can user modify it?
                     	if ($reccord['anyone_can_modify'] == 1 || ($_SESSION['user_id'] == $reccord['log_user'])) {
                     		$can_move = 1;
                     	}
+
+                        //CASE where item is restricted to a role to which the user is not associated
+                        if (isset($user_is_included_in_role) && isset($item_is_restricted_to_role) && $user_is_included_in_role == 0 && $item_is_restricted_to_role == 1){
+                        	$perso = '<img src="includes/images/tag-small-red.png">';
+                        	$recherche_group_pf = 0;
+                            $action = 'AfficherDetailsItem(\''.$reccord['id'].'\', \'0\', \''.$expired_item.'\', \''.$restricted_to.'\', \'no_display\')';
+                            $display_item = $need_sk = $can_move = 0;
+                        }else
 
                         //Case where item is in own personal folder
                         if ( in_array($_POST['id'],$_SESSION['personal_visible_groups']) && $reccord['perso'] == 1 ){
@@ -1149,20 +1190,30 @@ if ( isset($_POST['type']) ){
                             $action = 'AfficherDetailsItem(\''.$reccord['id'].'\',\'0\',\''.$expired_item.'\', \''.$restricted_to.'\')';
                             $display_item = 1;
                         }else
-                        //CAse where item is restricted to a group of users included user
-                        if ( $reccord['perso'] == 1 || (!empty($reccord['restricted_to']) && !in_array($_SESSION['user_id'],$restricted_users_array))){
-                            $perso = '<img src="includes/images/tag-small-red.png">';
-                            $action = 'AfficherDetailsItem(\''.$reccord['id'].'\',\'0\',\''.$expired_item.'\', \''.$restricted_to.'\')';
-                            //reinit in case of not personal group
-                            if ( $init_personal_folder == false ){
-                            	$recherche_group_pf = "";
-                                $init_personal_folder = true;
-                            }
-                            //
-                            if ( !empty($reccord['restricted_to']) && in_array($_SESSION['user_id'],$restricted_users_array) )
-                            	$display_item = 1;
-                        }
-                        //Case where item can be seen by user
+                        //CAse where item is restricted to a group of users not including user
+                        if (
+                        	$reccord['perso'] == 1
+                        	|| (!empty($reccord['restricted_to']) && !in_array($_SESSION['user_id'],$restricted_users_array))
+                        	|| (isset($user_is_included_in_role) && isset($item_is_restricted_to_role) && $user_is_included_in_role == 0 && $item_is_restricted_to_role == 1)
+                        ){
+	                        if (isset($user_is_included_in_role) && isset($item_is_restricted_to_role) && $user_is_included_in_role == 0 && $item_is_restricted_to_role == 1){
+	                        	$perso = '<img src="includes/images/tag-small-red.png">';
+	                        	$recherche_group_pf = 0;
+	                            $action = 'AfficherDetailsItem(\''.$reccord['id'].'\', \'0\', \''.$expired_item.'\', \''.$restricted_to.'\', \'no_display\')';
+	                            $display_item = $need_sk = $can_move = 0;
+	                        }else{
+	                            $perso = '<img src="includes/images/tag-small-red.png">';
+	                            $action = 'AfficherDetailsItem(\''.$reccord['id'].'\',\'0\',\''.$expired_item.'\', \''.$restricted_to.'\')';
+	                            //reinit in case of not personal group
+	                            if ( $init_personal_folder == false ){
+	                            	$recherche_group_pf = "";
+	                                $init_personal_folder = true;
+	                            }
+	                            //
+	                            if ( !empty($reccord['restricted_to']) && in_array($_SESSION['user_id'],$restricted_users_array) )
+	                            	$display_item = 1;
+	                        }
+	                    }
                         else{
                             $perso = '<img src="includes/images/tag-small-green.png">';
                             $action = 'AfficherDetailsItem(\''.$reccord['id'].'\',\'0\',\''.$expired_item.'\', \''.$restricted_to.'\')';
@@ -1258,8 +1309,6 @@ if ( isset($_POST['type']) ){
                 $html .= '</ul>';
 
                 $rights = RecupDroitCreationSansComplexite($_POST['id']);
-            }else{
-            	$arbo_html = addslashes(substr($arbo_html,0,strlen($arbo_html)-3));
             }
 
             //Identify of it is a personal folder
@@ -1312,12 +1361,12 @@ if ( isset($_POST['type']) ){
         	if (count( $rights) > 0) {
         		$return_values = array_merge($return_values, $rights);
         	}
-
+//print_r($return_values);
 
         	//Encrypt data to return
         	require_once '../includes/libraries/crypt/aes.class.php';     // AES PHP implementation
         	require_once '../includes/libraries/crypt/aesctr.class.php';  // AES Counter Mode implementation
-        	$return_values = AesCtr::encrypt(json_encode($return_values,JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_HEX_AMP), $_SESSION['cle_session'], 256);
+        	$return_values = AesCtr::encrypt(json_encode($return_values,JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_HEX_AMP), $_SESSION['key'], 256);
 
         	//return data
         	echo $return_values;

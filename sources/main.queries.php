@@ -258,7 +258,7 @@ switch($_POST['type'])
                    $_SESSION['last_pw_change'] = $data['last_pw_change'];
                    $_SESSION['last_pw'] = $data['last_pw'];
                    $_SESSION['can_create_root_folder'] = $data['can_create_root_folder'];
-                   $_SESSION['cle_session'] = $key;
+                   $_SESSION['key'] = $key;
                    $_SESSION['fin_session'] = time() + $_POST['duree_session'] * 60;
                    if ( empty($data['last_connexion']) ) $_SESSION['derniere_connexion'] = mktime(date('h'),date('m'),date('s'),date('m'),date('d'),date('y'));
                    else $_SESSION['derniere_connexion'] = $data['last_connexion'];
@@ -278,8 +278,9 @@ switch($_POST['type'])
         	    }else{
         		    $_SESSION['groupes_interdits'] = array();
         	    }
-
-                   $_SESSION['fonction_id'] = $data['fonction_id'];
+				//User's roles
+               	$_SESSION['fonction_id'] = $data['fonction_id'];
+               	$_SESSION['user_roles'] = explode(";", $data['fonction_id']);
 
        		    //build array of roles
        		    $_SESSION['arr_roles'] = array();
@@ -312,7 +313,7 @@ switch($_POST['type'])
                 $db->query_update(
                     "users",
                     array(
-                        'key_tempo'=>$_SESSION['cle_session'],
+                        'key_tempo'=>$_SESSION['key'],
                         'last_connexion'=>mktime(date("h"),date("i"),date("s"),date("m"),date("d"),date("Y")),
                         'disabled'=>0,
                         'no_bad_attempts'=>0
@@ -359,7 +360,7 @@ switch($_POST['type'])
                 $db->query_update(
                     "users",
                     array(
-                        'key_tempo'=>$_SESSION['cle_session'],
+                        'key_tempo'=>$_SESSION['key'],
                         'last_connexion'=>mktime(date("h"),date("i"),date("s"),date("m"),date("d"),date("Y")),
                         'disabled'=>$user_is_locked,
                         'no_bad_attempts'=>$nb_attempts

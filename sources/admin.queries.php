@@ -180,7 +180,7 @@ switch($_POST['type'])
         UpdateCacheTable("reload");
 
         //show some info
-        echo '$("#result_admin_action_db_clean_items").html("<img src=\"includes/images/tick.png\" alt=\"\" />&nbsp;'.$nb_items_deleted.$txt['admin_action_db_clean_items_result'].'");';
+        echo '$("#result_admin_action_db_clean_items").html("<img src=\"includes/images/tick.png\" alt=\"\" />&nbsp;'.$nb_items_deleted."&nbsp;".$txt['admin_action_db_clean_items_result'].'");';
         echo 'LoadingPage();';
     break;
 

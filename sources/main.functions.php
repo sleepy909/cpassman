@@ -296,7 +296,7 @@ function logEvents($type, $label, $who){
  *
  * Update the CACHE table
  */
-function UpdateCacheTable($action, $id){
+function UpdateCacheTable($action, $id=""){
     global $db, $server, $user, $pass, $database, $pre;
 
 	//include librairies

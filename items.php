@@ -96,6 +96,8 @@ echo '
 	    <div>
 	        <div style="margin:3px;font-weight:bold;">
 	            '.$txt['items_browser_title'].'
+			    <span id="jstree_open"class="pointer" ><img src="includes/images/chevron-small-expand.png" /></span>
+			    <span id="jstree_close" class="pointer"><img alt="" src="includes/images/chevron-small.png" /></span>
 	        </div>
 	    </div>
 	    <div id="sidebar" class="sidebar">';
