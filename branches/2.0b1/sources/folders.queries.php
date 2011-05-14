@@ -165,7 +165,7 @@ else if ( isset($_POST['type']) ){
         	//decrypt and retreive data in JSON format
         	require_once '../includes/libraries/crypt/aes.class.php';     // AES PHP implementation
         	require_once '../includes/libraries/crypt/aesctr.class.php';  // AES Counter Mode implementation
-        	$data_received = json_decode((AesCtr::decrypt($_POST['data'], $_SESSION['cle_session'], 256)), true);
+        	$data_received = json_decode((AesCtr::decrypt($_POST['data'], $_SESSION['key'], 256)), true);
 
         	//Prepare variables
         	$title = htmlspecialchars_decode($data_received['title']);
@@ -242,7 +242,7 @@ else if ( isset($_POST['type']) ){
         	//decrypt and retreive data in JSON format
         	require_once '../includes/libraries/crypt/aes.class.php';     // AES PHP implementation
         	require_once '../includes/libraries/crypt/aesctr.class.php';  // AES Counter Mode implementation
-        	$data_received = json_decode((AesCtr::decrypt($_POST['data'], $_SESSION['cle_session'], 256)), true);
+        	$data_received = json_decode((AesCtr::decrypt($_POST['data'], $_SESSION['key'], 256)), true);
 
         	//Prepare variables
         	$title = htmlspecialchars_decode($data_received['title']);

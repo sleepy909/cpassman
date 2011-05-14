@@ -11,7 +11,13 @@ if ( isset($_POST['type']) ){
             $ok_extensions = true;
             $txt = "";
             $x=1;
-            $tab = array($abspath."/install/settings.php",$abspath."/install/",$abspath."/includes/",$abspath."/files/",$abspath."/upload/");
+            $tab = array(
+            	$abspath."/install/settings.php",
+            	$abspath."/install/",
+            	$abspath."/includes/",
+            	$abspath."/files/",
+            	$abspath."/upload/"
+            );
             foreach($tab as $elem){
                 if ( is_writable($elem) )
                     $txt .= '<span style=\"padding-left:30px;font-size:13pt;\">'.$elem.'&nbsp;&nbsp;<img src=\"images/tick-circle.png\"></span><br />';
@@ -168,6 +174,8 @@ if ( isset($_POST['type']) ){
                 ('admin','nb_bad_authentication','0'),
                 ('admin','utf8_enabled','1'),
                 ('admin','restricted_to_roles','0'),
+                ('admin','custom_logo',''),
+                ('admin','custom_login_text',''),
                 ('admin', 'send_stats', '".$_SESSION['send_stats']."');");
             if ( $res4 ){
                 echo 'document.getElementById("tbl_4").innerHTML = "<img src=\"images/tick.png\">";';

@@ -235,3 +235,7 @@ cursor: pointer;
 .last_seen_item:hover{
 	color:red;
 }
+
+.pointer{
+	cursor:pointer;
+}

@@ -234,7 +234,7 @@ require_once("load.php");
     /* INSERT ITEM BUTTONS IN MENU BAR */
     if (isset($_SESSION['autoriser']) && $_SESSION['autoriser'] == true && isset($_GET['page']) && $_GET['page'] == "items") {
         echo '
-        <div style="position:absolute;margin:54px -32px 0 1000px;background:#FF8000;padding:3px;" class="ui-corner-right" id="div_right_menu">
+        <div style="position:absolute;margin:54px -32px 0 1000px;background:#A4A4A4;padding:3px;" class="ui-corner-right" id="div_right_menu">
             <button title="'.$txt['item_menu_refresh'].'" id="menu_button_refresh_page" style="margin-bottom:5px;" onclick="javascript:document.new_item.submit()">
                 <img src="includes/images/refresh.png" alt="" />
             </button>
@@ -445,7 +445,8 @@ require_once("load.php");
         echo '
             <form method="post" name="form_identify" action="">
                 <div style="width:300px; margin-left:auto; margin-right:auto;margin-bottom:50px;padding:25px;" class="ui-state-highlight ui-corner-all">
-                    <div style="text-align:center;font-weight:bold;margin-bottom:20px;">
+                    <div style="text-align:center;font-weight:bold;margin-bottom:20px;">',
+                    	isset($_SESSION['settings']['custom_logo']) && !empty($_SESSION['settings']['custom_logo']) ? '<img src="' . $_SESSION['settings']['custom_logo'] . '" alt="" style="margin-bottom:40px;" />' : '', '<br />
                         '.$txt['index_get_identified'].'
                         &nbsp;<img id="ajax_loader_connexion" style="display:none;" src="includes/images/ajax-loader.gif" alt="" />
                     </div>
@@ -453,7 +454,7 @@ require_once("load.php");
 
 					echo '
 					<div style="margin-bottom:3px;">
-	                    <label for="login" class="form_label">'.$txt['index_login'].'</label>
+	                    <label for="login" class="form_label">', isset($_SESSION['settings']['custom_login_text']) && !empty($_SESSION['settings']['custom_login_text']) ? $_SESSION['settings']['custom_login_text'] : $txt['index_login'], '</label>
 	                    <input type="text" size="10" id="login" name="login" class="input_text text ui-widget-content ui-corner-all" />
                     </div>
 					<div id="connect_pw" style="margin-bottom:3px;">

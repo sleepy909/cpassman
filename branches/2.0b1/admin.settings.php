@@ -191,7 +191,7 @@ if (isset($_POST['save_button'])) {
 	}
 
 	//Update LDAP mode
-	if ( @$_SESSION['settings']['ldap_mode'] != $_POST['ldap_mode'] ){
+	if ( isset($_POST['ldap_mode']) && $_SESSION['settings']['ldap_mode'] != $_POST['ldap_mode'] ){
 		UpdateSettings('ldap_mode',$_POST['ldap_mode']);
 	}
 
@@ -253,6 +253,16 @@ if (isset($_POST['save_button'])) {
 	//Update enable_user_can_create_folders
 	if ( @$_SESSION['settings']['enable_user_can_create_folders'] != $_POST['enable_user_can_create_folders'] ){
 		UpdateSettings('enable_user_can_create_folders',$_POST['enable_user_can_create_folders']);
+	}
+
+	//Update custom_logo
+	if ( @$_SESSION['settings']['custom_logo'] != $_POST['custom_logo'] ){
+		UpdateSettings('custom_logo',$_POST['custom_logo']);
+	}
+
+	//Update custom_login_text
+	if ( @$_SESSION['settings']['custom_login_text'] != $_POST['custom_login_text'] ){
+		UpdateSettings('custom_login_text',htmlentities($_POST['custom_login_text'], ENT_QUOTES, "UTF-8"));
 	}
 }
 
@@ -731,6 +741,30 @@ echo '
 									</div>
 				</td</tr>';
 
+
+				//custom_logo
+				echo '
+				<tr style="margin-bottom:3px">
+				    <td>
+				    	<span class="ui-icon ui-icon-disk" style="float: left; margin-right: .3em;">&nbsp;</span>
+				    	<label for="cpassman_dir">'.$txt['admin_misc_custom_logo'].'</label>
+									</td>
+									<td>
+				    	<input type="text" size="80" id="custom_logo" name="custom_logo" value="', isset($_SESSION['settings']['custom_logo']) ? $_SESSION['settings']['custom_logo'] : '', '" class="text ui-widget-content ui-corner-all" />
+									<td>
+				</tr>';
+
+			//custom_login_text
+			echo '
+			<tr style="margin-bottom:3px">
+			    <td>
+			    	<span class="ui-icon ui-icon-disk" style="float: left; margin-right: .3em;">&nbsp;</span>
+			    	<label for="cpassman_dir">'.$txt['admin_misc_custom_login_text'].'</label>
+								</td>
+								<td>
+			    	<input type="text" size="80" id="custom_login_text" name="custom_login_text" value="', isset($_SESSION['settings']['custom_login_text']) ? $_SESSION['settings']['custom_login_text'] : '', '" class="text ui-widget-content ui-corner-all" />
+								<td>
+			</tr>';
             echo '
 			</table>
             </div>';
@@ -775,19 +809,19 @@ echo '
 				echo '
 					<tr>
 						<td><label for="ldap_suffix">'.$txt['settings_ldap_domain'].'</label></td>
-						<td><input type="text" size="50" id="ldap_suffix" name="ldap_suffix" class="text ui-widget-content ui-corner-all" value="', isset($_SESSION['settings']['ldap_suffix']) ? $_SESSION['settings']['ldap_suffix'] : '', '" /></td>
+						<td><input type="text" size="50" id="ldap_suffix" name="ldap_suffix" class="text ui-widget-content ui-corner-all" title="@dc=example,dc=com" value="', isset($_SESSION['settings']['ldap_suffix']) ? $_SESSION['settings']['ldap_suffix'] : '', '" /></td>
 					</tr>';
 				// Domain DN
 				echo '
 					<tr>
 						<td><label for="ldap_domain_dn">'.$txt['settings_ldap_domain_dn'].'</label></td>
-						<td><input type="text" size="50" id="ldap_domain_dn" name="ldap_domain_dn" class="text ui-widget-content ui-corner-all" value="', isset($_SESSION['settings']['ldap_domain_dn']) ? $_SESSION['settings']['ldap_domain_dn'] : '', '" /></td>
+						<td><input type="text" size="50" id="ldap_domain_dn" name="ldap_domain_dn" class="text ui-widget-content ui-corner-all" title="dc=example,dc=com" value="', isset($_SESSION['settings']['ldap_domain_dn']) ? $_SESSION['settings']['ldap_domain_dn'] : '', '" /></td>
 					</tr>';
 				// Domain controler
 				echo '
 					<tr>
 						<td><label for="ldap_domain_controler">'.$txt['settings_ldap_domain_controler'].'&nbsp;<img src="includes/images/question-small-white.png" class="tip" alt="" title="'.$txt['settings_ldap_domain_controler_tip'].'" /></label></td>
-						<td><input type="text" size="50" id="ldap_domain_controler" name="ldap_domain_controler" class="text ui-widget-content ui-corner-all" value="', isset($_SESSION['settings']['ldap_domain_controler']) ? $_SESSION['settings']['ldap_domain_controler'] : '', '" /></td>
+						<td><input type="text" size="50" id="ldap_domain_controler" name="ldap_domain_controler" class="text ui-widget-content ui-corner-all" title="dc01.mydomain.local,dc02.mydomain.local" value="', isset($_SESSION['settings']['ldap_domain_controler']) ? $_SESSION['settings']['ldap_domain_controler'] : '', '" /></td>
 					</tr>';
 				// AD SSL
 				echo '

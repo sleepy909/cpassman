@@ -123,7 +123,7 @@ $(function() {
 
 
 function aes_encrypt(text) {
-    return Aes.Ctr.encrypt(text, "<?php echo $_SESSION['cle_session'];?>", 256);
+    return Aes.Ctr.encrypt(text, "<?php echo $_SESSION['key'];?>", 256);
 }
 
 

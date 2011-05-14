@@ -1032,7 +1032,8 @@ if ( isset($_GET['page']) && $_GET['page'] == "manage_users" ){
 	                        "&manager="+$("#new_manager").attr("checked")+
 	                        "&personal_folder="+$("#new_personal_folder").attr("checked")+
 	                        "&new_folder_role_domain="+$("#new_folder_role_domain").attr("checked")+
-	                        "&domain="+$("#new_domain").val();
+	                        "&domain="+$("#new_domain").val()+
+	                        "&key='.$_SESSION['key'].'";
 	                    httpRequest("sources/users.queries.php",data);
 	                    $("#add_new_user_error").hide();
 	                    $(this).dialog("close");
@@ -1054,7 +1055,9 @@ if ( isset($_GET['page']) && $_GET['page'] == "manage_users" ){
             buttons: {
                 "'.$txt['ok'].'": function() {
                     LoadingPage();  //show loading div
-                    var data = "type=supprimer_user&id="+document.getElementById("delete_user_id").value;
+                    var data = "type=supprimer_user"+
+                    	"&id="+document.getElementById("delete_user_id").value+
+	                    "&key='.$_SESSION['key'].'";
                     httpRequest("sources/users.queries.php",data);
                     $(this).dialog("close");
                 },
@@ -1076,8 +1079,9 @@ if ( isset($_GET['page']) && $_GET['page'] == "manage_users" ){
                     if ( document.getElementById("change_user_pw_newpw").value == document.getElementById("change_user_pw_newpw_confirm").value ){
                         LoadingPage();  //show loading div
                         var data = "type=modif_mdp_user&"+
-                        "id="+document.getElementById("change_user_pw_id").value+
-                        "&newmdp="+encodeURIComponent(document.getElementById("change_user_pw_newpw").value);
+		                        "id="+document.getElementById("change_user_pw_id").value+
+		                        "&newmdp="+encodeURIComponent(document.getElementById("change_user_pw_newpw").value)+
+	                        	"&key='.$_SESSION['key'].'";
                         httpRequest("sources/users.queries.php",data);
                         document.getElementById("change_user_pw_error").innerHTML = "";
                         $("#change_user_pw_error").hide();
@@ -1105,8 +1109,9 @@ if ( isset($_GET['page']) && $_GET['page'] == "manage_users" ){
             buttons: {
                 "'.$txt['save_button'].'": function() {
                     var data = "type=modif_mail_user"+
-                    "&id="+document.getElementById("change_user_email_id").value+
-                    "&newemail="+document.getElementById("change_user_email_newemail").value;
+		                    "&id="+document.getElementById("change_user_email_id").value+
+		                    "&newemail="+document.getElementById("change_user_email_newemail").value+
+	                        "&key='.$_SESSION['key'].'";
                     httpRequest("sources/users.queries.php",data);
                     $(this).dialog("close");
                 },
@@ -1187,7 +1192,8 @@ if ( isset($_GET['page']) && $_GET['page'] == "manage_users" ){
             {
                 type    : parameter,
                 value   : val,
-                id      : id
+                id      : id,
+                key		: "'.$_SESSION['key'].'"
             },
             function(data){
                 $("#div_dialog_message_text").html("<div style=\"font-size:16px; text-align:center;\"><span class=\"ui-icon ui-icon-info\" style=\"float: left; margin-right: .3em;\"></span>'.$txt['alert_message_done'].'</div>");$("#div_dialog_message").dialog("open");
@@ -1217,6 +1223,7 @@ if ( isset($_GET['page']) && $_GET['page'] == "manage_users" ){
         if ( type == "functions" ) var data = "type=change_user_functions&id="+id+"&list="+list;
         if ( type == "autgroups" ) var data = "type=change_user_autgroups&id="+id+"&list="+list;
         if ( type == "forgroups" ) var data = "type=change_user_forgroups&id="+id+"&list="+list;
+        data += "&key='.$_SESSION['key'].'";
         httpRequest("sources/users.queries.php",data);
     }
 
@@ -1224,7 +1231,8 @@ if ( isset($_GET['page']) && $_GET['page'] == "manage_users" ){
         $.post("sources/users.queries.php",
             {
                 type    : "unlock_account",
-                id      : id
+                id      : id,
+                key		: "'.$_SESSION['key'].'"
             },
             function(data){
                 document.form_utilisateurs.submit();

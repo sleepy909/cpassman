@@ -78,6 +78,7 @@ v2.00
 * improvement: By default 'admin' account doesn't use LDAP [41]
 * improvement: If LDAP, not existing user in CPM is automatically created [43]
 * improvement: duplicate item from find page
+* improvement: add session_key verification for POST actions
 * fixed: problem with slash in label [3141743]
 * fixed: password in cleartext in log [3141167]
 * fixed: deleted pws show up in the search [3160582]
@@ -87,7 +88,7 @@ v2.00
 * fixed: JSON error on search page [18]
 * fixed: PHP version is checked during upgrade and install [19]
 * fixed: if no roles and folders then some buttons are disabled [20]
-* fixed: [23 - 29 - 32 - 33 - 36 - 37 - 44 - 47]
+* fixed: [23 - 29 - 32 - 33 - 36 - 37 - 44 - 47 - 53 - 56 - 58 - 48 - 65 - 68 - 63 - 69]
 
 v1.80
 * improvement: an item can be modified by anyone if activated [3040120]

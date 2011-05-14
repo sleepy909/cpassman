@@ -149,7 +149,7 @@ if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
 
                     <fieldset><legend>Please give me</legend>
                     <label for="root_path" style="width:300px;">Absolute path to cPassMan folder :</label><input type="text" id="root_path" name="root_path" class="step" style="width:560px;" /><br />
-                    <label for="url_path" style="width:300px;">Full URL to cPassMan :</label><input type="text" id="url_path" name="url_path" class="step" style="width:560px;" /><span style="padding-left:10px;" id="url_path_res"></span><br />
+                    <label for="url_path" style="width:300px;">Full URL to cPassMan :</label><input type="text" id="url_path" name="url_path" class="step" style="width:560px;" value="http://' . $_SERVER['HTTP_HOST'].substr($_SERVER['PHP_SELF'],0,strrpos($_SERVER['PHP_SELF'],'/')-8).'" /><span style="padding-left:10px;" id="url_path_res"></span><br />
                     </fieldset>
 
                     <h4>Next elements will be checked.</h4>
@@ -323,11 +323,10 @@ echo '
     echo '
     <div id="footer">
         <div style="width:500px;">
-            cPassMan '.$k['version'].' ? copyright 2009-2010
+            cPassMan '.$k['version'].' &copy; copyright 2010-2011
         </div>
         <div style="float:right;margin-top:-15px;">
-            <!--<a href="http://sourceforge.net/projects/communitypasswo" target="_blank"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=280505&amp;type=10" width="80" height="15" alt="Get Collaborative Passwords Manager at SourceForge.net. Fast, secure and Free Open Source software downloads" /></a>-->
-            <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/2.0/" title="Collaborative Passwords Manager by Nils Laumaill&#233; is licensed under a Creative Commons Attribution-Noncommercial-No Derivative Works 2.0 France License"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-nd/2.0/fr/80x15.png" /></a>
+            <a rel="license" href="http://creativecommons.org/licenses/by-nd/3.0/" title="Collaborative Passwords Manager by Nils Laumaill&#233; is licensed under a Creative Commons Attribution-No Derivative Works 3.0 License" target="_blank"><img src="includes/images/canevas/cc.3.0.png" alt="" /></a>
         </div>
     </div>';
 ?>
