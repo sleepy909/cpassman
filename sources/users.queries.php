@@ -212,20 +212,33 @@ SendEmail(
         	}
 
         	//delete user in database
-            $db->query("DELETE FROM ".$pre."users WHERE id = ".$_POST['id']);
+            //$db->query("DELETE FROM ".$pre."users WHERE id = ".$_POST['id']);
+        	$db->query_update(
+	        	'users',
+	        	array(
+	        	    'disabled' => 1
+	        	),
+	        	"id=".$_POST['id']
+        	);
 
+        	//TODO: improve deletion process
+        	/*
         	//delete personal folder and items
         	require_once ("NestedTree.class.php");
         	$tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
 
+        	//Get personal folder ID
+        	$data = $db->fetch_row("SELECT id FROM ".$pre."nested_tree WHERE title = '".$_POST['id']."' AND personal_folder = 1");
+        	$personal_folder_id = $data[0];
+
         	// Get through each subfolder
-        	$folders = $tree->getDescendants($_POST['id'],true);
+        	$folders = $tree->getDescendants($personal_folder_id,true);
         	foreach($folders as $folder){
         		//delete folder
-        		$db->query("DELETE FROM ".$pre."nested_tree WHERE id = ".$folder->id);
+        		$db->query("DELETE FROM ".$pre."nested_tree WHERE id = '".$folder->id."' AND personal_folder = 1");
 
         		//delete items & logs
-        		$items = $db->fetch_all_array("SELECT id FROM ".$pre."items WHERE id_tree='".$folder->id."'");
+        		$items = $db->fetch_all_array("SELECT id FROM ".$pre."items WHERE id_tree='".$folder->id."' AND perso = 1");
         		foreach( $items as $item ) {
         			//Delete item
         			$db->query("DELETE FROM ".$pre."items WHERE id = ".$item['id']);
@@ -239,7 +252,7 @@ SendEmail(
         	$tree->rebuild();
 
         	//kill session of user if logged
-
+			*/
             //reload page
             echo 'document.form_utilisateurs.submit();';
         break;

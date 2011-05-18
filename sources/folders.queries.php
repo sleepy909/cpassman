@@ -134,7 +134,7 @@ else if ( isset($_POST['type']) ){
             	$db->query("DELETE FROM ".$pre."nested_tree WHERE id = ".$folder->id);
 
             	//delete row
-            	echo '$("#row_'.$folder->id.'").remove();';
+            	//echo '$("#row_'.$folder->id.'").remove();';
 
                 //delete items & logs
                 $items = $db->fetch_all_array("SELECT id FROM ".$pre."items WHERE id_tree='".$folder->id."'");
@@ -154,7 +154,7 @@ else if ( isset($_POST['type']) ){
             $_SESSION['nb_folders'] --;
 
             //Refresh the page
-            //echo 'RefreshPage("form_groupes");';
+            echo 'RefreshPage("form_groupes");';
         break;
 
 
@@ -190,12 +190,21 @@ else if ( isset($_POST['type']) ){
             }
 
             if ( $create_new_folder == true ){
+            	//check if parent folder is personal
+            	$data = $db->fetch_row("SELECT personal_folder FROM ".$pre."nested_tree WHERE id = '".$parent_id."'");
+            	if ( $data[0] == 1 ){
+            		$is_personal = 1;
+            	}else{
+            		$is_personal = 0;
+            	}
+
+            	//create folder
                 $new_id=$db->query_insert(
                     "nested_tree",
                     array(
                         'parent_id' => $parent_id,
                         'title' => $title,
-                        'personal_folder' => 0,
+                        'personal_folder' => $is_personal,
                         'renewal_period' => $renewal_period,
                         'bloquer_creation' => '0',
                         'bloquer_modification' => '0'
