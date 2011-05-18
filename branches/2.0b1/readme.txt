@@ -79,6 +79,7 @@ v2.00
 * improvement: If LDAP, not existing user in CPM is automatically created [43]
 * improvement: duplicate item from find page
 * improvement: add session_key verification for POST actions
+* improvement: Manager can't do modification on users that are not linked to the same role [66]
 * fixed: problem with slash in label [3141743]
 * fixed: password in cleartext in log [3141167]
 * fixed: deleted pws show up in the search [3160582]

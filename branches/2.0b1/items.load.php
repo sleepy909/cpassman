@@ -318,7 +318,6 @@ function AjouterItem(){
             '", "annonce":"'+annonce+'", "diffusion":"'+diffusion+'", "id":"'+$('#id_item').val()+'", '+
             '"anyone_can_modify":"'+$('#anyone_can_modify:checked').val()+'", "tags":"'+protectString($('#item_tags').val())+'"}';
 
-alert(data);
             //Send query
             $.post(
                 "sources/items.queries.php",

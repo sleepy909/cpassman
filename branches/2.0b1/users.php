@@ -30,6 +30,7 @@ foreach($rows as $reccord) {
     $liste_fonctions[$reccord['id']] = array('id'=>$reccord['id'],'title'=>$reccord['title']);
 }
 
+
 //Display list of USERS
 echo '
 <div class="title ui-widget-content ui-corner-all">
@@ -109,6 +110,25 @@ echo '
 
             }
 
+        	//Check if user has the same roles accessible as the manager
+        	if ($_SESSION['user_gestionnaire']) {
+        		$show_user_folders = false;
+        		//Check if the user is a manager. If yes, not allowed to modifier
+        		if ($_SESSION['user_gestionnaire'] == 1 && $reccord['gestionnaire'] == 1) {
+        			$show_user_folders = false;
+        		}else{
+        			//Check if the user has at least a same role as the manager
+        			foreach($_SESSION['user_roles'] as $role_id){
+        				if (in_array($role_id, explode(";",$reccord['fonction_id']))) {
+        					$show_user_folders = true;
+        					break;
+        				}
+        			}
+        		}
+        	}else{
+        		$show_user_folders = true;
+        	}
+
             //Display Grid
             //if ($_SESSION['user_gestionnaire'] == 1 && $reccord['admin'] == 1){
             echo '<tr', $reccord['disabled'] == 1 ? ' style="background-color:#FF8080;font-size:11px;"' : ' class="ligne'.($x%2).'"', '>
@@ -122,7 +142,7 @@ echo '
 	                        <div id="list_function_user_'.$reccord['id'].'" style="text-align:center;">'
 	                            .$list_allo_fcts.'
 	                        </div>
-	                        <div style="text-align:center;', ($_SESSION['user_gestionnaire'] == 1 && $reccord['gestionnaire'] == 1) ? 'display:none;':'', '">
+	                        <div style="text-align:center;', $show_user_folders == false ? 'display:none;':'', '">
 	                        	<img src="includes/images/cog_edit.png" style="cursor:pointer;" onclick="Open_Div_Change(\''.$reccord['id'].'\',\'functions\')" title="'.$txt['change_function'].'" />
 							</div>
 						</div>
@@ -132,7 +152,7 @@ echo '
 	                        <div id="list_autgroups_user_'.$reccord['id'].'" style="text-align:center;">'
 	                        .$list_allo_grps.'
 	                        </div>
-	                        <div style="text-align:center;', ($_SESSION['user_gestionnaire'] == 1 && $reccord['gestionnaire'] == 1) ? 'display:none;':'', '">
+	                        <div style="text-align:center;', $show_user_folders == false ? 'display:none;':'', '">
 								<img src="includes/images/cog_edit.png" style="cursor:pointer;" onclick="Open_Div_Change(\''.$reccord['id'].'\',\'autgroups\')" title="'.$txt['change_authorized_groups'].'" />
 							</div>
 						</div>
@@ -142,7 +162,7 @@ echo '
 	                        <div id="list_forgroups_user_'.$reccord['id'].'" style="text-align:center;">'
 	                            .$list_forb_grps. '
 	                        </div>
-	                        <div style="text-align:center;', ($_SESSION['user_gestionnaire'] == 1 && $reccord['gestionnaire'] == 1) ? 'display:none;':'', '">
+	                        <div style="text-align:center;', $show_user_folders == false ? 'display:none;':'', '">
 	                        	<img src="includes/images/cog_edit.png" style="cursor:pointer;" onclick="Open_Div_Change(\''.$reccord['id'].'\',\'forgroups\')" title="'.$txt['change_forbidden_groups'].'" />
 							</div>
 						</div>
