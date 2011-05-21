@@ -170,6 +170,7 @@ function CreateRandomString(size,type){
 
     // CHoose what kind of string we want
     if ( type == "num" ) chars = "0123456789";
+    else if ( type == "num_no_0" ) chars = "123456789";
     else if ( type == "alpha" ) chars = "ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
     else chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
 

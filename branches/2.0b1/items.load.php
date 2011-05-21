@@ -298,7 +298,7 @@ function AjouterItem(){
 
 			//Manage description
             if (CKEDITOR.instances["desc"]) {
-            	var description = CKEDITOR.instances["desc"].getData();
+            	var description = protectString(CKEDITOR.instances["desc"].getData());
             }else{
             	var description = protectString($("#desc").val()).replace(/\n/g, '<br />');
             }
@@ -316,8 +316,8 @@ function AjouterItem(){
             '"description":"'+(description)+'", "url":"'+url+'", "categorie":"'+$('#categorie').val()+'", '+
             '"restricted_to":"'+restriction+'", "restricted_to_roles":"'+restriction_role+'", "salt_key_set":"'+$('#personal_sk_set').val()+'", "is_pf":"'+$('#recherche_group_pf').val()+
             '", "annonce":"'+annonce+'", "diffusion":"'+diffusion+'", "id":"'+$('#id_item').val()+'", '+
-            '"anyone_can_modify":"'+$('#anyone_can_modify:checked').val()+'", "tags":"'+protectString($('#item_tags').val())+'"}';
-
+            '"anyone_can_modify":"'+$('#anyone_can_modify:checked').val()+'", "tags":"'+protectString($('#item_tags').val())+'", "random_id_from_files":"'+$('#random_id').val()+'"}';
+alert(data);
             //Send query
             $.post(
                 "sources/items.queries.php",
@@ -337,6 +337,7 @@ function AjouterItem(){
                         $("#random_id").val("");
                         //Refresh page
                         window.location.href = "index.php?page=items&group="+$('#categorie').val()+"&id="+data[0].new_id;
+                        //ListerItems($("#open_folder").val(), '', 0);
                     }
                     LoadingPage();
                 },
@@ -408,7 +409,7 @@ function EditerItem(){
 
 			//Manage description
             if (CKEDITOR.instances["edit_desc"]) {
-            	var description = CKEDITOR.instances["edit_desc"].getData();
+            	var description = protectString(CKEDITOR.instances["edit_desc"].getData());
             }else{
             	var description = protectString($("#edit_desc").val());
             }
@@ -1010,11 +1011,13 @@ function upload_attached_files() {
     var user_id = $('#form_user_id').val();
 
     //generate fake id if needed
-    if ( document.getElementById("random_id").value == "" ) var post_id = CreateRandomString(9,"num");
-    else var post_id = $("#random_id").val();
-
-    //Save fake id
-    $("#random_id").val(post_id);
+    if ($("#random_id").val() == ""){
+    	var post_id = CreateRandomString(9,"num_no_0");
+    	//Save fake id
+    	$("#random_id").val(post_id);
+    }else{
+    	var post_id = $("#random_id").val();
+	}
 
     $('#item_files_upload').uploadifySettings(
     	'scriptData',

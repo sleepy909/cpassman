@@ -54,7 +54,7 @@ if ( isset($_POST['type']) ){
             $login = htmlspecialchars_decode($data_received['login']);
             $tags = htmlspecialchars_decode($data_received['tags']);
 
-            //check if element doesn't already exist
+            //;check if element doesn't already exist
             $item_exists = 0;
             $new_id = "";
         	$data = $db->fetch_row("SELECT COUNT(*) FROM ".$pre."items WHERE label = '".addslashes($label)."' AND inactif=0");
@@ -130,10 +130,10 @@ if ( isset($_POST['type']) ){
 	            }
 
 	            // Check if any files have been added
-	            if ( !empty($data['random_id_from_files']) ){
+	            if ( !empty($data_received['random_id_from_files']) ){
 	                $sql = "SELECT id
 	                        FROM ".$pre."files
-	                        WHERE id_item=".$_POST['random_id_from_files'];
+	                        WHERE id_item=".$data_received['random_id_from_files'];
 	                $rows = $db->fetch_all_array($sql);
 	                foreach ($rows as $reccord){
 	                    //update item_id in files table
@@ -649,39 +649,44 @@ if ( isset($_POST['type']) ){
                 }
 
                 //Get restriction list for users
-                $liste = explode(";",$data_item['restricted_to']);
-                $liste_restriction = "";
-                foreach($liste as $elem){
-                    if ( !empty($elem) ){
-                        $data2 = $db->fetch_row("SELECT login FROM ".$pre."users WHERE id=".$elem);
-                        $liste_restriction .= $data2[0].";";
-                    }
-                }
+            	$liste = explode(";",$data_item['restricted_to']);
+            	$liste_restriction = "";
+            	if (count($liste) > 0) {
+            		foreach($liste as $elem){
+            			if ( !empty($elem) ){
+            				$data2 = $db->fetch_row("SELECT login FROM ".$pre."users WHERE id=".$elem);
+            				$liste_restriction .= $data2[0].";";
+            			}
+            		}            	}
+
 
             	//Get restriction list for roles
             	$liste_restriction_roles = array();
-            	$rows = $db->fetch_all_array("
+            	if (isset($_SESSION['restricted_to_roles']) && $_SESSION['restricted_to_roles'] == 1) {
+            		$rows = $db->fetch_all_array("
 					SELECT t.title
 					FROM ".$pre."roles_title AS t
 					INNER JOIN ".$pre."roles_values AS v ON (t.id=v.role_id)
 					WHERE folder_id = ".$data_item['id_tree']."
 					ORDER BY t.title ASC");
-				foreach($rows as $reccord){
-					array_push($liste_restriction_roles, $reccord['title']);
-				}
+            		foreach($rows as $reccord){
+            			array_push($liste_restriction_roles, $reccord['title']);
+            		}
 
-				//Add restriction if item is restricted to roles
-            	$rows = $db->fetch_all_array("
+            		//Add restriction if item is restricted to roles
+            		$rows = $db->fetch_all_array("
 					SELECT t.title
 					FROM ".$pre."roles_title AS t
 					INNER JOIN ".$pre."restriction_to_roles AS r ON (t.id=r.role_id)
 					WHERE item_id = ".$data_item['id']."
 					ORDER BY t.title ASC");
-				foreach($rows as $reccord){
-					if (!in_array($reccord['title'], $liste_restriction_roles)){
-						array_push($liste_restriction_roles, $reccord['title']);
-					}
-				}
+            		foreach($rows as $reccord){
+            			if (!in_array($reccord['title'], $liste_restriction_roles)){
+            				array_push($liste_restriction_roles, $reccord['title']);
+            			}
+            		}
+            	}
+
 
                 //Prepare DIalogBox data
                 if ( $item_is_expired == false ) {
@@ -703,7 +708,7 @@ if ( isset($_POST['type']) ){
                 $arrData['login'] = str_replace('"','&quot;',$data_item['login']);
                 $arrData['historique'] = str_replace('"','&quot;',$historique);
                 $arrData['id_restricted_to'] = $liste_restriction;
-            	$arrData['id_restricted_to_roles'] = implode(";", $liste_restriction_roles).";";
+            	$arrData['id_restricted_to_roles'] = count($liste_restriction_roles) > 0 ? implode(";", $liste_restriction_roles).";" : "";
                 $arrData['tags'] = str_replace('"','&quot;',$tags);
                 $arrData['folder'] = $data_item['id_tree'];
                 $arrData['anyone_can_modify'] = $data_item['anyone_can_modify'];

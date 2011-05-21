@@ -81,6 +81,7 @@ function CleanString($string){
     {
         $tab_special_car[] = chr($i);
     }
+	array_push($tab_special_car, "<br />");
     return str_replace($tab_special_car, "",$string);
 }
 
