@@ -54,137 +54,141 @@ if ( isset($_POST['type']) ){
             $login = htmlspecialchars_decode($data_received['login']);
             $tags = htmlspecialchars_decode($data_received['tags']);
 
-            //;check if element doesn't already exist
-            $item_exists = 0;
-            $new_id = "";
-        	$data = $db->fetch_row("SELECT COUNT(*) FROM ".$pre."items WHERE label = '".addslashes($label)."' AND inactif=0");
-        	if ( $data[0] != 0 ){
-        		$item_exists = 1;
-        	}else{
-        		$item_exists = 0;
-        	}
-
-            if ( (isset($_SESSION['settings']['duplicate_item']) && $_SESSION['settings']['duplicate_item'] == 0 && $item_exists == 0)
-            	||
-            	(isset($_SESSION['settings']['duplicate_item']) && $_SESSION['settings']['duplicate_item'] == 1)
-            ){
-	            //encrypt PW
-	            if ($data_received['salt_key_set']==1 && isset($data_received['salt_key_set']) && $data_received['is_pf']==1 && isset($data_received['is_pf'])){
-	                $pw = encrypt($pw,mysql_real_escape_string(stripslashes($_SESSION['my_sk'])));
-	                $resticted_to = $_SESSION['user_id'];
-	            }else
-	                $pw = encrypt($pw);
-
-	            //ADD item
-	            $new_id = $db->query_insert(
-	                'items',
-	                array(
-	                    'label' => $label,
-	                    'description' => $data_received['description'],
-	                    'pw' => $pw,
-	                    'url' => $url,
-	                    'id_tree' => $data_received['categorie'],
-	                    'login' => $login,
-	                    'inactif' => '0',
-						'restricted_to' => isset($data_received['restricted_to']) ? $data_received['restricted_to'] : '',
-						'perso' => ( $data_received['salt_key_set']==1 && isset($data_received['salt_key_set']) && $data_received['is_pf']==1 && isset($data_received['is_pf'])) ? '1' : '0',
-						'anyone_can_modify' => (isset($data_received['anyone_can_modify']) && $data_received['anyone_can_modify'] == "on") ? '1' : '0'
-	                )
-	            );
-
-	        	//Manage retriction_to_roles
-	        	if (isset($data_received['restricted_to_roles'])) {
-	        		foreach (array_filter(explode(';', $data_received['restricted_to_roles'])) as $role){
-	        			$db->query_insert(
-		         			'restriction_to_roles',
-		         			array(
-		         			    'role_id' => $role,
-		         			    'item_id' => $new_id
-		         			)
-	        			);
-	        		}
+        	if (!empty($pw)) {
+	            //;check if element doesn't already exist
+	            $item_exists = 0;
+	            $new_id = "";
+	        	$data = $db->fetch_row("SELECT COUNT(*) FROM ".$pre."items WHERE label = '".addslashes($label)."' AND inactif=0");
+	        	if ( $data[0] != 0 ){
+	        		$item_exists = 1;
+	        	}else{
+	        		$item_exists = 0;
 	        	}
 
-	            //log
-	            $db->query_insert(
-	                'log_items',
-	                array(
-	                    'id_item' => $new_id,
-	                    'date' => mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y')),
-	                    'id_user' => $_SESSION['user_id'],
-	                    'action' => 'at_creation'
-	                )
-	            );
+	            if ( (isset($_SESSION['settings']['duplicate_item']) && $_SESSION['settings']['duplicate_item'] == 0 && $item_exists == 0)
+	            	||
+	            	(isset($_SESSION['settings']['duplicate_item']) && $_SESSION['settings']['duplicate_item'] == 1)
+	            ){
+		            //encrypt PW
+		            if ($data_received['salt_key_set']==1 && isset($data_received['salt_key_set']) && $data_received['is_pf']==1 && isset($data_received['is_pf'])){
+		                $pw = encrypt($pw,mysql_real_escape_string(stripslashes($_SESSION['my_sk'])));
+		                $resticted_to = $_SESSION['user_id'];
+		            }else
+		                $pw = encrypt($pw);
 
-	            //Add tags
-	            $tags = explode(' ', $tags);
-	            foreach($tags as $tag){
-	                if ( !empty($tag) )
-	                    $db->query_insert(
-	                        'tags',
-	                        array(
-	                            'item_id' => $new_id,
-	                            'tag' => strtolower($tag)
-	                        )
-	                    );
+		            //ADD item
+		            $new_id = $db->query_insert(
+		                'items',
+		                array(
+		                    'label' => $label,
+		                    'description' => $data_received['description'],
+		                    'pw' => $pw,
+		                    'url' => $url,
+		                    'id_tree' => $data_received['categorie'],
+		                    'login' => $login,
+		                    'inactif' => '0',
+							'restricted_to' => isset($data_received['restricted_to']) ? $data_received['restricted_to'] : '',
+							'perso' => ( $data_received['salt_key_set']==1 && isset($data_received['salt_key_set']) && $data_received['is_pf']==1 && isset($data_received['is_pf'])) ? '1' : '0',
+							'anyone_can_modify' => (isset($data_received['anyone_can_modify']) && $data_received['anyone_can_modify'] == "on") ? '1' : '0'
+		                )
+		            );
+
+		        	//Manage retriction_to_roles
+		        	if (isset($data_received['restricted_to_roles'])) {
+		        		foreach (array_filter(explode(';', $data_received['restricted_to_roles'])) as $role){
+		        			$db->query_insert(
+			         			'restriction_to_roles',
+			         			array(
+			         			    'role_id' => $role,
+			         			    'item_id' => $new_id
+			         			)
+		        			);
+		        		}
+		        	}
+
+		            //log
+		            $db->query_insert(
+		                'log_items',
+		                array(
+		                    'id_item' => $new_id,
+		                    'date' => mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y')),
+		                    'id_user' => $_SESSION['user_id'],
+		                    'action' => 'at_creation'
+		                )
+		            );
+
+		            //Add tags
+		            $tags = explode(' ', $tags);
+		            foreach($tags as $tag){
+		                if ( !empty($tag) )
+		                    $db->query_insert(
+		                        'tags',
+		                        array(
+		                            'item_id' => $new_id,
+		                            'tag' => strtolower($tag)
+		                        )
+		                    );
+		            }
+
+		            // Check if any files have been added
+		            if ( !empty($data_received['random_id_from_files']) ){
+		                $sql = "SELECT id
+		                        FROM ".$pre."files
+		                        WHERE id_item=".$data_received['random_id_from_files'];
+		                $rows = $db->fetch_all_array($sql);
+		                foreach ($rows as $reccord){
+		                    //update item_id in files table
+		                    $db->query_update(
+		                        'files',
+		                        array(
+		                            'id_item' => $new_id
+		                        ),
+		                        "id='".$reccord['id']."'"
+		                    );
+		                }
+		            }
+
+		            //Update CACHE table
+		            UpdateCacheTable("add_value",$new_id);
+
+		            //Announce by email?
+		            if ( $data_received['annonce'] == 1 ){
+		                require_once("class.phpmailer.php");
+		                //envoyer email
+		                $destinataire= explode(';',$data_received['diffusion']);
+		                foreach($destinataire as $mail_destinataire){
+		                    //envoyer ay destinataire
+		                    $mail = new PHPMailer();
+		                    $mail->SetLanguage("en","../includes/libraries/phpmailer/language");
+		                    $mail->IsSMTP();                                   // send via SMTP
+		                    $mail->Host     = $smtp_server; // SMTP servers
+		                    $mail->SMTPAuth = $smtp_auth;     // turn on SMTP authentication
+		                    $mail->Username = $smtp_auth_username;  // SMTP username
+		                    $mail->Password = $smtp_auth_password; // SMTP password
+		                    $mail->From     = $email_from;
+		                    $mail->FromName = $email_from_name;
+		                    $mail->AddAddress($mail_destinataire);     //Destinataire
+		                    $mail->WordWrap = 80;                              // set word wrap
+		                    $mail->IsHTML(true);                               // send as HTML
+		                    $mail->Subject  =  $txt['email_subject'];
+		                    $mail->AltBody     =  $txt['email_altbody_1']." ".mysql_real_escape_string(stripslashes(($_POST['label'])))." ".$txt['email_altbody_2'];
+		                    $corpsDeMail = $txt['email_body_1'].mysql_real_escape_string(stripslashes(($_POST['label']))).$txt['email_body_2'].
+		                    $_SESSION['settings']['cpassman_url']."/index.php?page=items&group=".$_POST['categorie']."&id=".$new_id.$txt['email_body_3'];
+		                    $mail->Body  =  $corpsDeMail;
+		                    $mail->Send();
+		                }
+		            }
+
+	                //return data
+	                echo '[ { "item_exists": "'.$item_exists.'", "new_id": "'.$new_id.'", "error" : "no" } ]';
 	            }
 
-	            // Check if any files have been added
-	            if ( !empty($data_received['random_id_from_files']) ){
-	                $sql = "SELECT id
-	                        FROM ".$pre."files
-	                        WHERE id_item=".$data_received['random_id_from_files'];
-	                $rows = $db->fetch_all_array($sql);
-	                foreach ($rows as $reccord){
-	                    //update item_id in files table
-	                    $db->query_update(
-	                        'files',
-	                        array(
-	                            'id_item' => $new_id
-	                        ),
-	                        "id='".$reccord['id']."'"
-	                    );
-	                }
-	            }
-
-	            //Update CACHE table
-	            UpdateCacheTable("add_value",$new_id);
-
-	            //Announce by email?
-	            if ( $data_received['annonce'] == 1 ){
-	                require_once("class.phpmailer.php");
-	                //envoyer email
-	                $destinataire= explode(';',$data_received['diffusion']);
-	                foreach($destinataire as $mail_destinataire){
-	                    //envoyer ay destinataire
-	                    $mail = new PHPMailer();
-	                    $mail->SetLanguage("en","../includes/libraries/phpmailer/language");
-	                    $mail->IsSMTP();                                   // send via SMTP
-	                    $mail->Host     = $smtp_server; // SMTP servers
-	                    $mail->SMTPAuth = $smtp_auth;     // turn on SMTP authentication
-	                    $mail->Username = $smtp_auth_username;  // SMTP username
-	                    $mail->Password = $smtp_auth_password; // SMTP password
-	                    $mail->From     = $email_from;
-	                    $mail->FromName = $email_from_name;
-	                    $mail->AddAddress($mail_destinataire);     //Destinataire
-	                    $mail->WordWrap = 80;                              // set word wrap
-	                    $mail->IsHTML(true);                               // send as HTML
-	                    $mail->Subject  =  $txt['email_subject'];
-	                    $mail->AltBody     =  $txt['email_altbody_1']." ".mysql_real_escape_string(stripslashes(($_POST['label'])))." ".$txt['email_altbody_2'];
-	                    $corpsDeMail = $txt['email_body_1'].mysql_real_escape_string(stripslashes(($_POST['label']))).$txt['email_body_2'].
-	                    $_SESSION['settings']['cpassman_url']."/index.php?page=items&group=".$_POST['categorie']."&id=".$new_id.$txt['email_body_3'];
-	                    $mail->Body  =  $corpsDeMail;
-	                    $mail->Send();
-	                }
-	            }
-
-                //return data
-                echo '[ { "item_exists": "'.$item_exists.'", "new_id": "'.$new_id.'", "error" : "no" } ]';
-            }
-
-        	else if (isset($_SESSION['settings']['duplicate_item']) && $_SESSION['settings']['duplicate_item'] == 0 && $item_exists == 1) {
-        		//return data
-        		echo '[ { "error" : "item_exists" } ]';
+	        	else if (isset($_SESSION['settings']['duplicate_item']) && $_SESSION['settings']['duplicate_item'] == 0 && $item_exists == 1) {
+	        		//return data
+	        		echo '[ { "error" : "item_exists" } ]';
+	        	}
+        	}else{
+        		echo '[ { "error" : "something_wrong" } ]';
         	}
         break;
 
