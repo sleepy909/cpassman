@@ -232,7 +232,7 @@ function IdentifyUserRights($groupes_visibles_user,$groupes_interdits_user,$is_a
 		//Exclude all PF
     	$_SESSION['forbiden_pfs'] = array();
     	$sql = "SELECT id FROM ".$pre."nested_tree WHERE personal_folder = 1";
-    	if (isset($_SESSION['settings']['enable_pf_feature']) && $_SESSION['settings']['enable_pf_feature'] == 1) {
+    	if (isset($_SESSION['settings']['enable_pf_feature']) && $_SESSION['settings']['enable_pf_feature'] == 1 && isset($_SESSION['personal_folder']) && $_SESSION['personal_folder'] == 1) {
     		$sql .= " AND title != '".$_SESSION['user_id']."'";
 		}
 
@@ -243,7 +243,7 @@ function IdentifyUserRights($groupes_visibles_user,$groupes_interdits_user,$is_a
 
 
         //Get ID of personal folder
-        if ( isset($_SESSION['settings']['enable_pf_feature']) && $_SESSION['settings']['enable_pf_feature'] == 1 ) {
+        if ( isset($_SESSION['settings']['enable_pf_feature']) && $_SESSION['settings']['enable_pf_feature'] == 1 && isset($_SESSION['personal_folder']) && $_SESSION['personal_folder'] == 1) {
             $pf = $db->fetch_row("SELECT id FROM ".$pre."nested_tree WHERE title = '".$_SESSION['user_id']."'");
             if ( !empty($pf[0]) ){
                 if ( !in_array($pf[0], $list_allowed_folders) ){

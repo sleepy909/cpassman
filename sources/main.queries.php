@@ -258,7 +258,8 @@ switch($_POST['type'])
                    $_SESSION['last_pw_change'] = $data['last_pw_change'];
                    $_SESSION['last_pw'] = $data['last_pw'];
                    $_SESSION['can_create_root_folder'] = $data['can_create_root_folder'];
-                   $_SESSION['key'] = $key;
+	            $_SESSION['key'] = $key;
+	            $_SESSION['personal_folder'] = $data['personal_folder'];
                    $_SESSION['fin_session'] = time() + $_POST['duree_session'] * 60;
                    if ( empty($data['last_connexion']) ) $_SESSION['derniere_connexion'] = mktime(date('h'),date('m'),date('s'),date('m'),date('d'),date('y'));
                    else $_SESSION['derniere_connexion'] = $data['last_connexion'];

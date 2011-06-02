@@ -53,6 +53,7 @@ Enrique, shauninja, seskahin, tstd0, Tommi, Petr and Philipp.
 * IMAP login
 * translations
 * PostgreSQL database support
+* Recycled bin (see issue 77)
 
 ------------------------------------------  CHANGELOG  ----------------------------------------------
 v2.00
@@ -89,7 +90,7 @@ v2.00
 * fixed: JSON error on search page [18]
 * fixed: PHP version is checked during upgrade and install [19]
 * fixed: if no roles and folders then some buttons are disabled [20]
-* fixed: [23 - 29 - 32 - 33 - 36 - 37 - 44 - 47 - 53 - 56 - 58 - 48 - 65 - 68 - 63 - 69]
+* fixed: [23 - 29 - 32 - 33 - 36 - 37 - 44 - 47 - 53 - 56 - 58 - 48 - 65 - 68 - 63 - 69 - 78 - 75]
 
 v1.80
 * improvement: an item can be modified by anyone if activated [3040120]

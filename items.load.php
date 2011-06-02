@@ -58,11 +58,13 @@ if ($_SESSION['CPM'] != 1)
     }
 
     function protectString(string){
-		return string.replace(/"/g,'&quot;')
+    	string = string.replace(/\\/g,'&#93;');
+		return string.replace(/"/g,'&quot;');
     }
 
     function unprotectString(string){
-		return string.replace(/&quot;/g,'"')
+    	string = string.replace(/\\/g,'').replace(/&#93;/g,'\\');
+		return string;
     }
 
 
@@ -317,7 +319,7 @@ function AjouterItem(){
             '"restricted_to":"'+restriction+'", "restricted_to_roles":"'+restriction_role+'", "salt_key_set":"'+$('#personal_sk_set').val()+'", "is_pf":"'+$('#recherche_group_pf').val()+
             '", "annonce":"'+annonce+'", "diffusion":"'+diffusion+'", "id":"'+$('#id_item').val()+'", '+
             '"anyone_can_modify":"'+$('#anyone_can_modify:checked').val()+'", "tags":"'+protectString($('#item_tags').val())+'", "random_id_from_files":"'+$('#random_id').val()+'"}';
-alert(data);
+
             //Send query
             $.post(
                 "sources/items.queries.php",
@@ -330,6 +332,11 @@ alert(data);
                     if (data[0].error == "item_exists") {
                         $("#div_formulaire_saisi").dialog("open");
                         $("#new_show_error").html('<?php echo $txt['error_item_exists'];?>');
+                        $("#new_show_error").show();
+                        LoadingPage();
+                    }else if (data[0].error == "something_wrong") {
+                    	$("#div_formulaire_saisi").dialog("open");
+                        $("#new_show_error").html('ERROR!!');
                         $("#new_show_error").show();
                         LoadingPage();
                     }else if (data[0].new_id != "") {
@@ -651,7 +658,7 @@ function AfficherDetailsItem(id, salt_key_required, expired_item, restricted, di
                     $("#id_label").html(data.label).html();
                     $("#hid_label").val(data.label);
                     $("#id_pw").html('<img src="includes/images/masked_pw.png" />');
-                    $("#hid_pw").val(data.pw);
+                    $("#hid_pw").val(unprotectString(data.pw));
                     if ( data.url != "") {
                         $("#id_url").html(data.url+data.link);
                         $("#hid_url").val(data.url);
