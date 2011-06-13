@@ -41,13 +41,18 @@ function ListerElemDel(){
 
 function restoreDeletedItems(){
     if ( confirm("<?php echo $txt['views_confirm_restoration'];?>") ){
-        var list = "";
+        var list_i = "";
         $(".cb_deleted_item:checked").each(function() {
-            if ( list == "" ) list = $(this).val();
-            else list = list+';'+$(this).val();
+            if ( list_i == "" ) list_i = $(this).val();
+            else list_i = list_i+';'+$(this).val();
+        });
+        var list_f = "";
+        $(".cb_deleted_folder:checked").each(function() {
+            if ( list_f == "" ) list_f = $(this).val();
+            else list_f = list_f+';'+$(this).val();
         });
 
-        var data = "type=restore_deleted__items&list="+list;
+        var data = "type=restore_deleted__items&list_i="+list_i+"&list_f="+list_f;
         httpRequest("sources/views.queries.php",data);
     }
 }

@@ -101,9 +101,24 @@ switch($_POST['type'])
     #----------------------------------
     #CASE display a full listing with all items deleted
     case "lister_suppression":
-        $texte = "<table cellpadding=3>";
+    	//FOLDERS deleted
+    	$arr_folders = array();
+    	$texte = "<table cellpadding=3><tr><td><u><b>".$txt['group']."</b></u></td></tr>";
+    	$rows = $db->fetch_all_array("
+            SELECT valeur, intitule
+            FROM ".$pre."misc
+            WHERE type  = 'folder_deleted'");
+    	foreach( $rows as $reccord ){
+    		$tmp = explode(',', $reccord['valeur']);
+    		$texte .= '<tr><td><input type=\'checkbox\' class=\'cb_deleted_folder\' value=\''.$reccord['intitule'].'\' id=\'folder_deleted_'.$reccord['intitule'].'\' />&nbsp;<b>'.
+    			$tmp[2].'</b></td><td><input type=\"hidden\" value=\"'.$reccord['valeur'].'\"></td></tr>';
+    		$arr_folders[substr($reccord['intitule'],1)] = $tmp[2];
+    	}
+
+    	//ITEMS deleted
+    	$texte .= "<tr><td><u><b>".$txt['email_altbody_1']."</b></u></td></tr>";
         $rows = $db->fetch_all_array("
-            SELECT u.login AS login, i.id AS id, i.label AS label, l.date AS date
+            SELECT u.login AS login, i.id AS id, i.label AS label, i.id_tree AS id_tree, l.date AS date
             FROM ".$pre."log_items AS l
             INNER JOIN ".$pre."items AS i ON (l.id_item=i.id)
             INNER JOIN ".$pre."users AS u ON (l.id_user=u.id)
@@ -111,7 +126,12 @@ switch($_POST['type'])
             AND l.action = 'at_delete'
             GROUP BY l.id_item");
         foreach( $rows as $reccord ){
-            $texte .= '<tr><td><input type=\'checkbox\' class=\'cb_deleted_item\' value=\''.$reccord['id'].'\' id=\'item_deleted_'.$reccord['id'].'\' />&nbsp;<b>'.$reccord['label'].'</b></td><td width=\"100px\" align=\"center\">'.date($_SESSION['settings']['date_format'],$reccord['date']).'</td><td width=\"70px\" align=\"center\">'.$reccord['login'].'</td></tr>';
+        	if (count($arr_folders[$reccord['id_tree']])>0) {
+        		$this_folder = '<td>'.$arr_folders[$reccord['id_tree']].'</td>';
+        	}else{
+        		$this_folder = "";
+        	}
+            $texte .= '<tr><td><input type=\'checkbox\' class=\'cb_deleted_item\' value=\''.$reccord['id'].'\' id=\'item_deleted_'.$reccord['id'].'\' />&nbsp;<b>'.$reccord['label'].'</b></td><td width=\"100px\" align=\"center\">'.date($_SESSION['settings']['date_format'],$reccord['date']).'</td><td width=\"70px\" align=\"center\">'.$reccord['login'].'</td>'.$this_folder.'</tr>';
         }
         echo 'document.getElementById("liste_elems_del").innerHTML = "'.$texte.'</table><div style=\'margin-left:5px;\'><input type=\'checkbox\' id=\'item_deleted_select_all\' />&nbsp;<img src=\"includes/images/arrow-repeat.png\" title=\"'.$txt['restore'].'\" style=\"cursor:pointer;\" onclick=\"restoreDeletedItems()\">&nbsp;<img src=\"includes/images/bin_empty.png\" title=\"'.$txt['delete'].'\" style=\"cursor:pointer;\" onclick=\"reallyDeleteItems()\"></div>";';
         echo '$(\'#item_deleted_select_all\').click(function(){if ( $(\'#item_deleted_select_all\').attr(\'checked\') ) { $("input[type=\'checkbox\']:not([disabled=\'disabled\'])").attr(\'checked\', true); } else { $("input[type=\'checkbox\']:not([disabled=\'disabled\'])").removeAttr(\'checked\');  }}); ';
@@ -122,17 +142,53 @@ switch($_POST['type'])
     #----------------------------------
     #CASE admin want to restaure a list of deleted items
     case "restore_deleted__items":
-        foreach( explode(';',$_POST['list']) as $id ){
-            $db->query_update(
-                "items",
-                array(
-                    'inactif' => '0'
-                ),
-                'id = '.$id
-            );
-            //log
-            $db->query("INSERT INTO ".$pre."log_items VALUES ('".$id."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','at_restored','')");
-        }
+    	//restore FOLDERS
+    	if(count($_POST['list_f'])>0){
+	    	foreach( explode(';',$_POST['list_f']) as $id ){
+	    		$data = $db->query_first("
+					SELECT valeur
+		            FROM ".$pre."misc
+		            WHERE type = 'folder_deleted'
+		            AND intitule = '".$id."'"
+		        );
+	    		if ( $data['valeur'] != 0 ){
+	    			$folder_data = explode(',', $data['valeur']);
+	    			//insert deleted folder
+	    			$db->query_insert(
+		    			'nested_tree',
+		    			array(
+		    			    'id' => $folder_data[0],
+			    			'parent_id' => $folder_data[1],
+			    			'title' => $folder_data[2],
+			    			'nleft' => $folder_data[3],
+			    			'nright' => $folder_data[4],
+			    			'nlevel' => $folder_data[5],
+			    			'bloquer_creation' => $folder_data[6],
+			    			'bloquer_modification' => $folder_data[7],
+			    			'personal_folder' => $folder_data[8],
+			    			'renewal_period' => $folder_data[9]
+		    			)
+	    			);
+	    			//delete log
+	    			$db->query("DELETE FROM ".$pre."misc WHERE type = 'folder_deleted' AND intitule= '".$id."'");
+	    		}
+	    	}
+    	}
+    	//restore ITEMS
+    	if(count($_POST['list_i'])>0){
+    		foreach( explode(';',$_POST['list_i']) as $id ){
+    			$db->query_update(
+    			"items",
+    			array(
+    			    'inactif' => '0'
+    			),
+    			'id = '.$id
+    			);
+    			//log
+    			$db->query("INSERT INTO ".$pre."log_items VALUES ('".$id."','".mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y'))."','".$_SESSION['user_id']."','at_restored','')");
+    		}
+    	}
+
         //reload
         echo 'window.location.href = "index.php?page=manage_views";';
     break;

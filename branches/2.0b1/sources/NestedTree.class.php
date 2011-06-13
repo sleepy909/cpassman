@@ -319,11 +319,11 @@ if ($_SESSION['CPM'] != 1)
         function getTreeWithChildren()
         {
             $idField = $this->fields['id'];
-            $parentField = $this->fields['parent'];
+        	$parentField = $this->fields['parent'];
 
             $query = sprintf('select %s from %s order by %s',
                              join(',', $this->_getFields()),
-                             $this->table,
+				           	$this->table,
                              $this->fields['sort']);
 
             $result = mysql_query($query);

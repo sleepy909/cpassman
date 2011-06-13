@@ -503,7 +503,7 @@ function CPMStats(){
     // Turn this into the query string!
     $stats_to_send = implode('&', $stats_to_send);
 
-    fopen("http://www.vag-technique.fr/divers/cpm_stats/collect_stats.php?".$stats_to_send,'r');
+    fopen("http://www.cpassman.org/files/cpm_stats/collect_stats.php?".$stats_to_send,'r');
 
     // update the actual time
     $db->query_update(

@@ -53,7 +53,6 @@ Enrique, shauninja, seskahin, tstd0, Tommi, Petr and Philipp.
 * IMAP login
 * translations
 * PostgreSQL database support
-* Recycled bin (see issue 77)
 
 ------------------------------------------  CHANGELOG  ----------------------------------------------
 v2.00
@@ -81,6 +80,8 @@ v2.00
 * improvement: duplicate item from find page
 * improvement: add session_key verification for POST actions
 * improvement: Manager can't do modification on users that are not linked to the same role [66]
+* improvement: old passwords are stored in history [80]
+* improvement: recycle bin on items and folders [77]
 * fixed: problem with slash in label [3141743]
 * fixed: password in cleartext in log [3141167]
 * fixed: deleted pws show up in the search [3160582]

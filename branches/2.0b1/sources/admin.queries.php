@@ -34,17 +34,17 @@ switch($_POST['type'])
     case "cpm_status":
         $text = "<ul>";
         // Chemin vers le fichier distant
-        $remote_file = 'web/pmc/cpm2_config.txt';
+        $remote_file = 'cpm2_config.txt';
         $local_file = '../files/localfile.txt';
 
         // Ouverture du fichier pour ?criture
         $handle = fopen($local_file, 'w');
 
         // Mise en place d'une connexion basique
-        $conn_id = ftp_connect("www.vag-technique.fr") or die("Impossible de se connecter au serveur $ftp_server");
+        $conn_id = ftp_connect("www.cpassman.org") or die("Impossible de se connecter au serveur $ftp_server");
 
         // Identification avec un nom d'utilisateur et un mot de passe
-        $login_result = ftp_login($conn_id, "pmc_robot", "Cm3_Pc9l");
+        $login_result = ftp_login($conn_id, "robot@cpassman.org", "Cm3_Pc9l");
 
         //envoyer la date et ip de connexion
         //....
@@ -58,7 +58,7 @@ switch($_POST['type'])
                     if ( substr($val,0,1) <> "#" ){
                         $tab = explode('|',$val);
                         foreach($tab as $elem){
-                            $tmp = explode('?',$elem);
+                            $tmp = explode('#',$elem);
                             $text .= '<li><u>'.$txt[$tmp[0]]."</u> : ".addslashes($tmp[1]).'</li>';
                             if ( $tmp[0] == "version" ) {
                                 $text .= '<li><u>'.$txt['your_version']."</u> : ".$k['version'];
