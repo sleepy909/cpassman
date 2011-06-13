@@ -569,9 +569,10 @@ function AjouterFolder(){
 function SupprimerFolder(){
     if ( document.getElementById("delete_rep_groupe").value == "0" ) alert("<?php echo $txt['error_group'];?>");
     else if ( confirm("<?php echo $txt['confirm_delete_group'];?>") ) {
-        var data = "type=delete_rep"+
-                    "&groupe="+document.getElementById("delete_rep_groupe").value;
-        httpRequest("sources/items.queries.php",data);
+        var data = "type=supprimer_groupe"+
+                    "&id="+document.getElementById("delete_rep_groupe").value+
+                    "&page=items";
+        httpRequest("sources/folders.queries.php",data);
     }
 }
 

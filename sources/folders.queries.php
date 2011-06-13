@@ -124,37 +124,68 @@ else if ( isset($_POST['type']) ){
     {
         // CASE where DELETING a group
         case "supprimer_groupe":
+        	$folders_deleted = "";
             // this will delete all sub folders and items associated
             $tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
 
             // Get through each subfolder
             $folders = $tree->getDescendants($_POST['id'],true);
             foreach($folders as $folder){
-                //delete folder
+            	//Store the deleted folder (recycled bin)
+            	$db->query_insert(
+	            	'misc',
+	            	array(
+	            	    'type' => 'folder_deleted',
+	            	    'intitule' => "f".$folder->id,
+	            	    'valeur' => $folder->id.','.$folder->parent_id.','.$folder->title.','.$folder->nleft.','.$folder->nright.','.$folder->nlevel.',0,0,0,0'
+	            	)
+            	);
+            	//delete folder
             	$db->query("DELETE FROM ".$pre."nested_tree WHERE id = ".$folder->id);
-
-            	//delete row
-            	//echo '$("#row_'.$folder->id.'").remove();';
 
                 //delete items & logs
                 $items = $db->fetch_all_array("SELECT id FROM ".$pre."items WHERE id_tree='".$folder->id."'");
                 foreach( $items as $item ) {
                     //Delete item
-                    $db->query("DELETE FROM ".$pre."items WHERE id = ".$item['id']);
+                	//$db->query("DELETE FROM ".$pre."items WHERE id = ".$item['id']);
+                	//$db->query("DELETE FROM ".$pre."log_items WHERE id_item = ".$item['id']);
+
+                	$db->query_update(
+	                	"items",
+	                	array(
+	                	    'inactif' => '1',
+	                	),
+	                	"id = ".$item['id']
+                	);
                     //log
-                    $db->query("DELETE FROM ".$pre."log_items WHERE id_item = ".$item['id']);
+                	$db->query_insert(
+	                	"log_items",
+	                	array(
+	                	    'id_item' => $item['id'],
+	                	    'date' => mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y')),
+	                	    'id_user' => $_SESSION['user_id'],
+	                	    'action' => 'at_delete'
+	                	)
+                	);
                 }
+
+            	//Actualize the variable
+            	$_SESSION['nb_folders'] --;
             }
 
             //rebuild tree
             $tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
             $tree->rebuild();
 
-            //Actualize the variable
-            $_SESSION['nb_folders'] --;
+        	//Update CACHE table
+        	UpdateCacheTable("delete_value",$_POST['id']);
 
             //Refresh the page
-            echo 'RefreshPage("form_groupes");';
+        	if($_POST['page'] == "items"){
+        		echo 'window.location.href = "index.php?page=items";';
+        	}else{
+        		echo 'RefreshPage("form_groupes");';
+        	}
         break;
 
 

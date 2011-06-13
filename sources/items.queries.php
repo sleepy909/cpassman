@@ -309,7 +309,7 @@ if ( isset($_POST['type']) ){
                             )
                         );
                     /*URL */
-                    if ( $data['url'] != $url )
+                    if ( $data['url'] != $url && $url != "http://")
                         $db->query_insert(
                             'log_items',
                             array(
@@ -349,8 +349,8 @@ if ( isset($_POST['type']) ){
                     }
                     /*PASSWORD */
                     if ( $data['pw'] != $pw ){
-                        if( isset($data_received['salt_key']) && !empty($data_received['salt_key']) ) $old_pw = decrypt($pw,$data_received['salt_key']);
-                        else $old_pw = decrypt($pw);
+                        if( isset($data_received['salt_key']) && !empty($data_received['salt_key']) ) $old_pw = decrypt($data['pw'],$data_received['salt_key']);
+                        else $old_pw = decrypt($data['pw']);
                         $db->query_insert(
                             'log_items',
                             array(
@@ -358,7 +358,7 @@ if ( isset($_POST['type']) ){
                                 'date' => mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y')),
                                 'id_user' => $_SESSION['user_id'],
                                 'action' => 'at_modification',
-                                'raison' => 'at_pw'
+                                'raison' => 'at_pw : '.addslashes($old_pw)
                             )
                         );
                     }
@@ -380,11 +380,18 @@ if ( isset($_POST['type']) ){
                     LEFT JOIN ".$pre."users AS u ON (l.id_user=u.id)
                     WHERE id_item=".$data_received['id']);
                 foreach($rows as $reccord){
-                    $reason = explode(':',$reccord['raison']);
-                    if ( empty($history) )
-                        $history = date($_SESSION['settings']['date_format']." ".$_SESSION['settings']['time_format'], $reccord['date'])." - ". $reccord['login'] ." - ".$txt[$reccord['action']]." - ".(!empty($reccord['raison']) ? (count($reason) > 1 ? $txt[trim($reason[0])].' : '.$reason[1] : $txt[trim($reason[0])] ):'');
-                    else
-                        $history .= "<br />".date($_SESSION['settings']['date_format']." ".$_SESSION['settings']['time_format'], $reccord['date'])." - ". $reccord['login'] ." - ".$txt[$reccord['action']]." - ".(!empty($reccord['raison']) ? (count($reason) > 1 ? $txt[trim($reason[0])].' : '.$reason[1] : $txt[trim($reason[0])] ):'');
+                	$reason = explode(':',$reccord['raison']);
+
+                	if ( empty($history) ){
+                		$history = date($_SESSION['settings']['date_format']." ".$_SESSION['settings']['time_format'], $reccord['date'])." - ". $reccord['login'] ." - ".$txt[$reccord['action']].
+                			" - ".(!empty($reccord['raison']) ? (count($reason) > 1 ? $txt[trim($reason[0])].' : '.$reason[1] : $txt[trim($reason[0])] ):'');
+
+                	}
+                	else{
+                		$history .= "<br />".date($_SESSION['settings']['date_format']." ".$_SESSION['settings']['time_format'], $reccord['date'])." - ".
+                        	$reccord['login'] ." - ".$txt[$reccord['action']]." - ".
+                        	(!empty($reccord['raison']) ? (count($reason) > 1 ? $txt[trim($reason[0])].' => '.$reason[1] : $txt[trim($reason[0])] ):'');
+                	}
                 }
 
                 //Get list of restriction
@@ -642,14 +649,16 @@ if ( isset($_POST['type']) ){
                     SELECT l.date AS date, l.action AS action, l.raison AS raison, u.login AS login
                     FROM ".$pre."log_items AS l
                     LEFT JOIN ".$pre."users AS u ON (l.id_user=u.id)
-                    WHERE id_item=".$_POST['id']
+                    WHERE id_item=".$_POST['id']."
+                    ORDER BY date ASC"
                 );
                 foreach ( $rows as $reccord ){
-                    $reason = explode(':',$reccord['raison']);
+                	$reason = explode(':',$reccord['raison']);
+
                     if ( empty($historique) )
                         $historique = date($_SESSION['settings']['date_format']." ".$_SESSION['settings']['time_format'], $reccord['date'])." - ". $reccord['login'] ." - ".$txt[$reccord['action']]." - ".(!empty($reccord['raison']) ? (count($reason) > 1 ? $txt[trim($reason[0])].' : '.$reason[1] : $txt[trim($reason[0])] ):'');
                     else
-                        $historique .= "<br />".date($_SESSION['settings']['date_format']." ".$_SESSION['settings']['time_format'], $reccord['date'])." - ". $reccord['login']  ." - ".$txt[$reccord['action']]." - ".(!empty($reccord['raison']) ? (count($reason) > 1 ? $txt[trim($reason[0])].' : '.$reason[1] : $txt[trim($reason[0])] ):'');
+                        $historique .= "<br />".date($_SESSION['settings']['date_format']." ".$_SESSION['settings']['time_format'], $reccord['date'])." - ". $reccord['login']  ." - ".$txt[$reccord['action']]." - ".(!empty($reccord['raison']) ? (count($reason) > 1 ? $txt[trim($reason[0])].' => '.$reason[1] : $txt[trim($reason[0])] ):'');
                 }
 
                 //Get restriction list for users
@@ -987,41 +996,6 @@ if ( isset($_POST['type']) ){
                 //send data
                 echo '[{"error" : ""}]';
             }
-        break;
-
-
-       	/*
-     	* CASE
-     	* Delete a Group
-       	*/
-        case "delete_rep":
-
-            //Build tree
-            require_once ("NestedTree.class.php");
-            $tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
-
-            // this will delete all sub folders and items associated
-            // Get through each subfolder
-            $folders = $tree->getDescendants($_POST['groupe'],true);
-            foreach($folders as $folder){
-                //delete folder
-                $db->query("DELETE FROM ".$pre."nested_tree WHERE id = ".$folder->id);
-
-            	//delete from roles_values
-            	$db->query("DELETE FROM ".$pre."roles_values WHERE folder_id = ".$folder->id);
-
-                //delete items & logs
-                $items = $db->fetch_all_array("SELECT id FROM ".$pre."items WHERE id_tree='".$folder->id."'");
-                foreach( $items as $item ) {
-                    //Delete item
-                    $db->query("DELETE FROM ".$pre."items WHERE id = ".$item['id']);
-                    //log
-                	$db->query("DELETE FROM ".$pre."log_items WHERE id_item = ".$item['id']);
-                	//cache
-                	$db->query("DELETE FROM ".$pre."cache WHERE id = ".$item['id']);
-                }
-            }
-            echo 'window.location.href = "index.php?page=items";';
         break;
 
 
