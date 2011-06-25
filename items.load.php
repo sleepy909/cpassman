@@ -367,7 +367,7 @@ function EditerItem(){
 
     //Complete url format
     var url = $("#edit_url").val();
-    if (url.substring(0,7) != "http://") {
+    if (url.substring(0,7) != "http://" && url!="" && url.substring(0,8) != "https://" && url.substring(0,6) != "ftp://") {
     	url = "http://"+url;
     }
 
@@ -669,7 +669,7 @@ function AfficherDetailsItem(id, salt_key_required, expired_item, restricted, di
                     }
                     $("#id_desc").html(data.description);
                     $("#hid_desc").val(data.description);
-                    $("#id_login").html(data.login).html();
+                    $("#id_login").html(data.login);
                     $("#hid_login").val(data.login);
                     $("#id_info").html(htmlspecialchars_decode(data.historique));
                     $("#id_restricted_to").html(data.id_restricted_to+data.id_restricted_to_roles);
@@ -1373,10 +1373,8 @@ $(function() {
 	//Load item if needed and display items list
 	if ($("#open_id").val() != "") {
 		AfficherDetailsItem($("#open_id").val());
-		ListerItems(first_group,'', $("#query_next_start").val());
-	}else{
-		ListerItems(first_group,'', $("#query_next_start").val());
 	}
+	ListerItems(first_group,'', parseInt($("#query_next_start").val())+1);
 
     //Password meter for item creation
 	$("#pw1").simplePassMeter({
@@ -1513,7 +1511,7 @@ function htmlspecialchars_decode (string, quote_style) {
 */
 $('#items_list').scroll(function() {
 	if ($("#query_next_start").val() != "end" && $('#items_list').scrollTop() + $('#items_list').outerHeight() == $('#items_list')[0].scrollHeight) {
-		ListerItems($("#hid_cat").val(),'', $("#query_next_start").val());
+		ListerItems($("#hid_cat").val(),'', parseInt($("#query_next_start").val())+1);
 	}
 
 });

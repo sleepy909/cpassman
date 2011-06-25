@@ -96,7 +96,8 @@ if ( !isset($_GET['page']) )
 	$htmlHeaders .= '
         <link rel="stylesheet" type="text/css" href="includes/libraries/uploadify/uploadify.css" />
         <script type="text/javascript" src="includes/libraries/uploadify/jquery.uploadify.v2.1.4.min.js"></script>
-        <script type="text/javascript" src="includes/libraries/uploadify/swfobject.js"></script>';
+        <script type="text/javascript" src="includes/libraries/uploadify/swfobject.js"></script>
+        <script type="text/javascript" src="includes/libraries/numeric/jquery.numeric.js"></script>';
 
 
 //Get Favicon
@@ -479,6 +480,9 @@ if ( !isset($_GET['page']) ){
 				]
 			});
 		}
+
+		//only numerics
+		$(".numeric_only").numeric();
     })
 
     //Change the Users password when he asks for
@@ -546,9 +550,7 @@ if ( !isset($_GET['page']) ){
 	function StorePersonalSK(){
 		var data = "type=store_personal_saltkey&sk="+encodeURIComponent($("#input_personal_saltkey").val());
         httpRequest("sources/main.queries.php",data);
-	}
-
-	';
+	}';
 }
 
 else
