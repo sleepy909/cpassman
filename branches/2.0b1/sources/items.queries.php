@@ -427,7 +427,7 @@ if ( isset($_POST['type']) ){
                         if ( in_array($reccord['extension'],$k['image_file_ext']) )
                             $files .=   '<img src="includes/images/'.$icon_image.'" /><a class="image_dialog" href="'.$_SESSION['settings']['cpassman_url'].'/upload/'.$reccord['file'].'" title="'.$reccord['name'].'">'.$reccord['name'].'</a><br />';
                         else
-                            $files .=   '<img src="includes/images/'.$icon_image.'" /><a href="sources/downloadFile.php?name='.urlencode($reccord['name']).'&path=../upload/'.$reccord['file'].'&size='.$reccord['size'].'&type='.urlencode($reccord['type']).'" target="_blank">'.$reccord['name'].'</a><br />';
+                            $files .=   '<img src="includes/images/'.$icon_image.'" /><a href=\'sources/downloadFile.php?name='.urlencode($reccord['name']).'&path=../upload/'.$reccord['file'].'&size='.$reccord['size'].'&type='.urlencode($reccord['type']).'\' target=\'_blank\'>'.$reccord['name'].'</a><br />';
                         // Prepare list of files for edit dialogbox
                         $files_edit .= '<span id="span_edit_file_'.$reccord['id'].'"><img src="includes/images/'.$icon_image.'" /><img src="includes/images/document--minus.png" style="cursor:pointer;"  onclick="delete_attached_file(\"'.$reccord['id'].'\")" />&nbsp;'.$reccord['name']."</span><br />";
                     }
@@ -1080,7 +1080,7 @@ if ( isset($_POST['type']) ){
 
                 //List all ITEMS
                 $rows = $db->fetch_all_array("
-                    SELECT i.id AS id, i.restricted_to AS restricted_to, i.perso AS perso, i.label AS label, i.description AS description, i.pw AS pw, i.login AS login, i.anyone_can_modify AS anyone_can_modify,
+                    SELECT DISTINCT i.id AS id, i.restricted_to AS restricted_to, i.perso AS perso, i.label AS label, i.description AS description, i.pw AS pw, i.login AS login, i.anyone_can_modify AS anyone_can_modify,
                         l.date AS date,
                         n.renewal_period AS renewal_period,
                         l.action AS log_action, l.id_user AS log_user
@@ -1089,9 +1089,10 @@ if ( isset($_POST['type']) ){
                     INNER JOIN ".$pre."log_items AS l ON (i.id = l.id_item)
                     WHERE i.inactif = 0".
                 	$where_arg."
-                    AND (l.action = 'at_creation' OR (l.action = 'at_modification' AND l.raison LIKE 'at_pw :%'))
+                    AND (l.action = 'at_creation')
                     ORDER BY i.label ASC, l.date DESC
                  	LIMIT ".$start.",".$_POST['nb_items_to_display_once']);
+            	// REMOVED:  OR (l.action = 'at_modification' AND l.raison LIKE 'at_pw :%')
                 $id_managed = '';
                 $i = 0;
 

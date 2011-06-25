@@ -140,86 +140,56 @@ echo '
 				            //get 1st folder
 				            if (empty($first_group)) $first_group = $folder->id;
 
+							//Prepare folder
+							$folder_txt = '
+					<li class="jstree-open">';
+							if (in_array($folder->id,$_SESSION['groupes_visibles'])) {
+								$folder_txt .= '
+							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\', \'\', 0);">'.str_replace("&","&amp;",$folder->title).' ('.$nb_items.')</a>';
+								//case for restriction_to_roles
+							}elseif (in_array($folder->id, $list_folders_limited_keys)) {
+								$folder_txt .= '
+							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\', \'\', 0);">'.str_replace("&","&amp;",$folder->title).' ('.count($_SESSION['list_folders_limited'][$folder->id]).')</a>';
+							}else{
+								$folder_txt .= '
+							<a id="fld_'.$folder->id.'">'.str_replace("&","&amp;",$folder->title).'</a>';
+							}
+
+							if (in_array($folder->id,$_SESSION['groupes_visibles'])) {
+								$select_visible_folders_options .= '<option value="'.$folder->id.'">'.$ident.str_replace("&","&amp;",$folder->title).'</option>';
+							}else{
+								$select_visible_folders_options .= '<option value="'.$folder->id.'" disabled="disabled">'.$ident.str_replace("&","&amp;",$folder->title).'</option>';
+							}
+
+
 				            //Construire l'arborescence
 				            if ( $cpt_total == 0 ) {
 				        		// Force the name of the personal folder with the login name
 								if ( $folder->title ==$_SESSION['user_id'] && $folder->nlevel == 1 ) $folder->title = $_SESSION['login'];
-
-								echo '
-					<li class="jstree-open">';
-				            	if (in_array($folder->id,$_SESSION['groupes_visibles'])) {
-				            		echo '
-							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\', \'\', 0);">'.str_replace("&","&amp;",$folder->title).' ('.$nb_items.')</a>';
-				            	//case for restriction_to_roles
-				            	}elseif (in_array($folder->id, $list_folders_limited_keys)) {
-				            		echo '
-							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\', \'\', 0);">'.str_replace("&","&amp;",$folder->title).' ('.count($_SESSION['list_folders_limited'][$folder->id]).')</a>';
-				            	}else{
-				            		echo '
-							<a id="fld_'.$folder->id.'">'.str_replace("&","&amp;",$folder->title).'</a>';
-				            	}
-
-				            	if (in_array($folder->id,$_SESSION['groupes_visibles'])) {
-				            		$select_visible_folders_options .= '<option value="'.$folder->id.'">'.$ident.str_replace("&","&amp;",$folder->title).'</option>';
-				            	}else{
-				            		$select_visible_folders_options .= '<option value="'.$folder->id.'" disabled="disabled">'.$ident.str_replace("&","&amp;",$folder->title).'</option>';
-				            	}
-
+								echo $folder_txt;
+				            	$folder_cpt++;
 				            }else{
 				                //Construire l'arborescence
 				                if ( $prev_level < $folder->nlevel ){
-				                    echo '
-				<ul>
-					<li class="jstree-open">';
-				                	if (in_array($folder->id,$_SESSION['groupes_visibles'])) {
-				                		echo '
-							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\', \'\', 0);">'.str_replace("&","&amp;",$folder->title).' ('.$nb_items.')</a>';
-				                	//case for restriction_to_roles
-				                	}elseif (in_array($folder->id, $list_folders_limited_keys)) {
-				                		echo '
-							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\', \'\', 0);">'.str_replace("&","&amp;",$folder->title).' ('.count($_SESSION['list_folders_limited'][$folder->id]).')</a>';
-				                	}else{
-				                		echo '
-							<a id="fld_'.$folder->id.'">'.str_replace("&","&amp;",$folder->title).'</a>';
-				                	}
-
-				                	if (in_array($folder->id,$_SESSION['groupes_visibles'])) {
-				                		$select_visible_folders_options .= '<option value="'.$folder->id.'">'.$ident.str_replace("&","&amp;",$folder->title).'</option>';
-				                	}else{
-				                		$select_visible_folders_options .= '<option value="'.$folder->id.'" disabled="disabled">'.$ident.str_replace("&","&amp;",$folder->title).'</option>';
-				                	}
-
+				                	echo '
+				<ul>'.$folder_txt;
 				                    $folder_cpt++;
 				                }else if ( $prev_level == $folder->nlevel ){
-				                    //ecrire la structure
-				                    echo '
-					</li>
-					<li class="jstree-open">';
-				                	if (in_array($folder->id,$_SESSION['groupes_visibles'])) {
-				                		echo '
-							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\', \'\', 0);">'.str_replace("&","&amp;",$folder->title).' ('.$nb_items.')</a>';
-				                	//case for restriction_to_roles
-				                	}elseif (in_array($folder->id, $list_folders_limited_keys)) {
-				                		echo '
-							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\', 1, 0);">'.str_replace("&","&amp;",$folder->title).' ('.count($_SESSION['list_folders_limited'][$folder->id]).')</a>';
-				                	}else{
-				                		echo '
-							<a id="fld_'.$folder->id.'">'.str_replace("&","&amp;",$folder->title).'</a>';
-				                	}
-
-				                	if (in_array($folder->id,$_SESSION['groupes_visibles'])) {
-				                		$select_visible_folders_options .= '<option value="'.$folder->id.'">'.$ident.str_replace("&","&amp;",$folder->title).'</option>';
-				                	}else{
-				                		$select_visible_folders_options .= '<option value="'.$folder->id.'" disabled="disabled">'.$ident.str_replace("&","&amp;",$folder->title).'</option>';
-				                	}
+				                	echo '
+					/li>'.$folder_txt;
+				                	$folder_cpt++;
 				                }else{
+				                	$tmp = '';
 				                    //Afficher les items de la derni?eres cat s'ils existent
 				                    for($x=$folder->nlevel;$x<$prev_level;$x++){
-				                        echo "
+										echo "
 				    </li>
 				</ul>";
 				                    }
-				                    echo '
+				                	echo '
+					</li>'.$folder_txt;
+				                	$folder_cpt++;
+				                    /*echo '
 					</li>
 					<li class="jstree-open">';
 				                	if (in_array($folder->id,$_SESSION['groupes_visibles'])) {
@@ -240,7 +210,7 @@ echo '
 				                		$select_visible_folders_options .= '<option value="'.$folder->id.'">'.$ident.str_replace("&","&amp;",$folder->title).'</option>';
 				                	}else{
 				                		$select_visible_folders_options .= '<option value="'.$folder->id.'" disabled="disabled">'.$ident.str_replace("&","&amp;",$folder->title).'</option>';
-				                	}
+				                	}*/
 				                }
 				            }
 			            	$prev_level = $folder->nlevel;
