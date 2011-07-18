@@ -30,6 +30,7 @@ $txt['admin_action_purge_old_files_result'] = "fichiers ont été supprimés.";
 $txt['admin_action_purge_old_files_tip'] = "Cela va supprimer les fichiers temporaires de plus de 7 jours.";
 $txt['admin_action_reload_cache_table'] = "Reconstruire la table 'Cache'";
 $txt['admin_action_reload_cache_table_tip'] = "Cela permet de reconstruire entièrement la table Cache. Cette action peut-être réalisée de temps en temps.";
+$txt['admin_backups'] = "Sauvegardes";
 $txt['admin_error_no_complexity'] = "(<a href='index.php?page=manage_groups'>Définir ?</a>)";
 $txt['admin_error_no_visibility'] = "Personne ne peut voir cet élément. (<a href='index.php?page=manage_roles'>Paramétrer les rôles</a>)";
 $txt['admin_functions'] = "Gestion des Rôles";
@@ -46,6 +47,20 @@ $txt['admin_misc_custom_login_text'] = "Texte personnel de login";
 $txt['admin_misc_custom_logo'] = "URL complète vers un logo personnel";
 $txt['admin_misc_favicon'] = "Chemin d'accès vers le fichier favicon";
 $txt['admin_misc_title'] = "Personnaliser";
+$txt['admin_one_shot_backup'] = "Sauvegarde et restauration à la volée";
+$txt['admin_script_backups'] = "Paramètres pour les Sauvegardes par script";
+$txt['admin_script_backups_tip'] = "Pour plus de sécurité, il est conseillé de paramétrer des sauvegardes automatiques de votre base de données.
+Paramétrez une tache quotidienne à l'aide du CRON de votre serveur en appellant le script '/backups/script.backup.php'.
+Vous devez impérativement renseigner les 2 paramétres ci-dessous et sauvegarder.";
+$txt['admin_script_backup_decrypt'] = "Nom du fichier que vous voulez décoder";
+$txt['admin_script_backup_decrypt_tip'] = "Pour décoder la sauvegarde, indiquer ici le nom du fichier (sans chemin ni extension).
+Le fichier décodé sera sauvegardé dans le répertoire des sauvegardes.";
+$txt['admin_script_backup_encryption'] = "Clé de codage optionnelle";
+$txt['admin_script_backup_encryption_tip'] = "Si précisé cette clé sera utilisée pour crypter votre fichier";
+$txt['admin_script_backup_filename'] = "Nom du fichier";
+$txt['admin_script_backup_filename_tip'] = "Nom du fichier que vous souhaitez définir pour vos sauvegardes";
+$txt['admin_script_backup_path'] = "Répertoire complet des fichiers";
+$txt['admin_script_backup_path_tip'] = "Préciser le répertoire complet de sauvegardes des fichiers";
 $txt['admin_settings'] = "Paramétres";
 $txt['admin_settings_title'] = "Paramétres de cPassMan";
 $txt['admin_setting_activate_expiration'] = "Activer l'expiration des éléments";
@@ -282,6 +297,7 @@ $txt['info_click_to_edit'] = "Cliquer sur une cellule pour en éditer le contenu
 $txt['is_admin'] = "Est Admin";
 $txt['is_manager'] = "Est Gestionnaire";
 $txt['items_browser_title'] = "Catégories";
+$txt['item_copy_to_folder'] = "Sélectionner le répertoire de destination";
 $txt['item_menu_add_elem'] = "Ajouter un élément";
 $txt['item_menu_add_rep'] = "Ajouter un Répertoire";
 $txt['item_menu_add_to_fav'] = "Ajouter aux Favoris";
@@ -298,6 +314,7 @@ $txt['item_menu_edi_rep'] = "Editer un Répertoire";
 $txt['item_menu_find'] = "Recherche avancée";
 $txt['item_menu_mask_pw'] = "Masquer mot de passe";
 $txt['item_menu_refresh'] = "Rafraichir la page";
+$txt['kbs'] = "KBs";
 $txt['kb_menu'] = "Base de connaissance";
 $txt['keepass_import_button_text'] = "Fichier XML";
 $txt['label'] = "Intitulé";

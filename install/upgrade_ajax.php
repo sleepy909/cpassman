@@ -3,6 +3,7 @@ session_start();
 
 require_once("../includes/language/english.php");
 require_once("../includes/include.php");
+require_once("../includes/settings.php");
 
 ################
 ## Function permits to get the value from a line
@@ -529,6 +530,74 @@ if ( isset($_POST['type']) ){
 				break;
 			}
 
+			## TABLE keys
+			$res = mysql_query("
+			    CREATE TABLE IF NOT EXISTS `".$_SESSION['tbl_prefix']."keys` (
+                `table` varchar(25) NOT NULL,
+                `id` int(20) NOT NULL,
+                `rand_key` varchar(25) NOT NULL
+                ) CHARSET=utf8;");
+			if ( $res ){
+				echo 'document.getElementById("tbl_14").innerHTML = "<img src=\"images/tick.png\">";';
+
+				//increase size of PW field in ITEMS table
+				mysql_query("ALTER TABLE ".$_SESSION['tbl_prefix']."items MODIFY pw VARCHAR(150)");
+
+				//Populate table KEYS
+				//create all keys for all items
+				$rows = mysql_query("SELECT * FROM ".$_SESSION['tbl_prefix']."items WHERE perso = 0");
+				while($reccord = mysql_fetch_array($rows)){
+					if(!empty($reccord['pw'])){
+						//get pw
+						$pw = trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, SALT, base64_decode($reccord['pw']), MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND)));
+
+						//generate random key
+						$random_key = substr(md5(rand().rand()), 0, rand(14,29));
+
+						//Store generated key
+						mysql_query("INSERT INTO ".$_SESSION['tbl_prefix']."keys VALUES('items', '".$reccord['id']."', '".$random_key."') ");
+
+						//encrypt
+						$encrypted_pw = trim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, SALT, $random_key.$pw, MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND))));
+
+						//update pw in ITEMS table
+						mysql_query("UPDATE ".$_SESSION['tbl_prefix']."items SET pw = '".$encrypted_pw."' WHERE id='".$reccord['id']."'") or die(mysql_error());
+					}
+				}
+				/*TODO
+				//create all keys for all users
+				$rows = mysql_query("SELECT id, pw FROM ".$_SESSION['tbl_prefix']."users");
+				while($reccord = mysql_fetch_array($rows)){
+					if(!empty($reccord['pw'])){
+						//get pw
+						$pw = trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, SALT, base64_decode($reccord['pw']), MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND)));
+
+						//generate random key
+						$random_key = substr(md5(rand().rand()), 0, rand(14,29));
+
+						//Store generated key
+						mysql_query("INSERT INTO ".$_SESSION['tbl_prefix']."keys VALUES('users', '".$reccord['id']."', '".$random_key."') ");
+
+						//encrypt
+						$encrypted_pw = trim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, SALT, $random_key.$pw, MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND))));
+
+						//update pw in ITEMS table
+						mysql_query("UPDATE ".$_SESSION['tbl_prefix']."users SET pw = '".$encrypted_pw."' WHERE id='".$reccord['id']."'") or die(mysql_error());
+					}
+				}
+				*/
+				echo 'document.getElementById("tbl_15").innerHTML = "<img src=\"images/tick.png\">";';
+
+			}else{
+				echo 'document.getElementById("res_step4").innerHTML = "An error appears on table keys!";';
+				echo 'document.getElementById("tbl_14").innerHTML = "<img src=\"images/exclamation-red.png\">";';
+				echo 'document.getElementById("loader").style.display = "none";';
+				mysql_close($db_tmp);
+				break;
+			}
+
+
+
 			//CLEAN UP ITEMS TABLE
 			$allowed_tags = '<b><i><sup><sub><em><strong><u><br><br /><a><strike><ul><blockquote><blockquote><img><li><h1><h2><h3><h4><h5><ol><small><font>';
 			$clean_res = mysql_query("SELECT id,description FROM `".$_SESSION['tbl_prefix']."items`");
@@ -589,12 +658,12 @@ global \$server, \$user, \$pass, \$database, \$pre, \$db;
 @define('SALT', '". $_SESSION['encrypt_key'] ."'); //Define your encryption key => NeverChange it once it has been used !!!!!
 
 ### EMAIL PROPERTIES ###
-\$smtp_server = '".$_SESSION['smtp_server']."';
+\$smtp_server = '".str_replace("'", "", $_SESSION['smtp_server'])."';
 \$smtp_auth = ".$_SESSION['smtp_auth']."; //false or true
 \$smtp_auth_username = '".str_replace("'", "\'", $_SESSION['smtp_auth_username'])."';
 \$smtp_auth_password = '".str_replace("'", "\'", $_SESSION['smtp_auth_password'])."';
-\$email_from = '".$_SESSION['email_from']."';
-\$email_from_name = '".$_SESSION['email_from_name']."';
+\$email_from = '".str_replace("'", "", $_SESSION['email_from'])."';
+\$email_from_name = '".str_replace("'", "", $_SESSION['email_from_name'])."';
 
 ### DATABASE connexion parameters ###
 \$server = \"". $_SESSION['db_host'] ."\";

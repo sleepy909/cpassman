@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-if ($_SESSION['CPM'] != 1)
+if (!isset($_SESSION['CPM'] ) || $_SESSION['CPM'] != 1)
 	die('Hacking attempt...');
 
 
@@ -120,4 +120,22 @@ echo '
 <div id="div_kb_delete" style="display:none;">
     <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;">&nbsp;</span>'.$txt['confirm_deletion'].'</p>
 </div>';
+
+
+//Hidden things
+echo '
+<input type="hidden" id="kb_id" value="" />';
+
+//Call javascript stuff
+require_once("kb.load.php");
+
+//If redirection is done to a speoific KB then open it
+if(isset($_GET['id']) && !empty($_GET['id'])){
+	echo '
+	    <script language="javascript" type="text/javascript">
+	    <!--
+	    openKB('.$_GET['id'].');
+	    -->
+	    </script>';
+}
 ?>

@@ -13,7 +13,7 @@
  */
 
 session_start();
-if ($_SESSION['CPM'] != 1)
+if (!isset($_SESSION['CPM'] ) || $_SESSION['CPM'] != 1)
 	die('Hacking attempt...');
 
 
@@ -23,9 +23,9 @@ include('../includes/include.php');
 header("Content-type: text/html; charset=utf-8");
 
 // connect to the server
-    require_once("class.database.php");
-    $db = new Database($server, $user, $pass, $database, $pre);
-    $db->connect();
+require_once("class.database.php");
+$db = new Database($server, $user, $pass, $database, $pre);
+$db->connect();
 
 switch($_POST['type'])
 {
@@ -355,5 +355,37 @@ switch($_POST['type'])
 		echo 'LoadingPage();';
 	break;
 
+	/*
+	* Decrypt a backup file
+	*/
+	case "admin_action_backup_decrypt":
+		require_once '../includes/libraries/crypt/aes.class.php';     // AES PHP implementation
+		require_once '../includes/libraries/crypt/aesctr.class.php';  // AES Counter Mode implementation
+
+		//get backups infos
+		$rows = $db->fetch_all_array("SELECT * FROM ".$pre."misc WHERE type = 'settings'");
+		foreach( $rows as $reccord ){
+			$settings[$reccord['intitule']] = $reccord['valeur'];
+		}
+
+		//read file
+		$return = "";
+		$Fnm = $settings['bck_script_path'].'/'.$_POST['option'].'.sql';
+		if (file_exists($Fnm)) {
+			$inF = fopen($Fnm,"r");
+			while (!feof($inF)) {
+				$return .= fgets($inF, 4096);
+			}
+			fclose($inF);
+			$return = AesCtr::decrypt($return, $settings['bck_script_key'], 256);
+
+			//save the file
+			$handle = fopen($settings['bck_script_path'].'/'.$_POST['option'].'_DECRYPTED'.'.sql','w+');
+			fwrite($handle,$return);
+			fclose($handle);
+		}
+
+		echo 'LoadingPage();';
+	break;
 }
 ?>

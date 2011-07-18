@@ -13,15 +13,17 @@
  */
 
 session_start();
-if ($_SESSION['CPM'] != 1)
+if (!isset($_SESSION['CPM'] ) || $_SESSION['CPM'] != 1)
 	die('Hacking attempt...');
 
 
+require_once('../includes/language/'.$_SESSION['user_language'].'.php');
 include('../includes/settings.php');
 require_once('../includes/include.php');
 header("Content-type: text/html; charset=utf-8");
-
-require_once('main.functions.php');
+header("Cache-Control: no-cache, must-revalidate");
+header("Pragma: no-cache");
+include('main.functions.php');
 
 //Connect to mysql server
 require_once("class.database.php");
@@ -39,9 +41,22 @@ if ( !empty($_POST['type']) ){
 	switch($_POST['type'])
 	{
 		case "kb_in_db":
+			//decrypt and retreive data in JSON format
+			require_once '../includes/libraries/crypt/aes.class.php';     // AES PHP implementation
+			require_once '../includes/libraries/crypt/aesctr.class.php';  // AES Counter Mode implementation
+			$data_received = json_decode((AesCtr::decrypt($_POST['data'], $_SESSION['key'], 256)), true);
+
+			//Prepare variables
+			$id = htmlspecialchars_decode($data_received['id']);
+			$label = htmlspecialchars_decode($data_received['label']);
+			$category = htmlspecialchars_decode($data_received['category']);
+			$anyone_can_modify = htmlspecialchars_decode($data_received['anyone_can_modify']);
+			$kb_associated_to = htmlspecialchars_decode($data_received['kb_associated_to']);
+			$description = htmlspecialchars_decode($data_received['description']);
+
 			//check if allowed to modify
-            if (isset($_POST['id']) && !empty($_POST['id'])) {
-			    $row = $db->query("SELECT anyone_can_modify, author_id FROM ".$pre."kb WHERE id = ".$_POST['id']);
+            if (isset($id) && !empty($id)) {
+			    $row = $db->query("SELECT anyone_can_modify, author_id FROM ".$pre."kb WHERE id = ".$id);
 			    $ret = $db->fetch_array($row);
                 if ($ret['anyone_can_modify'] == 1 || $ret['author_id'] == $_SESSION['user_id']) {
                     $manage_kb = true;
@@ -52,10 +67,6 @@ if ( !empty($_POST['type']) ){
                 $manage_kb = true;
             }
 			if ($manage_kb == true) {
-				$label = utf8_decode($_POST['label']);
-				$category = utf8_decode($_POST['category']);
-				$description = utf8_decode($_POST['description']);
-
 				//Add category if new
 				$data = $db->fetch_row("SELECT COUNT(*) FROM ".$pre."kb_categories WHERE category = '".mysql_real_escape_string($category)."'");
 				if ( $data[0] == 0 ){
@@ -71,7 +82,7 @@ if ( !empty($_POST['type']) ){
 					$cat_id = $cat_id[0];
 				}
 
-				if (isset($_POST['id']) && !empty($_POST['id'])) {
+				if (isset($id) && !empty($id)) {
 					//update KB
 					$new_id = $db->query_update(
 					    "kb",
@@ -80,9 +91,9 @@ if ( !empty($_POST['type']) ){
 					        'description' => mysql_real_escape_string($description),
 					        'author_id' => $_SESSION['user_id'],
 					        'category_id' => $cat_id,
-					        'anyone_can_modify' => $_POST['anyone_can_modify']
+					        'anyone_can_modify' => $anyone_can_modify
 					    ),
-					    "id='".$_POST['id']."'"
+					    "id='".$id."'"
 					);
 				}else{
 					//add new KB
@@ -93,7 +104,7 @@ if ( !empty($_POST['type']) ){
 					        'description' => mysql_real_escape_string($description),
 					        'author_id' => $_SESSION['user_id'],
 						    'category_id' => $cat_id,
-						    'anyone_can_modify' => $_POST['anyone_can_modify']
+						    'anyone_can_modify' => $anyone_can_modify
 					    )
 					);
 				}
@@ -103,24 +114,23 @@ if ( !empty($_POST['type']) ){
                 $db->query_delete(
                     "kb_items",
                     array(
-                        'kb_id' => $_POST['id']
+                        'kb_id' => $new_id
                     )
                 );
                 //add all items associated to this KB
-                foreach(explode(',', $_POST['kb_associated_to']) as $item_id) {
+                foreach(explode(',', $kb_associated_to) as $item_id) {
                     $db->query_insert(
                         "kb_items",
                         array(
-                            'kb_id' => $_POST['id'],
+                            'kb_id' => $new_id,
                             'item_id' => $item_id
                         )
                     );
                 }
 
-
-				echo '$("#kb_form").dialog("close");oTable = $("#t_kb").dataTable();LoadingPage();oTable.fnDraw();';
+				echo '[ { "status" : "done" } ]';
 			}else{
-				echo '$("#kb_form").dialog("close");';
+				echo '[ { "status" : "none" } ]';
 			}
 
 
@@ -156,7 +166,7 @@ if ( !empty($_POST['type']) ){
             }
 
             //open KB dialog
-			echo '$("#kb_form").dialog("open");LoadingPage();';
+			echo '$("#kb_form").dialog("open");';
 		break;
 
 

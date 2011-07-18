@@ -73,10 +73,10 @@ function httpRequest(file,data,type){
 }
 
 function LoadingPage(){
-    if ( document.getElementById('div_loading').style.display == "" )
-        document.getElementById('div_loading').style.display = "none";
-    else
-        document.getElementById('div_loading').style.display = "";
+	    if ( document.getElementById("div_loading").style.display == "" )
+	        $("#div_loading").hide();
+	    else
+	        $("#div_loading").show();
 }
 
 //permet de mettre ? jour la liste contenant les ID des utilisateurs
@@ -183,4 +183,18 @@ function CreateRandomString(size,type){
 
     //return
     return randomstring;
+}
+
+
+
+function protectString(string){
+	if(string != ""){
+		string = string.replace(/\\/g,'&#93;').replace(/"/g,"&quot;");
+	}
+	return string;
+}
+
+function unprotectString(string){
+	string = string.replace(/\\/g,'').replace(/&#93;/g,'\\');
+	return string;
 }

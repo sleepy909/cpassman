@@ -1,5 +1,7 @@
 <?php
 session_start();
+//Session cpassman tag
+$_SESSION['CPM'] = 1;
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -263,6 +265,7 @@ if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
                         <tr><td>Add table "kb_categories"</td><td><span id="tbl_16"></span></td></tr>
                         <tr><td>Add table "kb_items"</td><td><span id="tbl_17"></span></td></tr>
                         <tr><td>Add table "restriction_to_roles"</td><td><span id="tbl_18"></span></td></tr>
+                        <tr><td>Add table "keys"</td><td><span id="tbl_19"></span></td></tr>
                     </table>
                     </fieldset>
 

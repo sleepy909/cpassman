@@ -174,7 +174,7 @@ require_once("load.php");
         }
 
         //Display language menu
-        $langues = array("french" => "fr","spanish" => "es","german" => "de","english" => "us","czech" => "cz","russian" => "ru","hungarian" => "hu","turkish" => "tr","norwegian" => "no");
+        $langues = array("french" => "fr","spanish" => "es","german" => "de","english" => "us","czech" => "cz","russian" => "ru","hungarian" => "hu","turkish" => "tr","norwegian" => "no","japanese" => "ja");
         foreach ($langues as $lang => $abrev) {
             if ($_SESSION['user_language'] == $lang) {
                 $flag = $abrev;
@@ -192,6 +192,7 @@ require_once("load.php");
                         <li><a href="#"><img class="flag" src="includes/images/flags/us.png" alt="English" onclick="ChangeLanguage(\'english\')" /></a></li>
                         <li><a href="#"><img class="flag" src="includes/images/flags/fr.png" alt="French" onclick="ChangeLanguage(\'french\')" /></a></li>
                         <li><a href="#"><img class="flag" src="includes/images/flags/de.png" alt="German" onclick="ChangeLanguage(\'german\')" /></a></li>
+                        <li><a href="#"><img class="flag" src="includes/images/flags/ja.png" alt="Japanese" onclick="ChangeLanguage(\'japanese\')" /></a></li>
                         <li><a href="#"><img class="flag" src="includes/images/flags/no.png" alt="Norwegian" onclick="ChangeLanguage(\'norwegian\')" /></a></li>
                         <li><a href="#"><img class="flag" src="includes/images/flags/ru.png" alt="Russian" onclick="ChangeLanguage(\'russian\')" /></a></li>
                         <li><a href="#"><img class="flag" src="includes/images/flags/es.png" alt="Spanish" onclick="ChangeLanguage(\'spanish\')" /></a></li>
@@ -262,7 +263,7 @@ require_once("load.php");
             <br />
             <button title="'.$txt['item_menu_del_elem'].'" id="menu_button_del_item" onclick="open_del_item_div()"><img src="includes/images/key__minus.png" alt="" /></button>
             <br />
-            <button title="'.$txt['item_menu_copy_elem'].'" id="menu_button_copy_item" onclick="open_copy_item_div()" style="margin-bottom:5px;"><img src="includes/images/key_copy.png" alt="" /></button>
+            <button title="'.$txt['item_menu_copy_elem'].'" id="menu_button_copy_item" onclick="open_copy_item_to_folder_div()" style="margin-bottom:5px;"><img src="includes/images/key_copy.png" alt="" /></button>
             <br />
             <button title="'.$txt['pw_copy_clipboard'].'" id="menu_button_copy_pw" class="copy_clipboard"><img src="includes/images/ui-text-field-password.png" id="div_copy_pw" alt="" /></button>
             <br />

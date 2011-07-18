@@ -45,6 +45,7 @@ LANGUAGES:
 * RUSSIAN 	by Anton (to be finished)
 * TURKISH 	by Ahmet (to be finished)
 * NORWEGIAN by Kai (to be finished)
+* JAPANESE	by Shinji (to be finished)
 
 ------------------------------------------  THANKS TO  ----------------------------------------------
 Enrique, shauninja, seskahin, tstd0, Tommi, Petr and Philipp.
@@ -55,6 +56,16 @@ Enrique, shauninja, seskahin, tstd0, Tommi, Petr and Philipp.
 * PostgreSQL database support
 
 ------------------------------------------  CHANGELOG  ----------------------------------------------
+v2.0b5
+* improvements: added Japanese translation by Shinji
+* improvement: added direct link to KBs in item overview
+* improvement: link from KBs to items
+* improvement: search and open a folder [55]
+* improvement: backup system based on server CRON [91]
+* improvement: encrypted passwords in database by salt [86]
+* improvement: KB management is encrypted [89]
+* fixed: strings error in upgrade.php pages
+* improvements: [87]
 v2.00
 * Licence has changed from CC BY-NC-ND to CC BY-ND
 * improvement: convert cPassMan to UTF-8 charset
