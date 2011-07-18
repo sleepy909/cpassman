@@ -13,7 +13,7 @@
  */
 
 session_start();
-if ($_SESSION['CPM'] != 1)
+if (!isset($_SESSION['CPM'] ) || $_SESSION['CPM'] != 1)
 	die('Hacking attempt...');
 
 if (isset($_POST['session']) && $_POST['session'] == "expired"){

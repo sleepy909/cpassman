@@ -13,7 +13,7 @@
  */
 
 //session_start();
-if ($_SESSION['CPM'] != 1)
+if (!isset($_SESSION['CPM'] ) || $_SESSION['CPM'] != 1)
 	die('Hacking attempt...');
 
 
@@ -42,10 +42,20 @@ if (isset($_SESSION['settings']['timezone'])) {
     $_SESSION['settings']['duplicate_item'] = 0;  //by default, this is false;
     $_SESSION['settings']['number_of_used_pw'] = 5; //by default, this value is 5;
 
-    $rows = $db->fetch_all_array("SELECT valeur,intitule FROM ".$pre."misc WHERE type = 'admin'");
+    $rows = $db->fetch_all_array("SELECT * FROM ".$pre."misc WHERE type = 'admin' OR type = 'settings'");
     foreach( $rows as $reccord ){
-        $_SESSION['settings'][$reccord['intitule']] = $reccord['valeur'];
+    	if($reccord['type'] == 'admin') {
+    		$_SESSION['settings'][$reccord['intitule']] = $reccord['valeur'];
+    	}else{
+    		$settings[$reccord['intitule']] = $reccord['valeur'];
+    	}
+
     }
+
+$rows = $db->fetch_all_array("SELECT valeur,intitule FROM ".$pre."misc WHERE type = 'admin'");
+foreach( $rows as $reccord ){
+	$_SESSION['settings'][$reccord['intitule']] = $reccord['valeur'];
+}
 
 
 /* CHECK IF MAINTENANCE MODE

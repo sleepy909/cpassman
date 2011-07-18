@@ -86,7 +86,7 @@ button{
 }
 
 #item_details_ok{
-	display:none;
+	//display:none;
 	width: 670px;
 	height: 230px;
 	margin: 5px;
@@ -118,4 +118,11 @@ button{
 
 .file, .cursor, .folder{
 	cursor:pointer;
+}
+
+.search_tree{
+	margin-left:20px;
+	 width:120px;
+	 padding:2px;
+	 font-size:9px;
 }

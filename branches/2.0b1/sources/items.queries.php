@@ -13,7 +13,7 @@
  */
 
 session_start();
-if ($_SESSION['CPM'] != 1)
+if (!isset($_SESSION['CPM'] ) || $_SESSION['CPM'] != 1)
 	die('Hacking attempt...');
 
 
@@ -41,7 +41,6 @@ if ( isset($_POST['type']) ){
         * creating a new ITEM
         */
         case "new_item":
-
             //decrypt and retreive data in JSON format
             require_once '../includes/libraries/crypt/aes.class.php';     // AES PHP implementation
             require_once '../includes/libraries/crypt/aesctr.class.php';  // AES Counter Mode implementation
@@ -69,6 +68,13 @@ if ( isset($_POST['type']) ){
 	            	||
 	            	(isset($_SESSION['settings']['duplicate_item']) && $_SESSION['settings']['duplicate_item'] == 1)
 	            ){
+	            	//set key if non personal item
+	            	if($data_received['is_pf'] == 0){
+	            		//generate random key
+	            		$random_key = GenerateKey();
+	            		$pw = $random_key.$pw;
+	            	}
+
 		            //encrypt PW
 		            if ($data_received['salt_key_set']==1 && isset($data_received['salt_key_set']) && $data_received['is_pf']==1 && isset($data_received['is_pf'])){
 		                $pw = encrypt($pw,mysql_real_escape_string(stripslashes($_SESSION['my_sk'])));
@@ -92,6 +98,18 @@ if ( isset($_POST['type']) ){
 							'anyone_can_modify' => (isset($data_received['anyone_can_modify']) && $data_received['anyone_can_modify'] == "on") ? '1' : '0'
 		                )
 		            );
+
+	            	//Store generated key
+	            	if($data_received['is_pf'] == 0){
+		            	$db->query_insert(
+			            	'keys',
+			            	array(
+			            	    'table' => 'items',
+			            	    'id' => $new_id,
+			            	    'rand_key' => $random_key
+			            	)
+		            	);
+	            	}
 
 		        	//Manage retriction_to_roles
 		        	if (isset($data_received['restricted_to_roles'])) {
@@ -215,7 +233,32 @@ if ( isset($_POST['type']) ){
                 $tags = htmlspecialchars_decode($data_received['tags']);
 
                 //Get existing values
-                $data = $db->query_first("SELECT * FROM ".$pre."items WHERE id=".$data_received['id']);
+                $data = $db->query_first("
+					SELECT *
+					FROM ".$pre."items
+					WHERE id=".$data_received['id']
+                );
+
+            	//Manage salt key
+            	if($data['perso'] == 0){
+            		//generate new key
+            		$random_key = GenerateKey();
+
+            		//update key
+            		$db->query_update(
+	            		'keys',
+	            		array(
+	            			'rand_key' => $random_key
+		            	),
+	            		array(
+	            			'id' => $data_received['id'],
+	            			'table' => "items"
+	            		)
+            		);
+
+            		$pw = $random_key.$pw;
+            	}
+
 
                 //encrypt PW
         	    if ($data_received['salt_key_set']==1 && isset($data_received['salt_key_set']) && $data_received['is_pf']==1 && isset($data_received['is_pf'])){
@@ -490,11 +533,15 @@ if ( isset($_POST['type']) ){
        	   * Copy an Item
        	*/
         case "copy_item":
-        	$return_values = "";
+        	$return_values = $pw = "";
 
-        	if (isset($_POST['item_id']) && !empty($_POST['item_id'])) {
+        	if (isset($_POST['item_id']) && !empty($_POST['item_id']) && !empty($_POST['folder_id'])) {
         		// load the original record into an array
-        		$original_record = $db->query_first("SELECT * FROM ".$pre."items WHERE id=".$_POST['item_id']);
+        		$original_record = $db->query_first("
+					SELECT *
+					FROM ".$pre."items
+					WHERE id=".$_POST['item_id']
+        		);
 
         		// insert the new record and get the new auto_increment id
         		$new_id = $db->query_insert(
@@ -504,16 +551,44 @@ if ( isset($_POST['type']) ){
         			)
         		);
 
+        		//Check if item is PERSONAL
+        		if($original_record['perso'] == 0){
+        			//generate random key
+        			$random_key = GenerateKey();
+
+        			//Store generated key
+        			$db->query_insert(
+	        			'keys',
+	        			array(
+	        			    'table' => 'items',
+	        			    'id' => $new_id,
+	        			    'rand_key' => $random_key
+	        			)
+        			);
+
+        			//get key for original pw
+        			$original_key = $db->query_first('SELECT rand_key FROM `'.$pre.'keys` WHERE `table` LIKE "items" AND `id` ='.$_POST['item_id']);
+
+        			//unsalt previous pw
+        			$pw = substr(decrypt($original_record['pw']), strlen($original_key['rand_key']));
+        		}
+
+
         		// generate the query to update the new record with the previous values
         		$query = "UPDATE ".$pre."items SET ";
         		foreach ($original_record as $key => $value) {
-        			if ($key != "id") {
+        			if($key == "id_tree"){
+        				$query .= '`id_tree` = "'.$_POST['folder_id'].'", ';
+        			}else if($key == "pw" && !empty($pw)){
+        				$query .= '`pw` = "'.encrypt($random_key.$pw).'", ';
+        			}else if ($key != "id" && $key != "key") {
         				$query .= '`'.$key.'` = "'.str_replace('"','\"',$value).'", ';
         			}
         		}
         		$query = substr($query,0,strlen($query)-2); # lop off the extra trailing comma
         		$query .= " WHERE id=".$new_id;
         		$db->query($query);
+
 
         		//Add attached itms
         		$rows = $db->fetch_all_array(
@@ -604,6 +679,11 @@ if ( isset($_POST['type']) ){
                 $arrData['edit_item_salt_key'] = 0;
             }
 
+        	//extract real pw from salt
+        	if($data_item['perso'] == 0){
+        		$data_item_key = $db->query_first('SELECT rand_key FROM `'.$pre.'keys` WHERE `table`="items" AND `id`='.$_POST['id']);
+        		$pw = substr($pw, strlen($data_item_key['rand_key']));
+        	}
 
             //check if item is expired
         	if ( isset($_POST['expired_item']) && $_POST['expired_item'] == 1 ) {
@@ -699,6 +779,25 @@ if ( isset($_POST['type']) ){
             			}
             		}
             	}
+
+				//Check if any KB is linked to this item
+				if(isset($_SESSION['settings']['enable_kb']) && $_SESSION['settings']['enable_kb'] == 1){
+					$tmp = "";
+					$rows = $db->fetch_all_array("
+							SELECT k.label, k.id
+							FROM ".$pre."kb_items AS i
+							INNER JOIN ".$pre."kb AS k ON (i.kb_id=k.id)
+							WHERE i.item_id = ".$data_item['id']."
+							ORDER BY k.label ASC");
+	          		foreach($rows as $reccord){
+									if(empty($tmp)){
+										$tmp = "<a href='".$_SESSION['settings']['cpassman_url']."/index.php?page=kb&id=".$reccord['id']."'>".$reccord['label']."</a>";
+									}else{
+										$tmp .= "&nbsp;-&nbsp;<a href='".$_SESSION['settings']['cpassman_url']."/index.php?page=kb&id=".$reccord['id']."'>".$reccord['label']."</a>";
+									}
+	          		  $arrData['links_to_kbs'] = $tmp;
+	          		}
+				}
 
 
                 //Prepare DIalogBox data
@@ -883,76 +982,6 @@ if ( isset($_POST['type']) ){
 
        	/*
        	* CASE
-       	* Create a new Group
-       	*/
-        /*case "new_rep":
-            //Check if title doesn't contains html codes
-            if (preg_match_all("|<[^>]+>(.*)</[^>]+>|U",$_POST['title'],$out)) {
-                echo '$("#div_ajout_rep").dialog("open");';
-                echo 'document.getElementById("new_rep_show_error").innerHTML = "'.$txt['error_html_codes'].'";';
-                echo '$("#new_rep_show_error").show();';
-            }
-
-            //Check if duplicate folders name are allowed
-            $create_new_folder = true;
-            if ( isset($_SESSION['settings']['duplicate_folder']) && $_SESSION['settings']['duplicate_folder'] == 0 ){
-                $data = $db->fetch_row("SELECT COUNT(*) FROM ".$pre."nested_tree WHERE title = '".mysql_real_escape_string(stripslashes(($_POST['title'])))."'");
-                if ( $data[0] != 0 ){
-                    echo '$("#div_ajout_rep").dialog("open");';
-                    echo 'document.getElementById("new_rep_show_error").innerHTML = "'.$txt['error_group_exist'].'";';
-                    echo '$("#new_rep_show_error").show();';
-                    $create_new_folder = false;
-                }
-            }
-
-            if ( $create_new_folder == true ){
-                //Check if group is a personnal folder
-                $data = $db->fetch_row("SELECT personal_folder FROM ".$pre."nested_tree WHERE id = ".$_POST['groupe']);
-                $new_id=$db->query_insert(
-                    "nested_tree",
-                    array(
-                        'parent_id' => $_POST['groupe'],
-                        'title' => mysql_real_escape_string(stripslashes(($_POST['title']))),
-                        'personal_folder' => $data[0]
-                    )
-                );
-
-                //Add complexity
-                $db->query_insert(
-                    "misc",
-                    array(
-                        'type' => 'complex',
-                        'intitule' => $new_id,
-                        'valeur' => $_POST['complexite']
-                    )
-                );
-
-            	//Add this folder to the role the creator has
-                foreach(array_filter(explode(';', $_POST['role_id'])) as $role_id) {
-                    $db->query_insert(
-                        "roles_values",
-                        array(
-                            'folder_id' => $new_id,
-                            'role_id' =>  $role_id
-                        )
-                    );
-                }
-
-                require_once('NestedTree.class.php');
-                $tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
-                $tree->rebuild();
-
-                //Get user's rights
-                IdentifyUserRights($_SESSION['groupes_visibles'].';'.$new_id,$_SESSION['groupes_interdits'],$_SESSION['is_admin'],$_SESSION['fonction_id'],true);
-
-                //Reload page
-                echo 'window.location.href = "index.php?page=items";';
-            }
-        break;*/
-
-
-       	/*
-       	* CASE
        	* Update a Group
        	*/
         case "update_rep":
@@ -1073,13 +1102,30 @@ if ( isset($_POST['type']) ){
         		$where_arg = " AND i.id_tree=".$_POST['id'];
         	}
 
-            if ( $data_count[0] > 0 ){
+            if ($data_count[0] > 0 && empty($show_error)){
                 //init variables
                 $init_personal_folder = false;
                 $expired_item = false;
 
                 //List all ITEMS
-                $rows = $db->fetch_all_array("
+            	if($folder_is_pf == 0){
+            		$rows = $db->fetch_all_array("
+                    SELECT DISTINCT i.id AS id, i.restricted_to AS restricted_to, i.perso AS perso, i.label AS label, i.description AS description, i.pw AS pw, i.login AS login, i.anyone_can_modify AS anyone_can_modify,
+                        l.date AS date,
+                        n.renewal_period AS renewal_period,
+                        l.action AS log_action, l.id_user AS log_user,
+                        k.rand_key AS rand_key
+                    FROM ".$pre."items AS i
+                    INNER JOIN ".$pre."nested_tree AS n ON (i.id_tree = n.id)
+                    INNER JOIN ".$pre."log_items AS l ON (i.id = l.id_item)
+					INNER JOIN ".$pre."keys AS k ON (k.id = i.id)
+                    WHERE i.inactif = 0".
+            		$where_arg."
+                    AND (l.action = 'at_creation')
+                    ORDER BY i.label ASC, l.date DESC
+                 	LIMIT ".$start.",".$_POST['nb_items_to_display_once']);
+            	}else{
+            		$rows = $db->fetch_all_array("
                     SELECT DISTINCT i.id AS id, i.restricted_to AS restricted_to, i.perso AS perso, i.label AS label, i.description AS description, i.pw AS pw, i.login AS login, i.anyone_can_modify AS anyone_can_modify,
                         l.date AS date,
                         n.renewal_period AS renewal_period,
@@ -1088,10 +1134,11 @@ if ( isset($_POST['type']) ){
                     INNER JOIN ".$pre."nested_tree AS n ON (i.id_tree = n.id)
                     INNER JOIN ".$pre."log_items AS l ON (i.id = l.id_item)
                     WHERE i.inactif = 0".
-                	$where_arg."
+            		$where_arg."
                     AND (l.action = 'at_creation')
                     ORDER BY i.label ASC, l.date DESC
                  	LIMIT ".$start.",".$_POST['nb_items_to_display_once']);
+            	}
             	// REMOVED:  OR (l.action = 'at_modification' AND l.raison LIKE 'at_pw :%')
                 $id_managed = '';
                 $i = 0;
@@ -1276,7 +1323,7 @@ if ( isset($_POST['type']) ){
 	                    	if ($need_sk == true && isset($_SESSION['my_sk'])) {
 	                    		$pw = decrypt($reccord['pw'],mysql_real_escape_string(stripslashes($_SESSION['my_sk'])));
 	                    	}else{
-	                    		$pw = decrypt($reccord['pw']);
+	                    		$pw = substr(decrypt($reccord['pw']), strlen($reccord['rand_key']));
 	                    	}
                     	}else{
                     		$pw = "";
@@ -1301,8 +1348,6 @@ if ( isset($_POST['type']) ){
             }else{
                 $recherche_group_pf = "";
             }
-
-
 
         	//count
         	$count_items = $db->fetch_row("
@@ -1525,14 +1570,97 @@ if ( isset($_POST['type']) ){
 		* Move an ITEM
 		*/
     	case "move_item":
+    		//get data about item
+    		$data_source = $db->query_first("
+					SELECT i.pw, f.personal_folder
+					FROM ".$pre."items AS i
+					INNER JOIN ".$pre."nested_tree AS f ON (i.id_tree=f.id)
+					WHERE i.id=".$_POST['item_id']
+    		);
+
+    		//get data about new folder
+    		$data_destination = $db->query_first("SELECT personal_folder FROM ".$pre."nested_tree WHERE id = '".$_POST['folder_id']."'");
+echo $data_source['personal_folder']." - ".$data_destination['personal_folder'];
+
     		//update item
     		$db->query_update(
-    		'items',
-    		array(
-    		    'id_tree' => $_POST['folder_id']
-    		),
-    		"id='".$_POST['item_id']."'"
+	    		'items',
+	    		array(
+	    		    'id_tree' => $_POST['folder_id']
+	    		),
+	    		"id='".$_POST['item_id']."'"
     		);
+
+    		//previous is non personal folder and new too
+    		if ($data_source['personal_folder'] == 0 && $data_destination['personal_folder'] == 0){
+    			//just update is needed. Item key is the same
+    		}
+
+    		//previous is not personal folder and new is personal folder => item key exist on item => suppress it => OK !
+    		else if ($data_source['personal_folder'] == 0 && $data_destination['personal_folder'] == 1){
+    			//get key for original pw
+    			$original_data = $db->query_first('
+					SELECT k.rand_key, i.pw
+					FROM `'.$pre.'keys` AS k
+					INNER JOIN `'.$pre.'items` AS i ON (k.id=i.id)
+					WHERE k.table LIKE "items"
+					AND i.id='.$_POST['item_id']
+    			);
+
+    			//unsalt previous pw and encrupt with personal key
+    			$pw = substr(decrypt($original_data['pw']), strlen($original_data['rand_key']));
+    			$pw = encrypt($pw, mysql_real_escape_string(stripslashes($_SESSION['my_sk'])));
+
+    			//update pw
+    			$db->query_update(
+	    			'items',
+	    			array(
+	    			    'pw' => $pw,
+	    			    'perso' => 1
+	    			),
+	    			"id='".$_POST['item_id']."'"
+    			);
+
+    			//Delete key
+    			$db->query_delete(
+	    			'keys',
+	    			array(
+		    			'id' => $_POST['item_id'],
+		    			'table' => 'items'
+		    		)
+    			);
+    		}
+
+    		//If previous is personal folder and new is personal folder too => no key exist on item
+			else if ($data_source['personal_folder'] == 1 && $data_destination['personal_folder'] == 1){
+				//NOTHING TO DO => just update is needed. Item key is the same
+			}
+
+    		//If previous is personal folder and new is not personal folder => no key exist on item => add new
+    		else if ($data_source['personal_folder'] == 1 && $data_destination['personal_folder'] == 0){
+    			//generate random key
+    			$random_key = GenerateKey();
+
+    			//store key
+    			$db->query_insert(
+	    			'keys',
+	    			array(
+	    			    'table' => 'items',
+	    			    'id' => $_POST['item_id'],
+	    			    'rand_key' => $random_key
+	    			)
+    			);
+
+    			//update item
+    			$db->query_update(
+	    			'items',
+	    			array(
+		    			'pw' => encrypt($random_key.decrypt($data_source['pw'], mysql_real_escape_string(stripslashes($_SESSION['my_sk'])))),
+		    			'perso' => 0
+	    			),
+	    			"id='".$_POST['item_id']."'"
+    			);
+    		}
 
     		break;
     }

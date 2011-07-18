@@ -13,7 +13,7 @@
  */
 
 session_start();
-if ($_SESSION['CPM'] != 1)
+if (!isset($_SESSION['CPM'] ) || $_SESSION['CPM'] != 1)
 	die('Hacking attempt...');
 
 
@@ -126,11 +126,16 @@ switch($_POST['type'])
             AND l.action = 'at_delete'
             GROUP BY l.id_item");
         foreach( $rows as $reccord ){
-        	if (count($arr_folders[$reccord['id_tree']])>0) {
-        		$this_folder = '<td>'.$arr_folders[$reccord['id_tree']].'</td>';
+        	if(in_array($reccord['id_tree'], $arr_folders)){
+        		if (count($arr_folders[$reccord['id_tree']])>0 ) {
+        			$this_folder = '<td>'.$arr_folders[$reccord['id_tree']].'</td>';
+        		}else{
+        			$this_folder = "";
+        		}
         	}else{
         		$this_folder = "";
         	}
+
             $texte .= '<tr><td><input type=\'checkbox\' class=\'cb_deleted_item\' value=\''.$reccord['id'].'\' id=\'item_deleted_'.$reccord['id'].'\' />&nbsp;<b>'.$reccord['label'].'</b></td><td width=\"100px\" align=\"center\">'.date($_SESSION['settings']['date_format'],$reccord['date']).'</td><td width=\"70px\" align=\"center\">'.$reccord['login'].'</td>'.$this_folder.'</tr>';
         }
         echo 'document.getElementById("liste_elems_del").innerHTML = "'.$texte.'</table><div style=\'margin-left:5px;\'><input type=\'checkbox\' id=\'item_deleted_select_all\' />&nbsp;<img src=\"includes/images/arrow-repeat.png\" title=\"'.$txt['restore'].'\" style=\"cursor:pointer;\" onclick=\"restoreDeletedItems()\">&nbsp;<img src=\"includes/images/bin_empty.png\" title=\"'.$txt['delete'].'\" style=\"cursor:pointer;\" onclick=\"reallyDeleteItems()\"></div>";';
@@ -204,7 +209,9 @@ switch($_POST['type'])
             //delete from FILES
             $db->query("DELETE FROM ".$pre."files WHERE id_item=".$id);
             //delete from TAGS
-            $db->query("DELETE FROM ".$pre."tags WHERE item_id=".$id);
+        	$db->query("DELETE FROM ".$pre."tags WHERE item_id=".$id);
+        	//delete from KEYS
+        	$db->query("DELETE FROM `".$pre."keys` WHERE `id` ='".$id."' AND `table`='items'");
         }
         //reload
         echo 'window.location.href = "index.php?page=manage_views";';

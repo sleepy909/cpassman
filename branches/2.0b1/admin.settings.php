@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-if ($_SESSION['CPM'] != 1)
+if (!isset($_SESSION['CPM'] ) || $_SESSION['CPM'] != 1)
 	die('Hacking attempt...');
 
 
@@ -264,6 +264,11 @@ if (isset($_POST['save_button'])) {
 	if ( @$_SESSION['settings']['custom_login_text'] != $_POST['custom_login_text'] ){
 		UpdateSettings('custom_login_text',htmlentities($_POST['custom_login_text'], ENT_QUOTES, "UTF-8"));
 	}
+
+	//store backups settings
+	if(isset($_POST['bck_script_filename'])) UpdateSettings('bck_script_filename', $_POST['bck_script_filename'], 'settings');
+	if(isset($_POST['bck_script_path'])) UpdateSettings('bck_script_path', $_POST['bck_script_path'], 'settings');
+	if(isset($_POST['bck_script_key'])) UpdateSettings('bck_script_key', $_POST['bck_script_key'], 'settings');
 }
 
 echo '
@@ -279,6 +284,7 @@ echo '
                 <li><a href="#tabs-3">'.$txt['admin_misc_title'].'</a></li>
                 <li><a href="#tabs-2">'.$txt['admin_actions_title'].'</a></li>
 				<li><a href="#tabs-4">'.$txt['admin_ldap_menu'].'</a></li>
+				<li><a href="#tabs-5">'.$txt['admin_backups'].'</a></li>
             </ul>';
             // --------------------------------------------------------------------------------
             // TAB N°1
@@ -476,30 +482,6 @@ echo '
                     <span class="ui-icon ui-icon-gear" style="float: left; margin-right: .3em;">&nbsp;</span>
                     <a href="#" onclick="LaunchAdminActions(\'admin_action_db_optimize\')" style="cursor:pointer;">'.$txt['admin_action_db_optimize'].'</a>
                     <span id="result_admin_action_db_optimize" style="margin-left:10px;"></span>
-                </div>';
-
-                //Backup the DB
-                echo '
-                <div style="margin-bottom:3px">
-                    <span class="ui-icon ui-icon-gear" style="float: left; margin-right: .3em;">&nbsp;</span>
-                    <a href="#" onclick="javascript:$(\'#result_admin_action_db_backup_get_key\').toggle();" style="cursor:pointer;">'.$txt['admin_action_db_backup'].'</a>
-                    <span style="margin-left:0px;"><img src="includes/images/question-small-white.png" class="tip" alt="" title="'.$txt['admin_action_db_backup_tip'].'" /></span>
-                    <span id="result_admin_action_db_backup" style="margin-left:10px;"></span>
-                    <span id="result_admin_action_db_backup_get_key" style="margin-left:10px;display:none;">
-                        &nbsp;'.$txt['encrypt_key'].'<input type="text" size="20" id="result_admin_action_db_backup_key" />
-                        <img src="includes/images/question-small-white.png" class="tip" alt="" title="'.$txt['admin_action_db_backup_key_tip'].'" />
-                        <img src="includes/images/asterisk.png" class="tip" alt="" title="'.$txt['admin_action_db_backup_start_tip'].'" onclick="LaunchAdminActions(\'admin_action_db_backup\')" style="cursor:pointer;" />
-                    </span>
-                </div>';
-
-                //Restore the DB
-                echo '
-                <div style="margin-bottom:3px">
-                    <span class="ui-icon ui-icon-gear" style="float: left; margin-right: .3em;">&nbsp;</span>
-                    <a href="#" onclick="javascript:$(\'#result_admin_action_db_restore_get_file\').toggle();" style="cursor:pointer;">'.$txt['admin_action_db_restore'].'</a>
-                    <span style="margin-left:0px;"><img src="includes/images/question-small-white.png" class="tip" alt="" title="'.$txt['admin_action_db_restore_tip'].'" /></span>
-                    <span id="result_admin_action_db_restore" style="margin-left:10px;"></span>
-                    <span id="result_admin_action_db_restore_get_file" style="margin-left:10px;display:none;"><input id="fileInput_restore_sql" name="fileInput_restore_sql" type="file" /></span>
                 </div>';
 
                 //Purge old files
@@ -851,7 +833,126 @@ echo '
 
 			echo '
 			</div>';
-			// --------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------
+
+// --------------------------------------------------------------------------------
+// TAB N°5
+echo '
+            <div id="tabs-5">
+            	<div class="" style="padding: 0 .7em;">
+            		<span class="ui-icon ui-icon-transferthick-e-w" style="float: left; margin-right: .3em;">&nbsp;</span>
+            		<b>'.$txt['admin_one_shot_backup'].'</b>
+				</div>
+				<div style="margin:0 0 5px 20px;">
+					<table>';
+
+					//Backup the DB
+					echo '
+					<tr style="margin-bottom:3px">
+						<td>
+					    <span class="ui-icon ui-icon-gear" style="float: left; margin-right: .3em;">&nbsp;</span>
+					    '.$txt['admin_action_db_backup'].'
+					    <span style="margin-left:0px;"><img src="includes/images/question-small-white.png" class="tip" alt="" title="'.$txt['admin_action_db_backup_tip'].'" /></span>
+						</td>
+						<td>
+					    <span id="result_admin_action_db_backup" style="margin-left:10px;"></span>
+					    <span id="result_admin_action_db_backup_get_key" style="margin-left:10px;">
+					        &nbsp;'.$txt['encrypt_key'].'<input type="text" size="20" id="result_admin_action_db_backup_key" />
+					        <img src="includes/images/question-small-white.png" class="tip" alt="" title="'.$txt['admin_action_db_backup_key_tip'].'" />
+					        <img src="includes/images/asterisk.png" class="tip" alt="" title="'.$txt['admin_action_db_backup_start_tip'].'" onclick="LaunchAdminActions(\'admin_action_db_backup\')" style="cursor:pointer;" />
+					    </span>
+					    </td>
+					</tr>';
+
+					//Restore the DB
+					echo '
+					<tr style="margin-bottom:3px">
+						<td>
+					    <span class="ui-icon ui-icon-gear" style="float: left; margin-right: .3em;">&nbsp;</span>
+					    '.$txt['admin_action_db_restore'].'
+					    <span style="margin-left:0px;"><img src="includes/images/question-small-white.png" class="tip" alt="" title="'.$txt['admin_action_db_restore_tip'].'" /></span>
+						</td>
+						<td>
+					    <span id="result_admin_action_db_restore" style="margin-left:10px;"></span>
+					    <span id="result_admin_action_db_restore_get_file" style="margin-left:10px;"><input id="fileInput_restore_sql" name="fileInput_restore_sql" type="file" /></span>
+						</td>
+					</tr>';
+
+					echo '
+					</table>
+				</div>';
+
+				echo '
+				<div class="" style="0padding: 0 .7em;">
+            		<span class="ui-icon ui-icon-transferthick-e-w" style="float: left; margin-right: .3em;">&nbsp;</span>
+            		<b>'.$txt['admin_script_backups'].'</b>&nbsp;
+					<span style="margin-left:0px;"><img src="includes/images/question-small-white.png" class="tip" style="font-size:11px;" title="<h2>'.$txt['admin_script_backups_tip'].'</h2>" /></span>
+				</div>
+				<div style="margin:0 0 5px 20px;">
+					<table>';
+
+					//Backups script path
+					echo '
+					<tr style="margin-bottom:3px">
+						<td>
+						<span class="ui-icon ui-icon-gear" style="float: left; margin-right: .3em;">&nbsp;</span>
+						'.$txt['admin_script_backup_path'].'
+						<span style="margin-left:0px;"><img src="includes/images/question-small-white.png" class="tip" style="font-size:11px;" title="<h2>'.$txt['admin_script_backup_path_tip'].'</h2>" /></span>
+						</td>
+						<td>
+						<span id="result_admin_action_db_restore" style="margin-left:10px;"></span>
+						<input id="bck_script_path" name="bck_script_path" type="text" size="80px" value="', isset($settings['bck_script_path']) ? $settings['bck_script_path'] : $_SESSION['settings']['cpassman_dir'].'/backups', '" />
+						</td>
+					</tr>';
+
+					//Backups script name
+					echo '
+					<tr style="margin-bottom:3px">
+						<td>
+						<span class="ui-icon ui-icon-gear" style="float: left; margin-right: .3em;">&nbsp;</span>
+						'.$txt['admin_script_backup_filename'].'
+						<span style="margin-left:0px;"><img src="includes/images/question-small-white.png" class="tip" style="font-size:11px;" title="<h2>'.$txt['admin_script_backup_filename_tip'].'</h2>" /></span>
+						</td>
+						<td>
+						<span id="result_admin_action_db_restore" style="margin-left:10px;"></span>
+						<input id="bck_script_filename" name="bck_script_filename" type="text" size="50px" value="', isset($settings['bck_script_filename']) ? $settings['bck_script_filename'] : 'bck_cpassman', '" />
+						</td>
+					</tr>';
+
+					//Backups script encryption
+					echo '
+					<tr style="margin-bottom:3px">
+						<td>
+						<span class="ui-icon ui-icon-gear" style="float: left; margin-right: .3em;">&nbsp;</span>
+						'.$txt['admin_script_backup_encryption'].'
+						<span style="margin-left:0px;"><img src="includes/images/question-small-white.png" class="tip" style="font-size:11px;" title="<h2>'.$txt['admin_script_backup_encryption_tip'].'</h2>" /></span>
+						</td>
+						<td>
+						<span id="result_admin_action_db_restore" style="margin-left:10px;"></span>
+						<input id="bck_script_key" name="bck_script_key" type="text" size="50px" value="', isset($settings['bck_script_key']) ? $settings['bck_script_key'] : '', '" />
+						</td>
+					</tr>';
+
+					//Decrypt SQL file
+					echo '
+					<tr style="margin-bottom:3px">
+						<td>
+						<span class="ui-icon ui-icon-gear" style="float: left; margin-right: .3em;">&nbsp;</span>
+						'.$txt['admin_script_backup_decrypt'].'
+						<span style="margin-left:0px;"><img src="includes/images/question-small-white.png" class="tip" style="font-size:11px;" title="<h2>'.$txt['admin_script_backup_decrypt_tip'].'</h2>" /></span>
+						</td>
+						<td>
+						<span id="result_admin_action_db_restore" style="margin-left:10px;"></span>
+						<input id="bck_script_decrypt_file" name="bck_script_decrypt_file" type="text" size="50px" value="" />
+						<img src="includes/images/asterisk.png" class="tip" alt="" title="'.$txt['admin_action_db_backup_start_tip'].'" onclick="LaunchAdminActions(\'admin_action_backup_decrypt\')" style="cursor:pointer;" />
+						</td>
+					</tr>';
+
+			echo '
+					</table>
+				</div>
+			</div>';
+// --------------------------------------------------------------------------------
 
 
 			//Save button

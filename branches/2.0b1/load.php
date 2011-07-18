@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-if ($_SESSION['CPM'] != 1)
+if (!isset($_SESSION['CPM'] ) || $_SESSION['CPM'] != 1)
 	die('Hacking attempt...');
 
 
@@ -38,12 +38,8 @@ $htmlHeaders = '
 if ( isset($_GET['page']) && $_GET['page'] == "items")
     $htmlHeaders .= '
 		<link rel="stylesheet" type="text/css" href="includes/css/items.css" />
-        <!--<link rel="stylesheet" type="text/css" href="includes/css/jquery.treeview.css" />
-        <script type="text/javascript" src="includes/js/jquery.treeview.pack.js"></script>
-        <script type="text/javascript" src="includes/js/jquery.cookie.pack.js"></script>-->
         <script type="text/javascript" src="includes/libraries/jstree/jquery.cookie.js"></script>
-        <script type="text/javascript" src="includes/libraries/jstree/jquery.jstree.pack.js"></script>
-
+        <script type="text/javascript" src="includes/libraries/jstree/jquery.jstree.min.js"></script>
         <script type="text/javascript" src="includes/libraries/zclip/jquery.zclip.min.js"></script>
 
         <link rel="stylesheet" type="text/css" href="includes/css/jquery.autocomplete.css" />
@@ -89,7 +85,9 @@ if ( isset($_GET['page']) && ($_GET['page'] == "find" || $_GET['page'] == "kb"))
         <script type="text/javascript" src="includes/libraries/datatable/jquery.dataTables.min.js"></script>
 
         <link rel="stylesheet" type="text/css" href="includes/libraries/ui-multiselect/css/ui.multiselect.css" />
-        <script type="text/javascript" src="includes/libraries/ui-multiselect/js/ui.multiselect.min.js"></script>';
+        <script type="text/javascript" src="includes/libraries/ui-multiselect/js/ui.multiselect.min.js"></script>
+
+        <script type="text/javascript" src="includes/libraries/crypt/aes.min.js"></script>';
 
 else
 if ( !isset($_GET['page']) )
@@ -574,140 +572,6 @@ if ( isset($_GET['page']) && $_GET['page'] == "find"){
 }
 
 else
-//JAVASCRIPT FOR KB PAGE
-if ( isset($_GET['page']) && $_GET['page'] == "kb"){
-	$htmlHeaders .= '
-	//Function opening
-	function openKB(id){
-		LoadingPage();  //show loading div
-		var data = "type=open_kb&"+
-		    "&id="+id;
-		httpRequest("sources/kb.queries.php",data);
-	}
-
-	//Function deleting
-	function deleteKB(id){
-		$("#kb_id").val(id);
-		$("#div_kb_delete").dialog("open");
-	}
-
-	$(function() {
-		//buttons
-		$("#button_new_kb").button();
-
-	    //Launch the datatables pluggin
-	    $("#t_kb").dataTable({
-	        "aaSorting": [[ 1, "asc" ]],
-	        "sPaginationType": "full_numbers",
-	        "bProcessing": true,
-	        "bServerSide": true,
-	        "sAjaxSource": "sources/kb.queries.table.php",
-	        "bJQueryUI": true,
-	        "oLanguage": {
-	            "sUrl": "includes/language/datatables.'.$_SESSION['user_language'].'.txt"
-	        }
-	    });
-
-	    //Dialogbox for deleting KB
-	    $("#div_kb_delete").dialog({
-	    	bgiframe: true,
-			modal: true,
-			autoOpen: false,
-			width: 300,
-			height: 150,
-			title: "'.$txt['item_menu_del_elem'].'",
-			buttons: {
-				"'.$txt['del_button'].'": function() {
-					$.post(
-						"sources/kb.queries.php",
-						"type=delete_kb&"+
-					    "&id="+$("#kb_id").val(),
-					    function(data){
-							$("#div_kb_delete").dialog("close");
-							oTable = $("#t_kb").dataTable();
-							oTable.fnDraw();
-						}
-					)
-	            },
-	            "'.$txt['cancel_button'].'": function() {
-	                $(this).dialog("close");
-	            }
-			}
-	    });
-
-	    //Dialogbox for new KB
-	    $("#kb_form").dialog({
-			bgiframe: true,
-			modal: true,
-			autoOpen: false,
-			width: 900,
-			height: 600,
-			title: "'.$txt['kb_form'].'",
-			buttons: {
-				"'.$txt['save_button'].'": function() {
-					if($("#kb_label").val() == "") {
-						$("#kb_label").addClass( "ui-state-error" );
-					}else if($("#kb_category").val() == "") {
-						$("#kb_category").addClass( "ui-state-error" );
-					}else if($("#kb_description").val() == "") {
-						$("#kb_description").addClass( "ui-state-error" );
-					}else{
-						LoadingPage();  //show loading div
-
-                        //selected items associated to KB
-                        var itemsvalues = [];
-                        $("#kb_associated_to :selected").each(function(i, selected) {
-                            itemsvalues[i] = $(selected).val();
-                        });
-
-						var data = "type=kb_in_db&"+
-						    "&label="+encodeURIComponent($("#kb_label").val())+
-						    "&category="+encodeURIComponent($("#kb_category").val())+
-						    "&anyone_can_modify="+$("input[name=modify_kb]:checked").val()+
-						    "&id="+$("#kb_id").val()+
-                            "&kb_associated_to="+itemsvalues+
-						    "&description="+escape(CKEDITOR.instances["kb_description"].getData());
-						httpRequest("sources/kb.queries.php",data);
-					}
-				},
-				"'.$txt['cancel_button'].'": function() {
-					$(this).dialog("close");
-				}
-			},
-			open:function(event, ui) {
-				$("#kb_label, #kb_description, #kb_category").removeClass( "ui-state-error" );
-				$("#kb_associated_to").multiselect();
-				var instance = CKEDITOR.instances["kb_description"];
-			    if(instance)
-			    {
-			    	CKEDITOR.replace("kb_description",{toolbar:"Full", height: 250,language: "'. $k['langs'][$_SESSION['user_language']].'"});
-			    }else{
-					$("#kb_description").ckeditor({toolbar:"Full", height: 250,language: "'. $k['langs'][$_SESSION['user_language']].'"});
-			    }
-			},
-	        close: function(event,ui) {
-	        	if(CKEDITOR.instances["kb_description"]){
-	        		CKEDITOR.instances["kb_description"].destroy();
-	        	}
-	        	$("#kb_id,#kb_label, #kb_description, #kb_category, #full_list_items_associated").val("");
-	        }
-		});
-
-		//category listing
-		$( "#kb_category" ).autocomplete({
-			source: "sources/kb.queries.categories.php",
-			minLength: 1
-		}).focus(function(){
-			if (this.value == "")
-				$(this).trigger("keydown.autocomplete");
-		});
-
-		//BUILD BUTTONSET
-        //$(".div_radio").buttonset();
-	});';
-}
-
-else
 //JAVASCRIPT FOR ADMIN PAGE
 if ( isset($_GET['page']) && $_GET['page'] == "manage_main" ){
     $htmlHeaders .= '
@@ -805,9 +669,11 @@ if ( isset($_GET['page']) && $_GET['page'] == "manage_settings" ){
     function LaunchAdminActions(action,option){
         LoadingPage();
         if ( action == "admin_action_db_backup" ) option = $("#result_admin_action_db_backup_key").val();
+        else if ( action == "admin_action_backup_decrypt" ) option = $("#bck_script_decrypt_file").val();
         var data = "type="+action+"&option="+option;
         httpRequest("sources/admin.queries.php",data);
     }
+
     ';
 }
 

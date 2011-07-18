@@ -13,7 +13,7 @@
  */
 
 session_start();
-if ($_SESSION['CPM'] != 1)
+if (!isset($_SESSION['CPM'] ) || $_SESSION['CPM'] != 1)
 	die('Hacking attempt...');
 
 header("Content-disposition: attachment; filename=".rawurldecode($_GET['name']));

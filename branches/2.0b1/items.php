@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-if ($_SESSION['CPM'] != 1)
+if (!isset($_SESSION['CPM'] ) || $_SESSION['CPM'] != 1)
 	die('Hacking attempt...');
 
 require_once ("sources/NestedTree.class.php");
@@ -50,7 +50,7 @@ foreach($rows as $reccord){
 }
 
 //Build list of visible folders
-$select_visible_folders_options = "";
+$select_visible_folders_options = $select_visible_nonpersonal_folders_options = "";
 
 //Hidden things
 echo '
@@ -98,6 +98,7 @@ echo '
 	            '.$txt['items_browser_title'].'
 			    <span id="jstree_open"class="pointer" ><img src="includes/images/chevron-small-expand.png" /></span>
 			    <span id="jstree_close" class="pointer"><img alt="" src="includes/images/chevron-small.png" /></span>
+			    <input type="text" name="jstree_search" id="jstree_search" class="text ui-widget-content ui-corner-all tip search_tree" title="'.$txt['item_menu_find'].'" />
 	        </div>
 	    </div>
 	    <div id="sidebar" class="sidebar">';
@@ -145,22 +146,29 @@ echo '
 					<li class="jstree-open">';
 							if (in_array($folder->id,$_SESSION['groupes_visibles'])) {
 								$folder_txt .= '
-							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\', \'\', 0);">'.str_replace("&","&amp;",$folder->title).' ('.$nb_items.')</a>';
+							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\', \'\', 0);">'.str_replace("&","&amp;",$folder->title).' (<span class="items_count">'.$nb_items.'</span>)</a>';
 								//case for restriction_to_roles
 							}elseif (in_array($folder->id, $list_folders_limited_keys)) {
 								$folder_txt .= '
-							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\', \'\', 0);">'.str_replace("&","&amp;",$folder->title).' ('.count($_SESSION['list_folders_limited'][$folder->id]).')</a>';
+							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\', \'\', 0);">'.str_replace("&","&amp;",$folder->title).' (<span class="items_count">'.count($_SESSION['list_folders_limited'][$folder->id]).')</span></a>';
 							}else{
 								$folder_txt .= '
 							<a id="fld_'.$folder->id.'">'.str_replace("&","&amp;",$folder->title).'</a>';
 							}
 
+							//build select for all visible folders
 							if (in_array($folder->id,$_SESSION['groupes_visibles'])) {
 								$select_visible_folders_options .= '<option value="'.$folder->id.'">'.$ident.str_replace("&","&amp;",$folder->title).'</option>';
 							}else{
 								$select_visible_folders_options .= '<option value="'.$folder->id.'" disabled="disabled">'.$ident.str_replace("&","&amp;",$folder->title).'</option>';
 							}
 
+							//build select for non personal visible folders
+							if (in_array($folder->id,$_SESSION['all_non_personal_folders'])) {
+								$select_visible_nonpersonal_folders_options .= '<option value="'.$folder->id.'">'.$ident.str_replace("&","&amp;",$folder->title).'</option>';
+							}else{
+								$select_visible_nonpersonal_folders_options .= '<option value="'.$folder->id.'" disabled="disabled">'.$ident.str_replace("&","&amp;",$folder->title).'</option>';
+							}
 
 				            //Construire l'arborescence
 				            if ( $cpt_total == 0 ) {
@@ -176,7 +184,7 @@ echo '
 				                    $folder_cpt++;
 				                }else if ( $prev_level == $folder->nlevel ){
 				                	echo '
-					/li>'.$folder_txt;
+					</li>'.$folder_txt;
 				                	$folder_cpt++;
 				                }else{
 				                	$tmp = '';
@@ -248,7 +256,7 @@ echo '
             <input type="hidden" id="id_categorie" value="" />
             <input type="hidden" id="id_item" value="" />
             <input type="hidden" id="hid_anyone_can_modify" value="" />
-            <div style="height:210px;overflow-y:auto;">
+            <div style="height:210px;overflow-y:auto;" id="item_details_scroll">
 
                 <div id="item_details_expired" style="display:none;background-color:white; margin:5px;">
                     <div class="ui-state-error ui-corner-all" style="padding:2px;">
@@ -256,7 +264,7 @@ echo '
                     </div>
                 </div>
                 <table>';
-                //Line fot LABEL
+                //Line for LABEL
                 echo '
                 <tr>
                     <td valign="top" class="td_title"><span class="ui-icon ui-icon-carat-1-e" style="float: left; margin-right: .3em;">&nbsp;</span>'.$txt['label'].' :</td>
@@ -265,7 +273,7 @@ echo '
                         <div id="id_label" style="display:inline;"></div>
                     </td>
                 </tr>';
-                //Line fot DESCRIPTION
+                //Line for DESCRIPTION
                 echo '
                 <tr>
                     <td valign="top" class="td_title"><span class="ui-icon ui-icon-carat-1-e" style="float: left; margin-right: .3em;">&nbsp;</span>'.$txt['description'].' :</td>
@@ -273,7 +281,7 @@ echo '
                         <div id="id_desc" style="font-style:italic;display:inline;"></div><input type="hidden" id="hid_desc" value="', isset($data_item) ? $data_item['description'] : '', '" />
                     </td>
                 </tr>';
-                //Line fot PW
+                //Line for PW
                 echo '
                 <tr>
                     <td valign="top" class="td_title"><span class="ui-icon ui-icon-carat-1-e" style="float: left; margin-right: .3em;">&nbsp;</span>'.$txt['pw'].' :</td>
@@ -282,7 +290,7 @@ echo '
                         <input type="hidden" id="hid_pw" value="" />
                     </td>
                 </tr>';
-                //Line fot LOGIN
+                //Line for LOGIN
                 echo '
                 <tr>
                     <td valign="top" class="td_title"><span class="ui-icon ui-icon-carat-1-e" style="float: left; margin-right: .3em;">&nbsp;</span>'.$txt['index_login'].' :</td>
@@ -291,7 +299,7 @@ echo '
                         <input type="hidden" id="hid_login" value="" />
                     </td>
                 </tr>';
-                //Line fot URL
+                //Line for URL
                 echo '
                 <tr>
                     <td valign="top" class="td_title"><span class="ui-icon ui-icon-carat-1-e" style="float: left; margin-right: .3em;">&nbsp;</span>'.$txt['url'].' :</td>
@@ -299,7 +307,7 @@ echo '
                         <div id="id_url" style="display:inline;"></div><input type="hidden" id="hid_url" value="" />
                     </td>
                 </tr>';
-                //Line fot FILES
+                //Line for FILES
                 echo '
                 <tr>
                     <td valign="top" class="td_title"><span class="ui-icon ui-icon-carat-1-e" style="float: left; margin-right: .3em;">&nbsp;</span>'.$txt['files_&_images'].' :</td>
@@ -310,7 +318,7 @@ echo '
                         </div>
                     </td>
                 </tr>';
-                //Line fot RESTRICTED TO
+                //Line for RESTRICTED TO
                 echo '
                 <tr>
                     <td valign="top" class="td_title"><span class="ui-icon ui-icon-carat-1-e" style="float: left; margin-right: .3em;">&nbsp;</span>'.$txt['restricted_to'].' :</td>
@@ -318,7 +326,7 @@ echo '
                         <div id="id_restricted_to" style="display:inline;"></div><input type="hidden" id="hid_restricted_to" /><input type="hidden" id="hid_restricted_to_roles" />
                     </td>
                 </tr>';
-                //Line fot TAGS
+                //Line for TAGS
                 echo '
                 <tr>
                     <td valign="top" class="td_title"><span class="ui-icon ui-icon-carat-1-e" style="float: left; margin-right: .3em;">&nbsp;</span>'.$txt['tags'].' :</td>
@@ -326,7 +334,16 @@ echo '
                         <div id="id_tags" style="display:inline;"></div><input type="hidden" id="hid_tags" />
                     </td>
                 </tr>';
-                //Line fot HISTORY
+                //Line for KBs
+								if(isset($_SESSION['settings']['enable_kb']) && $_SESSION['settings']['enable_kb'] == 1)
+                echo '
+                <tr>
+                    <td valign="top" class="td_title"><span class="ui-icon ui-icon-carat-1-e" style="float: left; margin-right: .3em;">&nbsp;</span>'.$txt['kbs'].' :</td>
+                    <td>
+                        <div id="id_kbs" style="display:inline;"></div><input type="hidden" id="hid_kbs" />
+                    </td>
+                </tr>';
+                //Line for HISTORY
                 echo '
                 <tr>
                     <td valign="top" class="td_title"><span class="ui-icon ui-icon-carat-1-e" style="float: left; margin-right: .3em;">&nbsp;</span>'.$txt['history'].' :</td>
@@ -751,6 +768,19 @@ echo '
         <span class="ui-icon ui-icon-info" style="float:left; margin:0 7px 20px 0;">&nbsp;</span>'.$txt['link_is_copied'].'
     </p>
     <div id="div_display_link"></div>
+</div>';
+
+//DIALOG TO WHAT FOLDER COPYING ITEM
+echo '
+<div id="div_copy_item_to_folder" style="display:none;">
+    <div id="new_rep_show_error" style="text-align:center;margin:2px;display:none;" class="ui-state-error ui-corner-all"></div>
+    <div style="">'.$txt['item_copy_to_folder'].'</div>
+	<div style="margin:10px;">
+		<select id="copy_in_folder">
+            <option value="0">---</option>'.
+    		$select_visible_nonpersonal_folders_options.
+		'</select>
+	</div>
 </div>';
 
 

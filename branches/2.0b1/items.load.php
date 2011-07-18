@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-if ($_SESSION['CPM'] != 1)
+if (!isset($_SESSION['CPM'] ) || $_SESSION['CPM'] != 1)
 	die('Hacking attempt...');
 
 
@@ -55,16 +55,6 @@ if ($_SESSION['CPM'] != 1)
         }else{
             $('#id_pw').html('<img src="includes/images/masked_pw.png" />');
         }
-    }
-
-    function protectString(string){
-    	string = string.replace(/\\/g,'&#93;');
-		return string.replace(/"/g,'&quot;');
-    }
-
-    function unprotectString(string){
-    	string = string.replace(/\\/g,'').replace(/&#93;/g,'\\');
-		return string;
     }
 
 
@@ -128,18 +118,14 @@ function ListerItems(groupe_id, restricted, start){
 	        			$("#items_list").append(data.items_html);
 	        			$("#query_next_start").val(data.list_to_be_continued);
 	        		}
-/*
-	        		if ($("#query_next_start").val() <= $("#nb_items_to_display_once").val() && data.list_to_be_continued == "yes") {
-	        			//$("#items_list").append('<div id="more_items" style="float:right"><a href="#" onclick="ListerItems($(\'#hid_cat\').val(),\'\', $(\'#query_next_start\').val());" class="small_text"><img src="includes/images/control-skip-270.png" style="margin-right:10px;" /></a></div>');
-	        		}
-*/
 
 	        		//If restriction for role
 	        		if (restricted == 1) {
-	        			$("#menu_button_add_item, #menu_button_copy_item").attr('disabled', 'disabled');
+	        			$("#menu_button_add_item").attr('disabled', 'disabled');
 	        		}else{
-	        			$("#menu_button_add_item, #menu_button_copy_item").removeAttr('disabled');
+	        			$("#menu_button_add_item").removeAttr('disabled');
 	        		}
+	        		$("#menu_button_copy_item").attr('disabled', 'disabled');
 
 					//If no data then empty
 					if (data.array_items == null) {
@@ -627,13 +613,6 @@ function AfficherDetailsItem(id, salt_key_required, expired_item, restricted, di
                     $("#edit_item_salt_key").hide();
                 }
 
-                //User can modify item
-                if (data.user_can_modify == "1") {
-                    $("#menu_button_edit_item, #menu_button_del_item").removeAttr("disabled");
-                }else{
-                    $("#menu_button_edit_item, #menu_button_del_item").attr("disabled","disabled");
-                }
-
                 //Show detail item
                 if (data.show_detail_option == "0") {
                     $("#item_details_ok").show();
@@ -684,6 +663,7 @@ function AfficherDetailsItem(id, salt_key_required, expired_item, restricted, di
                     $("#hid_files").val(data.files_id);
                     $("#item_edit_list_files").html(data.files_edit).html();
                     $("#div_last_items").html(htmlspecialchars_decode(data.div_last_items));
+					$("#id_kbs").html(data.links_to_kbs);
 
                     //Anyone can modify button
                     if (data.anyone_can_modify == "1") {
@@ -695,8 +675,9 @@ function AfficherDetailsItem(id, salt_key_required, expired_item, restricted, di
                     //enable copy buttons
                     $("#menu_button_show_pw, #menu_button_copy_pw, #menu_button_copy_login, #menu_button_copy_link").removeAttr("disabled");
 
-	                if (data.restricted == "1") {
-	                	$("#menu_button_add_item, #menu_button_copy_item").attr("disabled","disabled");
+	                if (data.restricted == "1" || data.user_can_modify == "1") {
+	                	if($('#recherche_group_pf').val() != "1") $("#menu_button_edit_item, #menu_button_del_item").removeAttr("disabled");
+                	else $("#menu_button_edit_item").removeAttr("disabled");
 	                }else{
 	                    $("#menu_button_add_item, #menu_button_copy_item").removeAttr("disabled");
 	                }
@@ -958,34 +939,56 @@ function open_del_item_div() {
     $('#div_del_item').dialog('open');
 }
 
-//###########
-//## FUNCTION : copy an existing item
-//###########
-function open_copy_item_div() {
-	LoadingPage();
-	//Send query
-	$.post(
-		"sources/items.queries.php",
-		{
-			type    : "copy_item",
-			item_id : $('#id_item').val()
-		},
-		function(data){
-			//check if format error
-            if (data[0].error == "no_item") {
-                $("#div_dialog_message_text").html(data[1].error_text);
-                $("#div_dialog_message").dialog("open");
-            }
 
-			//if OK
-			if (data[0].status == "ok") {
-				window.location.href = "index.php?page=items&group="+$('#hid_cat').val()+"&id="+data[1].new_id;
-			}
-			LoadingPage();
-		},
-		"json"
-	);
+//###########
+//## FUNCTION : prepare copy item dialogbox
+//###########
+function open_copy_item_to_folder_div() {
+	$('#copy_in_folder').val($("#hid_cat").val());
+    $('#div_copy_item_to_folder').dialog('open');
 }
+
+$("#div_copy_item_to_folder").dialog({
+        bgiframe: true,
+        modal: true,
+        autoOpen: false,
+        width: 400,
+        height: 200,
+        title: "<?php echo $txt['item_menu_copy_elem'];?>",
+        buttons: {
+            "<?php echo $txt['ok'];?>": function() {
+                //Send query
+				$.post(
+					"sources/items.queries.php",
+					{
+						type    : "copy_item",
+						item_id : $('#id_item').val(),
+						folder_id : $('#copy_in_folder').val()
+					},
+					function(data){
+						//check if format error
+			            if (data[0].error == "no_item") {
+			                $("#div_dialog_message_text").html(data[1].error_text);
+			                $("#div_dialog_message").dialog("open");
+			            }
+
+						//if OK
+						if (data[0].status == "ok") {
+							window.location.href = "index.php?page=items&group="+$('#copy_in_folder').val()+"&id="+data[1].new_id;
+						}
+						LoadingPage();
+					},
+					"json"
+				);
+
+
+                $(this).dialog('close');
+            },
+            "<?php echo $txt['cancel_button'];?>": function() {
+                $(this).dialog('close');
+            }
+        }
+    });
 
 //###########
 //## FUNCTION : Clear HTML tags from a string
@@ -1087,6 +1090,11 @@ $(function() {
     $("#jstree_open").click(function() {
         $("#jstree").jstree("open_all", -1);
     });
+    $("#jstree_search").keypress(function(e) {
+    	if(e.keyCode == 13) {
+        	$("#jstree").jstree("search",$("#jstree_search").val());
+    	}
+    });
 
 
     //Disable menu buttons
@@ -1130,11 +1138,15 @@ $(function() {
 
 	//Build tree
     $("#jstree").jstree({
-    	"core" : { "close_all" : -1 },
-    	"plugins" : ["themes", "html_data", "cookies"],
-    	"save_opened" : "cpassman_jstree_open",
-    	"save_selected" : "cpassman_jstree_select"
-    });
+    	"plugins" : ["themes", "html_data", "cookies", "ui", "search"]
+	})
+	//search in tree
+	.bind("search.jstree", function (e, data) {
+		if(data.rslt.nodes.length == 1){
+			//open the folder
+			ListerItems($("#jstree li>a.jstree-search").attr('id').split('_')[1], '', 0)
+		}
+	});
 
 
     $("#add_folder").click(function() {

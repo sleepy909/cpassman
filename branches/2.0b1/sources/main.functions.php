@@ -13,7 +13,7 @@
  */
 
 //session_start();
-if ($_SESSION['CPM'] != 1)
+if (!isset($_SESSION['CPM'] ) || $_SESSION['CPM'] != 1)
 	die('Hacking attempt...');
 
 
@@ -112,6 +112,7 @@ function IdentifyUserRights($groupes_visibles_user,$groupes_interdits_user,$is_a
             array_push($groupes_visibles,$record['id']);
         }
         $_SESSION['groupes_visibles'] = $groupes_visibles;
+    	$_SESSION['all_non_personal_folders'] = $groupes_visibles;
 
     	//Exclude all PF
     	$_SESSION['forbiden_pfs'] = array();
@@ -544,5 +545,15 @@ function SendEmail($subject, $mail, $email){
 
 	//send email
 	$mail->Send();
+}
+
+
+/**
+ * GenerateKey()
+ *
+ * @return
+ */
+function GenerateKey(){
+	return substr(md5(rand().rand()), 0, rand(14,29));
 }
 ?>
