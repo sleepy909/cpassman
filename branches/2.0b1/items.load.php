@@ -51,7 +51,7 @@ if (!isset($_SESSION['CPM'] ) || $_SESSION['CPM'] != 1)
     //FUNCTION mask/unmask passwords characters
     function ShowPassword(pw){
         if ( $('#id_pw').html() == '<img src="includes/images/masked_pw.png">' || $('#id_pw').html() == '<IMG src="includes/images/masked_pw.png">' ){
-            $('#id_pw').html($('#hid_pw').val());
+            $('#id_pw').text($('#hid_pw').val());
         }else{
             $('#id_pw').html('<img src="includes/images/masked_pw.png" />');
         }
@@ -813,7 +813,7 @@ function open_add_item_div() {
 	    RecupComplexite($('#hid_cat').val(),0);
 
         //Show WYGIWYS editor if enabled
-        if ($('#richtext_on').val() == "1") {
+        //if ($('#richtext_on').val() == "1") {
             CKEDITOR.replace(
                 "desc",
                 {
@@ -822,7 +822,7 @@ function open_add_item_div() {
                     language: "<?php echo $k['langs'][$_SESSION['user_language']];?>"
                 }
             );
-        }
+        //}
 
         //open dialog
         $("#div_formulaire_saisi").dialog("open");
@@ -834,9 +834,21 @@ function open_add_item_div() {
 //###########
 function open_edit_item_div(restricted_to_roles) {
     LoadingPage();
+
+    //Show WYGIWYS editor
+    CKEDITOR.replace(
+        "edit_desc",
+        {
+            toolbar :[["Bold", "Italic", "Strike", "-", "NumberedList", "BulletedList", "-", "Link","Unlink","-","RemoveFormat"]],
+            height: 100,
+            language: "<?php echo $k['langs'][$_SESSION['user_language']];?>"
+        }
+    );
+    CKEDITOR.instances["edit_desc"].setData($('#hid_desc').val());
+
     $('#edit_display_title').html($('#hid_label').val());
     $('#edit_label').val($('#hid_label').val());
-    $('#edit_desc').html($('#hid_desc').val().replace (/<br\s*\/>*|<br>*/g, '\n'));
+    $('#edit_desc').html($('#hid_desc').val());
     $('#edit_pw1').val($('#hid_pw').val());
     $('#edit_pw2').val($('#hid_pw').val());
     $('#edit_item_login').val($('#hid_login').val());
@@ -852,9 +864,6 @@ function open_edit_item_div(restricted_to_roles) {
 		$('#edit_anyone_can_modify').attr("checked",false);
 		$('#edit_anyone_can_modify').button("refresh");
 	}
-
-	//Get pw complexity level
-	//runPassword(document.getElementById('edit_pw1').value, 'edit_mypassword');
 
 	//Get complexity level for this folder
 	RecupComplexite(document.getElementById('hid_cat').value,1);
@@ -902,18 +911,6 @@ function open_edit_item_div(restricted_to_roles) {
 		    j++;
 		}
 	}
-
-    //Show WYGIWYS editor if enabled
-    if ($('#richtext_on').val() == "1") {
-        CKEDITOR.replace(
-            "edit_desc",
-            {
-                toolbar :[["Bold", "Italic", "Strike", "-", "NumberedList", "BulletedList", "-", "Link","Unlink","-","RemoveFormat"]],
-                height: 100,
-                language: "<?php echo $k['langs'][$_SESSION['user_language']];?>"
-            }
-        );
-    }
 
     //Prepare multiselect widget
     $("#edit_restricted_to_list").multiselect({
@@ -1472,6 +1469,10 @@ $(function() {
 		}
 	});
 
+	//Text search watermark
+	var tbval = $('#jstree_search').val();
+	$('#jstree_search').focus(function() { $(this).val('');});
+	$('#jstree_search').blur(function() { $(this).val(tbval);});
 });
 
 function htmlspecialchars_decode (string, quote_style) {

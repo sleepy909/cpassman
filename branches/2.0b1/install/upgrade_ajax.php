@@ -537,7 +537,10 @@ if ( isset($_POST['type']) ){
                 `id` int(20) NOT NULL,
                 `rand_key` varchar(25) NOT NULL
                 ) CHARSET=utf8;");
-			if ( $res ){
+
+			$res_tmp = mysql_fetch_row(mysql_query("SELECT COUNT(*) FROM ".$_SESSION['tbl_prefix']."keys"));
+
+			if ( $res && $res_tmp[0] == 0 ){
 				echo 'document.getElementById("tbl_14").innerHTML = "<img src=\"images/tick.png\">";';
 
 				//increase size of PW field in ITEMS table
@@ -552,7 +555,7 @@ if ( isset($_POST['type']) ){
 						$pw = trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, SALT, base64_decode($reccord['pw']), MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND)));
 
 						//generate random key
-						$random_key = substr(md5(rand().rand()), 0, rand(14,29));
+						$random_key = substr(md5(rand().rand()), 0, 15);
 
 						//Store generated key
 						mysql_query("INSERT INTO ".$_SESSION['tbl_prefix']."keys VALUES('items', '".$reccord['id']."', '".$random_key."') ");

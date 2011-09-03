@@ -69,7 +69,7 @@ if ( isset($_POST['type']) ){
 	            	(isset($_SESSION['settings']['duplicate_item']) && $_SESSION['settings']['duplicate_item'] == 1)
 	            ){
 	            	//set key if non personal item
-	            	if($data_received['is_pf'] == 0){
+	            	if($data_received['is_pf'] != 1){
 	            		//generate random key
 	            		$random_key = GenerateKey();
 	            		$pw = $random_key.$pw;
@@ -100,7 +100,7 @@ if ( isset($_POST['type']) ){
 		            );
 
 	            	//Store generated key
-	            	if($data_received['is_pf'] == 0){
+	            	if($data_received['is_pf'] != 1){
 		            	$db->query_insert(
 			            	'keys',
 			            	array(
@@ -228,7 +228,7 @@ if ( isset($_POST['type']) ){
                 //Prepare variables
                 $label = htmlspecialchars_decode($data_received['label']);
                 $url = htmlspecialchars_decode($data_received['url']);
-                $pw = htmlspecialchars_decode($data_received['pw']);
+                $pw = $original_pw = htmlspecialchars_decode($data_received['pw']);
                 $login = htmlspecialchars_decode($data_received['login']);
                 $tags = htmlspecialchars_decode($data_received['tags']);
 
@@ -240,23 +240,15 @@ if ( isset($_POST['type']) ){
                 );
 
             	//Manage salt key
-            	if($data['perso'] == 0){
-            		//generate new key
-            		$random_key = GenerateKey();
-
-            		//update key
-            		$db->query_update(
-	            		'keys',
-	            		array(
-	            			'rand_key' => $random_key
-		            	),
-	            		array(
-	            			'id' => $data_received['id'],
-	            			'table' => "items"
-	            		)
+            	if($data['perso'] != 1){
+            		//Get orginal key
+            		$original_key = $db->query_first("
+						SELECT `rand_key`
+						FROM `".$pre."keys`
+						WHERE `table` LIKE 'items' AND `id`=".$data_received['id']
             		);
 
-            		$pw = $random_key.$pw;
+            		$pw = $original_key['rand_key'].$pw;
             	}
 
 
@@ -401,7 +393,7 @@ if ( isset($_POST['type']) ){
                                 'date' => mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y')),
                                 'id_user' => $_SESSION['user_id'],
                                 'action' => 'at_modification',
-                                'raison' => 'at_pw : '.addslashes($old_pw)
+                                'raison' => 'at_pw : '.substr(addslashes($old_pw), strlen($original_key['rand_key']))
                             )
                         );
                     }
@@ -552,7 +544,7 @@ if ( isset($_POST['type']) ){
         		);
 
         		//Check if item is PERSONAL
-        		if($original_record['perso'] == 0){
+        		if($original_record['perso'] != 1){
         			//generate random key
         			$random_key = GenerateKey();
 
@@ -680,7 +672,7 @@ if ( isset($_POST['type']) ){
             }
 
         	//extract real pw from salt
-        	if($data_item['perso'] == 0){
+        	if($data_item['perso'] != 1){
         		$data_item_key = $db->query_first('SELECT rand_key FROM `'.$pre.'keys` WHERE `table`="items" AND `id`='.$_POST['id']);
         		$pw = substr($pw, strlen($data_item_key['rand_key']));
         	}

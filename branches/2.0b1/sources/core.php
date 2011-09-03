@@ -191,7 +191,6 @@ foreach( $rows as $reccord ){
 		}
 	}
 
-
 /* CHECK IF SESSION EXISTS AND IF SESSION IS VALID */
     if ( !empty($_SESSION['fin_session']) ) {
         $data_session = $db->fetch_row("SELECT key_tempo FROM ".$pre."users WHERE id=".$_SESSION['user_id']);
@@ -222,7 +221,7 @@ foreach( $rows as $reccord ){
         echo '
         <script language="javascript" type="text/javascript">
         <!--
-        document.location.href="index.php";
+        //document.location.href="index.php";
         -->
         </script>';
     }

@@ -29,7 +29,9 @@ $htmlHeaders = '
         <link rel="stylesheet" href="includes/css/jquery.tooltip.css" type="text/css" />
 
 		<script language="JavaScript" type="text/javascript" src="includes/libraries/simplePassMeter/simplePassMeter.js"></script>
-        <link rel="stylesheet" href="includes/libraries/simplePassMeter/simplePassMeter.css" type="text/css" />';
+        <link rel="stylesheet" href="includes/libraries/simplePassMeter/simplePassMeter.css" type="text/css" />
+
+        <script type="text/javascript" src="includes/libraries/crypt/aes.min.js"></script>';
 
 
 
@@ -55,9 +57,7 @@ if ( isset($_GET['page']) && $_GET['page'] == "items")
 		<script type="text/javascript" src="includes/libraries/ckeditor/adapters/jquery.js"></script>
 
 		<link rel="stylesheet" type="text/css" href="includes/libraries/multiselect/jquery.multiselect.css" />
-        <script type="text/javascript" src="includes/libraries/multiselect/jquery.multiselect.min.js"></script>
-
-        <script type="text/javascript" src="includes/libraries/crypt/aes.min.js"></script>';
+        <script type="text/javascript" src="includes/libraries/multiselect/jquery.multiselect.min.js"></script>';
 
 else
 if ( isset($_GET['page']) && $_GET['page'] == "manage_settings")
@@ -69,8 +69,7 @@ if ( isset($_GET['page']) && $_GET['page'] == "manage_settings")
 else
 if ( isset($_GET['page']) && ( $_GET['page'] == "manage_users" ||$_GET['page'] == "manage_folders") )
     $htmlHeaders .= '
-        <script src="includes/js/jquery.jeditable.js" type="text/javascript"></script>
-        <script type="text/javascript" src="includes/libraries/crypt/aes.min.js"></script>';
+        <script src="includes/js/jquery.jeditable.js" type="text/javascript"></script>';
 
 else
 if ( isset($_GET['page']) && ($_GET['page'] == "find" || $_GET['page'] == "kb"))
@@ -85,9 +84,7 @@ if ( isset($_GET['page']) && ($_GET['page'] == "find" || $_GET['page'] == "kb"))
         <script type="text/javascript" src="includes/libraries/datatable/jquery.dataTables.min.js"></script>
 
         <link rel="stylesheet" type="text/css" href="includes/libraries/ui-multiselect/css/ui.multiselect.css" />
-        <script type="text/javascript" src="includes/libraries/ui-multiselect/js/ui.multiselect.min.js"></script>
-
-        <script type="text/javascript" src="includes/libraries/crypt/aes.min.js"></script>';
+        <script type="text/javascript" src="includes/libraries/ui-multiselect/js/ui.multiselect.min.js"></script>';
 
 else
 if ( !isset($_GET['page']) )
@@ -313,6 +310,14 @@ $htmlHeaders .= '
 
 	';
 
+
+if (!isset($_GET['page']) && isset($_SESSION['key'])) {
+    $htmlHeaders .= '
+	function aes_encrypt(text) {
+		return Aes.Ctr.encrypt(text, "'.$_SESSION['key'].'", 256);
+	}
+	';
+}
 if ( !isset($_GET['page']) ){
     $htmlHeaders .= '
     $(function() {
@@ -335,7 +340,7 @@ if ( !isset($_GET['page']) ){
             title: "'.$txt['index_change_pw'].'",
             buttons: {
                 "'.$txt['index_change_pw_button'].'": function() {
-                    ChangerMdp("'. (isset($_SESSION['last_pw']) ? $_SESSION['last_pw'] : ''). '");
+                    ChangerMdp();
                 },
                 "'.$txt['cancel_button'].'": function() {
                     $(this).dialog("close");
@@ -484,10 +489,29 @@ if ( !isset($_GET['page']) ){
     })
 
     //Change the Users password when he asks for
-    function ChangerMdp(old_pw){
+    function ChangerMdp(){
         if ( document.getElementById("new_pw").value != "" && document.getElementById("new_pw").value == document.getElementById("new_pw2").value ){
-            var data = "type=change_pw&new_pw="+encodeURIComponent(document.getElementById("new_pw").value)+"&old_pw="+old_pw;
-            httpRequest("sources/main.queries.php",data);
+            var data = "{\"new_pw\":\""+protectString(document.getElementById("new_pw").value)+"\"}";
+
+            $.post(
+                "sources/main.queries.php",
+                {
+                    type    : "change_pw",
+					data :	aes_encrypt(data)
+                },
+                function(data){
+                	if (data[0].error == "already_used") {
+                		$("#new_pw").val("");
+                		$("#new_pw2").val("");
+                		$("#change_pwd_error").addClass("ui-state-error ui-corner-all").show().html("<span>'.$txt['pw_used'].'</span>");
+                	}else{
+                		//document.main_form.submit();
+                	}
+                },
+                "json"
+            );
+
+            //httpRequest("sources/main.queries.php","type=change_pw&data="+aes_encrypt(data));
         }else{
             $("#change_pwd_error").addClass("ui-state-error ui-corner-all");
             document.getElementById("change_pwd_error").innerHTML = "'.$txt['index_pw_error_identical'].'";

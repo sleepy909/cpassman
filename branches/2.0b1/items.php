@@ -64,7 +64,7 @@ echo '
 <input type="hidden" id="error_detected" />
 <input type="hidden" name="random_id" id="random_id" />
 <input type="hidden" id="edit_wysiwyg_displayed" value="" />
-<input type="hidden" id="richtext_on" value="', isset($_SESSION['settings']['richtext']) && $_SESSION['settings']['richtext'] == 1 ? "1" : "", '" />
+<input type="hidden" id="richtext_on" value="1" />
 <input type="hidden" id="query_next_start" value="0" />
 <input type="hidden" id="nb_items_to_display_once" value="" />';
 
@@ -98,7 +98,7 @@ echo '
 	            '.$txt['items_browser_title'].'
 			    <span id="jstree_open"class="pointer" ><img src="includes/images/chevron-small-expand.png" /></span>
 			    <span id="jstree_close" class="pointer"><img alt="" src="includes/images/chevron-small.png" /></span>
-			    <input type="text" name="jstree_search" id="jstree_search" class="text ui-widget-content ui-corner-all tip search_tree" title="'.$txt['item_menu_find'].'" />
+			    <input type="text" name="jstree_search" id="jstree_search" class="text ui-widget-content ui-corner-all search_tree" value="'.$txt['item_menu_find'].'" />
 	        </div>
 	    </div>
 	    <div id="sidebar" class="sidebar">';
@@ -139,7 +139,12 @@ echo '
 				            $nb_items = $data[0];
 
 				            //get 1st folder
-				            if (empty($first_group)) $first_group = $folder->id;
+							if (empty($first_group)){
+								$first_group = $folder->id;
+								if ($folder->title == $_SESSION['user_id']) {
+									$folder->title = $_SESSION['login'];
+								}
+							}
 
 							//Prepare folder
 							$folder_txt = '
@@ -164,7 +169,7 @@ echo '
 							}
 
 							//build select for non personal visible folders
-							if (in_array($folder->id,$_SESSION['all_non_personal_folders'])) {
+							if (isset($_SESSION['all_non_personal_folders']) && in_array($folder->id,$_SESSION['all_non_personal_folders'])) {
 								$select_visible_nonpersonal_folders_options .= '<option value="'.$folder->id.'">'.$ident.str_replace("&","&amp;",$folder->title).'</option>';
 							}else{
 								$select_visible_nonpersonal_folders_options .= '<option value="'.$folder->id.'" disabled="disabled">'.$ident.str_replace("&","&amp;",$folder->title).'</option>';

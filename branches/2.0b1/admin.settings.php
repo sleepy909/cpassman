@@ -174,12 +174,12 @@ if (isset($_POST['save_button'])) {
     if ( @$_SESSION['settings']['maintenance_mode'] != $_POST['maintenance_mode'] ){
         UpdateSettings('maintenance_mode',$_POST['maintenance_mode']);
     }
-
+/*
     //Update richtext
     if ( @$_SESSION['settings']['richtext'] != $_POST['richtext'] ){
         UpdateSettings('richtext',$_POST['richtext']);
     }
-
+*/
     //Update send_stats
     if ( @$_SESSION['settings']['send_stats'] != $_POST['send_stats'] ){
         UpdateSettings('send_stats',$_POST['send_stats']);
@@ -619,7 +619,7 @@ echo '
 						<input type="radio" id="activate_expiration_radio2" name="activate_expiration" value="0"', isset($_SESSION['settings']['activate_expiration']) && $_SESSION['settings']['activate_expiration'] != 1 ? ' checked="checked"' : (!isset($_SESSION['settings']['activate_expiration']) ? ' checked="checked"':''), ' /><label for="activate_expiration_radio2">'.$txt['no'].'</label>
 					</div>
                 </td</tr>';
-
+/*
                 //Enable richtext
                 echo '
                 <tr><td>
@@ -634,7 +634,7 @@ echo '
 						<input type="radio" id="richtext_radio2" name="richtext" value="0"', isset($_SESSION['settings']['richtext']) && $_SESSION['settings']['richtext'] != 1 ? ' checked="checked"' : (!isset($_SESSION['settings']['richtext']) ? ' checked="checked"':''), ' /><label for="richtext_radio2">'.$txt['no'].'</label>
 					</div>
                 </td</tr>';
-
+*/
 				//Enable Printing
 				echo '
 				<tr><td>
