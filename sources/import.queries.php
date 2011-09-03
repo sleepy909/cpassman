@@ -155,13 +155,17 @@ switch($_POST['type'])
             //For each item, insert into DB
             $item = explode('@|@',$item);   //explode item to get all fields
 
+			//Encryption key
+			$random_key = GenerateKey();
+			$pw = $random_key.$item[2];
+
             // Insert new item in table ITEMS
             $new_id = $db->query_insert(
                 "items",
                 array(
                     'label' => $item[0],
                     'description' => $item[4],
-                    'pw' => encrypt($item[2]),
+                    'pw' => encrypt($pw, mysql_real_escape_string(stripslashes($_SESSION['my_sk']))),
                     'url' => $item[3],
                     'id_tree' => $_POST['folder'],
                     'login' => $item[1],
@@ -607,13 +611,17 @@ switch($_POST['type'])
                     $data = $db->fetch_row("SELECT COUNT(*) FROM ".$pre."items WHERE id_tree = '".$folders_array[$item[1]]['id']."' AND label = \"".$item[2]."\"");
 
                     if ( $data[0] == 0 ){
+						//Encryption key
+						$random_key = GenerateKey();
+						$pw = $random_key.$item[3];
+
                         //ADD item
                         $new_id = $db->query_insert(
                             'items',
                             array(
                                 'label' => stripslashes($item[2]),
                                 'description' => str_replace($line_end_separator,'<br />',$item[5]),
-                                'pw' => encrypt($item[3]),
+                                'pw' => encrypt($pw, mysql_real_escape_string(stripslashes($_SESSION['my_sk']))),
                                 'url' => stripslashes($item[6]),
                                 'id_tree' => $folders_array[$item[1]]['id'],
 	                            'login' => stripslashes($item[4]),

@@ -40,7 +40,13 @@ switch($_POST['type'])
         //Get a string with the old pw array
         $last_pw = explode(';',$_SESSION['last_pw']);
 
-        $new_pw = encrypt(string_utf8_decode($_POST['new_pw']));
+    	//decrypt and retreive data in JSON format
+    	require_once '../includes/libraries/crypt/aes.class.php';     // AES PHP implementation
+    	require_once '../includes/libraries/crypt/aesctr.class.php';  // AES Counter Mode implementation
+    	$data_received = json_decode(AesCtr::decrypt($_POST['data'], $_SESSION['key'], 256), true);
+
+    	//Prepare variables
+    	$new_pw = encrypt(htmlspecialchars_decode($data_received['new_pw']));
 
         //if size is bigger then clean the array
         if ( sizeof($last_pw) > $_SESSION['settings']['number_of_used_pw'] && $_SESSION['settings']['number_of_used_pw'] > 0 ){
@@ -58,9 +64,7 @@ switch($_POST['type'])
 
         //check if new pw is different that old ones
         if ( in_array($new_pw,$last_pw) ){
-            echo 'document.getElementById("new_pw").value = "";';
-            echo 'document.getElementById("new_pw2").value = "";';
-            echo '$("#change_pwd_error").addClass("ui-state-error ui-corner-all").show().html("<span>'.$txt['pw_used'].'</span>");';
+        	echo '[ { "error" : "already_used" } ]';
         }else{
             //update old pw with new pw
             if ( sizeof($last_pw) == ($_SESSION['settings']['number_of_used_pw']+1) ){
@@ -94,8 +98,7 @@ switch($_POST['type'])
                 "id = ".$_SESSION['user_id']
             );
 
-            //reload page
-            echo 'document.main_form.submit();';
+            echo '[ { "error" : "none" } ]';
         }
 
     break;
@@ -575,8 +578,6 @@ switch($_POST['type'])
     	break;
 
     case "print_out_items":
-        echo 'LoadingPage();';
-
     	$full_listing = array();
 
     	foreach (explode(';', $_POST['ids']) as $id){
@@ -585,10 +586,12 @@ switch($_POST['type'])
 	   			$rows = $db->fetch_all_array("
 	                   SELECT i.id AS id, i.restricted_to AS restricted_to, i.perso AS perso, i.label AS label, i.description AS description, i.pw AS pw, i.login AS login,
 	                       l.date AS date,
-	                       n.renewal_period AS renewal_period
+	                       n.renewal_period AS renewal_period,
+	                       k.rand_key
 	                   FROM ".$pre."items AS i
 	                   INNER JOIN ".$pre."nested_tree AS n ON (i.id_tree = n.id)
 	                   INNER JOIN ".$pre."log_items AS l ON (i.id = l.id_item)
+	                   INNER JOIN ".$pre."keys AS k ON (i.id = k.id)
 	                   WHERE i.inactif = 0
 	                   AND i.id_tree=".$id."
 	                   AND (l.action = 'at_creation' OR (l.action = 'at_modification' AND l.raison LIKE 'at_pw :%'))
@@ -618,7 +621,7 @@ switch($_POST['type'])
 	   						$full_listing[$reccord['id']] = array(
 		   						'id' => $reccord['id'],
 		   						'label' => $reccord['label'],
-		   						'pw' => $pw,
+		   						'pw' => substr(addslashes($pw), strlen($reccord['rand_key'])),
 		   						'login' => $reccord['login']
 							);
 	   					}
@@ -662,8 +665,6 @@ switch($_POST['type'])
     		$pdf->Output($_SESSION['settings']['cpassman_dir']."/files/".$pdf_file);
     		//Open PDF
     		echo 'window.open(\''.$_SESSION['settings']['cpassman_url'].'/files/'.$pdf_file.'\', \'_blank\');';
-    		//reload
-    		echo 'LoadingPage();';
     	}
     	break;
 

@@ -228,7 +228,7 @@ function IdentifyUserRights($groupes_visibles_user,$groupes_interdits_user,$is_a
     	}
 
         //Clean array
-    	$list_allowed_folders = array_filter(array_unique($list_allowed_folders));
+    	$list_allowed_folders = array_filter(array_unique(array_merge($list_allowed_folders, $allowed_folders)));
 
 		//Exclude all PF
     	$_SESSION['forbiden_pfs'] = array();
@@ -554,6 +554,6 @@ function SendEmail($subject, $mail, $email){
  * @return
  */
 function GenerateKey(){
-	return substr(md5(rand().rand()), 0, rand(14,29));
+	return substr(md5(rand().rand()), 0, 15);
 }
 ?>

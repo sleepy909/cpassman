@@ -65,7 +65,7 @@ v2.0b5
 * improvement: encrypted passwords in database by salt [86]
 * improvement: KB management is encrypted [89]
 * fixed: strings error in upgrade.php pages
-* improvements: [87]
+* improvements: [87 , 101]
 v2.00
 * Licence has changed from CC BY-NC-ND to CC BY-ND
 * improvement: convert cPassMan to UTF-8 charset
