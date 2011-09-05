@@ -57,7 +57,8 @@ Enrique, shauninja, seskahin, tstd0, Tommi, Petr and Philipp.
 
 ------------------------------------------  CHANGELOG  ----------------------------------------------
 v2.0b6
-* improvements: roles administration page [112]
+* improvement: roles administration page [112]
+* improvement: date and time format in selectlist [111]
 
 v2.0b5
 * improvements: added Japanese translation by Shinji

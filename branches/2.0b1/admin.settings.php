@@ -363,8 +363,17 @@ echo '
 	                    <label for="date_format">'.$txt['date_format'].'</label>
 					</td>
 					<td>
-                    	<input type="text" size="10" id="date_format" name="date_format" value="', isset($_SESSION['settings']['date_format']) ? $_SESSION['settings']['date_format'] : 'd/m/Y', '" class="text ui-widget-content ui-corner-all" />
-                	<td>
+						<select id="date_format" name="date_format" class="text ui-widget-content ui-corner-all">
+							<option value="d/m/Y"', !isset($_SESSION['settings']['date_format']) || $_SESSION['settings']['date_format'] == "d/m/Y" ? ' selected="selected"':"",'>d/m/Y</option>
+							<option value="m/d/Y"', $_SESSION['settings']['date_format'] == "m/d/Y" ? ' selected="selected"':"",'>m/d/Y</option>
+							<option value="d-M-Y"', $_SESSION['settings']['date_format'] == "d-M-Y" ? ' selected="selected"':"",'>d-M-Y</option>
+							<option value="d/m/y"', $_SESSION['settings']['date_format'] == "d/m/y" ? ' selected="selected"':"",'>d/m/y</option>
+							<option value="m/d/y"', $_SESSION['settings']['date_format'] == "m/d/y" ? ' selected="selected"':"",'>m/d/y</option>
+							<option value="d-M-y"', $_SESSION['settings']['date_format'] == "d-M-y" ? ' selected="selected"':"",'>d-M-y</option>
+							<option value="d-m-y"', $_SESSION['settings']['date_format'] == "d-m-y" ? ' selected="selected"':"",'>d-m-y</option>
+							<option value="F d, Y"', $_SESSION['settings']['date_format'] == "F d, Y" ? ' selected="selected"':"",'>F d, Y</option>
+						</select>
+                    <td>
                 </tr>';
 
                 //TIME format
@@ -375,8 +384,13 @@ echo '
 	                    <label for="time_format">'.$txt['time_format'].'</label>
 					</td>
 					<td>
-                    	<input type="text" size="10" id="time_format" name="time_format" value="', isset($_SESSION['settings']['time_format']) ? $_SESSION['settings']['time_format'] : 'H:i:s', '" class="text ui-widget-content ui-corner-all" />
-					<td>
+						<select id="time_format" name="time_format" class="text ui-widget-content ui-corner-all">
+							<option value="H:i:s"', !isset($_SESSION['settings']['time_format']) || $_SESSION['settings']['time_format'] == "H:i:s" ? ' selected="selected"':"",'>H:i:s</option>
+							<option value="h:m:s a"', $_SESSION['settings']['time_format'] == "h:m:s a" ? ' selected="selected"':"",'>h:m:s a</option>
+							<option value="g:i:s a"', $_SESSION['settings']['time_format'] == "g:i:s a" ? ' selected="selected"':"",'>g:i:s a</option>
+							<option value="G:i:s"', $_SESSION['settings']['time_format'] == "G:i:s" ? ' selected="selected"':"",'>G:i:s</option>
+						</select>
+                    <td>
                 </tr>';
 
                 //Number of used pw
