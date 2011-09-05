@@ -56,6 +56,9 @@ Enrique, shauninja, seskahin, tstd0, Tommi, Petr and Philipp.
 * PostgreSQL database support
 
 ------------------------------------------  CHANGELOG  ----------------------------------------------
+v2.0b6
+* improvements: roles administration page [112]
+
 v2.0b5
 * improvements: added Japanese translation by Shinji
 * improvement: added direct link to KBs in item overview
