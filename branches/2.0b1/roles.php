@@ -30,13 +30,20 @@ echo '
 <div class="title ui-widget-content ui-corner-all">
     '.$txt['admin_functions'].'&nbsp;&nbsp;
     &nbsp;<img src="includes/images/users--plus.png" title="'.$txt['add_role_tip'].'" onclick="OpenDialog(\'add_new_role\')" style="cursor:pointer;" />
-    &nbsp;<a onClick="refresh_matrice()"><img src="includes/images/arrow_refresh.png" style="cursor:pointer" title="'.$txt['refresh_matrix'].'" /></a>
+    &nbsp;<a onClick="refresh_roles_matrix()"><img src="includes/images/arrow_refresh.png" style="cursor:pointer" title="'.$txt['refresh_matrix'].'" /></a>
     <span style="float:right;margin-right:5px;"><img src="includes/images/question-white.png" style="cursor:pointer" title="'.$txt['show_help'].'" onclick="OpenDialog(\'help_on_roles\')" /></span>
 </div>
 <div style="line-height:20px;" align="center">
     <div id="matrice_droits"></div>
+    <div style="">
+    	<img src="includes/images/arrow-180.png" style="display:none; cursor:pointer" id="roles_previous" onclick="refresh_roles_matrix(\'previous\')">
+    	<img src="includes/images/arrow-0.png" style="display:none;cursor:pointer" id="roles_next" onclick="refresh_roles_matrix(\'next\')">
+    </div>
 </div>
-<input type="hidden" id="selected_function" />';
+<input type="hidden" id="selected_function" />
+<input type="hidden" id="next_role" value="0" />
+<input type="hidden" id="previous_role" value="0" />
+<input type="hidden" id="role_start" value="0" />';
 
 // DIV FOR ADDING A ROLE
 echo '
@@ -66,4 +73,8 @@ echo '
 <div id="help_on_roles">
     <div>'.$txt['help_on_roles'].'</div>
 </div>';
+
+//call to roles.load.php
+require_once("roles.load.php");
+
 ?>
