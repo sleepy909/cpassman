@@ -262,9 +262,6 @@ switch($_POST['type'])
 
         //Append number of pages
         echo '$("#log_pages").empty().append("'.$pages.'");';
-
-        //hide gif
-        echo 'LoadingPage();';
     break;
 
     #----------------------------------
@@ -314,9 +311,64 @@ switch($_POST['type'])
 
         //Append number of pages
         echo '$("#log_pages").empty().append("'.$pages.'");';
+    break;
 
-        //hide gif
-        echo 'LoadingPage();';
+    #----------------------------------
+    #CASE admin want to see CONNECTIONS logs
+    case "access_logs":
+    	$logs = $sql_filter = "";
+    	$nb_pages = 1;
+    	$pages = '<table style=\'border-top:1px solid #969696;\'><tr><td>'.$txt['pages'].'&nbsp;:&nbsp;</td>';
+
+    	if(isset($_POST['filter']) && !empty($_POST['filter'])){
+    		$sql_filter = " AND i.label LIKE '%".$_POST['filter']."%'";
+    	}
+    	if(isset($_POST['filter_user']) && !empty($_POST['filter_user'])){
+    		$sql_filter = " AND l.id_user LIKE '%".$_POST['filter_user']."%'";
+    	}
+
+    	//get number of pages
+    	$data = $db->fetch_row("
+    	    SELECT COUNT(*)
+            FROM ".$pre."log_items AS l
+            INNER JOIN ".$pre."items AS i ON (l.id_item=i.id)
+            INNER JOIN ".$pre."users AS u ON (l.id_user=u.id)
+            WHERE l.action = 'at_shown'".$sql_filter);
+    	if ( $data[0] != 0 ){
+    		$nb_pages = ceil($data[0]/$nb_elements);
+    		for($i=1;$i<=$nb_pages;$i++){
+    			$pages .= '<td onclick=\'displayLogs(\"errors_logs\",'.$i.')\'><span style=\'cursor:pointer;' . ($_POST['page'] == $i ? 'font-weight:bold;font-size:18px;\'>'.$i:'\'>'.$i ) . '</span></td>';
+    		}
+    	}
+    	$pages .= '</tr></table>';
+
+    	//define query limits
+    	if ( isset($_POST['page']) && $_POST['page'] > 1 ){
+    		$start = ($nb_elements*($_POST['page']-1)) + 1;
+    	}else{
+    		$start = 0;
+    	}
+
+    	//launch query
+    	$rows = $db->fetch_all_array("
+    	    SELECT l.date AS date, u.login AS login, i.label AS label
+            FROM ".$pre."log_items AS l
+            INNER JOIN ".$pre."items AS i ON (l.id_item=i.id)
+            INNER JOIN ".$pre."users AS u ON (l.id_user=u.id)
+            WHERE l.action = 'at_shown'".$sql_filter."
+            ORDER BY date DESC
+            LIMIT $start, $nb_elements");
+
+    	foreach( $rows as $reccord){
+    		$label = explode('@',addslashes(CleanString($reccord['label'])));
+    		$logs .= '<tr><td>'.date($_SESSION['settings']['date_format']." ".$_SESSION['settings']['time_format'],$reccord['date']).'</td><td align=\"left\">'.$label[0].'</td><td align=\"center\">'.$reccord['login'].'</td></tr>';
+    	}
+
+    	//Append logs to table
+    	echo '$("#tbody_logs").empty().append("'.$logs.'");';
+
+    	//Append number of pages
+    	echo '$("#log_pages").empty().append("'.$pages.'");';
     break;
 
     #----------------------------------
@@ -425,4 +477,6 @@ switch($_POST['type'])
         echo 'LoadingPage();';
     break;
 }
+
+
 ?>

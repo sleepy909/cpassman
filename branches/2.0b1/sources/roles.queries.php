@@ -150,7 +150,7 @@ if ( !empty($_POST['type']) ){
     			}else{
     				$allow_pw_change = '&nbsp;<img id=\'img_apcfr_'.$reccord['id'].'\' src=\'includes/images/ui-text-field-password-red.png\' onclick=\'allow_pw_change_for_role('.$reccord['id'].', 1)\' style=\'cursor:pointer;\' title=\''.$txt['role_can_modify_all_seen_items'].'\'>';
     			}
-    			$texte .= '<th style=\'font-size:10px;min-width:60px;\' class=\'edit_role\'>'.htmlentities($reccord['title'], ENT_QUOTES).'<br><img src=\'includes/images/ui-tab--pencil.png\' onclick=\'edit_this_role('.$reccord['id'].',"'.htmlentities(addslashes($reccord['title']), ENT_QUOTES).'")\' style=\'cursor:pointer;\'>&nbsp;<img src=\'includes/images/ui-tab--minus.png\' style=\'cursor:pointer;\'>' .$allow_pw_change. '</th>';
+    			$texte .= '<th style=\'font-size:10px;min-width:60px;\' class=\'edit_role\'>'.htmlentities($reccord['title'], ENT_QUOTES).'<br><img src=\'includes/images/ui-tab--pencil.png\' onclick=\'edit_this_role('.$reccord['id'].',"'.htmlentities(addslashes($reccord['title']), ENT_QUOTES).'")\' style=\'cursor:pointer;\'>&nbsp;<img src=\'includes/images/ui-tab--minus.png\' style=\'cursor:pointer;\' onclick=\'delete_this_role('.$reccord['id'].',"'.$reccord['title'].'")\'>' .$allow_pw_change. '</th>';
 
     			array_push($arrRoles, $reccord['id']);
     		}

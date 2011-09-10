@@ -676,8 +676,10 @@ function AfficherDetailsItem(id, salt_key_required, expired_item, restricted, di
                     $("#menu_button_show_pw, #menu_button_copy_pw, #menu_button_copy_login, #menu_button_copy_link").removeAttr("disabled");
 
 	                if (data.restricted == "1" || data.user_can_modify == "1") {
-	                	if($('#recherche_group_pf').val() != "1") $("#menu_button_edit_item, #menu_button_del_item").removeAttr("disabled");
-                	else $("#menu_button_edit_item").removeAttr("disabled");
+	                	if($('#recherche_group_pf').val() != "1")
+	                		$("#menu_button_edit_item, #menu_button_del_item, #menu_button_copy_item").removeAttr("disabled");
+                		else
+                			$("#menu_button_edit_item, #menu_button_copy_item").removeAttr("disabled");
 	                }else{
 	                    $("#menu_button_add_item, #menu_button_copy_item").removeAttr("disabled");
 	                }
