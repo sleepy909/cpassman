@@ -173,6 +173,16 @@ switch($_POST['type'])
                 )
             );
 
+        	//Store generated key
+        	$db->query_insert(
+        		'keys',
+        		array(
+        		    'table' => 'items',
+        		    'id' => $new_id,
+        		    'rand_key' => $random_key
+        		)
+        	);
+
         	//if asked, anyone in role can modify
         	if (isset($_POST['import_csv_anyone_can_modify_in_role']) && $_POST['import_csv_anyone_can_modify_in_role'] == "true") {
         		foreach($_SESSION['arr_roles'] as $role){
@@ -628,6 +638,16 @@ switch($_POST['type'])
 	                            'anyone_can_modify' => $_POST['import_kps_anyone_can_modify'] == "true" ? 1 : 0
                             )
                         );
+
+                    	//Store generated key
+                    	$db->query_insert(
+                    		'keys',
+                    		array(
+                    		    'table' => 'items',
+                    		    'id' => $new_id,
+                    		    'rand_key' => $random_key
+                    		)
+                    	);
 
                     	//if asked, anyone in role can modify
                     	if (isset($_POST['import_kps_anyone_can_modify_in_role']) && $_POST['import_kps_anyone_can_modify_in_role'] == "true") {

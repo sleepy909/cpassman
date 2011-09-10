@@ -58,6 +58,7 @@ echo '
                     <th title="'.$txt['user_del'].'"><img src="includes/images/user--minus.png" /></th>
                     <th title="'.$txt['pw_change'].'"><img src="includes/images/lock__pencil.png" /></th>
                     <th title="'.$txt['email_change'].'"><img src="includes/images/mail.png" /></th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>';
@@ -197,6 +198,9 @@ echo '
         				}
         			echo '
                     </td>
+                    <td align="center">
+                        &nbsp;<img ', ($_SESSION['user_gestionnaire'] == 1 && ($reccord['admin'] == 1 || $reccord['gestionnaire'] == 1)) ? 'src="includes/images/report_disabled.png"':'src="includes/images/report.png" onclick="user_action_log_items(\''.$reccord['id'].'\',\''.addslashes($reccord['login']).'\')" style="cursor:pointer;"', ' />
+                    </td>
                 </tr>';
                 $x++;
             //}
@@ -206,7 +210,8 @@ echo '
         </table>
     </div>
 </form>
-<input type="hidden" id="selected_user" />';
+<input type="hidden" id="selected_user" />
+<input type="hidden" id="log_page" value="1" />';
 
 // DIV FOR CHANGING FUNCTIONS
 echo '
@@ -310,6 +315,25 @@ echo '
 echo '
 <div id="manager_dialog" style="display:none;">
     <div style="text-align:center;padding:2px;display:none;" class="ui-state-error ui-corner-all" id="manager_dialog_error"></div>
+</div>';
 
+
+// USER LOGS
+echo '
+<div id="user_logs_dialog" style="display:none;">
+    <div style="text-align:center;padding:2px;display:none;" class="ui-state-error ui-corner-all" id="user_logs"></div>
+    <table>
+	    <thead>
+	        <tr>
+	            <th>'.$txt['date'].'</th>
+	            <th id="th_url">'.$txt['url'].'</th>
+	            <th>'.$txt['label'].'</th>
+	            <th>'.$txt['user'].'</th>
+	        </tr>
+	    </thead>
+	    <tbody id="tbody_logs">
+	    </tbody>
+	</table>
+	<div id="log_pages" style="margin-top:10px;"></div>
 </div>';
 ?>

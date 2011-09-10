@@ -14,88 +14,9 @@
 
 if (!isset($_SESSION['CPM'] ) || $_SESSION['CPM'] != 1)
 	die('Hacking attempt...');
+//Load file
+require_once ("views.load.php");
 
-?>
-<script type="text/javascript">
-$(function() {
-    $("#tabs").tabs();
-    $("#log_jours").datepicker({
-        regional: 'fr',
-        dateFormat : 'dd/mm/yy'
-    });
-
-    ListerElemDel();
-});
-
-function GenererLog(){
-    LoadingPage();  //afficher image de chargement
-    var data = "type=log_generate&date="+document.getElementById("log_jours").value;
-    httpRequest("sources/views.queries.php",data);
-}
-
-function ListerElemDel(){
-    LoadingPage();  //afficher image de chargement
-    var data = "type=lister_suppression";
-    httpRequest("sources/views.queries.php",data);
-}
-
-function restoreDeletedItems(){
-    if ( confirm("<?php echo $txt['views_confirm_restoration'];?>") ){
-        var list_i = "";
-        $(".cb_deleted_item:checked").each(function() {
-            if ( list_i == "" ) list_i = $(this).val();
-            else list_i = list_i+';'+$(this).val();
-        });
-        var list_f = "";
-        $(".cb_deleted_folder:checked").each(function() {
-            if ( list_f == "" ) list_f = $(this).val();
-            else list_f = list_f+';'+$(this).val();
-        });
-
-        var data = "type=restore_deleted__items&list_i="+list_i+"&list_f="+list_f;
-        httpRequest("sources/views.queries.php",data);
-    }
-}
-
-function reallyDeleteItems(){
-    if ( confirm("<?php echo $txt['views_confirm_items_deletion'];?>") ){
-        var list = "";
-        $(".cb_deleted_item:checked").each(function() {
-            if ( list == "" ) list = $(this).val();
-            else list = list+';'+$(this).val();
-        });
-
-        var data = "type=really_delete_items&list="+list;
-        httpRequest("sources/views.queries.php",data);
-    }
-}
-
-function displayLogs(type,page){
-    LoadingPage();  //show waiting GIF
-    //Show or not the column URL
-    if ( type == "errors_logs" ) $("#th_url").show();
-    else $("#th_url").hide();
-    //launch ajax query
-    var data = "type="+type+"&page="+page;
-    httpRequest("sources/views.queries.php",data);
-}
-
-//This permits to launch ajax query for generate a listing of expired items
-function generate_renewal_listing(){
-    LoadingPage();  //show waiting GIF
-    var data = "type=generate_renewal_listing&period="+document.getElementById("expiration_period").value;
-    httpRequest("sources/views.queries.php",data);
-}
-
-//FUNCTION permits to generate a PDF file
-function generate_renewal_pdf(){
-    LoadingPage();  //show waiting GIF
-    var data = "type=generate_renewal_pdf&text="+document.getElementById("list_renewal_items_pdf").value;
-    httpRequest("sources/views.queries.php",data);
-}
-</script>
-
-<?php
 // show TABS permitting to select specific actions
 echo '
 <div id="tabs">
@@ -125,21 +46,29 @@ echo '
     //TAB 3 - LOGS
     echo '
     <div id="tabs-3">
-        <h3>'.$txt['logs'].' [ <a href="#" onclick="displayLogs(\'connections_logs\',1)">'.$txt['connections'].'</a> ]  [ <a href="#" onclick="displayLogs(\'errors_logs\',1)">'.$txt['errors'].'</a> ]</h3>
-        <div id="div_show_system_logs" style="margin-left:30px;margin-top:10px;">
-        <table>
-            <thead>
-                <tr>
-                    <th>'.$txt['date'].'</th>
-                    <th id="th_url">'.$txt['url'].'</th>
-                    <th>'.$txt['label'].'</th>
-                    <th>'.$txt['user'].'</th>
-                </tr>
-            </thead>
-            <tbody id="tbody_logs">
-            </tbody>
-        </table>
-        <div id="log_pages" style="margin-top:10px;"></div>
+ 		<div id="radio_logs">
+			<input type="radio" id="radio1" name="radio" onclick="displayLogs(\'connections_logs\',1)" /><label for="radio1">'.$txt['connections'].'</label>
+			<input type="radio" id="radio2" name="radio" onclick="displayLogs(\'errors_logs\',1)" /><label for="radio2">'.$txt['errors'].'</label>
+			<input type="radio" id="radio3" name="radio" onclick="displayLogs(\'access_logs\',1)" /><label for="radio3">'.$txt['at_shown'].'</label>
+		</div>
+        <div id="div_show_system_logs" style="margin-left:30px;margin-top:10px;display:none;">
+        	<div id="filter_access_logs_div" style="display:none;margin-bottom:10px;">
+        		<label for="filter_access_logs" style="font-weight:bold;">'.$txt['find'].':</label>&nbsp;<input type="text" id="filter_access_logs" />
+				&nbsp;<img src="includes/images/arrow_refresh.png" onclick="displayLogs(\'access_logs\',1)" />
+			</div>
+	        <table>
+	            <thead>
+	                <tr>
+	                    <th>'.$txt['date'].'</th>
+	                    <th id="th_url">'.$txt['url'].'</th>
+	                    <th>'.$txt['label'].'</th>
+	                    <th>'.$txt['user'].'</th>
+	                </tr>
+	            </thead>
+	            <tbody id="tbody_logs">
+	            </tbody>
+	        </table>
+	        <div id="log_pages" style="margin-top:10px;"></div>
         </div>
     </div>';
 

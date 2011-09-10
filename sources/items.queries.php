@@ -413,7 +413,7 @@ if ( isset($_POST['type']) ){
                     SELECT l.date AS date, l.action AS action, l.raison AS raison, u.login AS login
                     FROM ".$pre."log_items AS l
                     LEFT JOIN ".$pre."users AS u ON (l.id_user=u.id)
-                    WHERE id_item=".$data_received['id']);
+                    WHERE l.action <> 'at_shown' AND id_item=".$data_received['id']);
                 foreach($rows as $reccord){
                 	$reason = explode(':',$reccord['raison']);
 
@@ -613,6 +613,17 @@ if ( isset($_POST['type']) ){
 	        		)
         		);
 
+        		//Add the fact that item has been copied in logs
+        		$db->query_insert(
+	        		'log_items',
+	        		array(
+	        		    'id_item' => $_POST['item_id'],
+	        		    'date' => mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y')),
+	        		    'id_user' => $_SESSION['user_id'],
+		        		'action' => 'at_copy'
+	        		)
+        		);
+
         		//reload cache table
         		require_once("main.functions.php");
         		UpdateCacheTable("reload", "");
@@ -722,6 +733,7 @@ if ( isset($_POST['type']) ){
                     FROM ".$pre."log_items AS l
                     LEFT JOIN ".$pre."users AS u ON (l.id_user=u.id)
                     WHERE id_item=".$_POST['id']."
+                    AND action <> 'at_shown'
                     ORDER BY date ASC"
                 );
                 foreach ( $rows as $reccord ){
@@ -885,6 +897,17 @@ if ( isset($_POST['type']) ){
 	            	}else{
 	            		$arrData['restricted'] = "";
 	            	}
+
+	            	//Add the fact that item has been copied in logs
+	            	$db->query_insert(
+		            	'log_items',
+		            	array(
+		            	    'id_item' => $_POST['id'],
+		            	    'date' => mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y')),
+		            	    'id_user' => $_SESSION['user_id'],
+		            		'action' => 'at_shown'
+		            	)
+	            	);
             }else{
                 $arrData['show_details'] = 0;
             }

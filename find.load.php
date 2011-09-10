@@ -19,7 +19,6 @@ if (!isset($_SESSION['CPM'] ) || $_SESSION['CPM'] != 1)
 ?>
 
 <script type="text/javascript">
-
 /*
 * Copying an item from find page
 */

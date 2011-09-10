@@ -72,6 +72,12 @@ if ( isset($_GET['page']) && ( $_GET['page'] == "manage_users" ||$_GET['page'] =
         <script src="includes/js/jquery.jeditable.js" type="text/javascript"></script>';
 
 else
+if ( isset($_GET['page']) && $_GET['page'] == "manage_views" )
+    $htmlHeaders .= '
+        <link rel="stylesheet" type="text/css" href="includes/libraries/datatable/jquery.dataTablesUI.css" />
+		<script type="text/javascript" src="includes/libraries/datatable/jquery.dataTables.min.js"></script>';
+
+else
 if ( isset($_GET['page']) && ($_GET['page'] == "find" || $_GET['page'] == "kb"))
 	$htmlHeaders .= '
 	    <link rel="stylesheet" type="text/css" href="includes/css/kb.css" />
@@ -505,7 +511,7 @@ if ( !isset($_GET['page']) ){
                 		$("#new_pw2").val("");
                 		$("#change_pwd_error").addClass("ui-state-error ui-corner-all").show().html("<span>'.$txt['pw_used'].'</span>");
                 	}else{
-                		//document.main_form.submit();
+                		document.main_form.submit();
                 	}
                 },
                 "json"
@@ -896,6 +902,33 @@ if ( isset($_GET['page']) && $_GET['page'] == "manage_users" ){
                 $("#accordion").accordion({ autoHeight: false, navigation: true, collapsible: true, active: false });
             }
         });
+
+        $("#user_logs_dialog").dialog({
+            bgiframe: false,
+            modal: false,
+            autoOpen: false,
+            width: 850,
+            height: 500,
+            title: "'. $txt["admin_help"] .'",
+            buttons: {
+                "'.$txt['cancel_button'].'": function() {
+                    $(this).dialog("close");
+                }
+            },
+            open: function(){
+            	$.post(
+                "sources/views.queries.php",
+                {
+                    type    : "access_logs",
+                    page    : $("log_page").val(),
+                    id		: $("selected_user").val()
+                },
+                function(data){
+
+                }
+            );
+            }
+        });
     });
 
     function pwGenerate(elem){
@@ -1023,6 +1056,12 @@ if ( isset($_GET['page']) && $_GET['page'] == "manage_users" ){
                 $("#ajax_loader_new_mail").hide();
             }
         );
+	}
+
+	function user_action_log_items(id){
+		$("selected_user").val(id);
+		//$("log_page").val();
+		$("#user_logs_dialog").dialog("open");
 	}
     ';
 }

@@ -576,6 +576,13 @@ SendEmail(
 
     		echo json_encode($return);
     		break;
+
+    	/*
+    	* Check the domain
+    	*/
+    	case "user_log_items":
+
+    	break;
     }
 }
 
