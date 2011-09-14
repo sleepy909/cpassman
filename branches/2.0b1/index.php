@@ -22,6 +22,8 @@
 	}
 
     setcookie('user_language', $_SESSION['user_language'], (time() + 3600));
+
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <?php
@@ -221,8 +223,6 @@ require_once("load.php");
         }else echo $txt['no_last_items'];
     echo '
     </div>';
-
-
 
     /* MAIN PAGE */
     echo '

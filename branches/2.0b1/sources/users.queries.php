@@ -186,33 +186,20 @@ if ( !empty($_POST['type']) ){
             		$tree->rebuild();
             	}
 
-            	//Send mail to new user
-/*
-SendEmail(
-            		$txt['email_subject_new_user'],
-            		$txt['email_text_new_user'].mysql_real_escape_string(stripslashes($_POST['login']))." - ".string_utf8_decode($_POST['pw']),
-            		$_POST['email']
-            	);
-*/
-
-                //reload page
-                echo 'document.form_utilisateurs.submit();';
+            	echo '[ { "error" : "no" } ]';
             }else{
-                echo '$("#add_new_user").dialog("open");';
-                echo '$("#add_new_user_error").html("'.$txt['error_user_exists'].'").show();';
+            	echo '[ { "error" : "user_exists" } ]';
             }
         break;
 
         ## DELETE USER ##
-        case "supprimer_user":
+        case "delete_user":
         	//Check KEY
         	if ($_POST['key'] != $_SESSION['key']) {
-        		//error
         		exit();
         	}
 
         	//delete user in database
-            //$db->query("DELETE FROM ".$pre."users WHERE id = ".$_POST['id']);
         	$db->query_update(
 	        	'users',
 	        	array(
@@ -253,8 +240,7 @@ SendEmail(
 
         	//kill session of user if logged
 			*/
-            //reload page
-            echo 'document.form_utilisateurs.submit();';
+
         break;
 
         ## UPDATE PASSWORD OF USER ##
@@ -272,8 +258,6 @@ SendEmail(
 			     ),
 			     "id = ".$_POST['id']
 			 );
-
-			 echo '$("#div_loading").hide()';  //hide loading div
         break;
 
         ## UPDATE EMAIL OF USER ##
@@ -374,14 +358,8 @@ SendEmail(
                 if ( in_array($reccord['id'],$users_functions) )  $text .= ' checked';
                 $text .= '>&nbsp;'.$reccord['title'].'<br />';
             }
-
-            //update page
-            echo 'document.getElementById("change_user_functions_list").innerHTML = "'.$text.'";';
-            echo 'document.getElementById("selected_user").value = "'.$_POST['id'].'";';
-
-            //display dialogbox
-            echo '$("#change_user_functions").dialog("open");';
-            echo '$("#div_loading").hide()';  //hide loading div
+        	//send back data
+			echo '[{"text":"'.$text.'"}]';
         break;
 
         case "change_user_functions";
@@ -411,7 +389,9 @@ SendEmail(
                 }
             }else
                 $text = '<span style=\"text-align:center\"><img src=\"includes/images/error.png\" /></span>';
-            echo 'document.getElementById("list_function_user_'.$_POST['id'].'").innerHTML = "'.$text.'";';
+
+        	//send back data
+        	echo '[{"text":"'.$text.'"}]';
         break;
 
         //CHANGE AUTHORIZED GROUPS
@@ -435,12 +415,8 @@ SendEmail(
                 }
             }
 
-            echo 'document.getElementById("change_user_autgroups_list").innerHTML = "'.$text.'";';
-            echo 'document.getElementById("selected_user").value = "'.$_POST['id'].'";';
-
-            //display dialogbox
-            echo '$("#change_user_autgroups").dialog("open");';
-            echo '$("#div_loading").hide()';  //hide loading div
+        	//send back data
+        	echo '[{"text":"'.$text.'"}]';
         break;
 
         case "change_user_autgroups";
@@ -471,7 +447,8 @@ SendEmail(
                     $text .= '<img src=\"includes/images/arrow-000-small.png\" />'.$ident.$reccord['title']."<br />";
                 }
             }
-            echo 'document.getElementById("list_autgroups_user_'.$_POST['id'].'").innerHTML = "'.$text.'";';
+        	//send back data
+        	echo '[{"text":"'.$text.'"}]';
         break;
 
         //CHANGE FORBIDDEN GROUPS
@@ -500,13 +477,8 @@ SendEmail(
                     $prev_level = $t->nlevel;
                 }
             }
-
-            echo 'document.getElementById("change_user_forgroups_list").innerHTML = "'.$text.'";';
-            echo 'document.getElementById("selected_user").value = "'.$_POST['id'].'";';
-
-            //display dialogbox
-            echo '$("#change_user_forgroups").dialog("open");';
-            echo '$("#div_loading").hide()';  //hide loading div
+        	//send back data
+			echo '[{"text":"'.$text.'"}]';
         break;
 
         case "change_user_forgroups";
@@ -531,7 +503,8 @@ SendEmail(
                     $text .= '<img src=\"includes/images/arrow-000-small.png\" />'.$ident.$reccord['title']."<br />";
                 }
             }
-            echo 'document.getElementById("list_forgroups_user_'.$_POST['id'].'").innerHTML = "'.$text.'";';
+        	//send back data
+        	echo '[{"text":"'.$text.'"}]';
         break;
 
         ## UNLOCK USER ##
@@ -578,10 +551,55 @@ SendEmail(
     		break;
 
     	/*
-    	* Check the domain
+    	* Get logs for a user
     	*/
     	case "user_log_items":
+    		$nb_pages = 1;
+    		$logs = $sql_filter = "";
+    		$pages = '<table style=\'border-top:1px solid #969696;\'><tr><td>'.$txt['pages'].'&nbsp;:&nbsp;</td>';
 
+    		if(isset($_POST['filter']) && !empty($_POST['filter']) && $_POST['filter']!= "all"){
+    			$sql_filter = " AND l.action = '".$_POST['filter']."'";
+    		}
+
+    		//get number of pages
+    		$data = $db->fetch_row("
+    	    SELECT COUNT(*)
+            FROM ".$pre."log_items AS l
+            INNER JOIN ".$pre."items AS i ON (l.id_item=i.id)
+            INNER JOIN ".$pre."users AS u ON (l.id_user=u.id)
+            WHERE l.id_user = ".$_POST['id'].$sql_filter);
+    		if ( $data[0] != 0 ){
+    			$nb_pages = ceil($data[0]/$_POST['nb_items_by_page']);
+    			for($i=1;$i<=$nb_pages;$i++){
+    				$pages .= '<td onclick=\'displayLogs('.$i.')\'><span style=\'cursor:pointer;' . ($_POST['page'] == $i ? 'font-weight:bold;font-size:18px;\'>'.$i:'\'>'.$i ) . '</span></td>';
+    			}
+    		}
+    		$pages .= '</tr></table>';
+
+    		//define query limits
+    		if ( isset($_POST['page']) && $_POST['page'] > 1 ){
+    			$start = ($_POST['nb_items_by_page']*($_POST['page']-1)) + 1;
+    		}else{
+    			$start = 0;
+    		}
+
+    		//launch query
+    		$rows = $db->fetch_all_array("
+    	    SELECT l.date AS date, u.login AS login, i.label AS label, l.action AS action
+            FROM ".$pre."log_items AS l
+            INNER JOIN ".$pre."items AS i ON (l.id_item=i.id)
+            INNER JOIN ".$pre."users AS u ON (l.id_user=u.id)
+            WHERE l.id_user = ".$_POST['id'].$sql_filter."
+            ORDER BY date DESC
+            LIMIT $start,".$_POST['nb_items_by_page']);
+
+    		foreach( $rows as $reccord){
+    			$label = explode('@',addslashes(CleanString($reccord['label'])));
+    			$logs .= '<tr><td>'.date($_SESSION['settings']['date_format']." ".$_SESSION['settings']['time_format'],$reccord['date']).'</td><td align=\"center\">'.$label[0].'</td><td align=\"center\">'.$reccord['login'].'</td><td align=\"center\">'.$txt[$reccord['action']].'</td></tr>';
+    		}
+
+    		echo '[ { "table_logs": "'.$logs.'", "pages": "'.$pages.'", "error" : "no" } ]';
     	break;
     }
 }

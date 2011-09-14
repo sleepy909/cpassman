@@ -135,7 +135,7 @@ function countdown()
 
     //G?rer la fin de la session
     if ( DayTill == "00:00:00" )
-        document.location = "index.php?session=expiree";
+        document.location = "index.php?session=expired";
 
     //Rewrite the string to the correct information.
     if ( document.getElementById('countdown') )

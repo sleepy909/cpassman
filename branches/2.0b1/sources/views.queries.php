@@ -93,9 +93,8 @@ switch($_POST['type'])
         $nomFichier = "log_followup_passwords_".date("Y-m-d",mktime(0,0,0,$m,$d,$y)).".pdf";
         //send the file
         $pdf->Output($_SESSION['settings']['cpassman_dir'].'/files/'.$nomFichier);
-        echo 'document.getElementById("lien_pdf").innerHTML = "<a href=\''.$_SESSION['settings']['cpassman_url'].'/files/'.$nomFichier.'\' target=\'_blank\'>'.$txt['pdf_download'].'</a>";';
-        //reload
-        echo 'LoadingPage();';
+
+    	echo '[{"text":"<a href=\''.$_SESSION['settings']['cpassman_url'].'/files/'.$nomFichier.'\' target=\'_blank\'>'.$txt['pdf_download'].'</a>"}]';
     break;
 
     #----------------------------------
@@ -138,10 +137,8 @@ switch($_POST['type'])
 
             $texte .= '<tr><td><input type=\'checkbox\' class=\'cb_deleted_item\' value=\''.$reccord['id'].'\' id=\'item_deleted_'.$reccord['id'].'\' />&nbsp;<b>'.$reccord['label'].'</b></td><td width=\"100px\" align=\"center\">'.date($_SESSION['settings']['date_format'],$reccord['date']).'</td><td width=\"70px\" align=\"center\">'.$reccord['login'].'</td>'.$this_folder.'</tr>';
         }
-        echo 'document.getElementById("liste_elems_del").innerHTML = "'.$texte.'</table><div style=\'margin-left:5px;\'><input type=\'checkbox\' id=\'item_deleted_select_all\' />&nbsp;<img src=\"includes/images/arrow-repeat.png\" title=\"'.$txt['restore'].'\" style=\"cursor:pointer;\" onclick=\"restoreDeletedItems()\">&nbsp;<img src=\"includes/images/bin_empty.png\" title=\"'.$txt['delete'].'\" style=\"cursor:pointer;\" onclick=\"reallyDeleteItems()\"></div>";';
-        echo '$(\'#item_deleted_select_all\').click(function(){if ( $(\'#item_deleted_select_all\').attr(\'checked\') ) { $("input[type=\'checkbox\']:not([disabled=\'disabled\'])").attr(\'checked\', true); } else { $("input[type=\'checkbox\']:not([disabled=\'disabled\'])").removeAttr(\'checked\');  }}); ';
-        //reload
-        echo 'LoadingPage();';
+
+    	echo '[{"text":"'.$texte.'</table><div style=\'margin-left:5px;\'><input type=\'checkbox\' id=\'item_deleted_select_all\' />&nbsp;<img src=\"includes/images/arrow-repeat.png\" title=\"'.$txt['restore'].'\" style=\"cursor:pointer;\" onclick=\"restoreDeletedItems()\">&nbsp;<img src=\"includes/images/bin_empty.png\" title=\"'.$txt['delete'].'\" style=\"cursor:pointer;\" onclick=\"reallyDeleteItems()\"></div>"}]';
     break;
 
     #----------------------------------
@@ -194,8 +191,6 @@ switch($_POST['type'])
     		}
     	}
 
-        //reload
-        echo 'window.location.href = "index.php?page=manage_views";';
     break;
 
     #----------------------------------
@@ -257,11 +252,7 @@ switch($_POST['type'])
         foreach( $rows as $reccord)
             $logs .= '<tr><td>'.date($_SESSION['settings']['date_format']." ".$_SESSION['settings']['time_format'],$reccord['date']).'</td><td align=\"center\">'.$txt[$reccord['label']].'</td><td align=\"center\">'.$reccord['login'].'</td></tr>';
 
-        //Append logs to table
-        echo '$("#tbody_logs").empty().append("'.$logs.'");';
-
-        //Append number of pages
-        echo '$("#log_pages").empty().append("'.$pages.'");';
+        echo '[{"tbody_logs": "'.$logs.'" , "log_pages" : "'.$pages.'"}]';
     break;
 
     #----------------------------------
@@ -306,11 +297,7 @@ switch($_POST['type'])
             $logs .= '<tr><td>'.date($_SESSION['settings']['date_format']." ".$_SESSION['settings']['time_format'],$reccord['date']).'</td><td align=\"center\">'.@$label[1].'</td><td align=\"left\">'.$label[0].'</td><td align=\"center\">'.$reccord['login'].'</td></tr>';
         }
 
-        //Append logs to table
-        echo '$("#tbody_logs").empty().append("'.$logs.'");';
-
-        //Append number of pages
-        echo '$("#log_pages").empty().append("'.$pages.'");';
+    	echo '[{"tbody_logs": "'.$logs.'" , "log_pages" : "'.$pages.'"}]';
     break;
 
     #----------------------------------
@@ -364,11 +351,7 @@ switch($_POST['type'])
     		$logs .= '<tr><td>'.date($_SESSION['settings']['date_format']." ".$_SESSION['settings']['time_format'],$reccord['date']).'</td><td align=\"left\">'.$label[0].'</td><td align=\"center\">'.$reccord['login'].'</td></tr>';
     	}
 
-    	//Append logs to table
-    	echo '$("#tbody_logs").empty().append("'.$logs.'");';
-
-    	//Append number of pages
-    	echo '$("#log_pages").empty().append("'.$pages.'");';
+    	echo '[{"tbody_logs": "'.$logs.'" , "log_pages" : "'.$pages.'"}]';
     break;
 
     #----------------------------------
@@ -420,12 +403,7 @@ switch($_POST['type'])
             $id_managed = $reccord['id'];
         }
 
-        //Display and store data
-        echo 'document.getElementById("list_renewal_items").innerHTML = "'.$texte.'</table>";';
-        echo '$("#renewal_icon_pdf").show();';
-        echo 'document.getElementById("list_renewal_items_pdf").value = "'.$text_pdf.'";';
-        //reload
-        echo 'LoadingPage();';
+        echo '[{"text" : "'.$texte.'</table>" , "pdf" : "'.$text_pdf.'"}]';
     break;
 
     #----------------------------------
@@ -471,10 +449,8 @@ switch($_POST['type'])
         $pdf_file = "renewal_pdf_".date("Y-m-d",mktime(0,0,0,date('m'),date('d'),date('y'))).".pdf";
         //send the file
         $pdf->Output($_SESSION['settings']['cpassman_dir']."/files/".$pdf_file);
-        //Open PDF
-        echo 'window.open(\''.$_SESSION['settings']['cpassman_url'].'/files/'.$pdf_file.'\', \'_blank\');';
-        //reload
-        echo 'LoadingPage();';
+
+    	echo '[{"file" : "'.$_SESSION['settings']['cpassman_url'].'/files/'.$pdf_file.'"}]';
     break;
 }
 

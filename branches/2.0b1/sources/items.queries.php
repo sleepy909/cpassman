@@ -759,12 +759,12 @@ if ( isset($_POST['type']) ){
 
             	//Get restriction list for roles
             	$liste_restriction_roles = array();
-            	if (isset($_SESSION['restricted_to_roles']) && $_SESSION['restricted_to_roles'] == 1) {
+            	if (isset($_SESSION['settings']['restricted_to_roles']) && $_SESSION['settings']['restricted_to_roles'] == 1 && !empty($_POST['restricted_to'])) {
             		$rows = $db->fetch_all_array("
 					SELECT t.title
 					FROM ".$pre."roles_title AS t
 					INNER JOIN ".$pre."roles_values AS v ON (t.id=v.role_id)
-					WHERE folder_id = ".$data_item['id_tree']."
+					WHERE v.folder_id = ".$data_item['id_tree']."
 					ORDER BY t.title ASC");
             		foreach($rows as $reccord){
             			array_push($liste_restriction_roles, $reccord['title']);
@@ -775,7 +775,7 @@ if ( isset($_POST['type']) ){
 					SELECT t.title
 					FROM ".$pre."roles_title AS t
 					INNER JOIN ".$pre."restriction_to_roles AS r ON (t.id=r.role_id)
-					WHERE item_id = ".$data_item['id']."
+					WHERE r.item_id = ".$data_item['id']."
 					ORDER BY t.title ASC");
             		foreach($rows as $reccord){
             			if (!in_array($reccord['title'], $liste_restriction_roles)){
