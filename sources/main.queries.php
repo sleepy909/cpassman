@@ -263,13 +263,16 @@ switch($_POST['type'])
                    $_SESSION['can_create_root_folder'] = $data['can_create_root_folder'];
 	            $_SESSION['key'] = $key;
 	            $_SESSION['personal_folder'] = $data['personal_folder'];
-                   $_SESSION['fin_session'] = time() + $_POST['duree_session'] * 60;
-                   if ( empty($data['last_connexion']) ) $_SESSION['derniere_connexion'] = mktime(date('h'),date('m'),date('s'),date('m'),date('d'),date('y'));
-                   else $_SESSION['derniere_connexion'] = $data['last_connexion'];
-                   if ( !empty($data['latest_items']) ) $_SESSION['latest_items'] = explode(';',$data['latest_items']);
-                   else $_SESSION['latest_items'] = array();
-                   if ( !empty($data['favourites']) ) $_SESSION['favourites'] = explode(';',$data['favourites']);
-                   else $_SESSION['favourites'] = array();
+                $_SESSION['fin_session'] = time() + $_POST['duree_session'] * 60;
+
+            	//setcookie('pma_end_session', time(), time() + $_POST['duree_session'] * 60);
+
+                if ( empty($data['last_connexion']) ) $_SESSION['derniere_connexion'] = mktime(date('h'),date('m'),date('s'),date('m'),date('d'),date('y'));
+                else $_SESSION['derniere_connexion'] = $data['last_connexion'];
+                if ( !empty($data['latest_items']) ) $_SESSION['latest_items'] = explode(';',$data['latest_items']);
+                else $_SESSION['latest_items'] = array();
+                if ( !empty($data['favourites']) ) $_SESSION['favourites'] = explode(';',$data['favourites']);
+                else $_SESSION['favourites'] = array();
 
 
         	    if (!empty($data['groupes_visibles'])) {
@@ -390,8 +393,9 @@ switch($_POST['type'])
     break;
 
     case "augmenter_session":
-        $_SESSION['fin_session'] = $_SESSION['fin_session']+3600;
-        echo 'document.getElementById(\'temps_restant\').value = "'.$_SESSION['fin_session'].'";';
+    	$_SESSION['fin_session'] = $_SESSION['fin_session']+3600;
+    	//setcookie('pma_end_session', time(), $_SESSION['fin_session']+3600);
+        echo 'document.getElementById(\'temps_restant\').value = "'.$_SESSION['fin_session'].'";$("#date_end_session")val("'.$_SESSION['fin_session'].'")';
     break;
 
     //Used in order to send the password to the user by email

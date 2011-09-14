@@ -492,7 +492,7 @@ echo '
                 	echo '
 				</optgroup>
 				<optgroup label="'.$txt['roles'].'">';
-                	foreach($_SESSION['arr_roles_full'] as $role){
+                	foreach($_SESSION['arr_roles'] as $role){
                 		echo '
 					<option value="role_'.$role['id'].'">'.$role['title'].'</option>';
                 	}

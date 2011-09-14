@@ -79,7 +79,9 @@ foreach( $rows as $reccord ){
                 logEvents('user_connection','disconnection',$_SESSION['user_id']);
 
             // erase session table
-            $_SESSION = array();
+        	$_SESSION = array();
+
+        	setcookie('pma_end_session');
 
             // Kill session
             session_destroy();
@@ -88,7 +90,7 @@ foreach( $rows as $reccord ){
             echo '
             <script language="javascript" type="text/javascript">
             <!--
-            document.location.href="index.php?session=expiree";
+            document.location.href="index.php?session=expired";
             -->
             </script>';
             exit;
@@ -97,7 +99,7 @@ foreach( $rows as $reccord ){
 
 
 /* LOAD INFORMATION CONCERNING USER */
-    if ( isset($_SESSION['user_id']) && !empty($_SESSION['user_id']) ){
+    if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])){
         // query on user
         $sql="SELECT * FROM ".$pre."users WHERE id = '".$_SESSION['user_id']."'";
         $row = $db->query($sql);
@@ -134,7 +136,7 @@ foreach( $rows as $reccord ){
 
 
 /* CHECK IF LOGOUT IS ASKED OR IF SESSION IS EXPIRED */
-    if ( (isset($_POST['menu_action']) && $_POST['menu_action'] == "deconnexion") || (isset($_GET['session']) && $_GET['session'] == "expiree") || (isset($_POST['session']) && $_POST['session'] == "expired")){
+    if ( (isset($_POST['menu_action']) && $_POST['menu_action'] == "deconnexion") || (isset($_GET['session']) && $_GET['session'] == "expired") || (isset($_POST['session']) && $_POST['session'] == "expired")){
         // Update table by deleting ID
         if ( isset($_SESSION['user_id']) )
             $db->query_update(

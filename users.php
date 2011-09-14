@@ -15,6 +15,8 @@
 if (!isset($_SESSION['CPM'] ) || $_SESSION['CPM'] != 1)
 	die('Hacking attempt...');
 
+//Load file
+require_once ("users.load.php");
 
 //load help
 require_once('includes/language/'.$_SESSION['user_language'].'_admin_help.php');
@@ -199,7 +201,7 @@ echo '
         			echo '
                     </td>
                     <td align="center">
-                        &nbsp;<img ', ($_SESSION['user_gestionnaire'] == 1 && ($reccord['admin'] == 1 || $reccord['gestionnaire'] == 1)) ? 'src="includes/images/report_disabled.png"':'src="includes/images/report.png" onclick="user_action_log_items(\''.$reccord['id'].'\',\''.addslashes($reccord['login']).'\')" style="cursor:pointer;"', ' />
+                        &nbsp;<img ', ($_SESSION['user_gestionnaire'] == 1 && ($reccord['admin'] == 1 || $reccord['gestionnaire'] == 1)) ? 'src="includes/images/report_disabled.png"':'src="includes/images/report.png" onclick="user_action_log_items(\''.$reccord['id'].'\',\''.addslashes($reccord['login']).'\')" style="cursor:pointer;" title="'.$txt['see_logs'].'"', ' />
                     </td>
                 </tr>';
                 $x++;
@@ -322,13 +324,34 @@ echo '
 echo '
 <div id="user_logs_dialog" style="display:none;">
     <div style="text-align:center;padding:2px;display:none;" class="ui-state-error ui-corner-all" id="user_logs"></div>
-    <table>
+     <div>'.
+		$txt['nb_items_by_page'].':
+		<select id="nb_items_by_page" onChange="displayLogs(1)">
+	    	<option value="10">10</option>
+	    	<option value="25">25</option>
+	    	<option value="50">50</option>
+	    	<option value="100">100</option>
+	    </select>
+	    &nbps;&nbsp;'.
+		$txt['activity'].':
+		<select id="activity" onChange="displayLogs(1)">
+	    	<option value="all">'.$txt['all'].'</option>
+	    	<option value="at_modification">'.$txt['at_modification'].'</option>
+	    	<option value="at_creation">'.$txt['at_creation'].'</option>
+	    	<option value="at_delete">'.$txt['at_delete'].'</option>
+	    	<option value="at_import">'.$txt['at_import'].'</option>
+	    	<option value="at_restored">'.$txt['at_restored'].'</option>
+	    	<option value="at_pw">'.$txt['at_pw'].'</option>
+	    	<option value="at_shown">'.$txt['at_shown'].'</option>
+	    </select>
+    </div>
+    <table width="100%">
 	    <thead>
 	        <tr>
-	            <th>'.$txt['date'].'</th>
-	            <th id="th_url">'.$txt['url'].'</th>
-	            <th>'.$txt['label'].'</th>
-	            <th>'.$txt['user'].'</th>
+	            <th width="20%">'.$txt['date'].'</th>
+	            <th id="th_url" width="40%">'.$txt['label'].'</th>
+	            <th width="20%">'.$txt['user'].'</th>
+	            <th width="20%">'.$txt['activity'].'</th>
 	        </tr>
 	    </thead>
 	    <tbody id="tbody_logs">

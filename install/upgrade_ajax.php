@@ -671,7 +671,7 @@ global \$server, \$user, \$pass, \$database, \$pre, \$db;
 ### DATABASE connexion parameters ###
 \$server = \"". $_SESSION['db_host'] ."\";
 \$user = \"". $_SESSION['db_login'] ."\";
-\$pass = \"". $_SESSION['db_pw'] ."\";
+\$pass = \"". str_replace("$", "\$",$_SESSION['db_pw']) ."\";
 \$database = \"". $_SESSION['db_bdd'] ."\";
 \$pre = \"". $_SESSION['tbl_prefix'] ."\";
 
