@@ -115,6 +115,11 @@ if (isset($_POST['save_button'])) {
         UpdateSettings('log_connections',$_POST['log_connections']);
     }
 
+	//Update log_accessed setting
+	if ( (isset($_SESSION['settings']['log_accessed']) && $_SESSION['settings']['log_accessed'] != $_POST['log_accessed']) || !isset($_SESSION['settings']['log_accessed']) ){
+		UpdateSettings('log_accessed',$_POST['log_accessed']);
+	}
+
     //Update date format setting
     if ( isset($_SESSION['settings']['date_format']) && $_SESSION['settings']['date_format'] != $_POST['date_format'] ){
         UpdateSettings('date_format',$_POST['date_format']);
@@ -429,6 +434,30 @@ echo '
                     <td>
                 </tr>';
 
+				//Enable log connections
+				echo '
+				<tr><td>
+				    <span class="ui-icon ui-icon-disk" style="float: left; margin-right: .3em;">&nbsp;</span>
+				    <label>'.$txt['settings_log_connections'].'</label>
+				    </td><td>
+				    <div class="div_radio">
+						<input type="radio" id="log_connections_radio1" name="log_connections" value="1"', isset($_SESSION['settings']['log_connections']) && $_SESSION['settings']['log_connections'] == 1 ? ' checked="checked"' : '', ' /><label for="log_connections_radio1">'.$txt['yes'].'</label>
+						<input type="radio" id="log_connections_radio2" name="log_connections" value="0"', isset($_SESSION['settings']['log_connections']) && $_SESSION['settings']['log_connections'] != 1 ? ' checked="checked"' : (!isset($_SESSION['settings']['log_connections']) ? ' checked="checked"':''), ' /><label for="log_connections_radio2">'.$txt['no'].'</label>
+					</div>
+				</td</tr>';
+
+				//Enable log accessed
+				echo '
+				<tr><td>
+				    <span class="ui-icon ui-icon-disk" style="float: left; margin-right: .3em;">&nbsp;</span>
+				    <label>'.$txt['settings_log_accessed'].'</label>
+				    </td><td>
+				    <div class="div_radio">
+						<input type="radio" id="log_accessed_radio1" name="log_accessed" value="1"', isset($_SESSION['settings']['log_accessed']) && $_SESSION['settings']['log_accessed'] == 1 ? ' checked="checked"' : '', ' /><label for="log_accessed_radio1">'.$txt['yes'].'</label>
+						<input type="radio" id="log_accessed_radio2" name="log_accessed" value="0"', isset($_SESSION['settings']['log_accessed']) && $_SESSION['settings']['log_accessed'] != 1 ? ' checked="checked"' : (!isset($_SESSION['settings']['log_accessed']) ? ' checked="checked"':''), ' /><label for="log_accessed_radio2">'.$txt['no'].'</label>
+					</div>
+				</td</tr>';
+
                 //Maintenance mode
                 echo '
                 <tr style="margin-bottom:3px">
@@ -604,18 +633,6 @@ echo '
 				    <div class="div_radio">
 						<input type="radio" id="enable_pf_feature_radio1" name="enable_pf_feature" value="1"', isset($_SESSION['settings']['enable_pf_feature']) && $_SESSION['settings']['enable_pf_feature'] == 1 ? ' checked="checked"' : '', ' /><label for="enable_pf_feature_radio1">'.$txt['yes'].'</label>
 						<input type="radio" id="enable_pf_feature_radio2" name="enable_pf_feature" value="0"', isset($_SESSION['settings']['enable_pf_feature']) && $_SESSION['settings']['enable_pf_feature'] != 1 ? ' checked="checked"' : (!isset($_SESSION['settings']['enable_pf_feature']) ? ' checked="checked"':''), ' /><label for="enable_pf_feature_radio2">'.$txt['no'].'</label>
-					</div>
-                </td</tr>';
-
-                //Enable log connections
-                echo '
-                <tr><td>
-                    <span class="ui-icon ui-icon-wrench" style="float: left; margin-right: .3em;">&nbsp;</span>
-                    <label>'.$txt['settings_log_connections'].'</label>
-				    </td><td>
-				    <div class="div_radio">
-						<input type="radio" id="log_connections_radio1" name="log_connections" value="1"', isset($_SESSION['settings']['log_connections']) && $_SESSION['settings']['log_connections'] == 1 ? ' checked="checked"' : '', ' /><label for="log_connections_radio1">'.$txt['yes'].'</label>
-						<input type="radio" id="log_connections_radio2" name="log_connections" value="0"', isset($_SESSION['settings']['log_connections']) && $_SESSION['settings']['log_connections'] != 1 ? ' checked="checked"' : (!isset($_SESSION['settings']['log_connections']) ? ' checked="checked"':''), ' /><label for="log_connections_radio2">'.$txt['no'].'</label>
 					</div>
                 </td</tr>';
 

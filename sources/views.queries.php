@@ -228,7 +228,7 @@ switch($_POST['type'])
         if ( $data[0] != 0 ){
             $nb_pages = ceil($data[0]/$nb_elements);
             for($i=1;$i<=$nb_pages;$i++){
-                $pages .= '<td onclick=\'displayLogs(\"connections_logs\",'.$i.')\'><span style=\'cursor:pointer;' . ($_POST['page'] == $i ? 'font-weight:bold;font-size:18px;\'>'.$i:'\'>'.$i ) . '</span></td>';
+                $pages .= '<td onclick=\'displayLogs(\"connections_logs\",'.$i.',\"'.$_POST['order'].'\")\'><span style=\'cursor:pointer;' . ($_POST['page'] == $i ? 'font-weight:bold;font-size:18px;\'>'.$i:'\'>'.$i ) . '</span></td>';
             }
         }
         $pages .= '</tr></table>';
@@ -246,7 +246,7 @@ switch($_POST['type'])
             FROM ".$pre."log_system AS l
             INNER JOIN ".$pre."users AS u ON (l.qui=u.id)
             WHERE l.type = 'user_connection'
-            ORDER BY date DESC
+            ORDER BY ".$_POST['order']." ".$_POST['direction']."
             LIMIT $start, $nb_elements");
 
         foreach( $rows as $reccord)
@@ -271,7 +271,7 @@ switch($_POST['type'])
         if ( $data[0] != 0 ){
             $nb_pages = ceil($data[0]/$nb_elements);
             for($i=1;$i<=$nb_pages;$i++){
-                $pages .= '<td onclick=\'displayLogs(\"errors_logs\",'.$i.')\'><span style=\'cursor:pointer;' . ($_POST['page'] == $i ? 'font-weight:bold;font-size:18px;\'>'.$i:'\'>'.$i ) . '</span></td>';
+                $pages .= '<td onclick=\'displayLogs(\"errors_logs\",'.$i.',\"'.$_POST['order'].'\")\'><span style=\'cursor:pointer;' . ($_POST['page'] == $i ? 'font-weight:bold;font-size:18px;\'>'.$i:'\'>'.$i ) . '</span></td>';
             }
         }
         $pages .= '</tr></table>';
@@ -289,7 +289,7 @@ switch($_POST['type'])
             FROM ".$pre."log_system AS l
             INNER JOIN ".$pre."users AS u ON (l.qui=u.id)
             WHERE l.type = 'error'
-            ORDER BY date DESC
+            ORDER BY ".$_POST['order']." ".$_POST['direction']."
             LIMIT $start, $nb_elements");
 
         foreach( $rows as $reccord){
@@ -324,7 +324,7 @@ switch($_POST['type'])
     	if ( $data[0] != 0 ){
     		$nb_pages = ceil($data[0]/$nb_elements);
     		for($i=1;$i<=$nb_pages;$i++){
-    			$pages .= '<td onclick=\'displayLogs(\"errors_logs\",'.$i.')\'><span style=\'cursor:pointer;' . ($_POST['page'] == $i ? 'font-weight:bold;font-size:18px;\'>'.$i:'\'>'.$i ) . '</span></td>';
+    			$pages .= '<td onclick=\'displayLogs(\"access_logs\",'.$i.',\"'.$_POST['order'].'\")\'><span style=\'cursor:pointer;' . ($_POST['page'] == $i ? 'font-weight:bold;font-size:18px;\'>'.$i:'\'>'.$i ) . '</span></td>';
     		}
     	}
     	$pages .= '</tr></table>';
@@ -343,6 +343,60 @@ switch($_POST['type'])
             INNER JOIN ".$pre."items AS i ON (l.id_item=i.id)
             INNER JOIN ".$pre."users AS u ON (l.id_user=u.id)
             WHERE l.action = 'at_shown'".$sql_filter."
+            ORDER BY ".$_POST['order']." ".$_POST['direction']."
+            LIMIT $start, $nb_elements");
+
+    	foreach( $rows as $reccord){
+    		$label = explode('@',addslashes(CleanString($reccord['label'])));
+    		$logs .= '<tr><td>'.date($_SESSION['settings']['date_format']." ".$_SESSION['settings']['time_format'],$reccord['date']).'</td><td align=\"left\">'.$label[0].'</td><td align=\"center\">'.$reccord['login'].'</td></tr>';
+    	}
+
+    	echo '[{"tbody_logs": "'.$logs.'" , "log_pages" : "'.$pages.'"}]';
+    	break;
+
+    	#----------------------------------
+    	#CASE admin want to see COPIES logs
+    case "copy_logs":
+    	$logs = $sql_filter = "";
+    	$nb_pages = 1;
+    	$pages = '<table style=\'border-top:1px solid #969696;\'><tr><td>'.$txt['pages'].'&nbsp;:&nbsp;</td>';
+
+    	if(isset($_POST['filter']) && !empty($_POST['filter'])){
+    		$sql_filter = " AND i.label LIKE '%".$_POST['filter']."%'";
+    	}
+    	if(isset($_POST['filter_user']) && !empty($_POST['filter_user'])){
+    		$sql_filter = " AND l.id_user LIKE '%".$_POST['filter_user']."%'";
+    	}
+
+    	//get number of pages
+    	$data = $db->fetch_row("
+    	    SELECT COUNT(*)
+            FROM ".$pre."log_items AS l
+            INNER JOIN ".$pre."items AS i ON (l.id_item=i.id)
+            INNER JOIN ".$pre."users AS u ON (l.id_user=u.id)
+            WHERE l.action = 'at_copy'".$sql_filter);
+    	if ( $data[0] != 0 ){
+    		$nb_pages = ceil($data[0]/$nb_elements);
+    		for($i=1;$i<=$nb_pages;$i++){
+    			$pages .= '<td onclick=\'displayLogs(\"copy_logs\",'.$i.', \'\')\'><span style=\'cursor:pointer;' . ($_POST['page'] == $i ? 'font-weight:bold;font-size:18px;\'>'.$i:'\'>'.$i ) . '</span></td>';
+    		}
+    	}
+    	$pages .= '</tr></table>';
+
+    	//define query limits
+    	if ( isset($_POST['page']) && $_POST['page'] > 1 ){
+    		$start = ($nb_elements*($_POST['page']-1)) + 1;
+    	}else{
+    		$start = 0;
+    	}
+
+    	//launch query
+    	$rows = $db->fetch_all_array("
+    	    SELECT l.date AS date, u.login AS login, i.label AS label
+            FROM ".$pre."log_items AS l
+            INNER JOIN ".$pre."items AS i ON (l.id_item=i.id)
+            INNER JOIN ".$pre."users AS u ON (l.id_user=u.id)
+            WHERE l.action = 'at_copy'".$sql_filter."
             ORDER BY date DESC
             LIMIT $start, $nb_elements");
 
@@ -352,7 +406,7 @@ switch($_POST['type'])
     	}
 
     	echo '[{"tbody_logs": "'.$logs.'" , "log_pages" : "'.$pages.'"}]';
-    break;
+    	break;
 
     #----------------------------------
     #CASE display a full listing with items EXPRIED

@@ -465,15 +465,15 @@ switch($_POST['type'])
 			//send email
     		if(!$mail->Send())
     		{
-    			echo '$("#div_forgot_pw_alert").html("'.$mail->ErrorInfo.'").addClass("ui-state-error").show();';
+    			echo '[{"error":"error_mail_not_send" , "message":"'.$mail->ErrorInfo.'"}]';
     		}
     		else
     		{
-    			echo '$("#div_forgot_pw_alert").html("'.$txt['forgot_my_pw_email_sent'].'");$("#div_forgot_pw").dialog("close");';
+    			echo '[{"error":"no" , "message":"'.$txt['forgot_my_pw_email_sent'].'"}]';
     		}
         }else{
             //no one has this email ... alert
-            echo '$("#div_forgot_pw_alert").html("'.$txt['forgot_my_pw_error_email_not_exist'].'").addClass("ui-state-error").show();';
+        	echo '[{"error":"error_email" , "message":"'.$txt['forgot_my_pw_error_email_not_exist'].'"}]';
         }
     break;
 
@@ -551,12 +551,11 @@ switch($_POST['type'])
     break;
 
     case "get_folders_list":
-    	echo '$("#'.$_POST['div_id'].'").empty();';
-
     	/* Get full tree structure */
     	require_once ("NestedTree.class.php");
     	$tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
     	$folders = $tree->getDescendants();
+    	$arrOutput = array();
 
 		/* Build list of all folders */
     	$folders_list = "\'0\':\'".$txt['root']."\'";
@@ -575,10 +574,11 @@ switch($_POST['type'])
 
 				if ($display_this_node == true) {
 					if ( $f->title ==$_SESSION['user_id'] && $f->nlevel == 1 ) $f->title = $_SESSION['login'];
-					echo '$("#'.$_POST['div_id'].'").append("<option value=\''.$f->id.'\'>'.str_replace("&","&amp;",$f->title).'</option>");';
+					$arrOutput[$f->id] = $f->title;
 				}
 			}
 		}
+    	echo json_encode($arrOutput,JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_HEX_AMP);
     	break;
 
     case "print_out_items":
@@ -667,15 +667,13 @@ switch($_POST['type'])
     		$pdf_file = "print_out_pdf_".date("Y-m-d",mktime(0,0,0,date('m'),date('d'),date('y'))).".pdf";
     		//send the file
     		$pdf->Output($_SESSION['settings']['cpassman_dir']."/files/".$pdf_file);
-    		//Open PDF
-    		echo 'window.open(\''.$_SESSION['settings']['cpassman_url'].'/files/'.$pdf_file.'\', \'_blank\');';
+
+    		echo '[{"output":"'.$_SESSION['settings']['cpassman_url'].'/files/'.$pdf_file.'"}]';
     	}
     	break;
 
 		case "store_personal_saltkey":
 			$_SESSION['my_sk'] = str_replace(" ","+",urldecode($_POST['sk']));
-			//Open dialogbox
-			echo '$("#div_dialog_message_text").html("<div style=\"font-size:16px;\"><span class=\"ui-icon ui-icon-info\" style=\"float: left; margin-right: .3em;\"></span>'.$txt['alert_message_done'].'</div>");$("#div_dialog_message").dialog("open");';
 		break;
 }
 

@@ -56,10 +56,13 @@ Enrique, shauninja, seskahin, tstd0, Tommi, Petr and Philipp.
 * PostgreSQL database support
 
 ------------------------------------------  CHANGELOG  ----------------------------------------------
-v2.0b6
+v2.0
 * improvement: roles administration page [112]
 * improvement: date and time format in selectlist [111]
-95
+* improvement: loggin item accessed and copied [95]
+* improvement: migrating old httprequest to jquery json format
+* corrected: js library used not compliant with IE9
+* corrected: extra characters in front of passwords [108]
 
 v2.0b5
 * improvements: added Japanese translation by Shinji

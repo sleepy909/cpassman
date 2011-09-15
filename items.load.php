@@ -106,7 +106,6 @@ function ListerItems(groupe_id, restricted, start){
 					$("#item_details_no_personal_saltkey, #item_details_nok").hide();
 					$("#item_details_ok, #items_list").show();
 	        		$("#items_path").html(data.arborescence);
-	        		//$("#items_list").val("");
 
 	        		$("#more_items").remove();
 
@@ -330,7 +329,6 @@ function AjouterItem(){
                         $("#random_id").val("");
                         //Refresh page
                         window.location.href = "index.php?page=items&group="+$('#categorie').val()+"&id="+data[0].new_id;
-                        //ListerItems($("#open_folder").val(), '', 0);
                     }
                     LoadingPage();
                 },
@@ -1095,7 +1093,6 @@ $(function() {
     	}
     });
 
-
     //Disable menu buttons
     $('#menu_button_edit_item,#menu_button_del_item,#menu_button_add_fav,#menu_button_del_fav').attr('disabled', 'disabled');
 
@@ -1381,11 +1378,11 @@ $(function() {
 		first_group = $("#hid_cat").val();
 	}
 
+	ListerItems(first_group,'', parseInt($("#query_next_start").val())+1);
 	//Load item if needed and display items list
 	if ($("#open_id").val() != "") {
 		AfficherDetailsItem($("#open_id").val());
 	}
-	ListerItems(first_group,'', parseInt($("#query_next_start").val())+1);
 
     //Password meter for item creation
 	$("#pw1").simplePassMeter({

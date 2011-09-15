@@ -96,7 +96,7 @@ echo '
 	    <div>
 	        <div style="margin:3px;font-weight:bold;">
 	            '.$txt['items_browser_title'].'
-			    <span id="jstree_open"class="pointer" ><img src="includes/images/chevron-small-expand.png" /></span>
+			    <span id="jstree_open" class="pointer" ><img src="includes/images/chevron-small-expand.png" /></span>
 			    <span id="jstree_close" class="pointer"><img alt="" src="includes/images/chevron-small.png" /></span>
 			    <input type="text" name="jstree_search" id="jstree_search" class="text ui-widget-content ui-corner-all search_tree" value="'.$txt['item_menu_find'].'" />
 	        </div>
@@ -117,7 +117,7 @@ echo '
 
 	        echo '
 			<div id="jstree" style="overflow:auto;">
-		        <ul>';
+		        <ul id="node_'.$folder_cpt.'">';
 		        foreach($folders as $folder){
 		            //Be sure that user can only see folders he/she is allowed to
 		            if ( !in_array($folder->id, $_SESSION['forbiden_pfs']) || in_array($folder->id, $_SESSION['groupes_visibles']) || in_array($folder->id, $list_folders_limited_keys)) {
@@ -185,7 +185,7 @@ echo '
 				                //Construire l'arborescence
 				                if ( $prev_level < $folder->nlevel ){
 				                	echo '
-				<ul>'.$folder_txt;
+				<ul id="node_'.$folder_cpt.'">'.$folder_txt;
 				                    $folder_cpt++;
 				                }else if ( $prev_level == $folder->nlevel ){
 				                	echo '
@@ -790,7 +790,4 @@ echo '
 
 
 require_once("items.load.php");
-
-//CHECK IF CACHE TABLE EXISTS
-//UpdateCacheTable("reload");
 ?>

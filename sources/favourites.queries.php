@@ -54,9 +54,7 @@ if ( !empty($_POST['type']) ){
                 "id = '".$_SESSION['user_id']."'"
             );
             //update session
-            $_SESSION['favourites'] = $tab_favs;print_r($tab_favs);
-            //refresh page
-            echo 'document.form_favourites.submit();';
+            $_SESSION['favourites'] = $tab_favs;
         break;
     }
 }

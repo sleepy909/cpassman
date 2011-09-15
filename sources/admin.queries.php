@@ -33,6 +33,7 @@ switch($_POST['type'])
     # connection to author's cpassman website
     case "cpm_status":
         $text = "<ul>";
+    	$error ="";
         // Chemin vers le fichier distant
         $remote_file = 'cpm2_config.txt';
         $local_file = '../files/localfile.txt';
@@ -70,7 +71,7 @@ switch($_POST['type'])
                 }
             }
         } else {
-            echo "Il y a un probl?me lors du t?l?chargement du fichier $remote_file dans $local_file\n";
+        	$error = "connection";
         }
 
         // Fermeture de la connexion et du pointeur de fichier
@@ -80,7 +81,7 @@ switch($_POST['type'])
         //DELETE FILE
         unlink($local_file);
 
-        echo 'document.getElementById("CPM_infos").innerHTML = "<span style=\"font-weight:bold;\">'.$txt['admin_info'].'</span>'.$text.'</ul>";';
+    	echo '[{"error":"'.$error.'" , "output":"'.$text.'"}]';
     break;
 
     ###########################################################
@@ -188,7 +189,6 @@ switch($_POST['type'])
     #CASE for creating a DB backup
     case "admin_action_db_backup":
         require_once('main.functions.php');
-        echo '$("#result_admin_action_db_backup").html("");';
         $return = "";
 
         //Get all tables
@@ -243,11 +243,8 @@ switch($_POST['type'])
             fwrite($handle,$return);
             fclose($handle);
 
-            //download file
-            echo '$("#result_admin_action_db_backup").html("<img src=\'includes/images/document-code.png\' alt=\'\' />&nbsp;<a href=\'sources/downloadFile.php?name='.urlencode($filename).'&path='.$path.$filename.'&type=sql\'>'.$txt['pdf_download'].'</a>");';
+        	echo '[{"display":"yes" , "href":"sources/downloadFile.php?name='.urlencode($filename).'&path='.$path.$filename.'&type=sql"}]';
         }
-
-        echo 'LoadingPage();';
     break;
 
     ###########################################################
@@ -384,8 +381,6 @@ switch($_POST['type'])
 			fwrite($handle,$return);
 			fclose($handle);
 		}
-
-		echo 'LoadingPage();';
 	break;
 }
 ?>
