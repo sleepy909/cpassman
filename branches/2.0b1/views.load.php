@@ -107,13 +107,27 @@ function reallyDeleteItems(){
     }
 }
 
-function displayLogs(type,page){
+function displayLogs(type, page, order){
+	if(type == "reorder"){
+		type = $("#type_log_displayed").val();
+		page = $("#log_page_displayed").val();
+		if($("#log_direction_displayed").val() == "ASC") $("#log_direction_displayed").val("DESC");
+		else $("#log_direction_displayed").val("ASC")
+	}else{
+		$("#type_log_displayed").val(type);
+		$("#log_page_displayed").val(page);
+		if(type != $("#type_log_displayed").val())
+			$("#log_direction_displayed").val("ASC");
+	}
+
+	if(order == "") order = "date";
+
 	var filter = "";
 	$("#div_show_system_logs").show();
     //Show or not the column URL
     if ( type == "errors_logs" ) $("#th_url").show();
     else $("#th_url").hide();
-    if ( type == "access_logs" ){
+    if ( type == "access_logs" ||type == "copy_logs" ){
     	$("#filter_access_logs_div").show();
     	filter = $("#filter_access_logs").val();
     }else $("#filter_access_logs_div").hide();
@@ -123,7 +137,9 @@ function displayLogs(type,page){
 	    {
 	        type    : type,
 	        page	: page,
-	        filter	: filter
+	        filter	: filter,
+	        order	: order,
+	        direction:	$("#log_direction_displayed").val()
 	    },
 	    function(data){
     		$("#tbody_logs").empty().append(data[0].tbody_logs);

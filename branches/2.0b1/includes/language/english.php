@@ -5,6 +5,7 @@ $cpassman_url = '';
 }else{
 $cpassman_url = $_SESSION['settings']['cpassman_url'];
 }
+$txt['settings_log_accessed'] = "Enable loggin who accessed the items";
 $txt['see_logs'] = "See Logs";
 $txt['nb_items_by_page'] = "Number of items by page";
 $txt['activity'] = "Activity";

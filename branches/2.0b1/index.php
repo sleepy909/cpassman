@@ -99,7 +99,7 @@ require_once("load.php");
         //Display menu
         if (isset($_SESSION['login'])) {
             echo '
-        <div style="float:left;">
+        <div id="menu_top">
             <div style="font-size:12px; margin-left:65px; margin-top:-5px; width:100%; color:white;">
                 <img src="includes/images/user-black.png" /> <b>'.$_SESSION['login'].'</b><img src="includes/images/alarm-clock.png" style="margin-left:30px;" /> '.$txt['index_expiration_in'].' <div style="display:inline;" id="countdown"></div>
             </div>
@@ -185,7 +185,7 @@ require_once("load.php");
         }
 
         echo '
-        <div style="float:right;margin:-8px 3px 0px 0px;">
+        <div style="float:right;">
             <dl id="flags" class="dropdown" title="'.$txt['select_language'].'">
                 <dt><img src="includes/images/flags/'.$flag.'.png" alt="" /></dt>
                 <dd>

@@ -35,9 +35,7 @@ require_once('../includes/language/'.$_SESSION['user_language'].'.php');
 switch($_POST['type'])
 {
     //Check if import CSV file format is what expected
-	case "import_file_format_csv":        //clean divs
-        echo '$(\'#import_status\').html(\'\');$(\'#import_from_file_info\').html(\'\').hide();';
-
+	case "import_file_format_csv":
         //Call nestedtree library and load full tree
         require_once ("NestedTree.class.php");
         $tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
@@ -65,7 +63,7 @@ switch($_POST['type'])
                     if ( count($line) != 5 ) $importation_possible = false;
                     //Stop if file has not expected structure
                     if ( $importation_possible == false ){
-                        echo '$(\'#import_from_file_info\').html(\''.addslashes($txt['import_error_no_read_possible']).'\').show();';
+                    	echo '[{"error":"bad_structure"}]';
                         break;
                     }
                 }
@@ -107,7 +105,8 @@ switch($_POST['type'])
             // close file
             fclose ($fp);
         } else {
-            echo '$(\'#import_from_file_info\').html(\''.$txt['import_error_no_read_possible'].'\').show();';
+        	echo '[{"error":"bad_structure"}]';
+        	break;
         }
 
         if ( $line_number > 0 ){
@@ -138,19 +137,14 @@ switch($_POST['type'])
 
             // Show results to user.
             echo '$(\'#import_status\').html(\''.$display.'\');';
-            echo '$(\'#item_all_selection\').click(function(){if ( $(\'#item_all_selection\').attr(\'checked\') ) { $("input[class=\'item_checkbox\']:not([disabled=\'disabled\'])").attr(\'checked\', true); } else { $("input[class=\'item_checkbox\']:not([disabled=\'disabled\'])").removeAttr(\'checked\');  }}); ';
+            echo ' ';
+        	echo '[{"error":"no" , "output" : "'.$display.'"}]';
         }
-
-        // close ajax loader
-        echo '$(\'#import_status_ajax_loader\').hide();';
     break;
 
     //Insert into DB the items the user has selected
     case "import_items":
         include('main.functions.php');
-        //show ajax loader
-        echo '$(\'#import_status_ajax_loader\').show();';
-
         foreach( explode('@_#sep#_@',mysql_real_escape_string(stripslashes($_POST['data']))) as $item ){
             //For each item, insert into DB
             $item = explode('@|@',$item);   //explode item to get all fields
@@ -211,8 +205,7 @@ switch($_POST['type'])
         	//reload Cache table
         	UpdateCacheTable("reload", "");
 
-            //after inserted, disable the checkbox in order to prevent against new insert
-            echo '$("#item_to_import-'.$item[5].'").attr("disabled", true);$("#item_text-'.$item[5].'").css("textDecoration", "line-through");$(\'#import_status_ajax_loader\').hide();';
+            echo '[{"item":"'.$item[5].'"}]';
         }
     break;
 
@@ -231,9 +224,6 @@ switch($_POST['type'])
         $folders_separator = '@&##&@';
         $items_separator = '<=|#|=>';
         $line_end_separator = '@*1|#9*|@';
-
-        //clean divs
-        echo '$(\'#import_status\').html(\'\');$(\'#import_from_file_info\').html(\'\').hide();';
 
         //prepare CACHE files
         $cacheFile_name = "../files/cpassman_cache_".md5(time().mt_rand());
@@ -464,8 +454,7 @@ switch($_POST['type'])
 
         //Stop if not a keepass file
         if ( $generator_found == false ){
-            echo '$(\'#import_status\').html(\''.addslashes($txt['import_error_no_read_possible_kp']).'\');';
-            echo '$("#import_status_ajax_loader").hide();';
+        	echo '[{"error":"not_kp_file" , "message":"'.$txt['import_error_no_read_possible_kp'].'"}]';
             break;
         }
 
@@ -695,7 +684,7 @@ switch($_POST['type'])
         	UpdateCacheTable("reload", "");
 
             //Display all messages to user
-            echo '$(\'#import_status\').html(\''.$text.'\');$(\'#import_status_ajax_loader\').hide();';
+        	echo '[{"error":"no" , "message":"'.$text.'"}]';
         }
         break;
 }

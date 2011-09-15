@@ -46,10 +46,14 @@ echo '
     //TAB 3 - LOGS
     echo '
     <div id="tabs-3">
+    	<input type="hidden" id="type_log_displayed" />
+    	<input type="hidden" id="log_page_displayed" />
+    	<input type="hidden" id="log_direction_displayed" value="ASC" />
  		<div id="radio_logs">
-			<input type="radio" id="radio1" name="radio" onclick="displayLogs(\'connections_logs\',1)" /><label for="radio1">'.$txt['connections'].'</label>
-			<input type="radio" id="radio2" name="radio" onclick="displayLogs(\'errors_logs\',1)" /><label for="radio2">'.$txt['errors'].'</label>
-			<input type="radio" id="radio3" name="radio" onclick="displayLogs(\'access_logs\',1)" /><label for="radio3">'.$txt['at_shown'].'</label>
+			<input type="radio" id="radio1" name="radio" onclick="displayLogs(\'connections_logs\',1, \'date\')" /><label for="radio1">'.$txt['connections'].'</label>
+			<input type="radio" id="radio2" name="radio" onclick="displayLogs(\'errors_logs\',1, \'date\')" /><label for="radio2">'.$txt['errors'].'</label>
+			<input type="radio" id="radio3" name="radio" onclick="displayLogs(\'access_logs\',1, \'date\')" /><label for="radio3">'.$txt['at_shown'].'</label>
+			<input type="radio" id="radio4" name="radio" onclick="displayLogs(\'copy_logs\',1, \'date\')" /><label for="radio4">'.$txt['at_copy'].'</label>
 		</div>
         <div id="div_show_system_logs" style="margin-left:30px;margin-top:10px;display:none;">
         	<div id="filter_access_logs_div" style="display:none;margin-bottom:10px;">
@@ -59,10 +63,10 @@ echo '
 	        <table>
 	            <thead>
 	                <tr>
-	                    <th>'.$txt['date'].'</th>
+	                    <th onclick="displayLogs(\'reorder\', \'\', \'date\')" style="cursor:pointer;" title="">'.$txt['date'].'</th>
 	                    <th id="th_url">'.$txt['url'].'</th>
-	                    <th>'.$txt['label'].'</th>
-	                    <th>'.$txt['user'].'</th>
+	                    <th onclick="displayLogs(\'reorder\', \'\', \'label\')" style="cursor:pointer;" title="">'.$txt['label'].'</th>
+	                    <th onclick="displayLogs(\'reorder\', \'\', \'login\')" style="cursor:pointer;" title="">'.$txt['user'].'</th>
 	                </tr>
 	            </thead>
 	            <tbody id="tbody_logs">

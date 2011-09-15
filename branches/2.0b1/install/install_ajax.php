@@ -154,6 +154,7 @@ if ( isset($_POST['type']) ){
                 ('admin', 'show_last_items', '1'),
                 ('admin', 'enable_pf_feature', '0'),
                 ('admin', 'log_connections', '0'),
+                ('admin', 'log_accessed', '1'),
                 ('admin', 'time_format', 'H:i:s'),
                 ('admin', 'date_format', 'd/m/Y'),
                 ('admin', 'duplicate_folder', '0'),

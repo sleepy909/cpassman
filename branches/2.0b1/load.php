@@ -125,7 +125,7 @@ $htmlHeaders .= '
     function identifyUser(redirect){
         $("#erreur_connexion").hide();
         if ( redirect == undefined ) redirect = ""; //Check if redirection
-        if ( document.getElementById("login").value != "" && document.getElementById("pw").value != "" ){
+        if ( $("#login").val() != "" && $("#pw").val() != "" ){
             $("#pw").removeClass( "ui-state-error" );
             $("#ajax_loader_connexion").show();
 
@@ -249,8 +249,8 @@ $htmlHeaders .= '
             buttons: {
                 "'.$txt['index_add_one_hour'].'": function() {
                     AugmenterSession();
-                    document.getElementById("div_fin_session").style.display="none";
-                    document.getElementById("countdown").style.color="white";
+                    $("#div_fin_session").hide();
+                    $("#countdown").style.color="white";
                     $(this).dialog("close");
                 }
             }
@@ -365,8 +365,23 @@ if ( !isset($_GET['page']) ){
             buttons: {
                 "'.$txt['send'].'": function() {
 					$("#div_forgot_pw_alert").html("");
-                    var data = "type=send_pw_by_email&email="+$("#forgot_pw_email").val()+"&login="+$("#forgot_pw_login").val();
-                    httpRequest("sources/main.queries.php",data);
+                    $.post(
+		                "sources/main.queries.php",
+		                {
+		                    type    : "send_pw_by_email",
+		                    email	: $("#forgot_pw_email").val(),
+							login	: $("#forgot_pw_login").val()
+		                },
+		                function(data){
+		                	if (data[0].error != "no") {
+		                		$("#div_forgot_pw_alert").html(data[0].message).addClass("ui-state-error").show();
+		                	}else{
+		                		$("#div_forgot_pw_alert").html(data[0].message);
+		                		$("#div_forgot_pw").dialog("close");
+		                	}
+		                },
+		                "json"
+		            );
                 },
                 "'.$txt['cancel_button'].'": function() {
 					$("#div_forgot_pw_alert").html("");
@@ -440,10 +455,21 @@ if ( !isset($_GET['page']) ){
 						if (ids == "" ) ids = $(selected).val();
 						else ids = ids + ";" + $(selected).val();
 					});
+					$("#div_loading").show();
 
                 	//Send query
-                    var data = "type=print_out_items&ids="+ids;
-                    httpRequest("sources/main.queries.php",data);
+                    $.post(
+		                "sources/main.queries.php",
+		                {
+		                    type    : "print_out_items",
+		                    ids		: ids
+		                },
+		                function(data){
+		                	window.open(data[0].output, "_blank");
+		                	$("#div_loading").hide();
+		                },
+		                "json"
+		            );
                 },
                 "'.$txt['cancel_button'].'": function() {
                     $(this).dialog("close");
@@ -496,8 +522,8 @@ if ( !isset($_GET['page']) ){
 
     //Change the Users password when he asks for
     function ChangerMdp(){
-        if ( document.getElementById("new_pw").value != "" && document.getElementById("new_pw").value == document.getElementById("new_pw2").value ){
-            var data = "{\"new_pw\":\""+protectString(document.getElementById("new_pw").value)+"\"}";
+        if ( $("#new_pw").val() != "" && $("#new_pw").val() == $("#new_pw2").val() ){
+            var data = "{\"new_pw\":\""+protectString($("#new_pw").val())+"\"}";
 
             $.post(
                 "sources/main.queries.php",
@@ -516,26 +542,69 @@ if ( !isset($_GET['page']) ){
                 },
                 "json"
             );
-
-            //httpRequest("sources/main.queries.php","type=change_pw&data="+aes_encrypt(data));
         }else{
             $("#change_pwd_error").addClass("ui-state-error ui-corner-all");
-            document.getElementById("change_pwd_error").innerHTML = "'.$txt['index_pw_error_identical'].'";
+            $("#change_pwd_error").innerHTML = "'.$txt['index_pw_error_identical'].'";
         }
     }
 
     //Permits to upload passwords from KEEPASS file
     function ImportKEEPASS(file){
+    	//clean divs
+    	$("#import_status").html("");
+    	$("#import_from_file_info").html("").hide();
+
+    	$("#div_loading").show();
+
         //check if file has good format
-        var data = "type=import_file_format_keepass&file="+file+"&destination="+$("#import_keepass_items_to").val();
-        httpRequest("sources/import.queries.php",data);
+		$.post(
+			"sources/import.queries.php",
+			{
+			   type		: "import_file_format_keepass",
+			   file		: file,
+			   destination		: $("#import_keepass_items_to").val()
+			},
+			function(data){
+				if(data[0].error == "not_kp_file"){
+					$("#import_status").html(data[0].message);
+					$("#import_status_ajax_loader").hide();
+				}else{
+					$("#import_status").html(data[0].message);
+					$("#import_status_ajax_loader").hide();
+				}
+				$("#div_loading").hide();
+			},
+			"json"
+		);
     }
 
     //Permits to upload passwords from CSV file
     function ImportCSV(file){
-        //check if file has good format
-        var data = "type=import_file_format_csv&file="+file;
-        httpRequest("sources/import.queries.php",data);
+    	$("#import_status").html("");
+    	$("#import_from_file_info").html("").hide();
+        $.post(
+			"sources/import.queries.php",
+			{
+			   type		: "import_file_format_csv",
+			   file		: file
+			},
+			function(data){
+				if(data[0].error == "bad_structure"){
+					$("#import_from_file_info").html("'.$txt['import_error_no_read_possible'].'").show();
+				}else{
+					$("#import_status").html(data[0].output);
+					$("#item_all_selection").click(function(){
+						if($("#item_all_selection").attr("checked")){
+							$("input[class=\'item_checkbox\']:not([disabled=\'disabled\'])").attr("checked", true);
+						}else{
+							$("input[class=\'item_checkbox\']:not([disabled=\'disabled\'])").removeAttr("checked");
+						}
+					});
+				}
+				$("#import_status_ajax_loader").hide();
+			},
+			"json"
+		);
     }
 
     //get list of items checked by user
@@ -549,14 +618,26 @@ if ( !isset($_GET['page']) ){
             else items = items + "@_#sep#_@" + $("#item_to_import_values-"+elem[1]).val();
 
         });
+        $("#import_status_ajax_loader").show();
 
         //Lauchn ajax query that will insert items into DB
-        var data = "type=import_items"+
-        	"&folder="+document.getElementById("import_items_to").value+
-        	"&data="+escape(items)+
-        	"&import_csv_anyone_can_modify="+$("#import_csv_anyone_can_modify").attr("checked")+
-        	"&import_csv_anyone_can_modify_in_role="+$("#import_csv_anyone_can_modify_in_role").attr("checked");
-        httpRequest("sources/import.queries.php",data);
+        $.post(
+			"sources/import.queries.php",
+			{
+			   type		: "import_items",
+			   folder	: $("#import_items_to").val(),
+			   data		: escape(items),
+			   import_csv_anyone_can_modify	: $("#import_csv_anyone_can_modify").attr("checked"),
+			   import_csv_anyone_can_modify_in_role	: $("#import_csv_anyone_can_modify_in_role").attr("checked")
+			},
+			function(data){
+				//after inserted, disable the checkbox in order to prevent against new insert
+				$("#item_to_import-"+data[0].item).attr("disabled", true);$("#item_text-"+data[0].item).css("textDecoration", "line-through");
+
+				$("#import_status_ajax_loader").hide();
+			},
+			"json"
+		);
     }
 
     //Toggle details importation
@@ -566,18 +647,41 @@ if ( !isset($_GET['page']) ){
 
     //PRINT OUT: select folders
     function print_out_items() {
+    	$("#selected_folders").empty();
+
     	//Lauchn ajax query that will build the select list
-        var data = "type=get_folders_list&div_id=selected_folders";
-        httpRequest("sources/main.queries.php",data);
+        $.post(
+			"sources/main.queries.php",
+			{
+			   type		: "get_folders_list",
+			   div_id	: "selected_folders"
+			},
+			function(data){
+				data = $.parseJSON(data);
+				for(reccord in data){
+					$("#selected_folders").append("<option value=\'"+reccord+"\'>"+data[reccord]+"</option>");
+				}
+			}
+		);
 
     	//Open dialogbox
-        $(\'#div_print_out\').dialog(\'open\');
+        $("#div_print_out").dialog("open");
     }
 
 	//Store PSK
 	function StorePersonalSK(){
-		var data = "type=store_personal_saltkey&sk="+encodeURIComponent($("#input_personal_saltkey").val());
-        httpRequest("sources/main.queries.php",data);
+        //Lauchn ajax query
+        $.post(
+			"sources/main.queries.php",
+			{
+			   type	: "store_personal_saltkey",
+			   sk	: encodeURIComponent($("#input_personal_saltkey").val())
+			},
+			function(data){
+				$("#div_dialog_message_text").html("<div style=\'font-size:16px;\'><span class=\'ui-icon ui-icon-info\' style=\'float: left; margin-right: .3em;\'></span>'.$txt['alert_message_done'].'</div>");
+				$("#div_dialog_message").dialog("open");
+			}
+		);
 	}';
 }
 
@@ -607,8 +711,21 @@ if ( isset($_GET['page']) && $_GET['page'] == "manage_main" ){
     $htmlHeaders .= '
             //Function loads informations from cpassman FTP
             function LoadCPMInfo(){
-                var data = "type=cpm_status";
-                httpRequest("sources/admin.queries.php",data);
+                //Lauchn ajax query
+		        $.post(
+					"sources/admin.queries.php",
+					{
+					   type	: "cpm_status"
+					},
+					function(data){
+						if(data[0].error == "connection"){
+							$("#CPM_infos").html("Server connection is impossible ... check your Internet/firewall configuration");
+						}else{
+							$("#CPM_infos").html("<span style=\'font-weight:bold;\'>'.$txt['admin_info'].'</span>"+data[0].output+"</ul>");
+						}
+					},
+					"json"
+				);
             }
             //Load function on page load
             $(function() {
@@ -628,13 +745,21 @@ if ( isset($_GET['page']) && $_GET['page'] == "favourites" ){
             modal: true,
             autoOpen: false,
             width: 300,
-            height: 60,
+            height: 100,
             title: "'.$txt['item_menu_del_from_fav'].'",
             buttons: {
                 "'.$txt['index_change_pw_confirmation'].'": function() {
-                    var data = "type=del_fav"+
-                                "&id="+document.getElementById(\'detele_fav_id\').value;
-                    httpRequest("sources/favourites.queries.php",data);
+                    //Lauchn ajax query
+			        $.post(
+						"sources/favourites.queries.php",
+						{
+						   type	: "del_fav",
+						   id	: $("#detele_fav_id").val()
+						},
+						function(data){
+							document.form_favourites.submit();
+						}
+					);
                 },
                 "'.$txt['cancel_button'].'": function() {
                     $(this).dialog("close");
@@ -644,8 +769,8 @@ if ( isset($_GET['page']) && $_GET['page'] == "favourites" ){
     })
 
     function prepare_delete_fav(id){
-        document.getElementById("detele_fav_id").value = id;
-        OpenDialogBox(\'div_delete_fav\');
+        $("#detele_fav_id").val(id);
+        OpenDialogBox("div_delete_fav");
     }';
 }
 
@@ -698,10 +823,24 @@ if ( isset($_GET['page']) && $_GET['page'] == "manage_settings" ){
     //###########
     function LaunchAdminActions(action,option){
         LoadingPage();
+        $("#result_admin_action_db_backup").html("");
         if ( action == "admin_action_db_backup" ) option = $("#result_admin_action_db_backup_key").val();
         else if ( action == "admin_action_backup_decrypt" ) option = $("#bck_script_decrypt_file").val();
-        var data = "type="+action+"&option="+option;
-        httpRequest("sources/admin.queries.php",data);
+        //Lauchn ajax query
+        $.post(
+			"sources/admin.queries.php",
+			{
+			   type		: action,
+			   option	: option
+			},
+			function(data){
+				if(data[0].display == "yes"){
+					$("#result_admin_action_db_backup").html("<img src=\'includes/images/document-code.png\' alt=\'\' />&nbsp;<a href=\'"+data[0].href+"\'>'.$txt['pdf_download'].'</a>");
+				}
+				$("#div_loading").hide();
+			},
+			"json"
+		);
     }
 
     ';

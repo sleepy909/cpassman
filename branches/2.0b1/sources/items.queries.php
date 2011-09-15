@@ -899,15 +899,17 @@ if ( isset($_POST['type']) ){
 	            	}
 
 	            	//Add the fact that item has been copied in logs
-	            	$db->query_insert(
-		            	'log_items',
-		            	array(
-		            	    'id_item' => $_POST['id'],
-		            	    'date' => mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y')),
-		            	    'id_user' => $_SESSION['user_id'],
-		            		'action' => 'at_shown'
-		            	)
-	            	);
+	            	if(isset($_SESSION['settings']['log_accessed']) && $_SESSION['settings']['log_accessed'] == 1){
+	            		$db->query_insert(
+		            		'log_items',
+		            		array(
+		            		    'id_item' => $_POST['id'],
+		            		    'date' => mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y')),
+		            		    'id_user' => $_SESSION['user_id'],
+		            			'action' => 'at_shown'
+		            		)
+	            		);
+	            	}
             }else{
                 $arrData['show_details'] = 0;
             }
@@ -1075,7 +1077,7 @@ if ( isset($_POST['type']) ){
         		$html = '<ul class="liste_items">';
         	}else{
         		$start = $_POST['start'];
-        		$html = '<ul class="liste_items" style="margin-top:-14px;">';
+        		$html = '<ul class="liste_items" style="">';
         	}
 
 
