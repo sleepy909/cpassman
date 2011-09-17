@@ -254,18 +254,16 @@ switch($_POST['type'])
                     logEvents('user_connection','connection',$data['id']);
 
                 //Save account in SESSION
-                   $_SESSION['login'] = $username;
-                   $_SESSION['user_id'] = $data['id'];
-                   $_SESSION['user_admin'] = $data['admin'];
-                   $_SESSION['user_gestionnaire'] = $data['gestionnaire'];
-                   $_SESSION['last_pw_change'] = $data['last_pw_change'];
-                   $_SESSION['last_pw'] = $data['last_pw'];
-                   $_SESSION['can_create_root_folder'] = $data['can_create_root_folder'];
+                $_SESSION['login'] = stripslashes($username);
+                $_SESSION['user_id'] = $data['id'];
+                $_SESSION['user_admin'] = $data['admin'];
+                $_SESSION['user_gestionnaire'] = $data['gestionnaire'];
+                $_SESSION['last_pw_change'] = $data['last_pw_change'];
+                $_SESSION['last_pw'] = $data['last_pw'];
+                $_SESSION['can_create_root_folder'] = $data['can_create_root_folder'];
 	            $_SESSION['key'] = $key;
 	            $_SESSION['personal_folder'] = $data['personal_folder'];
                 $_SESSION['fin_session'] = time() + $_POST['duree_session'] * 60;
-
-            	//setcookie('pma_end_session', time(), time() + $_POST['duree_session'] * 60);
 
                 if ( empty($data['last_connexion']) ) $_SESSION['derniere_connexion'] = mktime(date('h'),date('m'),date('s'),date('m'),date('d'),date('y'));
                 else $_SESSION['derniere_connexion'] = $data['last_connexion'];

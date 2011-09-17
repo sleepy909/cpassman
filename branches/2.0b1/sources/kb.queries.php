@@ -88,7 +88,7 @@ if ( !empty($_POST['type']) ){
 					    "kb",
 					    array(
 					        'label' => ($label),
-					        'description' => mysql_real_escape_string($description),
+					        'description' => ($description),
 					        'author_id' => $_SESSION['user_id'],
 					        'category_id' => $cat_id,
 					        'anyone_can_modify' => $anyone_can_modify
@@ -101,7 +101,7 @@ if ( !empty($_POST['type']) ){
 					    "kb",
 					    array(
 					        'label' => $label,
-					        'description' => mysql_real_escape_string($description),
+					        'description' => ($description),
 					        'author_id' => $_SESSION['user_id'],
 						    'category_id' => $cat_id,
 						    'anyone_can_modify' => $anyone_can_modify
@@ -146,27 +146,27 @@ if ( !empty($_POST['type']) ){
 							WHERE k.id = '".$_POST['id']."'
 			");
 			$ret = $db->fetch_array($row);
-			echo '$("#kb_label").val("'.addslashes($ret['label']).'");';
-			echo '$("#kb_category").val("'.$ret['category'].'");';
-			echo '$("#kb_description").val("'.$ret['description'].'");';
-			echo '$("#kb_id").val("'.$_POST['id'].'");';
-			if ($ret['anyone_can_modify'] == 0) {
-				echo '$("#modify_kb_no").attr("checked", "checked");';
-			}else{
-				echo '$("#modify_kb_yes").attr("checked", "checked");';
-			}
 
             //select associated items
             $rows = $db->fetch_all_array("SELECT item_id
                             FROM ".$pre."kb_items
                             WHERE kb_id = '".$_POST['id']."'
             ");
+			$arrOptions = array();
             foreach( $rows as $reccord ) {
-                echo '$("#kb_associated_to option[value='.$reccord['item_id'].']").attr("selected","selected");';
+                //echo '$("#kb_associated_to option[value='.$reccord['item_id'].']").attr("selected","selected");';
+            	array_push($arrOptions, $reccord['item_id']);
             }
 
-            //open KB dialog
-			echo '$("#kb_form").dialog("open");';
+			$arrOutput = array(
+				"label" 	=> $ret['label'],
+				"category" 	=> $ret['category'],
+				"description" 	=> $ret['description'],
+				"anyone_can_modify" 	=> $ret['anyone_can_modify'],
+				"options" 	=> $arrOptions
+			);
+
+			echo json_encode($arrOutput,JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_HEX_AMP);
 		break;
 
 

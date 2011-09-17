@@ -57,24 +57,6 @@ Enrique, shauninja, seskahin, tstd0, Tommi, Petr and Philipp.
 
 ------------------------------------------  CHANGELOG  ----------------------------------------------
 v2.0
-* improvement: roles administration page [112]
-* improvement: date and time format in selectlist [111]
-* improvement: loggin item accessed and copied [95]
-* improvement: migrating old httprequest to jquery json format
-* corrected: js library used not compliant with IE9
-* corrected: extra characters in front of passwords [108]
-
-v2.0b5
-* improvements: added Japanese translation by Shinji
-* improvement: added direct link to KBs in item overview
-* improvement: link from KBs to items
-* improvement: search and open a folder [55]
-* improvement: backup system based on server CRON [91]
-* improvement: encrypted passwords in database by salt [86]
-* improvement: KB management is encrypted [89]
-* fixed: strings error in upgrade.php pages
-* improvements: [87 , 101]
-v2.00
 * Licence has changed from CC BY-NC-ND to CC BY-ND
 * improvement: convert cPassMan to UTF-8 charset
 * improvement: all data exchanges concerning items are encrypted based on AES-256
@@ -101,6 +83,18 @@ v2.00
 * improvement: Manager can't do modification on users that are not linked to the same role [66]
 * improvement: old passwords are stored in history [80]
 * improvement: recycle bin on items and folders [77]
+* improvement: roles administration page [112]
+* improvement: date and time format in selectlist [111]
+* improvement: loggin item accessed and copied [95]
+* improvement: migrating old httprequest to jquery json format
+* improvements: added Japanese translation by Shinji
+* improvement: added direct link to KBs in item overview
+* improvement: link from KBs to items
+* improvement: search and open a folder [55]
+* improvement: backup system based on server CRON [91]
+* improvement: encrypted passwords in database by salt [86]
+* improvement: KB management is encrypted [89]
+* improvements: [87 , 101]
 * fixed: problem with slash in label [3141743]
 * fixed: password in cleartext in log [3141167]
 * fixed: deleted pws show up in the search [3160582]
@@ -113,6 +107,9 @@ v2.00
 * fixed: session duration can only be numerics [83]
 * fixed: [23 - 29 - 32 - 33 - 36 - 37 - 44 - 47 - 53 - 56 - 58 - 48 - 65 - 68 -
 		 63 - 69 - 78 - 75 - 84 - 60 - 82]
+* fixed: js library used not compliant with IE9
+* fixed: extra characters in front of passwords [108]
+* fixed: strings error in upgrade.php pages
 
 v1.80
 * improvement: an item can be modified by anyone if activated [3040120]

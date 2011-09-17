@@ -129,21 +129,38 @@ function aes_encrypt(text) {
 
 function supprimer_groupe(id){
 	if ( confirm("<?php echo $txt['confirm_delete_group'];?>") ){
-		var data = "type=supprimer_groupe&id="+id;
-		httpRequest("sources/folders.queries.php",data);
+		//send query
+		$.post(
+			"sources/folders.queries.php",
+			{
+				type    : "delete_folder",
+				id      : id
+			},
+			function(data){
+				RefreshPage("form_groupes");
+			}
+		);
 	}
 }
 
 function Changer_Droit_Complexite(id,type){
 	var droit = 0;
 	if ( type == "creation" ){
-		if ( document.getElementById("cb_droit_"+id).checked == true ) droit = 1;
-		var data = "type=modif_droit_autorisation_sans_complexite&id="+id+"&droit="+droit;
+		if ( $("#cb_droit_"+id).prop("checked") == true ) droit = 1;
+		type = "modif_droit_autorisation_sans_complexite";
 	}else if ( type == "modification" ){
-		if ( document.getElementById("cb_droit_modif_"+id).checked == true ) droit = 1;
-		var data = "type=modif_droit_modification_sans_complexite&id="+id+"&droit="+droit;
+		if ( $("#cb_droit_modif_"+id).prop("checked") == true ) droit = 1;
+		type = "modif_droit_modification_sans_complexite";
 	}
-	httpRequest("sources/folders.queries.php",data);
+	//send query
+	$.post(
+		"sources/folders.queries.php",
+		{
+			type    : type,
+			id      : id,
+			droit	: droit
+		}
+	);
 }
 
 function add_new_folder(){

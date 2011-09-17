@@ -149,7 +149,7 @@ foreach( $rows as $reccord ){
 
         //Log into DB the user's disconnection
         if ( isset($_SESSION['settings']['log_connections']) && $_SESSION['settings']['log_connections'] == 1 )
-            logEvents('user_connection','disconnection',$_SESSION['user_id']);
+            logEvents('user_connection','disconnection',@$_SESSION['user_id']);
 
         // erase session table
         $_SESSION = array();

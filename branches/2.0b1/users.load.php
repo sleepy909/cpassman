@@ -100,13 +100,13 @@ $(function() {
 						"sources/users.queries.php",
 						{
 							type    : "add_new_user",
-							login	:escape($("#new_login").val()),
+							login	:protectString($("#new_login").val()),
 							pw	:encodeURIComponent($("#new_pwd").val()),
 							email	:$("#new_email").val(),
-							admin	:$("#new_admin").attr("checked"),
-							manager	:$("#new_manager").attr("checked"),
-							personal_folder	:$("#new_personal_folder").attr("checked"),
-							new_folder_role_domain	:$("#new_folder_role_domain").attr("checked"),
+							admin	:$("#new_admin").prop("checked"),
+							manager	:$("#new_manager").prop("checked"),
+							personal_folder	:$("#new_personal_folder").prop("checked"),
+							new_folder_role_domain	:$("#new_folder_role_domain").prop("checked"),
 							domain	:$("#new_domain").val(),
 							key	: "<?php echo $_SESSION['key'];?>"
 						},
@@ -140,8 +140,9 @@ $(function() {
 					"sources/users.queries.php",
 					{
 						type    : "delete_user",
-						id		:$("#delete_user_id").val(),
-						key	: "<?php echo $_SESSION['key'];?>"
+						id		: $("#delete_user_id").val(),
+						action	: $("#delete_user_action").val(),
+						key		: "<?php echo $_SESSION['key'];?>"
 					},
 					function(data){
 						window.location.href = "index.php?page=manage_users";
@@ -286,22 +287,28 @@ function pwGenerate(elem){
 	);
 }
 
-function supprimer_user(id,login){
-	$("#delete_user_login").val(login);
+function action_on_user(id, action){
+	if(action == "lock"){
+		$("#user_action_html").html("<?php echo $txt['confirm_lock_account'];?>");
+	}else{
+		$("#user_action_html").html("<?php echo $txt['confirm_del_account'];?>");
+	}
+	$("#delete_user_action").val(action);
+	$("#delete_user_login").val($("#login_"+id).text());
 	$("#delete_user_id").val(id);
-	$("#delete_user_show_login").html(login);
+	$("#delete_user_show_login").html($("#login_"+id).text());
 	$("#delete_user").dialog("open");
 }
 
-function mdp_user(id,login){
+function mdp_user(id){
 	$("#change_user_pw_id").val(id);
-	$("#change_user_pw_show_login").html(login);
+	$("#change_user_pw_show_login").html($("#login_"+id).text());
 	$("#change_user_pw").dialog("open");
 }
 
-function mail_user(id,login,email){
+function mail_user(id,email){
 	$("#change_user_email_id").val(id);
-	$("#change_user_email_show_login").html(login);
+	$("#change_user_email_show_login").html($("#login_"+id).text());
 	$("#change_user_email_newemail").val(email);
 	$("#change_user_email").dialog("open");
 }
@@ -332,7 +339,7 @@ function ChangeUserParm(id, parameter) {
 	        key		: "<?php echo $_SESSION['key'];?>"
 	    },
 	    function(data){
-	        $("#div_dialog_message_text").html("<div style=\"font-size:16px; text-align:center;\"><span class=\"ui-icon ui-icon-info\" style=\"float: left; margin-right: .3em;\"></span>'.$txt['alert_message_done'].'</div>");$("#div_dialog_message").dialog("open");
+	        $("#div_dialog_message_text").html("<div style=\"font-size:16px; text-align:center;\"><span class=\"ui-icon ui-icon-info\" style=\"float: left; margin-right: .3em;\"></span><?php echo $txt['alert_message_done'];?></div>");$("#div_dialog_message").dialog("open");
 	    }
 	);
 }
@@ -345,21 +352,21 @@ function Open_Div_Change(id,type){
 	        key		: "<?php echo $_SESSION['key'];?>"
 	    },
 	    function(data){
+	    	data = $.parseJSON(data);
 	    	if ( type == "functions" ){
-	        	$("#change_user_functions_list").html(data[0].text);
+	        	$("#change_user_functions_list").html(data.text);
 	        	$("#selected_user").val(id);
 	        	$("#change_user_functions").dialog("open");
 	        }else if ( type == "autgroups" ){
-	        	$("#change_user_autgroups_list").html(data[0].text);
+	        	$("#change_user_autgroups_list").html(data.text);
 	        	$("#selected_user").val(id);
 	        	$("#change_user_autgroups").dialog("open");
 	        }else if ( type == "forgroups" ){
-	        	$("#change_user_forgroups_list").html(data[0].text);
+	        	$("#change_user_forgroups_list").html(data.text);
 	        	$("#selected_user").val(id);
 	        	$("#change_user_forgroups").dialog("open");
 	        }
-	    },
-	    "json"
+	    }
 	);
 }
 
@@ -456,7 +463,7 @@ function displayLogs(page){
 	);
 }
 
-function user_action_log_items(id, login){
+function user_action_log_items(id){
 	$("#selected_user").val(id);
 	$("#user_logs_dialog").dialog("open");
 }

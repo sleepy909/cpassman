@@ -206,14 +206,24 @@ function pwGenerate(elem){
     //show ajax image
     $("#"+elem+"pw_wait").show();
 
-    var data = "type=pw_generate"+
-                "&size="+$("#"+elem+'pw_size').text()+
-                "&num="+document.getElementById(elem+'pw_numerics').checked+
-                "&maj="+document.getElementById(elem+'pw_maj').checked+
-                "&symb="+document.getElementById(elem+'pw_symbols').checked+
-                "&secure="+document.getElementById(elem+'pw_secure').checked+
-                "&elem="+elem;
-    httpRequest("sources/items.queries.php",data+"&force=false");
+    $.post(
+		"sources/items.queries.php",
+		{
+			type    : "pw_generate",
+			size  	: $("#"+elem+'pw_size').text(),
+			num  	: $("#"+elem+'pw_numerics').prop("checked"),
+			maj  	: $("#"+elem+'pw_maj').prop("checked"),
+			symb  	: $("#"+elem+'pw_symbols').prop("checked"),
+			secure  : $("#"+elem+'pw_secure').prop("checked"),
+			elem  	: elem,
+			force  	: "false"
+		},
+		function(data){
+			data = $.parseJSON(data);
+			$("#"+elem+"pw1").val(data.key).focus();
+			$("#"+elem+"pw_wait").hide();
+		}
+	);
 }
 
 function pwCopy(elem){
@@ -226,10 +236,24 @@ function catSelected(val){
 }
 
 function RecupComplexite(val,edit){
-    var data = "type=recup_complex"+
-                "&groupe="+val+
-                "&edit="+edit;
-    httpRequest("sources/items.queries.php",data);
+    $.post(
+		"sources/items.queries.php",
+		{
+			type    : "recup_complex",
+			groupe  : val
+		},
+		function(data){
+			data = $.parseJSON(data);
+			$("#complexite_groupe").val(data.val);
+			if(edit == 1){
+				$("#edit_complex_attendue").html("<b>"+data.complexity+"</b>");
+				$("#edit_afficher_visibilite").html("<img src='includes/images/users.png'>&nbsp;<b>"+data.visibility+"</b>");
+			}else{
+				$("#complex_attendue").html("<b>"+data.complexity+"</b>");
+				$("#afficher_visibilite").html("<img src='includes/images/users.png'>&nbsp;<b>"+data.visibility+"</b>");
+			}
+		}
+	);
 }
 
 function AjouterItem(){
@@ -553,10 +577,16 @@ function AjouterFolder(){
 function SupprimerFolder(){
     if ( document.getElementById("delete_rep_groupe").value == "0" ) alert("<?php echo $txt['error_group'];?>");
     else if ( confirm("<?php echo $txt['confirm_delete_group'];?>") ) {
-        var data = "type=supprimer_groupe"+
-                    "&id="+document.getElementById("delete_rep_groupe").value+
-                    "&page=items";
-        httpRequest("sources/folders.queries.php",data);
+        $.post(
+			"sources/folders.queries.php",
+			{
+				type    : "delete_folder",
+				id      : $("#delete_rep_groupe").val()
+			},
+			function(data){
+				window.location.href = "index.php?page=items";
+			}
+		);
     }
 }
 
@@ -991,9 +1021,17 @@ $("#div_copy_item_to_folder").dialog({
 //## FUNCTION : Clear HTML tags from a string
 //###########
 function clear_html_tags(){
-    var data = "type=clear_html_tags"+
-                "&id_item="+document.getElementById('id_item').value;
-    httpRequest("sources/items.queries.php",data);
+    $.post(
+		"sources/items.queries.php",
+		{
+			type    : "clear_html_tags",
+			id_item  : $("#id_item").val()
+		},
+		function(data){
+			data = $.parseJSON(data);
+			$("#edit_desc").val(data.description);
+		}
+	);
 }
 
 //###########
@@ -1044,9 +1082,16 @@ function upload_attached_files() {
 //## FUNCTION : Permits to delete an attached file
 //###########
 function delete_attached_file(file_id){
-    var data = "type=delete_attached_file"+
-                "&file_id="+file_id;
-    httpRequest("sources/items.queries.php",data);
+    $.post(
+		"sources/items.queries.php",
+		{
+			type    : "delete_attached_file",
+			file_id  : file_id
+		},
+		function(data){
+			$("#span_edit_file_"+file_id).css("textDecoration", "line-through");
+		}
+	);
 }
 
 //###########
@@ -1314,10 +1359,16 @@ $(function() {
         title: "<?php echo $txt['item_menu_del_elem'];?>",
         buttons: {
             "<?php echo $txt['del_button'];?>": function() {
-                var data = "type=del_item"+
-                            "&groupe="+document.getElementById('hid_cat').value+
-                            "&id="+document.getElementById('id_item').value;
-                httpRequest("sources/items.queries.php",data);
+                $.post(
+					"sources/items.queries.php",
+					{
+						type    : "del_item",
+						id  	: $("#id_item").val()
+					},
+					function(data){
+						window.location.href = "index.php?page=items&group="+$("#hid_cat").val();
+					}
+				);
                 $(this).dialog('close');
             },
             "<?php echo $txt['cancel_button'];?>": function() {
@@ -1378,7 +1429,10 @@ $(function() {
 		first_group = $("#hid_cat").val();
 	}
 
-	ListerItems(first_group,'', parseInt($("#query_next_start").val())+1);
+	//load items
+	if(parseInt($("#query_next_start").val()) > 0) start = parseInt($("#query_next_start").val())+1;
+	else start = 0;
+	ListerItems(first_group,'', start);
 	//Load item if needed and display items list
 	if ($("#open_id").val() != "") {
 		AfficherDetailsItem($("#open_id").val());

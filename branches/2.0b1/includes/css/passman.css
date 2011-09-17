@@ -3,7 +3,7 @@ width: 1000px;
 margin-left: auto;
 margin-right: auto;
 /*background: #F0F0F0 url(../images/stripe.png) repeat;*/
-background: #000000 url(../images/canevas/background.jpg);
+background: #000000 url(../images/canevas/background_cell.jpg) repeat;
 font-family: sans-serif;
 font-size:11pt;
 }
@@ -25,7 +25,7 @@ background-image: url(../images/canevas/menu_top_bckg.png);
     float:left;
     margin-right: 5px;
     margin-top: -5px;
-	margin-left: -10px;
+	margin-left: -5px;
 }
 
 #menu_top{

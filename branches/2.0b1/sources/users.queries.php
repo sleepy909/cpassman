@@ -103,7 +103,7 @@ if ( !empty($_POST['type']) ){
                 $new_user_id = $db->query_insert(
                     "users",
                     array(
-                        'login' => mysql_real_escape_string(stripslashes($_POST['login'])),
+                        'login' => htmlspecialchars_decode($_POST['login']),
                         'pw' => encrypt(string_utf8_decode($_POST['pw'])),
                         'email' => $_POST['email'],
                         'admin' => $_POST['admin']=="true" ? '1' : '0',
@@ -199,48 +199,52 @@ if ( !empty($_POST['type']) ){
         		exit();
         	}
 
-        	//delete user in database
-        	$db->query_update(
-	        	'users',
-	        	array(
-	        	    'disabled' => 1
-	        	),
-	        	"id=".$_POST['id']
-        	);
+        	if($_POST['action'] == "delete"){
+        		//delete user in database
+        		$db->query_delete(
+	        		'users',
+	        		array(
+		        		'id' => $_POST['id']
+		        	)
+        		);
+        		//delete personal folder and subfolders
+        		require_once ("NestedTree.class.php");
+        		$tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
 
-        	//TODO: improve deletion process
-        	/*
-        	//delete personal folder and items
-        	require_once ("NestedTree.class.php");
-        	$tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
+        		//Get personal folder ID
+        		$data = $db->fetch_row("SELECT id FROM ".$pre."nested_tree WHERE title = '".$_POST['id']."' AND personal_folder = 1");
+        		$personal_folder_id = $data[0];
 
-        	//Get personal folder ID
-        	$data = $db->fetch_row("SELECT id FROM ".$pre."nested_tree WHERE title = '".$_POST['id']."' AND personal_folder = 1");
-        	$personal_folder_id = $data[0];
+        		// Get through each subfolder
+        		$folders = $tree->getDescendants($personal_folder_id,true);
+        		foreach($folders as $folder){
+        			//delete folder
+        			$db->query("DELETE FROM ".$pre."nested_tree WHERE id = '".$folder->id."' AND personal_folder = 1");
 
-        	// Get through each subfolder
-        	$folders = $tree->getDescendants($personal_folder_id,true);
-        	foreach($folders as $folder){
-        		//delete folder
-        		$db->query("DELETE FROM ".$pre."nested_tree WHERE id = '".$folder->id."' AND personal_folder = 1");
-
-        		//delete items & logs
-        		$items = $db->fetch_all_array("SELECT id FROM ".$pre."items WHERE id_tree='".$folder->id."' AND perso = 1");
-        		foreach( $items as $item ) {
-        			//Delete item
-        			$db->query("DELETE FROM ".$pre."items WHERE id = ".$item['id']);
-        			//log
-        			$db->query("DELETE FROM ".$pre."log_items WHERE id_item = ".$item['id']);
+        			//delete items & logs
+        			$items = $db->fetch_all_array("SELECT id FROM ".$pre."items WHERE id_tree='".$folder->id."' AND perso = 1");
+        			foreach( $items as $item ) {
+        				//Delete item
+        				$db->query("DELETE FROM ".$pre."items WHERE id = ".$item['id']);
+        				//log
+        				$db->query("DELETE FROM ".$pre."log_items WHERE id_item = ".$item['id']);
+        			}
         		}
+
+        		//rebuild tree
+        		$tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
+        		$tree->rebuild();
+        	}else{
+        		//lock user in database
+        		$db->query_update(
+	        		'users',
+	        		array(
+	        		    'disabled' => 1,
+	        		    'key_tempo' => ""
+	        		),
+	        		"id=".$_POST['id']
+        		);
         	}
-
-        	//rebuild tree
-        	$tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
-        	$tree->rebuild();
-
-        	//kill session of user if logged
-			*/
-
         break;
 
         ## UPDATE PASSWORD OF USER ##
@@ -354,12 +358,14 @@ if ( !empty($_POST['type']) ){
 
             $rows = $db->fetch_all_array("SELECT id,title FROM ".$pre."roles_title");
             foreach( $rows as $reccord ){
-                $text .= '<input type=\"checkbox\" id=\"cb_change_function-'.$reccord['id'].'\"';
+                $text .= '<input type="checkbox" id="cb_change_function-'.$reccord['id'].'"';
                 if ( in_array($reccord['id'],$users_functions) )  $text .= ' checked';
                 $text .= '>&nbsp;'.$reccord['title'].'<br />';
             }
-        	//send back data
-			echo '[{"text":"'.$text.'"}]';
+
+        	//return data
+        	$return_values = json_encode(array("text" => $text),JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_HEX_AMP);
+        	echo $return_values;
         break;
 
         case "change_user_functions";
@@ -406,7 +412,7 @@ if ( !empty($_POST['type']) ){
             $tree_desc = $tree->getDescendants();
             foreach($tree_desc as $t){
                 if ( in_array($t->id,$_SESSION['groupes_visibles']) ) {
-                    $text .= '<input type=\"checkbox\" id=\"cb_change_autgroup-'.$t->id.'\"';
+                    $text .= '<input type="checkbox" id="cb_change_autgroup-'.$t->id.'"';
                     $ident="";
                     for($y=1;$y<$t->nlevel;$y++) $ident .= "&nbsp;&nbsp;";
                     if ( in_array($t->id,$user) ) $text .= ' checked';
@@ -414,9 +420,9 @@ if ( !empty($_POST['type']) ){
                     $prev_level = $t->nlevel;
                 }
             }
-
-        	//send back data
-        	echo '[{"text":"'.$text.'"}]';
+        	//return data
+        	$return_values = json_encode(array("text" => $text),JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_HEX_AMP);
+        	echo $return_values;
         break;
 
         case "change_user_autgroups";
@@ -469,7 +475,7 @@ if ( !empty($_POST['type']) ){
             $tree_desc = $tree->getDescendants();
             foreach($tree_desc as $t){
                 if ( in_array($t->id,$_SESSION['groupes_visibles']) ) {
-                    $text .= '<input type=\"checkbox\" id=\"cb_change_forgroup-'.$t->id.'\"';
+                    $text .= '<input type="checkbox" id="cb_change_forgroup-'.$t->id.'"';
                     $ident="";
                     for($y=1;$y<$t->nlevel;$y++) $ident .= "&nbsp;&nbsp;";
                     if ( in_array($t->id,$user) ) $text .= ' checked';
@@ -477,8 +483,9 @@ if ( !empty($_POST['type']) ){
                     $prev_level = $t->nlevel;
                 }
             }
-        	//send back data
-			echo '[{"text":"'.$text.'"}]';
+        	//return data
+        	$return_values = json_encode(array("text" => $text),JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_HEX_AMP);
+        	echo $return_values;
         break;
 
         case "change_user_forgroups";

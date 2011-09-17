@@ -123,7 +123,7 @@ else if ( isset($_POST['type']) ){
     switch($_POST['type'])
     {
         // CASE where DELETING a group
-        case "supprimer_groupe":
+        case "delete_folder":
         	$folders_deleted = "";
             // this will delete all sub folders and items associated
             $tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
@@ -179,13 +179,6 @@ else if ( isset($_POST['type']) ){
 
         	//Update CACHE table
         	UpdateCacheTable("delete_value",$_POST['id']);
-
-            //Refresh the page
-        	if($_POST['page'] == "items"){
-        		echo 'window.location.href = "index.php?page=items";';
-        	}else{
-        		echo 'RefreshPage("form_groupes");';
-        	}
         break;
 
 
@@ -253,15 +246,17 @@ else if ( isset($_POST['type']) ){
                 );
 
                 //Add this folder to the role the creator has
-                foreach(array_filter(explode(';', $_SESSION['fonction_id'])) as $role_id) {
-                    $db->query_insert(
-                        "roles_values",
-                        array(
-                            'folder_id' => $new_id,
-                            'role_id' =>  $role_id
-                        )
-                    );
-                }
+            	if($is_personal != 1){
+	                foreach(array_filter(explode(';', $_SESSION['fonction_id'])) as $role_id) {
+	                    $db->query_insert(
+	                        "roles_values",
+	                        array(
+	                            'folder_id' => $new_id,
+	                            'role_id' =>  $role_id
+	                        )
+	                    );
+	                }
+            	}
 
                 require_once('NestedTree.class.php');
                 $tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
