@@ -139,7 +139,7 @@ $htmlHeaders .= '
             //send query
             $.post("sources/main.queries.php", {
                     type :          "identify_user",
-                    login :         escape($("#login").val()),
+                    login :         $("#login").val(),
                     pw :            encodeURIComponent($("#pw").val()),
                     duree_session : $("#duree_session").val(),
                     hauteur_ecran : window.innerHeight,
@@ -250,7 +250,7 @@ $htmlHeaders .= '
                 "'.$txt['index_add_one_hour'].'": function() {
                     AugmenterSession();
                     $("#div_fin_session").hide();
-                    $("#countdown").style.color="white";
+                    $("#countdown").css("color","white");
                     $(this).dialog("close");
                 }
             }
@@ -594,7 +594,7 @@ if ( !isset($_GET['page']) ){
 				}else{
 					$("#import_status").html(data[0].output);
 					$("#item_all_selection").click(function(){
-						if($("#item_all_selection").attr("checked")){
+						if($("#item_all_selection").prop("checked")){
 							$("input[class=\'item_checkbox\']:not([disabled=\'disabled\'])").attr("checked", true);
 						}else{
 							$("input[class=\'item_checkbox\']:not([disabled=\'disabled\'])").removeAttr("checked");
@@ -627,8 +627,8 @@ if ( !isset($_GET['page']) ){
 			   type		: "import_items",
 			   folder	: $("#import_items_to").val(),
 			   data		: escape(items),
-			   import_csv_anyone_can_modify	: $("#import_csv_anyone_can_modify").attr("checked"),
-			   import_csv_anyone_can_modify_in_role	: $("#import_csv_anyone_can_modify_in_role").attr("checked")
+			   import_csv_anyone_can_modify	: $("#import_csv_anyone_can_modify").prop("checked"),
+			   import_csv_anyone_can_modify_in_role	: $("#import_csv_anyone_can_modify_in_role").prop("checked")
 			},
 			function(data){
 				//after inserted, disable the checkbox in order to prevent against new insert
@@ -834,8 +834,10 @@ if ( isset($_GET['page']) && $_GET['page'] == "manage_settings" ){
 			   option	: option
 			},
 			function(data){
-				if(data[0].display == "yes"){
+				if(data[0].display == "db_backup"){
 					$("#result_admin_action_db_backup").html("<img src=\'includes/images/document-code.png\' alt=\'\' />&nbsp;<a href=\'"+data[0].href+"\'>'.$txt['pdf_download'].'</a>");
+				}else if(data[0].result == "pf_done"){
+					$("#result_admin_action_check_pf").show();
 				}
 				$("#div_loading").hide();
 			},

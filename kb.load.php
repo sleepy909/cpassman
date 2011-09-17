@@ -21,9 +21,29 @@ function aes_encrypt(text) {
 
 //Function opening
 	function openKB(id){
-		var data = "type=open_kb&"+
-		    "&id="+id;
-		httpRequest("sources/kb.queries.php",data);
+		$.post(
+			"sources/kb.queries.php",
+			{
+			type    : "open_kb",
+			id      : id
+			},
+			function(data){
+				data = $.parseJSON(data);
+				$("#kb_label").val(data.label);
+				$("#kb_category").val(data.category);
+				$("#kb_description").val(data.description);
+				$("#kb_id").val(id);
+				if (data.anyone_can_modify == 0) {
+					$("#modify_kb_no").prop("checked", true);
+				}else{
+					$("#modify_kb_yes").prop("checked", true);
+				}
+				for (var i=0; i < data.options.length; ++i) {
+					$("#kb_associated_to option[value="+data.options[i]+"]").prop("selected", true);
+				}
+				$("#kb_form").dialog("open");
+			}
+		);
 	}
 
 	//Function deleting

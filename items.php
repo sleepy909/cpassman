@@ -701,10 +701,11 @@ echo '
             echo '
             </select>
         </tr>';
+        /*
         if (count($_SESSION['arr_roles'])>1) {
         	echo '
 	        <tr>
-	            <td>'.$txt['associated_role'].' : </td>
+	            <td>'.$txt['associated_role'].'</td>
 	            <td><select id="new_rep_role">';
 	        	foreach($_SESSION['arr_roles'] as $role)
 	        		echo '<option value="'.$role['id'].'">'.$role['title'].'</option>';
@@ -712,6 +713,7 @@ echo '
 	            </select>
 	        </tr>';
         }
+       */
         echo '
     </table>
 </div>';

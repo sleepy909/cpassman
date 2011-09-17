@@ -57,7 +57,7 @@ echo '
                     <th title="'.$txt['gestionnaire'].'"><img src="includes/images/user-worker.png" /></th>
                     <th title="'.$txt['can_create_root_folder'].'"><img src="includes/images/folder-network.png" /></th>
                     ', (isset($_SESSION['settings']['enable_pf_feature']) && $_SESSION['settings']['enable_pf_feature']==1) ? '<th title="'.$txt['enable_personal_folder'].'"><img src="includes/images/folder-open-document-text.png" /></th>' : '', '
-                    <th title="'.$txt['user_del'].'"><img src="includes/images/user--minus.png" /></th>
+                    <th title="'.$txt['user_action'].'"><img src="includes/images/user-locked.png" /></th>
                     <th title="'.$txt['pw_change'].'"><img src="includes/images/lock__pencil.png" /></th>
                     <th title="'.$txt['email_change'].'"><img src="includes/images/mail.png" /></th>
                     <th></th>
@@ -184,24 +184,38 @@ echo '
                     echo '
                     <td align="center">
                         <input type="checkbox" id="personal_folder_'.$reccord['id'].'" onchange="ChangeUserParm(\''.$reccord['id'].'\',\'personal_folder\')"', $reccord['personal_folder']==1 ? 'checked' : '', '', $_SESSION['user_admin'] == 1 ? '':' disabled', ' />
+                    </td>';
+
+        			//If user is active, then you could lock it
+        			//If user is locked, you could delete it
+		        	if($reccord['disabled'] == 1){
+		        		$action_on_user = "action_on_user('".$reccord['id']."','delete')";
+		        		$user_icon = "user--minus";
+		        		$user_txt = $txt['user_del'];
+		        	}else{
+		        		$action_on_user = "action_on_user('".$reccord['id']."','lock')";
+		        		$user_icon = "user-locked";
+		        		$user_txt = $txt['user_lock'];
+		        	}
+
+                    echo '
+                    <td align="center">
+                        <img ', ($_SESSION['user_gestionnaire'] == 1 && ($reccord['admin'] == 1 || $reccord['gestionnaire'] == 1)) ? 'src="includes/images/user--minus_disabled.png"':'src="includes/images/'.$user_icon.'.png" onclick="'.$action_on_user.'" style="cursor:pointer;" title="'.$user_txt.'"', ' />
                     </td>
                     <td align="center">
-                        <img ', ($_SESSION['user_gestionnaire'] == 1 && ($reccord['admin'] == 1 || $reccord['gestionnaire'] == 1)) ? 'src="includes/images/user--minus_disabled.png"':'src="includes/images/user--minus.png" onclick="supprimer_user(\''.$reccord['id'].'\',\''.addslashes($reccord['login']).'\')" style="cursor:pointer;"', ' />
-                    </td>
-                    <td align="center">
-                        &nbsp;<img ', ($_SESSION['user_gestionnaire'] == 1 && ($reccord['admin'] == 1 || $reccord['gestionnaire'] == 1)) ? 'src="includes/images/lock__pencil_disabled.png"':'src="includes/images/lock__pencil.png" onclick="mdp_user(\''.$reccord['id'].'\',\''.addslashes($reccord['login']).'\')" style="cursor:pointer;"', ' />
+                        &nbsp;<img ', ($_SESSION['user_gestionnaire'] == 1 && ($reccord['admin'] == 1 || $reccord['gestionnaire'] == 1)) ? 'src="includes/images/lock__pencil_disabled.png"':'src="includes/images/lock__pencil.png" onclick="mdp_user(\''.$reccord['id'].'\')" style="cursor:pointer;"', ' />
                     </td>
                     <td align="center">
                         &nbsp;';
         				if ($_SESSION['user_gestionnaire'] == 1 && ($reccord['admin'] == 1 || $reccord['gestionnaire'] == 1)) {
         					echo '<img src="includes/images/mail--pencil_disabled.png" />';
         				}else{
-        					echo '<img src="includes/images/', empty($reccord['email']) ? 'mail--exclamation.png':'mail--pencil.png', '" onclick="mail_user(\''.$reccord['id'].'\',\''.addslashes($reccord['login']).'\',\''.addslashes($reccord['email']).'\')" style="cursor:pointer;" title="'.$reccord['email'].'"', ' />';
+        					echo '<img src="includes/images/', empty($reccord['email']) ? 'mail--exclamation.png':'mail--pencil.png', '" onclick="mail_user(\''.$reccord['id'].'\',\''.addslashes($reccord['email']).'\')" style="cursor:pointer;" title="'.$reccord['email'].'"', ' />';
         				}
         			echo '
                     </td>
                     <td align="center">
-                        &nbsp;<img ', ($_SESSION['user_gestionnaire'] == 1 && ($reccord['admin'] == 1 || $reccord['gestionnaire'] == 1)) ? 'src="includes/images/report_disabled.png"':'src="includes/images/report.png" onclick="user_action_log_items(\''.$reccord['id'].'\',\''.addslashes($reccord['login']).'\')" style="cursor:pointer;" title="'.$txt['see_logs'].'"', ' />
+                        &nbsp;<img ', ($_SESSION['user_gestionnaire'] == 1 && ($reccord['admin'] == 1 || $reccord['gestionnaire'] == 1)) ? 'src="includes/images/report_disabled.png"':'src="includes/images/report.png" onclick="user_action_log_items(\''.$reccord['id'].'\')" style="cursor:pointer;" title="'.$txt['see_logs'].'"', ' />
                     </td>
                 </tr>';
                 $x++;
@@ -263,7 +277,7 @@ echo '
 	<input type="checkbox" id="new_manager" />
    	<label for="new_manager">'.$txt['is_manager'].'</label>
 	<br />
-	<input type="checkbox" id="new_personal_folder"', isset($_SESSION['settings']['enable_pf_feature']) && $_SESSION['settings']['enable_pf_feature'] == 1 ? 'checked':'', ' />
+	<input type="checkbox" id="new_personal_folder"', isset($_SESSION['settings']['enable_pf_feature']) && $_SESSION['settings']['enable_pf_feature'] == 1 ? ' checked':'', ' />
    	<label for="new_personal_folder">'.$txt['personal_folder'].'</label>
 	<div id="auto_create_folder_role">
 		<input type="checkbox" id="new_folder_role_domain" disabled />
@@ -275,10 +289,11 @@ echo '
 // DIV FOR DELETING A USER
 echo '
 <div id="delete_user" style="display:none;">
-    <div>'.$txt['confirm_del_account'].'</div>
+    <div id="user_action_html"></div>
     <div style="font-weight:bold;text-align:center;color:#FF8000;text-align:center;font-size:13pt;" id="delete_user_show_login"></div>
     <input type="hidden" id="delete_user_login" />
     <input type="hidden" id="delete_user_id" />
+    <input type="hidden" id="delete_user_action" />
 </div>';
 
 // DIV FOR CHANGING PASWWORD

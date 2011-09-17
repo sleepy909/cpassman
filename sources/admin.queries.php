@@ -60,7 +60,7 @@ switch($_POST['type'])
                         $tab = explode('|',$val);
                         foreach($tab as $elem){
                             $tmp = explode('#',$elem);
-                            $text .= '<li><u>'.$txt[$tmp[0]]."</u> : ".addslashes($tmp[1]).'</li>';
+                            $text .= '<li><u>'.$txt[$tmp[0]]."</u> : ".$tmp[1].'</li>';
                             if ( $tmp[0] == "version" ) {
                                 $text .= '<li><u>'.$txt['your_version']."</u> : ".$k['version'];
                                 if ( floatval($k['version']) < floatval($tmp[1]) ) $text .= '&nbsp;&nbsp;<b>'.$txt['please_update'].'</b><br />';
@@ -140,9 +140,7 @@ switch($_POST['type'])
     	$tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
     	$tree->rebuild();
 
-        //Display result
-        echo '$("#result_admin_action_check_pf").show();';
-        echo 'LoadingPage();';
+    	echo '[{"result" : "pf_done"}]';
     break;
 
     ###########################################################
@@ -243,7 +241,7 @@ switch($_POST['type'])
             fwrite($handle,$return);
             fclose($handle);
 
-        	echo '[{"display":"yes" , "href":"sources/downloadFile.php?name='.urlencode($filename).'&path='.$path.$filename.'&type=sql"}]';
+        	echo '[{"result":"db_backup" , "href":"sources/downloadFile.php?name='.urlencode($filename).'&path='.$path.$filename.'&type=sql"}]';
         }
     break;
 

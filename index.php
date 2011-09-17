@@ -7,15 +7,12 @@
 	if (!isset($_SESSION['user_language']) && !isset($_COOKIE['user_language'])) {
 		if (isset($_POST['language'])) {
 			$_SESSION['user_language'] = filter_var($_POST['language'], FILTER_SANITIZE_STRING);
-			$_COOKIE['user_language'] = filter_var($_POST['language'], FILTER_SANITIZE_STRING);
 		}else {
 			$_SESSION['user_language'] = "english";
-			$_COOKIE['user_language'] = "english";
 		}
 	}else {
 		if (isset($_POST['language'])) {
 			$_SESSION['user_language'] = filter_var($_POST['language'], FILTER_SANITIZE_STRING);
-			$_COOKIE['user_language'] = filter_var($_POST['language'], FILTER_SANITIZE_STRING);
 		}else if (isset($_COOKIE['user_language'])) {
 			$_SESSION['user_language'] = $_COOKIE['user_language'];
 		}

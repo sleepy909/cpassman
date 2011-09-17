@@ -15,7 +15,7 @@
 //DONT'T CHANGE BELOW THIS LINE
 global $settings;
 
-$k['version'] = "2.00b5";
+$k['version'] = "2.0";
 $k['tool_name'] = "cPassMan";
 $k['jquery-version'] = "1.6.2";
 $k['jquery-ui-version'] = "1.8.16";

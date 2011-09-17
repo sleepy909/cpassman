@@ -592,12 +592,6 @@ if ( isset($_POST['type']) ){
 				*/
 				echo 'document.getElementById("tbl_15").innerHTML = "<img src=\"images/tick.png\">";';
 
-			}else{
-				echo 'document.getElementById("res_step4").innerHTML = "An error appears on table keys!";';
-				echo 'document.getElementById("tbl_14").innerHTML = "<img src=\"images/exclamation-red.png\">";';
-				echo 'document.getElementById("loader").style.display = "none";';
-				mysql_close($db_tmp);
-				break;
 			}
 
 

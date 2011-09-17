@@ -950,18 +950,7 @@ if ( isset($_POST['type']) ){
             }else
                 $pwgen->setSecure(false);
 
-            // Generate KEY
-            $key = $pwgen->generate();
-
-            if ( isset($_POST['fixed_elem']) && $_POST['fixed_elem'] == 1 ) $myElem = $_POST['elem'];
-            else $myElem = $_POST['elem'].'pw1';
-
-            echo 'document.getElementById(\''.$myElem.'\').value = "'.addslashes($key).'";';
-
-            if ( !isset($_POST['fixed_elem']) )
-            	echo '$("#'.$myElem.'").focus();';
-
-            echo '$("#'.$_POST['elem'].'pw_wait").hide();';
+        	echo json_encode(array("key" => $pwgen->generate()),JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_HEX_AMP);
         break;
 
 
@@ -991,9 +980,6 @@ if ( isset($_POST['type']) ){
 
             //Update CACHE table
             UpdateCacheTable("delete_value",$_POST['id']);
-
-            //Reload
-            echo 'window.location.href = "index.php?page=items&group='.$_POST['groupe'].'";';
         break;
 
 
@@ -1138,7 +1124,7 @@ if ( isset($_POST['type']) ){
 					INNER JOIN ".$pre."keys AS k ON (k.id = i.id)
                     WHERE i.inactif = 0".
             		$where_arg."
-                    AND (l.action = 'at_creation')
+                    AND l.action = 'at_creation'
                     ORDER BY i.label ASC, l.date DESC
                  	LIMIT ".$start.",".$_POST['nb_items_to_display_once']);
             	}else{
@@ -1427,15 +1413,12 @@ if ( isset($_POST['type']) ){
        	*/
         case "recup_complex":
             $data = $db->fetch_row("SELECT valeur FROM ".$pre."misc WHERE type='complex' AND intitule = '".$_POST['groupe']."'");
-            echo 'document.getElementById("complexite_groupe").value = "'.$data[0].'";';
 
-            //aficher la complexit? attendue
-            if ( $_POST['edit']==1 ) {
-                $div = "edit_complex_attendue";
-            }else{
-                $div = "complex_attendue";
-            }
-            echo 'document.getElementById("'.$div.'").innerHTML = "<b>', @((!empty($data[0]) || $data[0] == 0) ? $mdp_complexite[$data[0]][1] : $txt['not_defined']), '</b>";';
+        	if(isset($data[0]) && (!empty($data[0]) || $data[0] == 0)){
+        		$complexity = $mdp_complexite[$data[0]][1];
+        	}else{
+        		$complexity = $txt['not_defined'];
+        	}
 
             //afficher la visibilit?
             $visibilite = "";
@@ -1452,11 +1435,16 @@ if ( isset($_POST['type']) ){
             		else $visibilite .= " - ".$reccord['title'];
             	}
             }
-            if ( $_POST['edit']==1 ) $div = "edit_afficher_visibilite"; else $div = "afficher_visibilite";
-            if ( empty($visibilite) ) $visibilite = $txt['admin_error_no_visibility'];
-            echo 'document.getElementById("'.$div.'").innerHTML = "<img src=\'includes/images/users.png\'>&nbsp;<b>'.$visibilite.'</b>";';
 
             RecupDroitCreationSansComplexite($_POST['groupe']);
+
+        	$return_values = array(
+        		"val" => $data[0],
+        		"visibility" => $visibilite,
+        		"complexity" => $complexity
+			);
+
+        	echo json_encode($return_values,JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_HEX_AMP);
         break;
 
 
@@ -1483,9 +1471,6 @@ if ( isset($_POST['type']) ){
                         'raison' => 'at_del_file : '. $data[0]
                     )
                 );
-
-                //Strike through file
-                echo '$("#span_edit_file_'.$_POST['file_id'].'").css("textDecoration", "line-through");';
 
                 //Delete file from server
                 @unlink("../upload/".$data[2]);
@@ -1532,8 +1517,8 @@ if ( isset($_POST['type']) ){
     		$data_item = $db->query_first($sql);
 
     		//Clean up the string
-    		echo '$("#edit_desc").val("'.stripslashes(str_replace('\n','\\\n',mysql_real_escape_string(strip_tags($data_item['description'])))).'");';
-
+    		//echo '$("#edit_desc").val("'.stripslashes(str_replace('\n','\\\n',mysql_real_escape_string(strip_tags($data_item['description'])))).'");';
+			echo json_encode(array("description" => strip_tags($data_item['description'])),JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_HEX_AMP);
     	break;
 
     	/*
