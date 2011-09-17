@@ -121,6 +121,13 @@ $htmlHeaders .= '
         }
     }
 
+
+
+	function aes_encrypt(text) {
+	    return Aes.Ctr.encrypt(text, "'.SALT.'", 256);
+	}
+
+
     //Identify user
     function identifyUser(redirect){
         $("#erreur_connexion").hide();
@@ -136,14 +143,12 @@ $htmlHeaders .= '
                 randomstring += chars[Math.floor(Math.random() * chars.length)];
             }
 
+            var data = \'{"login":"\'+protectString($("#login").val())+\'" , "pw":"\'+protectString($("#pw").val())+\'" , "duree_session":"\'+$("#duree_session").val()+\'" , "hauteur_ecran":"\'+innerHeight+\'" , "randomstring":"\'+randomstring+\'"}\';
+
             //send query
             $.post("sources/main.queries.php", {
-                    type :          "identify_user",
-                    login :         $("#login").val(),
-                    pw :            encodeURIComponent($("#pw").val()),
-                    duree_session : $("#duree_session").val(),
-                    hauteur_ecran : window.innerHeight,
-                    randomstring :  randomstring
+                    type : "identify_user",
+                    data : aes_encrypt(data)
                 },
                 function(data){
                     if (data == randomstring){

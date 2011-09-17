@@ -186,15 +186,14 @@ function CreateRandomString(size,type){
 }
 
 
+function unprotectString(string){
+	string = string.replace(/\\/g,'').replace(/&#93;/g,'\\');
+	return string;
+}
 
 function protectString(string){
 	if(string != ""){
 		string = string.replace(/\\/g,'&#93;').replace(/"/g,"&quot;");
 	}
-	return string;
-}
-
-function unprotectString(string){
-	string = string.replace(/\\/g,'').replace(/&#93;/g,'\\');
 	return string;
 }

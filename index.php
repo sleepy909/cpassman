@@ -232,7 +232,7 @@ require_once("load.php");
     /* INSERT ITEM BUTTONS IN MENU BAR */
     if (isset($_SESSION['autoriser']) && $_SESSION['autoriser'] == true && isset($_GET['page']) && $_GET['page'] == "items") {
         echo '
-        <div style="position:absolute;margin:54px -32px 0 1000px;background:#A4A4A4;padding:3px;" class="ui-corner-right" id="div_right_menu">
+        <div style="" class="ui-corner-right" id="div_right_menu">
             <button title="'.$txt['item_menu_refresh'].'" id="menu_button_refresh_page" style="margin-bottom:5px;" onclick="javascript:document.new_item.submit()">
                 <img src="includes/images/refresh.png" alt="" />
             </button>

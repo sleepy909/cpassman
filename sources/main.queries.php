@@ -107,18 +107,22 @@ switch($_POST['type'])
         require_once ("main.functions.php");
         require_once ("../sources/NestedTree.class.php");
 
-        //GET SALT KEY LENGTH
+    	//decrypt and retreive data in JSON format
+    	require_once '../includes/libraries/crypt/aes.class.php';     // AES PHP implementation
+    	require_once '../includes/libraries/crypt/aesctr.class.php';  // AES Counter Mode implementation
+    	$data_received = json_decode((AesCtr::decrypt($_POST['data'], SALT, 256)), true);
+
+    	//Prepare variables
+    	$password = encrypt(htmlspecialchars_decode($data_received['pw']));
+    	$username = htmlspecialchars_decode($data_received['login']);
+
+		//GET SALT KEY LENGTH
         if ( strlen(SALT) > 32 ) {
             $_SESSION['error']['salt'] = TRUE;
         }
 
         $_SESSION['user_language'] = $k['langage'];
         $ldap_connection = false;
-        $username = mysql_real_escape_string(stripslashes($_POST['login']));
-
-        //Manage password encryption
-        $received_password = (urldecode($_POST['pw']));
-        $password = encrypt($received_password);
 
         //Build tree of folders
     	$tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
@@ -205,7 +209,6 @@ switch($_POST['type'])
 			$sql="SELECT * FROM ".$pre."users WHERE login = '".$username."'";
 			$row = $db->query($sql);
 			$proceed_identification = true;
-
          }
 
          if ($proceed_identification === true){
@@ -263,7 +266,7 @@ switch($_POST['type'])
                 $_SESSION['can_create_root_folder'] = $data['can_create_root_folder'];
 	            $_SESSION['key'] = $key;
 	            $_SESSION['personal_folder'] = $data['personal_folder'];
-                $_SESSION['fin_session'] = time() + $_POST['duree_session'] * 60;
+                $_SESSION['fin_session'] = time() + $data_received['duree_session'] * 60;
 
                 if ( empty($data['last_connexion']) ) $_SESSION['derniere_connexion'] = mktime(date('h'),date('m'),date('s'),date('m'),date('d'),date('y'));
                 else $_SESSION['derniere_connexion'] = $data['last_connexion'];
@@ -330,7 +333,7 @@ switch($_POST['type'])
                 IdentifyUserRights($data['groupes_visibles'],$_SESSION['groupes_interdits'],$data['admin'],$data['fonction_id'],false);
 
                 //Get some more elements
-                $_SESSION['hauteur_ecran'] = $_POST['hauteur_ecran'];
+                $_SESSION['hauteur_ecran'] = $data_received['hauteur_ecran'];
 
                 //Get last seen items
                 $_SESSION['latest_items_tab'][] = "";
@@ -344,7 +347,7 @@ switch($_POST['type'])
                     }
                 }
                 //send back the random key
-                $return = $_POST['randomstring'];
+                $return = $data_received['randomstring'];
             }
             else if ($data['disabled'] == 1) {
                 //User and password is okay but account is locked
