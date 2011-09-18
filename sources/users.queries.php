@@ -411,7 +411,7 @@ if ( !empty($_POST['type']) ){
             $tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
             $tree_desc = $tree->getDescendants();
             foreach($tree_desc as $t){
-                if ( in_array($t->id,$_SESSION['groupes_visibles']) ) {
+                if ( in_array($t->id,$_SESSION['groupes_visibles']) && !in_array($t->id, $_SESSION['personal_visible_groups'])) {
                     $text .= '<input type="checkbox" id="cb_change_autgroup-'.$t->id.'"';
                     $ident="";
                     for($y=1;$y<$t->nlevel;$y++) $ident .= "&nbsp;&nbsp;";
@@ -474,7 +474,7 @@ if ( !empty($_POST['type']) ){
             $tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
             $tree_desc = $tree->getDescendants();
             foreach($tree_desc as $t){
-                if ( in_array($t->id,$_SESSION['groupes_visibles']) ) {
+                if ( in_array($t->id,$_SESSION['groupes_visibles']) && !in_array($t->id, $_SESSION['personal_visible_groups'])) {
                     $text .= '<input type="checkbox" id="cb_change_forgroup-'.$t->id.'"';
                     $ident="";
                     for($y=1;$y<$t->nlevel;$y++) $ident .= "&nbsp;&nbsp;";
