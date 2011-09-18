@@ -6,11 +6,6 @@ $cpassman_url = '';
 $cpassman_url = $_SESSION['settings']['cpassman_url'];
 }
 
-$txt['user_lock'] = "Lock user";
-$txt['user_action'] = "Action on a user";
-$txt['confirm_lock_account'] = "You have decided to LOCK this Account. Are you sure?";
-
-
 $txt['account_is_locked'] = "This is account is locked";
 $txt['activity'] = "Activity";
 $txt['add_button'] = "Add";
@@ -142,6 +137,7 @@ $txt['confirm_del_account'] = "You have decided to delete this Account. Are you 
 $txt['confirm_del_from_fav'] = "Please confirm deletion from Favourites";
 $txt['confirm_del_role'] = "Please confirm the deletion of the next role:";
 $txt['confirm_edit_role'] = "Please enter the name of the next role:";
+$txt['confirm_lock_account'] = "You have decided to LOCK this Account. Are you sure?";
 $txt['connection'] = "Connection";
 $txt['connections'] = "connections";
 $txt['copy'] = "Copy";
@@ -457,8 +453,10 @@ $txt['url_copied'] = "URL has been copied!";
 $txt['used_pw'] = "Used password";
 $txt['user'] = "User";
 $txt['users'] = "Users";
+$txt['user_action'] = "Action on a user";
 $txt['user_alarm_no_function'] = "This user has no Roles!";
 $txt['user_del'] = "Delete account";
+$txt['user_lock'] = "Lock user";
 $txt['version'] = "Current version";
 $txt['views_confirm_items_deletion'] = "Do you really want to delete the selected items from database?";
 $txt['views_confirm_restoration'] = "Please confirm the restoration of this Item";
