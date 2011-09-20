@@ -5,6 +5,8 @@ require_once("../includes/language/english.php");
 require_once("../includes/include.php");
 require_once("../includes/settings.php");
 
+$_SESSION['CPM'] = 1;
+
 ################
 ## Function permits to get the value from a line
 ################
