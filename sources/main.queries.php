@@ -113,7 +113,7 @@ switch($_POST['type'])
     	$data_received = json_decode((AesCtr::decrypt($_POST['data'], SALT, 256)), true);
 
     	//Prepare variables
-    	$password = htmlspecialchars_decode($data_received['pw']);
+	    $password = encrypt(htmlspecialchars_decode($data_received['pw']));
     	$username = htmlspecialchars_decode($data_received['login']);
 
 		//GET SALT KEY LENGTH
@@ -216,7 +216,7 @@ switch($_POST['type'])
             $data = $db->fetch_array($row);
 
             //manage md5 to new encryption
-            if (md5($password) == $data['pw']) {
+            if (md5(htmlspecialchars_decode($data_received['pw'])) == $data['pw']) {
                 $db->query_update(
                     "users",
                     array(

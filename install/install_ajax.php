@@ -1,6 +1,7 @@
 <?php
 session_start();
 header("Content-type: text/html; charset=utf-8");
+$_SESSION['CPM'] = 1;
 if ( isset($_POST['type']) ){
     switch( $_POST['type'] ){
         case "step1":
@@ -270,7 +271,7 @@ if ( isset($_POST['type']) ){
                 $tmp = mysql_fetch_row(mysql_query("SELECT COUNT(*) FROM `".$_SESSION['tbl_prefix']."users` WHERE login = 'admin'"));
                 if ( $tmp[0] == 0 ){
                     $res8 = mysql_query("
-                        INSERT INTO `".$_SESSION['tbl_prefix']."users` (`id`, `login`, `pw`, `groupes_visibles`, `derniers`, `key_tempo`, `last_pw_change`, `last_pw`, `admin`, `fonction_id`, `groupes_interdits`, `last_connexion`, `gestionnaire`, `email`, `favourites`, `latest_items`, `personal_folder`) VALUES ( NULL, 'admin', '21232f297a57a5a743894a0e4a801fc3', '', '', '', '', '', '1', '', '', '', '0', '', '', '', '0')
+                        INSERT INTO `".$_SESSION['tbl_prefix']."users` (`id`, `login`, `pw`, `groupes_visibles`, `derniers`, `key_tempo`, `last_pw_change`, `last_pw`, `admin`, `fonction_id`, `groupes_interdits`, `last_connexion`, `gestionnaire`, `email`, `favourites`, `latest_items`, `personal_folder`) VALUES ( NULL, 'admin', 'qexIPZy/w6UOBrNRejY3uhKIfOhE3Hfim3w7s62AZJc=', '', '', '', '', '', '1', '', '', '', '0', '', '', '', '0')
                         ");
                     if ( $res8 ){
                         echo 'document.getElementById("tbl_8").innerHTML = "<img src=\"images/tick.png\">";';
