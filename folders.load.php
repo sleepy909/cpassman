@@ -166,10 +166,10 @@ function Changer_Droit_Complexite(id,type){
 function add_new_folder(){
 	//Check if renewal_period is an integer
 	if ( isInteger(document.getElementById("add_node_renewal_period").value) == false ){
-		document.getElementById("addgroup_show_error").innerHTML = "'.$txt['error_renawal_period_not_integer'].'";
+		document.getElementById("addgroup_show_error").innerHTML = "<?php echo $txt['error_renawal_period_not_integer'];?>";
 		$("#addgroup_show_error").show();
 	}else if ( document.getElementById("new_rep_complexite").value == "" ){
-		document.getElementById("addgroup_show_error").innerHTML = "'.$txt['error_group_complex'].'";
+		document.getElementById("addgroup_show_error").innerHTML = "<?php echo $txt['error_group_complex'];?>";
 		$("#addgroup_show_error").show();
 	}else{
 		if ( document.getElementById("ajouter_groupe_titre").value != "" && document.getElementById("parent_id").value != "na" ){
@@ -205,7 +205,7 @@ function add_new_folder(){
 				"json"
 			);
 		}else{
-			document.getElementById("addgroup_show_error").innerHTML = "'.$txt['error_fields_2'].'";
+			document.getElementById("addgroup_show_error").innerHTML = "<?php echo $txt['error_fields_2'];?>";
 			$("#addgroup_show_error").show();
 		}
 	}

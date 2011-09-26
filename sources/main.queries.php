@@ -113,6 +113,7 @@ switch($_POST['type'])
     	$data_received = json_decode((AesCtr::decrypt($_POST['data'], SALT, 256)), true);
 
     	//Prepare variables
+    	$password_clear = htmlspecialchars_decode($data_received['pw']);
 	    $password = encrypt(htmlspecialchars_decode($data_received['pw']));
     	$username = htmlspecialchars_decode($data_received['login']);
 
@@ -156,7 +157,7 @@ switch($_POST['type'])
         	}
 
             //authenticate the user
-            if ($adldap -> authenticate($username,$password)){
+            if ($adldap -> authenticate($username,$password_clear)){
                 $ldap_connection = true;
             }else{
                 $ldap_connection = false;
@@ -177,20 +178,20 @@ switch($_POST['type'])
     	elseif (mysql_num_rows($row) == 0 && $ldap_connection == true) {
     		//If LDAP enabled, create user in CPM if doesn't exist
              $new_user_id = $db->query_insert(
-                     "users",
-                     array(
-                         'login' => $username,
-                         'pw' => $password,
-                         'email' => "",
-                         'admin' => '0',
-                         'gestionnaire' => '0',
-                         'personal_folder' =>  $_SESSION['settings']['enable_pf_feature']=="1" ? '1' : '0',
-                         'fonction_id' =>  '0',
-                         'groupes_interdits' =>  '0',
-                         'groupes_visibles' =>  '0',
-                         'last_pw_change' => mktime(date('h'),date('m'),date('s'),date('m'),date('d'),date('y')),
-                         )
-                     );
+                 "users",
+                  array(
+                      'login' => $username,
+                      'pw' => $password,
+                      'email' => "",
+                      'admin' => '0',
+                      'gestionnaire' => '0',
+                      'personal_folder' =>  $_SESSION['settings']['enable_pf_feature']=="1" ? '1' : '0',
+                      'fonction_id' =>  '0',
+                      'groupes_interdits' =>  '0',
+                      'groupes_visibles' =>  '0',
+                      'last_pw_change' => mktime(date('h'),date('m'),date('s'),date('m'),date('d'),date('y')),
+                      )
+                  );
 
     		//Create personnal folder
     		if ( $_SESSION['settings']['enable_pf_feature']=="1" )
@@ -214,18 +215,6 @@ switch($_POST['type'])
          if ($proceed_identification === true){
             //User exists in the DB
             $data = $db->fetch_array($row);
-
-            //manage md5 to new encryption
-            if (md5(htmlspecialchars_decode($data_received['pw'])) == $data['pw']) {
-                $db->query_update(
-                    "users",
-                    array(
-                        'pw'=>$password
-                    ),
-                    "id=".$data['id']
-                );
-                $data['pw'] = $password;
-            }
 
         	// Can connect if
         	// 1- no LDAP mode + user enabled + pw ok

@@ -110,6 +110,7 @@ v2.0
 * fixed: js library used not compliant with IE9
 * fixed: extra characters in front of passwords [108]
 * fixed: strings error in upgrade.php pages
+* fixed: 2.0 RC1 bugs => 125 - 123
 
 v1.80
 * improvement: an item can be modified by anyone if activated [3040120]
