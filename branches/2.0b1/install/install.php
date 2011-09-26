@@ -10,6 +10,7 @@ $_SESSION['CPM'] = 1;
         <link rel="stylesheet" href="install.css" type="text/css" />
         <script type="text/javascript" src="../includes/js/functions.js"></script>
         <script type="text/javascript" src="gauge/gauge.js"></script>
+        <script type="text/javascript" src="../includes/jquery-ui/js/jquery-1.6.2.min.js"></script>
 
         <script type="text/javascript">
         if(typeof $=='undefined') {function $(v) {return(document.getElementById(v));}}
@@ -23,6 +24,17 @@ $_SESSION['CPM'] = 1;
                 else if ( document.getElementById("step").value == "5" ) gauge.modify($('pbar'),{values:[0.90,1]});
                 else if ( document.getElementById("step").value == "6" ) gauge.modify($('pbar'),{values:[1,1]});
             }
+
+		    $("#db_pw").keypress(function (e) {
+		        var key = e.charCode || e.keyCode || 0;
+		        if(key == 32) alert('No space character is allowed for password');
+	            // allow backspace, tab, delete, arrows, letters, numbers and keypad numbers ONLY
+	            return (
+	                (key >= 8 && key <= 31) ||
+	                (key >= 33 && key <= 222)
+	            );
+		    });
+
         }
 
         function goto_next_page(page){
