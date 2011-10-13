@@ -6,6 +6,11 @@ $cpassman_url = '';
 $cpassman_url = $_SESSION['settings']['cpassman_url'];
 }
 
+$txt['at_moved'] = "Moved";
+$txt['settings_show_description'] = "Show Description in list of Items";
+$txt['read_only_account'] = "Read Only";
+$txt['is_read_only'] = "Is Read Only";
+
 $txt['account_is_locked'] = "This is account is locked";
 $txt['activity'] = "Activity";
 $txt['add_button'] = "Add";

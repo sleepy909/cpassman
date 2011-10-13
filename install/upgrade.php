@@ -9,6 +9,7 @@ $_SESSION['CPM'] = 1;
         <title>cPassMan Installation</title>
         <link rel="stylesheet" href="install.css" type="text/css" />
         <script type="text/javascript" src="../includes/js/functions.js"></script>
+        <script type="text/javascript" src="install.js"></script>
         <script type="text/javascript" src="../includes/jquery-ui/js/jquery-<?php echo $k['jquery-version'];?>.min.js"></script>
         <script type="text/javascript" src="gauge/gauge.js"></script>
 
@@ -128,7 +129,7 @@ if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
 	                 </fieldset>
 
 	                 <h4>Next elements will be checked.</h4>
-	                 <div style="margin:15px;" id="res_step1">
+	                 <div style="margin:15px;" id="re_step1">
 	                 <span style="padding-left:30px;font-size:13pt;">File "settings.php" is writable</span><br />
 	                 <span style="padding-left:30px;font-size:13pt;">Directory "/install/" is writable</span><br />
 	                 <span style="padding-left:30px;font-size:13pt;">Directory "/includes/" is writable</span><br />
@@ -149,7 +150,7 @@ if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
 	                 <label for="db_host">Host :</label><input type="text" id="db_host" name="db_host" class="step" /><br />
 	                 <label for="db_db">Database name :</label><input type="text" id="db_bdd" name="db_bdd" class="step" /><br />
 	                 <label for="db_login">Login :</label><input type="text" id="db_login" name="db_login" class="step" /><br />
-	                 <label for="db_pw">Password :</label><input type="text" id="db_pw" name="db_pw" class="step" /><br />
+	                 <label for="db_pw">Password :</label><input type="password" id="db_pw" name="db_pw" class="step" /><br />
 	                 <label for="tbl_prefix">Table prefix :</label><input type="text" id="tbl_prefix" name="tbl_prefix" class="step" value="cpassman_" />
 	                 </fieldset>
 

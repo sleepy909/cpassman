@@ -195,6 +195,11 @@ if (isset($_POST['save_button'])) {
 		UpdateSettings('allow_print',$_POST['allow_print']);
 	}
 
+  //Update show_description
+  if ( @$_SESSION['settings']['show_description'] != $_POST['show_description'] ){
+      UpdateSettings('show_description',$_POST['show_description']);
+  }
+
 	//Update LDAP mode
 	if ( isset($_POST['ldap_mode']) && $_SESSION['settings']['ldap_mode'] != $_POST['ldap_mode'] ){
 		UpdateSettings('ldap_mode',$_POST['ldap_mode']);
@@ -553,7 +558,7 @@ echo '
             // TAB N°3
             echo '
             <div id="tabs-3">
-            	<table>';
+            	<table widht="100%">';
 
                 //Managers can edit & delete items they are allowed to see
                 echo '
@@ -740,6 +745,19 @@ echo '
 					</div>
 				</td</tr>';
 
+				//Enable Show description in items list
+				echo '
+				<tr><td>
+				    <span class="ui-icon ui-icon-wrench" style="float: left; margin-right: .3em;">&nbsp;</span>
+				    <label>
+				        '.$txt['settings_show_description'].'
+				    </label>
+				    </td><td>
+				    <div class="div_radio">
+						<input type="radio" id="show_description_radio1" name="show_description" value="1"', isset($_SESSION['settings']['show_description']) && $_SESSION['settings']['show_description'] == 1 ? ' checked="checked"' : '', ' /><label for="show_description_radio1">'.$txt['yes'].'</label>
+						<input type="radio" id="show_description_radio2" name="show_description" value="0"', isset($_SESSION['settings']['show_description']) && $_SESSION['settings']['show_description'] != 1 ? ' checked="checked"' : (!isset($_SESSION['settings']['show_description']) ? ' checked="checked"':''), ' /><label for="show_description_radio2">'.$txt['no'].'</label>
+					</div>
+				</td></tr>';
 
 
 				//enable USER can create folders
@@ -747,11 +765,11 @@ echo '
 				<tr><td>
 				    <span class="ui-icon ui-icon-wrench" style="float: left; margin-right: .3em;">&nbsp;</span>
 				    <label>'.$txt['enable_user_can_create_folders'].'</label>
-								    </td><td>
-								    <div class="div_radio">
-										<input type="radio" id="enable_user_can_create_folders_radio1" name="enable_user_can_create_folders" value="1"', isset($_SESSION['settings']['enable_user_can_create_folders']) && $_SESSION['settings']['enable_user_can_create_folders'] == 1 ? ' checked="checked"' : '', ' /><label for="enable_user_can_create_folders_radio1">'.$txt['yes'].'</label>
-										<input type="radio" id="enable_user_can_create_folders_radio2" name="enable_user_can_create_folders" value="0"', isset($_SESSION['settings']['enable_user_can_create_folders']) && $_SESSION['settings']['enable_user_can_create_folders'] != 1 ? ' checked="checked"' : (!isset($_SESSION['settings']['enable_user_can_create_folders']) ? ' checked="checked"':''), ' /><label for="enable_user_can_create_folders_radio2">'.$txt['no'].'</label>
-									</div>
+				    </td><td>
+				    <div class="div_radio">
+						<input type="radio" id="enable_user_can_create_folders_radio1" name="enable_user_can_create_folders" value="1"', isset($_SESSION['settings']['enable_user_can_create_folders']) && $_SESSION['settings']['enable_user_can_create_folders'] == 1 ? ' checked="checked"' : '', ' /><label for="enable_user_can_create_folders_radio1">'.$txt['yes'].'</label>
+						<input type="radio" id="enable_user_can_create_folders_radio2" name="enable_user_can_create_folders" value="0"', isset($_SESSION['settings']['enable_user_can_create_folders']) && $_SESSION['settings']['enable_user_can_create_folders'] != 1 ? ' checked="checked"' : (!isset($_SESSION['settings']['enable_user_can_create_folders']) ? ' checked="checked"':''), ' /><label for="enable_user_can_create_folders_radio2">'.$txt['no'].'</label>
+					</div>
 				</td</tr>';
 
 
@@ -761,10 +779,10 @@ echo '
 				    <td>
 				    	<span class="ui-icon ui-icon-disk" style="float: left; margin-right: .3em;">&nbsp;</span>
 				    	<label for="cpassman_dir">'.$txt['admin_misc_custom_logo'].'</label>
-									</td>
-									<td>
-				    	<input type="text" size="80" id="custom_logo" name="custom_logo" value="', isset($_SESSION['settings']['custom_logo']) ? $_SESSION['settings']['custom_logo'] : '', '" class="text ui-widget-content ui-corner-all" />
-									<td>
+					</td>
+					<td>
+				    	<input type="text" size="60" id="custom_logo" name="custom_logo" value="', isset($_SESSION['settings']['custom_logo']) ? $_SESSION['settings']['custom_logo'] : '', '" class="text ui-widget-content ui-corner-all" />
+					<td>
 				</tr>';
 
 			//custom_login_text
@@ -773,10 +791,10 @@ echo '
 			    <td>
 			    	<span class="ui-icon ui-icon-disk" style="float: left; margin-right: .3em;">&nbsp;</span>
 			    	<label for="cpassman_dir">'.$txt['admin_misc_custom_login_text'].'</label>
-								</td>
-								<td>
-			    	<input type="text" size="80" id="custom_login_text" name="custom_login_text" value="', isset($_SESSION['settings']['custom_login_text']) ? $_SESSION['settings']['custom_login_text'] : '', '" class="text ui-widget-content ui-corner-all" />
-								<td>
+				</td>
+				<td>
+			    	<input type="text" size="60" id="custom_login_text" name="custom_login_text" value="', isset($_SESSION['settings']['custom_login_text']) ? $_SESSION['settings']['custom_login_text'] : '', '" class="text ui-widget-content ui-corner-all" />
+				<td>
 			</tr>';
             echo '
 			</table>

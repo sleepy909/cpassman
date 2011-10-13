@@ -19,7 +19,7 @@ if (!isset($_SESSION['CPM'] ) || $_SESSION['CPM'] != 1)
 
 global $k, $settings;
 include('../includes/settings.php');
-header("Content-type: text/html; charset==utf-8");
+header("Content-type: text/html; charset=utf-8");
 
 require_once("class.database.php");
 $db = new Database($server, $user, $pass, $database, $pre);
@@ -150,11 +150,12 @@ foreach( $rows as $reccord ){
     if ( $reccord['perso']==1 || !empty($reccord['restricted_to']) || !in_array($_SESSION['user_id'],explode(';',$reccord['restricted_to'])) != $_SESSION['user_id'] ){
         $sOutput .= '"<img src=\"includes/images/lock.png\" />",';
     }else{
-        $txt = str_replace(array('\n','<br />','\\'),array(' ',' ',''),strip_tags(mysql_real_escape_string($reccord['description'])));
+        $txt = str_replace(array('\n','<br />','\\'),array(' ',' ',''),strip_tags((($reccord['description']))));
+    	//echo $txt."   ;   ";
         if (strlen($txt) > 50) {
-            $sOutput .= '"'.(substr(htmlspecialchars(stripslashes(preg_replace ('/<[^>]*>|[\t]/', '', $txt)), ENT_QUOTES), 0, 50)).'",';
+            $sOutput .= '"'.(substr((stripslashes(preg_replace ('/<[^>]*>|[\t]/', '', $txt))), 0, 50)).'",';
         }else{
-            $sOutput .= '"'.(htmlspecialchars(stripslashes(preg_replace ('/<[^>]*>|[\t]/', '', $txt)), ENT_QUOTES)).'",';
+            $sOutput .= '"'.((stripslashes(preg_replace ('/<[^>]*>|[\t]/', '', $txt)))).'",';
         }
     }
 

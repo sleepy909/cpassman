@@ -89,17 +89,70 @@ function ListerItems(groupe_id, restricted, start){
         	function(data){
                 //decrypt data
                 data = $.parseJSON(aes_decrypt(data));
+	        	$("#items_path").html(data.arborescence);
 
 				if (data.error == "is_pf_but_no_saltkey") {
 					//warn user about his saltkey
 					$("#item_details_no_personal_saltkey").show();
 					$("#item_details_ok, #item_details_nok").hide();
+
+				    $('#menu_button_add_item').attr('disabled', 'disabled');
 				}
 				else if (data.error == "not_authorized") {
 					//warn user
 					$("#item_details_nok").show();
 					$("#item_details_ok").hide();
 				}
+				else if($("#user_is_read_only").val() == 1 && data.recherche_group_pf == 0){
+					//readonly user
+					$("#recherche_group_pf").val(data.saltkey_is_required);
+					$("#item_details_no_personal_saltkey, #item_details_nok").hide();
+					$("#item_details_ok, #items_list").show();
+
+	        		$("#more_items").remove();
+
+	        		if (data.list_to_be_continued == "yes") {
+	        			$("#items_list").append(data.items_html);
+	        			//set next start for query
+						$("#query_next_start").val(data.next_start);
+	        		}else{
+	        			$("#items_list").append(data.items_html);
+	        			$("#query_next_start").val(data.list_to_be_continued);
+	        		}
+	        		//disable buttons
+	        		$("#menu_button_copy_item, #menu_button_add_group, #menu_button_edit_group, #menu_button_del_group, #menu_button_add_item, #menu_button_edit_item; #menu_button_del_item").attr('disabled', 'disabled');
+
+	        		if (data.array_items != null) {
+						//delete all existing clipboards
+						$(".copy_clipboard").zclip('remove');
+
+		        		// Build clipboard for pw
+		        		if (data.show_clipboard_small_icons == 1) {
+		        			for (var i=0; i < data.array_items.length; ++i) {
+			                	//clipboard for password
+			                	if (data.array_items[i][1] != "" && data.array_items[i][3] == "1"){
+			                		$("#icon_pw_"+data.array_items[i][0]).zclip({
+			                			path : "includes/libraries/zclip/ZeroClipboard.swf",
+			                			copy : data.array_items[i][1],
+			                			afterCopy:function(){
+			                				$("#message_box").html("<?php echo $txt['pw_copied_clipboard'];?>").show().fadeOut(1000);
+			                			}
+			                		});
+			                	}
+			                	//clipboard for login
+			                	if (data.array_items[i][2] != "" && data.array_items[i][3] == "1") {
+			                		$("#icon_login_"+data.array_items[i][0]).zclip({
+			                			path : "includes/libraries/zclip/ZeroClipboard.swf",
+			                			copy : data.array_items[i][2],
+			                			afterCopy:function(){
+			                				$("#message_box").html("<?php echo $txt['login_copied_clipboard'];?>").show().fadeOut(1000);
+			                			}
+			                		});
+			                	}
+			                }
+		        		}
+		        	}
+	        	}
 				else{
                 	$("#recherche_group_pf").val(data.saltkey_is_required);
 					//Display items
@@ -126,10 +179,10 @@ function ListerItems(groupe_id, restricted, start){
 	        		}
 	        		$("#menu_button_copy_item").attr('disabled', 'disabled');
 
-					//If no data then empty
-					if (data.array_items == null) {
+	        		$("#menu_button_copy_item, #menu_button_add_group, #menu_button_edit_group, #menu_button_del_group, #menu_button_add_item, #menu_button_edit_item; #menu_button_del_item").removeAttr("disabled");
 
-					}else{
+					//If no data then empty
+					if (data.array_items != null) {
 						//delete all existing clipboards
 						$(".copy_clipboard").zclip('remove');
 
@@ -179,12 +232,20 @@ function ListerItems(groupe_id, restricted, start){
 							drop: function( event, ui ) {
 								ui.draggable.hide();
 								//move item
-								$.post("sources/items.queries.php",
-						      	{
-						      		type 	: "move_item",
-						      		item_id : ui.draggable.attr("id"),
-						      		folder_id : $( this ).attr("id").substring(4)
-						      	});
+								$.post(
+									"sources/items.queries.php",
+							      	{
+							      		type 	: "move_item",
+							      		item_id : ui.draggable.attr("id"),
+							      		folder_id : $( this ).attr("id").substring(4)
+							      	},
+	                				function(data){
+										//increment / decrement number of items in folders
+										$("#itcount_"+data[0].from_folder).text(Math.floor($("#itcount_"+data[0].from_folder).text())-1);
+										$("#itcount_"+data[0].to_folder).text(Math.floor($("#itcount_"+data[0].to_folder).text())+1);
+									},
+									"json"
+								);
 							}
 						});
 					}
@@ -700,10 +761,11 @@ function AfficherDetailsItem(id, salt_key_required, expired_item, restricted, di
                         $("#edit_anyone_can_modify").attr('checked', false);
                     }
 
-                    //enable copy buttons
-                    $("#menu_button_show_pw, #menu_button_copy_pw, #menu_button_copy_login, #menu_button_copy_link").removeAttr("disabled");
-
-	                if (data.restricted == "1" || data.user_can_modify == "1") {
+                    //manage buttons
+					if($("#user_is_read_only").val() == 1 && data.user_can_modify == 0){
+						$('#menu_button_add_item, #menu_button_edit_item, #menu_button_del_item, #menu_button_copy_item').attr('disabled', 'disabled');
+					}
+	                else if (data.restricted == "1" || data.user_can_modify == "1") {
 	                	if($('#recherche_group_pf').val() != "1")
 	                		$("#menu_button_edit_item, #menu_button_del_item, #menu_button_copy_item").removeAttr("disabled");
                 		else
@@ -711,6 +773,7 @@ function AfficherDetailsItem(id, salt_key_required, expired_item, restricted, di
 	                }else{
 	                    $("#menu_button_add_item, #menu_button_copy_item").removeAttr("disabled");
 	                }
+                    $("#menu_button_show_pw, #menu_button_copy_pw, #menu_button_copy_login, #menu_button_copy_link").removeAttr("disabled");
 
                     //Prepare clipboard copies
                     if ( data.pw != "" ) {
@@ -1120,7 +1183,6 @@ PreviewImage = function(uri,title) {
     });
 }
 
-
 //###########
 //## EXECUTE WHEN PAGE IS LOADED
 //###########
@@ -1141,19 +1203,24 @@ $(function() {
     //Disable menu buttons
     $('#menu_button_edit_item,#menu_button_del_item,#menu_button_add_fav,#menu_button_del_fav').attr('disabled', 'disabled');
 
+    //DIsable more buttons if read only user
+    if($("#user_is_read_only").val() == 1){
+    	$('#menu_button_add_item, #menu_button_add_group, #menu_button_edit_group, #menu_button_del_group').attr('disabled', 'disabled');
+    }
+
     // Autoresize Textareas
     $(".items_tree, #items_content, #item_details_ok").addClass("ui-corner-all");
 
     //automatic height
-    var hauteur = $(window).height();
-    $("#div_items, #content").height( (hauteur-150) );
-    $("#items_center").height( (hauteur-390) );
-    $("#items_list").height(hauteur-420);
-    $(".items_tree").height(hauteur-160);
-    $("#jstree").height(hauteur-185);
+    var window_height = $(window).height();
+    $("#div_items, #content").height(window_height-150);
+    $("#items_center").height(window_height-390);
+    $("#items_list").height(window_height-440);
+    $(".items_tree").height(window_height-160);
+    $("#jstree").height(window_height-185);
 
 	//Evaluate number of items to display - depends on screen height
-	$("#nb_items_to_display_once").val(Math.round((hauteur-420)/23));	//Math.round($('#items_list')[0].scrollHeight/23)
+	$("#nb_items_to_display_once").val(Math.round((window_height-450)/23));
 
     // Build buttons
     $("#custom_pw, #edit_custom_pw").buttonset();

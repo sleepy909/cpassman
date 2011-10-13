@@ -272,8 +272,7 @@ $txt['index_add_one_hour'] = "Oturumu 1 saatlik uzat";
 $txt['index_alarm'] = "ALARM!!!";
 $txt['index_bas_pw'] = "Bu hesap için hatalı şifre!";
 $txt['index_change_pw'] = "Şifrenizi değiştirin!";
-$txt['index_change_pw'] = "Şifrenizi Değiştirin
-";
+$txt['index_change_pw'] = "Şifrenizi Değiştirin";
 $txt['index_change_pw_button'] = "Değiştir";
 $txt['index_change_pw_confirmation'] = "Onayla";
 $txt['index_expiration_in'] = "Oturum sona eriyor";

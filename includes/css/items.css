@@ -72,21 +72,22 @@ button{
 #items_path{
 	padding: 5px;
 	float:left;
-	width:100%;
+	width:660px;
 	font-size: 15px;
 	font-family:arial;
+	font-style:italic;
 	color:#242D35;
-	margin-left:10px;
+	margin:5px;
+	background-image: url(../images/canevas/menu_top_bckg.png);
 }
 #items_list{
 	float:left;
-	width: 100%;
-	margin: 0px 5px 5px -16px;
+	width: 705px;
+	margin: 0px 5px 5px -30px;
 	overflow:auto ;
 }
 
 #item_details_ok{
-	//display:none;
 	width: 670px;
 	height: 230px;
 	margin: 5px;
@@ -125,4 +126,8 @@ button{
 	 width:120px;
 	 padding:2px;
 	 font-size:9px;
+}
+
+.state-hover{
+	background-color:#F0F0F0;
 }

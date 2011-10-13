@@ -11,92 +11,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-// Function - do a pause during javascript execution
-function PauseInExecution(millis)
-{
-    var date = new Date();
-    var curDate = null;
-
-    do { curDate = new Date(); }
-    while(curDate-date < millis);
-}
-
-//Fonction qui permet d'appeler un fichier qui exécute une requete passée en parametre
-function httpRequest(file,data,type){
-    var xhr_object = null;
-    var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
-
-	if (document.getElementById("menu_action") != null) {
-		document.getElementById("menu_action").value = "action";
-	}
-
-    if(window.XMLHttpRequest){ // Firefox
-        xhr_object = new XMLHttpRequest();
-    }else if(window.ActiveXObject){ // Internet Explorer
-        xhr_object = new ActiveXObject("Microsoft.XMLHTTP");  //Info IE8 now supports =>  xhr_object = new XMLHttpRequest()
-    }else { // XMLHttpRequest non support? par le navigateur
-        alert("Your browser does not support XMLHTTPRequest objects ...");
-        return;
-    }
-
-    if ( type == "GET" ) {
-        xhr_object.open("GET", file+"?"+data, true);
-        xhr_object.send(null);
-    }else{
-        xhr_object.open("POST", file, true);
-        xhr_object.onreadystatechange = function() {
-          if(xhr_object.readyState == 4) {
-              eval(xhr_object.responseText);
-              //Check if query is for user identification. If yes, then reload page.
-              if ( data != "" && data.indexOf('ype=identify_user') > 0 ) {
-                  if ( is_chrome == true ) PauseInExecution(100);  //Needed pause for Chrome
-                  if ( type == "" ){
-                      if ( document.getElementById('erreur_connexion').style.display == "" ){
-                          //rise an error in url. This in order to display the eror after refreshing
-                          window.location.href="index.php?error=rised";
-                      }else{
-                        window.location.href="index.php";
-                      }
-                  }else{
-                      if ( type = "?error=rised" ){
-                            if ( document.getElementById('erreur_connexion').style.display == "none" ) type = "";   //clean error in url
-                            else type = "?error=rised"; //Maintain the ERROR
-                      }
-                      window.location.href="index.php"+type;
-                  }
-              }
-          }
-        }
-        xhr_object.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=utf-8");
-        xhr_object.send(data);
-    }
-}
-
 function LoadingPage(){
-	    if ( document.getElementById("div_loading").style.display == "" )
-	        $("#div_loading").hide();
-	    else
-	        $("#div_loading").show();
-}
-
-//permet de mettre ? jour la liste contenant les ID des utilisateurs
-function maj_liste_restriction(val, element){
-    var liste = document.getElementById(element).value
-    var index = liste.lastIndexOf(val+";");
-    var longueur = val.length+1;
-    if ( index != -1 ){
-        liste = liste.substr(0,index)+liste.substr(index+longueur);
-    }else{
-        liste = liste + val + ";";
-    }
-    document.getElementById(element).value = liste;
-}
-
-function AfficherCacher(divId){
-    if ( document.getElementById(divId).style.display == "" )
-        document.getElementById(divId).style.display = "none";
-    else
-        document.getElementById(divId).style.display = "";
+	if ( $("#div_loading").is(':visible') )
+	    $("#div_loading").hide();
+	else
+	    $("#div_loading").show();
 }
 
 function RefreshPage(myform){
@@ -104,10 +23,19 @@ function RefreshPage(myform){
 }
 
 //Add 1 hour to session duration
-function AugmenterSession(){
-    var data = "type=augmenter_session";
-    httpRequest("sources/main.queries.php",data);
-    document.getElementById('countdown').style.color="white";
+function IncreaseSessionTime(){
+	 $.post(
+		"sources/main.queries.php",
+		{
+		type    : "increase_session_time"
+		},
+        function(data){
+        	$("#temps_restant").val(data[0].new_value);
+        	$("#date_end_session").val(data[0].new_value);
+        	$('#countdown').css("color","white");
+        },
+        "json"
+	);
 }
 
 //Countdown before session expiration
@@ -145,7 +73,7 @@ function countdown()
 
 //Change language using icon flags
 function ChangeLanguage(lang){
-    document.getElementById('language').value = lang;
+    $('#language').val(lang);
     document.temp_form.submit();
 }
 

@@ -66,7 +66,8 @@ echo '
 <input type="hidden" id="edit_wysiwyg_displayed" value="" />
 <input type="hidden" id="richtext_on" value="1" />
 <input type="hidden" id="query_next_start" value="0" />
-<input type="hidden" id="nb_items_to_display_once" value="" />';
+<input type="hidden" id="nb_items_to_display_once" value="" />
+<input type="hidden" id="user_is_read_only" value="', isset($_SESSION['user_read_only']) && $_SESSION['user_read_only'] == 1 ? '1' : '', '" />';
 
 //Afficher mdp suite ? recherche
 if ( isset($_GET['group']) && isset($_GET['id']) ){
@@ -151,11 +152,11 @@ echo '
 					<li class="jstree-open">';
 							if (in_array($folder->id,$_SESSION['groupes_visibles'])) {
 								$folder_txt .= '
-							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\', \'\', 0);">'.str_replace("&","&amp;",$folder->title).' (<span class="items_count">'.$nb_items.'</span>)</a>';
+							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\', \'\', 0);">'.str_replace("&","&amp;",$folder->title).' (<span class="items_count" id="itcount_'.$folder->id.'">'.$nb_items.'</span>)</a>';
 								//case for restriction_to_roles
 							}elseif (in_array($folder->id, $list_folders_limited_keys)) {
 								$folder_txt .= '
-							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\', \'\', 0);">'.str_replace("&","&amp;",$folder->title).' (<span class="items_count">'.count($_SESSION['list_folders_limited'][$folder->id]).')</span></a>';
+							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\', \'\', 0);">'.str_replace("&","&amp;",$folder->title).' (<span class="items_count" id="itcount_'.$folder->id.'">'.count($_SESSION['list_folders_limited'][$folder->id]).')</span></a>';
 							}else{
 								$folder_txt .= '
 							<a id="fld_'.$folder->id.'">'.str_replace("&","&amp;",$folder->title).'</a>';
@@ -163,7 +164,11 @@ echo '
 
 							//build select for all visible folders
 							if (in_array($folder->id,$_SESSION['groupes_visibles'])) {
-								$select_visible_folders_options .= '<option value="'.$folder->id.'">'.$ident.str_replace("&","&amp;",$folder->title).'</option>';
+								if($_SESSION['user_read_only'] == 0 || ($_SESSION['user_read_only'] == 1 && in_array($folder->id, $_SESSION['personal_visible_groups']))){
+									$select_visible_folders_options .= '<option value="'.$folder->id.'">'.$ident.str_replace("&","&amp;",$folder->title).'</option>';
+								}else{
+									$select_visible_folders_options .= '<option value="'.$folder->id.'" disabled="disabled">'.$ident.str_replace("&","&amp;",$folder->title).'</option>';
+								}
 							}else{
 								$select_visible_folders_options .= '<option value="'.$folder->id.'" disabled="disabled">'.$ident.str_replace("&","&amp;",$folder->title).'</option>';
 							}
@@ -202,30 +207,8 @@ echo '
 				                	echo '
 					</li>'.$folder_txt;
 				                	$folder_cpt++;
-				                    /*echo '
-					</li>
-					<li class="jstree-open">';
-				                	if (in_array($folder->id,$_SESSION['groupes_visibles'])) {
-				                		echo '
-							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\', \'\', 0);">'.str_replace("&","&amp;",$folder->title).' ('.$nb_items.')</a>';
-				                	//case for restriction_to_roles
-				                	}elseif (in_array($folder->id, $list_folders_limited_keys)) {
-				                		echo '
-							<a id="fld_'.$folder->id.'" class="folder" onclick="ListerItems(\''.$folder->id.'\', \'\', 0);">'.str_replace("&","&amp;",$folder->title).' ('.count($_SESSION['list_folders_limited'][$folder->id]).')</a>';
-				                	}else{
-				                		echo '
-							<a id="fld_'.$folder->id.'">'.str_replace("&","&amp;",$folder->title).'</a>';
-				                	}
-
-				                    $folder_cpt++;
-
-				                	if (in_array($folder->id,$_SESSION['groupes_visibles'])) {
-				                		$select_visible_folders_options .= '<option value="'.$folder->id.'">'.$ident.str_replace("&","&amp;",$folder->title).'</option>';
-				                	}else{
-				                		$select_visible_folders_options .= '<option value="'.$folder->id.'" disabled="disabled">'.$ident.str_replace("&","&amp;",$folder->title).'</option>';
-				                	}*/
-				                }
-				            }
+				                					                }
+				                					            }
 			            	$prev_level = $folder->nlevel;
 
 				            $cpt_total++;
@@ -249,7 +232,7 @@ echo '
     echo '
     <div id="items_content">
         <div id="items_center">
-            <div id="items_path"></div>
+            <div id="items_path" class="ui-corner-all"></div>
             <div id="items_list"></div>
         </div>';
 
@@ -262,7 +245,6 @@ echo '
             <input type="hidden" id="id_item" value="" />
             <input type="hidden" id="hid_anyone_can_modify" value="" />
             <div style="height:210px;overflow-y:auto;" id="item_details_scroll">
-
                 <div id="item_details_expired" style="display:none;background-color:white; margin:5px;">
                     <div class="ui-state-error ui-corner-all" style="padding:2px;">
                         <img src="includes/images/error.png" alt="" />&nbsp;<b>'.$txt['pw_is_expired_-_update_it'].'</b>
@@ -515,7 +497,7 @@ echo '
 			</div>';
             //Line for EMAIL
             echo '
-            <input type="checkbox" name="annonce" id="annonce" onChange="AfficherCacher(\'annonce_liste\')" />
+            <input type="checkbox" name="annonce" id="annonce" onChange="toggleDiv(\'annonce_liste\')" />
             <label for="annonce">'.$txt['email_announce'].'</label>
             <div style="display:none; border:1px solid #808080; margin-left:30px; margin-top:6px;padding:5px;" id="annonce_liste">
                 <h3>'.$txt['email_select'].'</h3>
@@ -641,7 +623,7 @@ echo '
 			</div>';
 
 			echo '
-            <input type="checkbox" name="edit_annonce" id="edit_annonce" onChange="AfficherCacher(\'edit_annonce_liste\')" />
+            <input type="checkbox" name="edit_annonce" id="edit_annonce" onChange="toggleDiv(\'edit_annonce_liste\')" />
             <label for="edit_annonce">'.$txt['email_announce'].'</label>
             <div style="display:none; border:1px solid #808080; margin-left:30px; margin-top:3px;padding:5px;" id="edit_annonce_liste">
                 <h3>'.$txt['email_select'].'</h3>
@@ -696,7 +678,7 @@ echo '
             <td>'.$txt['complex_asked'].' : </td>
             <td><select id="new_rep_complexite">
                 <option value="">---</option>';
-                foreach($mdp_complexite as $complex)
+                foreach($pw_complexity as $complex)
                     echo '<option value="'.$complex[0].'">'.$complex[1].'</option>';
             echo '
             </select>
@@ -739,7 +721,7 @@ echo '
             <td>'.$txt['complex_asked'].' : </td>
             <td><select id="edit_folder_complexity">
                 <option value="">---</option>';
-                foreach($mdp_complexite as $complex)
+                foreach($pw_complexity as $complex)
                     echo '<option value="'.$complex[0].'">'.$complex[1].'</option>';
             echo '
             </select>

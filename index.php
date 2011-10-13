@@ -98,7 +98,7 @@ require_once("load.php");
             echo '
         <div id="menu_top">
             <div style="font-size:12px; margin-left:65px; margin-top:-5px; width:100%; color:white;">
-                <img src="includes/images/user-black.png" /> <b>'.$_SESSION['login'].'</b><img src="includes/images/alarm-clock.png" style="margin-left:30px;" /> '.$txt['index_expiration_in'].' <div style="display:inline;" id="countdown"></div>
+                <img src="includes/images/user-black.png" /> <b>'.$_SESSION['login'].'</b> ['.$_SESSION['user_privilege'].']<img src="includes/images/alarm-clock.png" style="margin-left:30px;" /> '.$txt['index_expiration_in'].' <div style="display:inline;" id="countdown"></div>
             </div>
             <div style="margin-left:65px; margin-top:3px;width:100%;" id="main_menu">
                 <button title="'.$txt['home'].'" onclick="MenuAction(\'\');">
@@ -159,7 +159,7 @@ require_once("load.php");
 
                 //1 hour
                 echo '
-                <button style="margin-left:10px;" title="'.$txt['index_add_one_hour'].'" onclick="AugmenterSession();">
+                <button style="margin-left:10px;" title="'.$txt['index_add_one_hour'].'" onclick="IncreaseSessionTime();">
                     <img src="includes/images/clock__plus.png" alt="" />
                 </button>';
 
@@ -173,7 +173,7 @@ require_once("load.php");
         }
 
         //Display language menu
-        $langues = array("french" => "fr","spanish" => "es","german" => "de","english" => "us","czech" => "cz","russian" => "ru","hungarian" => "hu","turkish" => "tr","norwegian" => "no","japanese" => "ja");
+        $langues = array("french" => "fr","spanish" => "es","german" => "de","english" => "us","czech" => "cz","russian" => "ru","hungarian" => "hu","turkish" => "tr","norwegian" => "no","japanese" => "ja","portuguese" => "pr");
         foreach ($langues as $lang => $abrev) {
             if ($_SESSION['user_language'] == $lang) {
                 $flag = $abrev;
@@ -193,6 +193,7 @@ require_once("load.php");
                         <li><a href="#"><img class="flag" src="includes/images/flags/de.png" alt="German" onclick="ChangeLanguage(\'german\')" /></a></li>
                         <li><a href="#"><img class="flag" src="includes/images/flags/ja.png" alt="Japanese" onclick="ChangeLanguage(\'japanese\')" /></a></li>
                         <li><a href="#"><img class="flag" src="includes/images/flags/no.png" alt="Norwegian" onclick="ChangeLanguage(\'norwegian\')" /></a></li>
+                        <li><a href="#"><img class="flag" src="includes/images/flags/pr.png" alt="Portuguese" onclick="ChangeLanguage(\'portuguese\')" /></a></li>
                         <li><a href="#"><img class="flag" src="includes/images/flags/ru.png" alt="Russian" onclick="ChangeLanguage(\'russian\')" /></a></li>
                         <li><a href="#"><img class="flag" src="includes/images/flags/es.png" alt="Spanish" onclick="ChangeLanguage(\'spanish\')" /></a></li>
                         <li><a href="#"><img class="flag" src="includes/images/flags/tr.png" alt="Turkish" onclick="ChangeLanguage(\'turkish\')" /></a></li>

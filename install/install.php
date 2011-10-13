@@ -9,8 +9,10 @@ $_SESSION['CPM'] = 1;
         <title>cPassMan Installation</title>
         <link rel="stylesheet" href="install.css" type="text/css" />
         <script type="text/javascript" src="../includes/js/functions.js"></script>
+        <script type="text/javascript" src="install.js"></script>
         <script type="text/javascript" src="gauge/gauge.js"></script>
         <script type="text/javascript" src="../includes/jquery-ui/js/jquery-1.6.2.min.js"></script>
+				<script type="text/javascript" src="../includes/libraries/crypt/aes.min.js"></script>
 
         <script type="text/javascript">
         if(typeof $=='undefined') {function $(v) {return(document.getElementById(v));}}
@@ -37,6 +39,10 @@ $_SESSION['CPM'] = 1;
 
         }
 
+				function aes_encrypt(text) {
+					return Aes.Ctr.encrypt(text, "cpm", 128);
+				}
+
         function goto_next_page(page){
             document.getElementById("step").value=page;
             document.install.submit();
@@ -45,6 +51,8 @@ $_SESSION['CPM'] = 1;
         function Check(step){
             if ( step != "" ){
 				var data;
+				var error = "";
+
                 if ( step == "step1" ){
                     document.getElementById("loader").style.display = "";
 					document.getElementById("url_path_res").innerHTML = "";
@@ -57,12 +65,17 @@ $_SESSION['CPM'] = 1;
 					}
                 }else
                 if ( step == "step2" ){
-                    document.getElementById("loader").style.display = "";
+                		$("#error_db").hide();
+                    document.getElementById("loader").style.display = "none";
                     data = "type="+step+
                     "&db_host="+document.getElementById("db_host").value+
                     "&db_login="+escape(document.getElementById("db_login").value)+
-                    "&db_password="+encodeURIComponent(document.getElementById("db_pw").value)+
+                    "&db_password="+aes_encrypt(document.getElementById("db_pw").value)+
                     "&db_bdd="+document.getElementById("db_bdd").value;
+
+										if(document.getElementById("db_pw").value.indexOf('"') != -1) error = "DB Password should not contain a double quotes!<br>";
+										if(document.getElementById("db_login").value.indexOf('"') != -1) error += "DB Login should not contain a double quotes!<br>";
+										if(document.getElementById("db_bdd").value.indexOf('"') != -1) error += "DB should not contain a double quotes!";
                 }else
                 if ( step == "step3" ){
                     document.getElementById("loader").style.display = "";
@@ -110,7 +123,12 @@ $_SESSION['CPM'] = 1;
                     data = "type="+step;
                 }
 
-				if ( data ) httpRequest("install_ajax.php",data);
+				if ( data && error == "" ) httpRequest("install_ajax.php",data);
+
+				if(error != ""){
+					$("#error_db").html(error);
+					$("#error_db").show();
+				}
             }
         }
         </script>
@@ -189,7 +207,9 @@ if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
                     <label for="db_host">Host :</label><input type="text" id="db_host" name="db_host" class="step" /><br />
                     <label for="db_db">Database name :</label><input type="text" id="db_bdd" name="db_bdd" class="step" /><br />
                     <label for="db_login">Login :</label><input type="text" id="db_login" name="db_login" class="step" /><br />
-                    <label for="db_pw">Password :</label><input type="text" id="db_pw" name="db_pw" class="step" />
+                    <label for="db_pw">Password :</label><input type="password" id="db_pw" name="db_pw" class="step" tilte="Double quotes not allowed!" />
+										<br />
+										<div id="error_db" style="display:none;font-size:18px;color:red;margin:10px 0 10px 0;"></div>
                     </fieldset>
 
                     <div style="margin-top:20px;font-weight:bold;text-align:center;height:27px;" id="res_step2"></div>
