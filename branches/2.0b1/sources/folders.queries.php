@@ -111,7 +111,7 @@ else if ( isset($_POST['changer_complexite']) ){
     }
 
     //Get title to display it
-    echo $mdp_complexite[$_POST['changer_complexite']][1];
+    echo $pw_complexity[$_POST['changer_complexite']][1];
 
     //rebuild the tree grid
     $tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
@@ -264,6 +264,23 @@ else if ( isset($_POST['type']) ){
 
                 //Get user's rights
                 IdentifyUserRights($_SESSION['groupes_visibles'].';'.$new_id,$_SESSION['groupes_interdits'],$_SESSION['is_admin'],$_SESSION['fonction_id'],true);
+								
+								//If it is a subfolder, then give access to it for all roles that allows the parent folder
+                $rows = $db->fetch_all_array("
+									SELECT role_id
+									FROM ".$pre."roles_values
+									WHERE folder_id = ".$parent_id
+								);
+                foreach ($rows as $reccord){
+                    //add access to this subfolder
+                    $db->query_insert(
+                        'roles_values',
+                        array(
+                            'role_id' => $reccord['role_id'],
+														'folder_id' => $new_id
+                        )
+                    );
+                }
 
             	echo '[ { "error" : "'.$error.'" } ]';
 

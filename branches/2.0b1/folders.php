@@ -107,7 +107,7 @@ echo '
                             '.$ident.'<span id="title_'.$t->id.'">'.$t->title.'</span>
                         </td>
                         <td align="center" onclick="open_edit_folder_dialog('.$t->id.')">
-                            <span id="complexite_'.$t->id.'">'.$mdp_complexite[$node_data[0]][1].'</span>
+                            <span id="complexite_'.$t->id.'">'.$pw_complexity[$node_data[0]][1].'</span>
                         </td>
                         <td align="center" onclick="open_edit_folder_dialog('.$t->id.')">
                             <span id="parent_'.$t->id.'">'.$data[0].'</span>
@@ -190,7 +190,7 @@ echo '
     <label for="new_rep_complexite" class="label_cpm">'.$txt['complex_asked'].' :</label>
     <select id="new_rep_complexite" class="input_text text ui-widget-content ui-corner-all">
         <option value="">---</option>';
-        foreach($mdp_complexite as $complex)
+        foreach($pw_complexity as $complex)
             echo '<option value="'.$complex[0].'">'.$complex[1].'</option>';
     echo '
     </select>
@@ -234,7 +234,7 @@ echo '
     <label for="edit_folder_complexite" class="label_cpm">'.$txt['complex_asked'].' :</label>
     <select id="edit_folder_complexite" class="input_text text ui-widget-content ui-corner-all">
 <option value="">---</option>';
-foreach($mdp_complexite as $complex)
+foreach($pw_complexity as $complex)
 	echo '<option value="'.$complex[0].'">'.$complex[1].'</option>';
 echo '
     </select>

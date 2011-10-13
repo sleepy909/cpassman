@@ -713,15 +713,12 @@ if ( isset($_POST['type']) ){
             ){
             	//Allow show details
                 $arrData['show_details'] = 1;
-//print_r($_SESSION['list_folders_editable_by_role']);echo $data_item['id_tree'];
 
                 //Display menu icon for deleting if user is allowed
                 if ($data_item['id_user'] == $_SESSION['user_id'] || $_SESSION['is_admin'] == 1 || ($_SESSION['user_gestionnaire'] == 1 && $_SESSION['settings']['manager_edit'] == 1) || $data_item['anyone_can_modify']==1 || in_array($data_item['id_tree'], $_SESSION['list_folders_editable_by_role'])){
-                    //$return_values .= '"user_can_modify": "1", ';
                     $arrData['user_can_modify'] = 1;
                     $user_is_allowed_to_modify = true;
                 }else{
-                    //$return_values .= '"user_can_modify": "0", ';
                     $arrData['user_can_modify'] = 0;
                     $user_is_allowed_to_modify = false;
                 }
@@ -794,13 +791,13 @@ if ( isset($_POST['type']) ){
 							WHERE i.item_id = ".$data_item['id']."
 							ORDER BY k.label ASC");
 	          		foreach($rows as $reccord){
-									if(empty($tmp)){
-										$tmp = "<a href='".$_SESSION['settings']['cpassman_url']."/index.php?page=kb&id=".$reccord['id']."'>".$reccord['label']."</a>";
-									}else{
-										$tmp .= "&nbsp;-&nbsp;<a href='".$_SESSION['settings']['cpassman_url']."/index.php?page=kb&id=".$reccord['id']."'>".$reccord['label']."</a>";
-									}
-	          		  $arrData['links_to_kbs'] = $tmp;
+						if(empty($tmp)){
+							$tmp = "<a href='".$_SESSION['settings']['cpassman_url']."/index.php?page=kb&id=".$reccord['id']."'>".$reccord['label']."</a>";
+						}else{
+							$tmp .= "&nbsp;-&nbsp;<a href='".$_SESSION['settings']['cpassman_url']."/index.php?page=kb&id=".$reccord['id']."'>".$reccord['label']."</a>";
+						}
 	          		}
+					$arrData['links_to_kbs'] = $tmp;
 				}
 
 
@@ -1198,7 +1195,7 @@ if ( isset($_POST['type']) ){
                     	}
 
                     	//Can user modify it?
-                    	if ($reccord['anyone_can_modify'] == 1 || ($_SESSION['user_id'] == $reccord['log_user'])) {
+                    	if ($reccord['anyone_can_modify'] == 1 || ($_SESSION['user_id'] == $reccord['log_user']) || ($_SESSION['user_read_only'] == 1 && $folder_is_pf == 0)) {
                     		$can_move = 1;
                     	}
 
@@ -1277,7 +1274,7 @@ if ( isset($_POST['type']) ){
                     	}
 
 						$html .= $expiration_flag.''.$perso.'&nbsp;<a id="fileclass'.$reccord['id'].'" class="file" onclick="'.$action.'">'.stripslashes($reccord['label']);
-                        if (!empty($reccord['description']) )
+                        if (!empty($reccord['description']) && isset($_SESSION['settings']['show_description']) && $_SESSION['settings']['show_description'] == 1)
                             $html .= '&nbsp;<font size=2px>['.strip_tags(stripslashes(substr(CleanString($reccord['description']),0,30))).']</font>';
                         $html .= '</a>';
 
@@ -1377,7 +1374,7 @@ if ( isset($_POST['type']) ){
         	//Prepare returned values
         	$return_values = array(
         		"recherche_group_pf" => $recherche_group_pf,
-        		"arborescence" => $arbo_html,
+        		"arborescence" => "<img src='includes/images/folder-open.png' />&nbsp;".$arbo_html,
         		"array_items" => $items_id_list,
         		"items_html" => $html,
         		"error" => $show_error,
@@ -1415,7 +1412,7 @@ if ( isset($_POST['type']) ){
             $data = $db->fetch_row("SELECT valeur FROM ".$pre."misc WHERE type='complex' AND intitule = '".$_POST['groupe']."'");
 
         	if(isset($data[0]) && (!empty($data[0]) || $data[0] == 0)){
-        		$complexity = $mdp_complexite[$data[0]][1];
+        		$complexity = $pw_complexity[$data[0]][1];
         	}else{
         		$complexity = $txt['not_defined'];
         	}
@@ -1574,15 +1571,14 @@ if ( isset($_POST['type']) ){
     	case "move_item":
     		//get data about item
     		$data_source = $db->query_first("
-					SELECT i.pw, f.personal_folder
+					SELECT i.pw, f.personal_folder,i.id_tree, f.title
 					FROM ".$pre."items AS i
 					INNER JOIN ".$pre."nested_tree AS f ON (i.id_tree=f.id)
 					WHERE i.id=".$_POST['item_id']
     		);
 
     		//get data about new folder
-    		$data_destination = $db->query_first("SELECT personal_folder FROM ".$pre."nested_tree WHERE id = '".$_POST['folder_id']."'");
-echo $data_source['personal_folder']." - ".$data_destination['personal_folder'];
+    		$data_destination = $db->query_first("SELECT personal_folder, title FROM ".$pre."nested_tree WHERE id = '".$_POST['folder_id']."'");
 
     		//update item
     		$db->query_update(
@@ -1663,6 +1659,20 @@ echo $data_source['personal_folder']." - ".$data_destination['personal_folder'];
 	    			"id='".$_POST['item_id']."'"
     			);
     		}
+
+				//Log item moved
+				$db->query_insert(
+	          'log_items',
+	          array(
+	              'id_item' => $_POST['item_id'],
+	              'date' => mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y')),
+	              'id_user' => $_SESSION['user_id'],
+								'action' => 'at_modification',
+	              'raison' => 'at_moved : '.$data_source['title'].' -> '.$data_destination['title']
+	          )
+	      );
+
+				echo '[{"from_folder":"'.$data_source['id_tree'].'" , "to_folder":"'.$_POST['folder_id'].'"}]';
 
     		break;
     }

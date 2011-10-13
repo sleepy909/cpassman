@@ -55,6 +55,7 @@ echo '
                     <th>'.$txt['forbidden_groups'].'</th>
                     <th title="'.$txt['god'].'"><img src="includes/images/user-black.png" /></th>
                     <th title="'.$txt['gestionnaire'].'"><img src="includes/images/user-worker.png" /></th>
+                    <th title="'.$txt['read_only_account'].'"><img src="includes/images/user_read_only.png" /></th>
                     <th title="'.$txt['can_create_root_folder'].'"><img src="includes/images/folder-network.png" /></th>
                     ', (isset($_SESSION['settings']['enable_pf_feature']) && $_SESSION['settings']['enable_pf_feature']==1) ? '<th title="'.$txt['enable_personal_folder'].'"><img src="includes/images/folder-open-document-text.png" /></th>' : '', '
                     <th title="'.$txt['user_action'].'"><img src="includes/images/user-locked.png" /></th>
@@ -127,6 +128,8 @@ echo '
         					break;
         				}
         			}
+        			//if user has no role, Manager could add
+        			if(empty($reccord['fonction_id'])) $show_user_folders = true;
         		}
         	}else{
         		$show_user_folders = true;
@@ -138,7 +141,7 @@ echo '
                     <td align="center">'.$reccord['id'].'</td>
                     <td align="center">', $reccord['disabled'] == 1 ? '<img src="includes/images/error.png" style="cursor:pointer;" onclick="unlock_user(\''.$reccord['id'].'\')" title="'.$txt['unlock_user'].'" />':'', '</td>
                     <td align="center">
-                        <p ', ($_SESSION['user_admin'] == 1 || ($_SESSION['user_gestionnaire'] == 1 && $reccord['admin'] == 0 && $reccord['gestionnaire'] == 0)) ? 'class="editable_textarea"' : '', 'id="login_'.$reccord['id'].'">'.$reccord['login'].'</p>
+                        <p ', ($_SESSION['user_admin'] == 1 || ($_SESSION['user_gestionnaire'] == 1 && $reccord['admin'] == 0 && $reccord['gestionnaire'] == 0) && $show_user_folders == true) ? 'class="editable_textarea"' : '', 'id="login_'.$reccord['id'].'">'.$reccord['login'].'</p>
                     </td>
                     <td>
                     	<div', ($reccord['admin'] == 1) ? ' style="display:none;"':'', '>
@@ -176,6 +179,13 @@ echo '
                     <td align="center">
                         <input type="checkbox" id="gestionnaire_'.$reccord['id'].'" onchange="ChangeUserParm(\''.$reccord['id'].'\',\'gestionnaire\')"', $reccord['gestionnaire']==1 ? 'checked' : '', ' ', ($_SESSION['user_gestionnaire'] == 1 || $reccord['admin'] == 1) ? 'disabled':'',' />
                     </td>';
+
+					//Read Only privilege
+						echo '
+                    <td align="center">
+                        <input type="checkbox" id="read_only_'.$reccord['id'].'" onchange="ChangeUserParm(\''.$reccord['id'].'\',\'read_only\')"', $reccord['read_only']==1 ? 'checked' : '', ' ', ($_SESSION['user_gestionnaire'] == 1 || $reccord['admin'] == 1) ? 'disabled':'',' />
+                    </td>';
+
                     if( isset($_SESSION['settings']['enable_pf_feature']) && $_SESSION['settings']['enable_pf_feature']==1)
                         echo '
                     <td align="center">
@@ -274,8 +284,11 @@ echo '
 	<input type="checkbox" id="new_admin"', $_SESSION['user_admin'] == 1 ? '':' disabled', ' />
    	<label for="new_admin">'.$txt['is_admin'].'</label>
 	<br />
-	<input type="checkbox" id="new_manager" />
+	<input type="checkbox" id="new_manager"', $_SESSION['user_admin'] == 1 ? '':' disabled', ' />
    	<label for="new_manager">'.$txt['is_manager'].'</label>
+	<br />
+	<input type="checkbox" id="new_read_only" />
+   	<label for="new_read_only">'.$txt['is_read_only'].'</label>
 	<br />
 	<input type="checkbox" id="new_personal_folder"', isset($_SESSION['settings']['enable_pf_feature']) && $_SESSION['settings']['enable_pf_feature'] == 1 ? ' checked':'', ' />
    	<label for="new_personal_folder">'.$txt['personal_folder'].'</label>
@@ -347,7 +360,7 @@ echo '
 	    	<option value="50">50</option>
 	    	<option value="100">100</option>
 	    </select>
-	    &nbps;&nbsp;'.
+	    &nbsp;&nbsp;'.
 		$txt['activity'].':
 		<select id="activity" onChange="displayLogs(1)">
 	    	<option value="all">'.$txt['all'].'</option>

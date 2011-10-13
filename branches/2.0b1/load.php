@@ -121,12 +121,9 @@ $htmlHeaders .= '
         }
     }
 
-
-
 	function aes_encrypt(text) {
-	    return Aes.Ctr.encrypt(text, "'.SALT.'", 256);
-	}
-
+		    return Aes.Ctr.encrypt(text, "'.SALT.'", 256);
+		}
 
     //Identify user
     function identifyUser(redirect){
@@ -142,8 +139,7 @@ $htmlHeaders .= '
             for (var i = 0; i < 10; i++) {
                 randomstring += chars[Math.floor(Math.random() * chars.length)];
             }
-
-            var data = \'{"login":"\'+protectString($("#login").val())+\'" , "pw":"\'+protectString($("#pw").val())+\'" , "duree_session":"\'+$("#duree_session").val()+\'" , "hauteur_ecran":"\'+innerHeight+\'" , "randomstring":"\'+randomstring+\'"}\';
+            var data = \'{"login":"\'+protectString($("#login").val())+\'" , "pw":"\'+protectString($("#pw").val())+\'" , "duree_session":"\'+$("#duree_session").val()+\'" , "hauteur_ecran":"\'+$("body").innerHeight()+\'" , "randomstring":"\'+randomstring+\'"}\';
 
             //send query
             $.post("sources/main.queries.php", {
@@ -253,7 +249,7 @@ $htmlHeaders .= '
             title: "'.$txt['index_alarm'].'",
             buttons: {
                 "'.$txt['index_add_one_hour'].'": function() {
-                    AugmenterSession();
+                    IncreaseSessionTime();
                     $("#div_fin_session").hide();
                     $("#countdown").css("color","white");
                     $(this).dialog("close");
@@ -534,6 +530,7 @@ if ( !isset($_GET['page']) ){
                 "sources/main.queries.php",
                 {
                     type    : "change_pw",
+                    change_pw_origine    : "user_change",
 					data :	aes_encrypt(data)
                 },
                 function(data){
@@ -827,7 +824,7 @@ if ( isset($_GET['page']) && $_GET['page'] == "manage_settings" ){
     //## FUNCTION : Launch the action the admin wants
     //###########
     function LaunchAdminActions(action,option){
-        LoadingPage();
+        $("#div_loading").show();
         $("#result_admin_action_db_backup").html("");
         if ( action == "admin_action_db_backup" ) option = $("#result_admin_action_db_backup_key").val();
         else if ( action == "admin_action_backup_decrypt" ) option = $("#bck_script_decrypt_file").val();
@@ -839,12 +836,12 @@ if ( isset($_GET['page']) && $_GET['page'] == "manage_settings" ){
 			   option	: option
 			},
 			function(data){
-				if(data[0].display == "db_backup"){
+				$("#div_loading").hide();
+				if(data[0].result == "db_backup"){
 					$("#result_admin_action_db_backup").html("<img src=\'includes/images/document-code.png\' alt=\'\' />&nbsp;<a href=\'"+data[0].href+"\'>'.$txt['pdf_download'].'</a>");
 				}else if(data[0].result == "pf_done"){
 					$("#result_admin_action_check_pf").show();
 				}
-				$("#div_loading").hide();
 			},
 			"json"
 		);

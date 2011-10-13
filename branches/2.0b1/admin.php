@@ -26,8 +26,6 @@ echo '
      //div for information
      echo '
         <div style="float:right;width:300px;padding:10px;" class="ui-state-highlight ui-corner-all">
-            <span class="ui-icon ui-icon-comment" style="float: left; margin-right: .3em;">&nbsp;</span>'.$txt['support_page'].'
-            <br />
             <span class="ui-icon ui-icon-wrench" style="float: left; margin-right: .3em;">&nbsp;</span>'.$txt['bugs_page'].'
             <div style="text-align:center;margin-top:10px;">
                 '.$txt['thku'].'

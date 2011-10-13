@@ -1,5 +1,5 @@
 <?php
-global $lang, $txt, $k, $chemin_passman, $url_passman, $mdp_complexite, $mngPages;
+global $lang, $txt, $k, $chemin_passman, $url_passman, $pw_complexity, $mngPages;
 global $smtp_server, $smtp_auth, $smtp_auth_username, $smtp_auth_password, $email_from,$email_from_name;
 
 include('include.php');

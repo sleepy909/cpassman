@@ -1,6 +1,7 @@
 <?php
 session_start();
 header("Content-type: text/html; charset=utf-8");
+
 $_SESSION['CPM'] = 1;
 if ( isset($_POST['type']) ){
     switch( $_POST['type'] ){
@@ -13,7 +14,6 @@ if ( isset($_POST['type']) ){
             $txt = "";
             $x=1;
             $tab = array(
-            	$abspath."/install/settings.php",
             	$abspath."/install/",
             	$abspath."/includes/",
             	$abspath."/files/",
@@ -59,8 +59,12 @@ if ( isset($_POST['type']) ){
 
         #==========================
         case "step2":
+					//decrypt the password
+		    	require_once '../includes/libraries/crypt/aes.class.php';     // AES PHP implementation
+		    	require_once '../includes/libraries/crypt/aesctr.class.php';  // AES Counter Mode implementation
+		    	$db_password = AesCtr::decrypt($_POST['db_password'], "cpm", 128);
+
             $res = "";
-        	$db_password = str_replace(" ","+",urldecode($_POST['db_password']));
             // connexion
             if (@mysql_connect($_POST['db_host'], $_POST['db_login'], $db_password)) {
                 if ( @mysql_select_db($_POST['db_bdd']) ){
@@ -172,6 +176,7 @@ if ( isset($_POST['type']) ){
                 ('admin','ldap_mode','0'),
                 ('admin','richtext','0'),
                 ('admin','allow_print','0'),
+                ('admin','show_description','1'),
                 ('admin','anyone_can_modify','0'),
                 ('admin','nb_bad_authentication','0'),
                 ('admin','utf8_enabled','1'),
@@ -261,6 +266,7 @@ if ( isset($_POST['type']) ){
                   `disabled` tinyint(1) NOT NULL DEFAULT '0',
                   `no_bad_attempts` tinyint(1) NOT NULL DEFAULT '0',
                   `can_create_root_folder` tinyint(1) NOT NULL DEFAULT '0',
+                  `read_only` tinyint(1) NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `login` (`login`)
                 ) CHARSET=utf8;");
@@ -537,7 +543,7 @@ if ( isset($_POST['type']) ){
             $fh = fopen($filename, 'w');
 
             fwrite($fh, "<?php
-global \$lang, \$txt, \$k, \$chemin_passman, \$url_passman, \$mdp_complexite, \$mngPages;
+global \$lang, \$txt, \$k, \$chemin_passman, \$url_passman, \$pw_complexity, \$mngPages;
 global \$smtp_server, \$smtp_auth, \$smtp_auth_username, \$smtp_auth_password, \$email_from,\$email_from_name;
 global \$server, \$user, \$pass, \$database, \$pre, \$db;
 
@@ -545,7 +551,7 @@ global \$server, \$user, \$pass, \$database, \$pre, \$db;
 
 ### EMAIL PROPERTIES ###
 \$smtp_server = '".$_SESSION['smtp_server']."';
-\$smtp_auth = ".$_SESSION['smtp_auth']."; //false or true
+\$smtp_auth = '".$_SESSION['smtp_auth']."'; //false or true
 \$smtp_auth_username = '".str_replace("'", "\'", $_SESSION['smtp_auth_username'])."';
 \$smtp_auth_password = '".str_replace("'", "\'", $_SESSION['smtp_auth_password'])."';
 \$email_from = '".$_SESSION['email_from']."';
@@ -554,7 +560,7 @@ global \$server, \$user, \$pass, \$database, \$pre, \$db;
 ### DATABASE connexion parameters ###
 \$server = \"".$_SESSION['db_host']."\";
 \$user = \"".$_SESSION['db_login']."\";
-\$pass = \"".str_replace("$", "\$",$_SESSION['db_pw'])."\";
+\$pass = \"".str_replace("$", "\\$", $_SESSION['db_pw'])."\";
 \$database = \"".$_SESSION['db_bdd']."\";
 \$pre = \"".$_SESSION['tbl_prefix']."\";
 

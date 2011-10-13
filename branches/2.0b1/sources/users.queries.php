@@ -17,7 +17,7 @@ if (!isset($_SESSION['CPM'] ) || $_SESSION['CPM'] != 1)
 	die('Hacking attempt...');
 
 include('../includes/settings.php');
-header("Content-type: text/html; charset==utf-8");
+header("Content-type: text/html; charset=utf-8");
 require_once('../includes/language/'.$_SESSION['user_language'].'.php');
 require_once('main.functions.php');
 
@@ -108,6 +108,7 @@ if ( !empty($_POST['type']) ){
                         'email' => $_POST['email'],
                         'admin' => $_POST['admin']=="true" ? '1' : '0',
                         'gestionnaire' => $_POST['manager']=="true" ? '1' : '0',
+                        'read_only' => $_POST['read_only']=="true" ? '1' : '0',
                         'personal_folder' => $_POST['personal_folder']=="true" ? '1' : '0',
                         'fonction_id' => $_POST['manager']=="true" ? $_SESSION['fonction_id'] : '0', //If manager is creater, then assign them roles as creator
                         'groupes_interdits' => $_POST['manager']=="true" ? $data['groupes_interdits'] : '0',
@@ -247,23 +248,6 @@ if ( !empty($_POST['type']) ){
         	}
         break;
 
-        ## UPDATE PASSWORD OF USER ##
-        case "modif_mdp_user":
-        	//Check KEY
-        	if ($_POST['key'] != $_SESSION['key']) {
-        		//error
-        		exit();
-        	}
-
-			$db->query_update(
-			     "users",
-			     array(
-			         'pw' => encrypt(string_utf8_decode($_POST['newmdp']))
-			     ),
-			     "id = ".$_POST['id']
-			 );
-        break;
-
         ## UPDATE EMAIL OF USER ##
         case "modif_mail_user":
         	//Check KEY
@@ -315,6 +299,23 @@ if ( !empty($_POST['type']) ){
 			 );
         break;
 
+        // UPDATE READ ONLY RIGHTS FOR USER
+        case "read_only":
+        	//Check KEY
+        	if ($_POST['key'] != $_SESSION['key']) {
+        		//error
+        		exit();
+        	}
+
+			$db->query_update(
+			     "users",
+			     array(
+			         'read_only' => $_POST['value']
+			     ),
+			     "id = ".$_POST['id']
+			 );
+        break;
+
         ## UPDATE ADMIN RIGHTS FOR USER ##
         case "admin":
         	//Check KEY
@@ -353,13 +354,18 @@ if ( !empty($_POST['type']) ){
         case "open_div_functions";
             $text = "";
             //Refresh list of existing functions
-            $data_user = $db->fetch_row("SELECT fonction_id FROM ".$pre."users WHERE id = ".$_POST['id']);
-            $users_functions = explode(';',$data_user[0]);
+        	$data_user = $db->fetch_row("SELECT fonction_id FROM ".$pre."users WHERE id = ".$_POST['id']);
+        	$users_functions = explode(';', $data_user[0]);
+
+        	//array of roles for actual user
+        	$my_functions = explode(';', $_SESSION['fonction_id']);
+
 
             $rows = $db->fetch_all_array("SELECT id,title FROM ".$pre."roles_title");
             foreach( $rows as $reccord ){
                 $text .= '<input type="checkbox" id="cb_change_function-'.$reccord['id'].'"';
-                if ( in_array($reccord['id'],$users_functions) )  $text .= ' checked';
+            	if ( in_array($reccord['id'], $users_functions) )  $text .= ' checked';
+            	if ( !in_array($reccord['id'], $my_functions) )  $text .= ' disabled="disabled"';
                 $text .= '>&nbsp;'.$reccord['title'].'<br />';
             }
 

@@ -37,8 +37,6 @@ require_once('../includes/language/'.$_SESSION['user_language'].'.php');
 switch($_POST['type'])
 {
     case "change_pw":
-        //Get a string with the old pw array
-        $last_pw = explode(';',$_SESSION['last_pw']);
 
     	//decrypt and retreive data in JSON format
     	require_once '../includes/libraries/crypt/aes.class.php';     // AES PHP implementation
@@ -47,6 +45,12 @@ switch($_POST['type'])
 
     	//Prepare variables
     	$new_pw = encrypt(htmlspecialchars_decode($data_received['new_pw']));
+
+			if(isset($_POST['change_pw_origine']) && $_POST['change_pw_origine'] == "user_change"){
+				//User has decided to change is PW
+
+	      //Get a string with the old pw array
+	      $last_pw = explode(';',$_SESSION['last_pw']);
 
         //if size is bigger then clean the array
         if ( sizeof($last_pw) > $_SESSION['settings']['number_of_used_pw'] && $_SESSION['settings']['number_of_used_pw'] > 0 ){
@@ -100,6 +104,31 @@ switch($_POST['type'])
 
             echo '[ { "error" : "none" } ]';
         }
+			}else
+			//ADMIN has decided to change the USER's PW
+			if(isset($_POST['change_pw_origine']) && $_POST['change_pw_origine'] == "admin_change"){
+				//Check KEY
+      	if ($data_received['key'] != $_SESSION['key']) {
+      		echo '[ { "error" : "key_not_conform" } ]';
+      		exit();
+      	}
+
+				//update DB
+        $db->query_update(
+            "users",
+            array(
+                'pw' => $new_pw,
+                'last_pw_change' => mktime(0,0,0,date('m'),date('d'),date('y'))
+            ),
+            "id = ".$data_received['user_id']
+        );
+
+        echo '[ { "error" : "none" } ]';
+			}
+
+			else{
+				echo '[ { "error" : "nothing_to_do" } ]';
+			}
 
     break;
 
@@ -250,12 +279,19 @@ switch($_POST['type'])
                 $_SESSION['user_id'] = $data['id'];
                 $_SESSION['user_admin'] = $data['admin'];
                 $_SESSION['user_gestionnaire'] = $data['gestionnaire'];
+                $_SESSION['user_read_only'] = $data['read_only'];
                 $_SESSION['last_pw_change'] = $data['last_pw_change'];
                 $_SESSION['last_pw'] = $data['last_pw'];
                 $_SESSION['can_create_root_folder'] = $data['can_create_root_folder'];
 	            $_SESSION['key'] = $key;
 	            $_SESSION['personal_folder'] = $data['personal_folder'];
                 $_SESSION['fin_session'] = time() + $data_received['duree_session'] * 60;
+
+            	//user type
+            	if($_SESSION['user_admin'] == 1) $_SESSION['user_privilege'] = $txt['god'];
+            	else if($_SESSION['user_gestionnaire'] == 1) $_SESSION['user_privilege'] = $txt['gestionnaire'];
+            	else if($_SESSION['user_read_only'] == 1) $_SESSION['user_privilege'] = $txt['read_only_account'];
+            	else $_SESSION['user_privilege'] = $txt['user'];
 
                 if ( empty($data['last_connexion']) ) $_SESSION['derniere_connexion'] = mktime(date('h'),date('m'),date('s'),date('m'),date('d'),date('y'));
                 else $_SESSION['derniere_connexion'] = $data['last_connexion'];
@@ -382,10 +418,9 @@ switch($_POST['type'])
 
     break;
 
-    case "augmenter_session":
+    case "increase_session_time":
     	$_SESSION['fin_session'] = $_SESSION['fin_session']+3600;
-    	//setcookie('pma_end_session', time(), $_SESSION['fin_session']+3600);
-        echo 'document.getElementById(\'temps_restant\').value = "'.$_SESSION['fin_session'].'";$("#date_end_session")val("'.$_SESSION['fin_session'].'")';
+    	echo '[{"new_value":"'.$_SESSION['fin_session'].'"}]';
     break;
 
     //Used in order to send the password to the user by email

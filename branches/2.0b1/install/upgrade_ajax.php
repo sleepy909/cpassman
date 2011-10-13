@@ -3,6 +3,12 @@ session_start();
 
 require_once("../includes/language/english.php");
 require_once("../includes/include.php");
+
+if(!file_exists("../includes/settings.php")){
+	echo 'document.getElementById("res_step1").innerHTML = "File settings.php does not exist in folder includes/! If it is an upgrade, it should be there, otherwize select install!";';
+	echo 'document.getElementById("loader").style.display = "none";';
+	exit;
+}
 require_once("../includes/settings.php");
 
 $_SESSION['CPM'] = 1;
@@ -217,6 +223,7 @@ if ( isset($_POST['type']) ){
 			array('admin','ldap_mode','0',0),
 			array('admin','richtext',0,0),
 			array('admin','allow_print',0,0),
+			array('admin','show_description',1,0),
 			array('admin','anyone_can_modify',0,0),
 			array('admin','nb_bad_authentication',0,0),
 			array('admin','restricted_to_roles',0,0),
@@ -260,6 +267,7 @@ if ( isset($_POST['type']) ){
 			$res2 = add_column_if_not_exist($_SESSION['tbl_prefix']."users","disabled","TINYINT(1) NOT NULL DEFAULT '0'");
 			$res2 = add_column_if_not_exist($_SESSION['tbl_prefix']."users","no_bad_attempts","TINYINT(1) NOT NULL DEFAULT '0'");
 			$res2 = add_column_if_not_exist($_SESSION['tbl_prefix']."users","can_create_root_folder","TINYINT(1) NOT NULL DEFAULT '0'");
+			$res2 = add_column_if_not_exist($_SESSION['tbl_prefix']."users","read_only","TINYINT(1) NOT NULL DEFAULT '0'");
 			echo 'document.getElementById("tbl_2").innerHTML = "<img src=\"images/tick.png\">";';
 
 			## Alter nested_tree table
@@ -651,7 +659,7 @@ if ( isset($_POST['type']) ){
 				if (empty($_SESSION['email_from_name'])) $_SESSION['email_from_name'] = 'false';
 
 				fwrite($fh, "<?php
-global \$lang, \$txt, \$k, \$chemin_passman, \$url_passman, \$mdp_complexite, \$mngPages;
+global \$lang, \$txt, \$k, \$chemin_passman, \$url_passman, \$pw_complexity, \$mngPages;
 global \$smtp_server, \$smtp_auth, \$smtp_auth_username, \$smtp_auth_password, \$email_from,\$email_from_name;
 global \$server, \$user, \$pass, \$database, \$pre, \$db;
 
@@ -659,7 +667,7 @@ global \$server, \$user, \$pass, \$database, \$pre, \$db;
 
 ### EMAIL PROPERTIES ###
 \$smtp_server = '".str_replace("'", "", $_SESSION['smtp_server'])."';
-\$smtp_auth = ".$_SESSION['smtp_auth']."; //false or true
+\$smtp_auth = '".str_replace("'", "\'", $_SESSION['smtp_auth'])."'; //false or true
 \$smtp_auth_username = '".str_replace("'", "\'", $_SESSION['smtp_auth_username'])."';
 \$smtp_auth_password = '".str_replace("'", "\'", $_SESSION['smtp_auth_password'])."';
 \$email_from = '".str_replace("'", "", $_SESSION['email_from'])."';
@@ -668,7 +676,7 @@ global \$server, \$user, \$pass, \$database, \$pre, \$db;
 ### DATABASE connexion parameters ###
 \$server = \"". $_SESSION['db_host'] ."\";
 \$user = \"". $_SESSION['db_login'] ."\";
-\$pass = \"". str_replace("$", "\$",$_SESSION['db_pw']) ."\";
+\$pass = \"". str_replace("$", "\\$",$_SESSION['db_pw']) ."\";
 \$database = \"". $_SESSION['db_bdd'] ."\";
 \$pre = \"". $_SESSION['tbl_prefix'] ."\";
 

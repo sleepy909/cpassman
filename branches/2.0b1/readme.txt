@@ -46,6 +46,7 @@ LANGUAGES:
 * TURKISH 	by Ahmet (to be finished)
 * NORWEGIAN by Kai (to be finished)
 * JAPANESE	by Shinji (to be finished)
+* PORTUGUESE by Luiz LeFort
 
 ------------------------------------------  THANKS TO  ----------------------------------------------
 Enrique, shauninja, seskahin, tstd0, Tommi, Petr and Philipp.
@@ -54,6 +55,9 @@ Enrique, shauninja, seskahin, tstd0, Tommi, Petr and Philipp.
 * IMAP login
 * translations
 * PostgreSQL database support
+
+--------------------------------------------  NEW  --------------------------------------------------
+* When creating a subfolder, it will be accessible by all roles that have access to its parent.
 
 ------------------------------------------  CHANGELOG  ----------------------------------------------
 v2.0
@@ -94,7 +98,9 @@ v2.0
 * improvement: backup system based on server CRON [91]
 * improvement: encrypted passwords in database by salt [86]
 * improvement: KB management is encrypted [89]
-* improvements: [87 , 101]
+* improvement: display or not the description in list of Items (Option) [137]
+* improvement: new kind of User: Read-only [142]
+* improvements: [87 , 101 ]
 * fixed: problem with slash in label [3141743]
 * fixed: password in cleartext in log [3141167]
 * fixed: deleted pws show up in the search [3160582]
@@ -110,7 +116,7 @@ v2.0
 * fixed: js library used not compliant with IE9
 * fixed: extra characters in front of passwords [108]
 * fixed: strings error in upgrade.php pages
-* fixed: 2.0 RC1 bugs => 125 - 123
+* fixed: 2.0 RC1/RC2/RC3 bugs => 125 - 123 - 136 - 143 - 146 - 140
 
 v1.80
 * improvement: an item can be modified by anyone if activated [3040120]

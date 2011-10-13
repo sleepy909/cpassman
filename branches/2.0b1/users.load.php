@@ -19,6 +19,10 @@ if (!isset($_SESSION['CPM'] ) || $_SESSION['CPM'] != 1)
 ?>
 
 <script type="text/javascript">
+function aes_encrypt(text) {
+		    return Aes.Ctr.encrypt(text, "<?php echo $_SESSION['key'];?>", 256);
+		}
+
 $(function() {
 	//inline editing
 	$(".editable_textarea").editable("sources/users.queries.php", {
@@ -105,6 +109,7 @@ $(function() {
 							email	:$("#new_email").val(),
 							admin	:$("#new_admin").prop("checked"),
 							manager	:$("#new_manager").prop("checked"),
+							read_only	:$("#new_read_only").prop("checked"),
 							personal_folder	:$("#new_personal_folder").prop("checked"),
 							new_folder_role_domain	:$("#new_folder_role_domain").prop("checked"),
 							domain	:$("#new_domain").val(),
@@ -166,20 +171,27 @@ $(function() {
 	    buttons: {
 	        "<?php echo $txt['save_button'];?>": function() {
 	            if ( $("#change_user_pw_newpw").val() == $("#change_user_pw_newpw_confirm").val() ){
+								var data = "{\"new_pw\":\""+protectString($("#change_user_pw_newpw").val())+"\" , \"user_id\":\""+$("#change_user_pw_id").val()+"\" , \"key\":\"<?php echo $_SESSION['key'];?>\"}";
 	                $.post(
-						"sources/users.queries.php",
+						"sources/main.queries.php",
 						{
-							type    : "modif_mdp_user",
-							id		:$("#change_user_pw_id").val(),
-							newmdp	:encodeURIComponent($("#change_user_pw_newpw").val()),
-							key	: "<?php echo $_SESSION['key'];?>"
+							type	: "change_pw",
+							change_pw_origine    : "admin_change",
+							data	: aes_encrypt(data)
 						},
 						function(data){
-							$("#change_user_pw_error").html("");
-							$("#change_user_pw_error").hide();
-							$("#change_user_pw_newpw_confirm, #change_user_pw_newpw").val("");
-							$("#change_user_pw").dialog("close");
-						}
+							if (data[0].error == "none") {
+								$("#change_user_pw_error").html("");
+								$("#change_user_pw_error").hide();
+								$("#change_user_pw_newpw_confirm, #change_user_pw_newpw").val("");
+								$("#change_user_pw").dialog("close");
+							}else if (data[0].error == "key_not_conform") {
+								$("#change_user_pw_error").html("PROTECTION KEY NOT CONFORM!! Try to relog.");
+							}else{
+								$("#change_user_pw_error").html("Something occurs ... no data to work with!");
+							}
+						},
+						"json"
 					);
 	            }else{
 	                $("#change_user_pw_error").html("<?php echo $txt['error_password_confirmation'];?>");
@@ -273,7 +285,7 @@ $(function() {
 
 function pwGenerate(elem){
 	$.post(
-		"sources/users.queries.php",
+		"sources/items.queries.php",
 		{
 			type    : "pw_generate",
 			size    : Math.floor((8-5)*Math.random()) + 6,
@@ -283,6 +295,10 @@ function pwGenerate(elem){
 			fixed_elem	: 1,
 			elem	: elem,
 			force	: false
+		},
+		function(data){
+			data = $.parseJSON(data);
+			$("#"+elem).val(data.key).focus();
 		}
 	);
 }
@@ -330,7 +346,11 @@ function ChangeUserParm(id, parameter) {
 	    var val = $("#"+parameter+"_"+id+":checked").val();
 	    if (val == "on" ) val = 1;
 	    else val = 0;
-	}
+	}else if (parameter == "read_only") {
+		    var val = $("#"+parameter+"_"+id+":checked").val();
+		    if (val == "on" ) val = 1;
+		    else val = 0;
+		}
 	$.post("sources/users.queries.php",
 	    {
 	        type    : parameter,

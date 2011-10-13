@@ -684,7 +684,7 @@ switch($_POST['type'])
         	UpdateCacheTable("reload", "");
 
             //Display all messages to user
-        	echo '[{"error":"no" , "message":"'.$text.'"}]';
+        	echo '[{"error":"no" , "message":"'.addslashes($text).'"}]';
         }
         break;
 }
