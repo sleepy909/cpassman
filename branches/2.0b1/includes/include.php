@@ -41,7 +41,10 @@ $k['langs'] = array(
 	'spanish'=>'es',
 	'czech'=>'cs',
 	'german'=>'de',
-    'russian'=>'ru'
+'russian'=>'ru',
+'japanese'=>'ja',
+'portuguese'=>'pr',
+'norwegian'=>'no'
 );
 
 //pw complexity levels
