@@ -16,6 +16,14 @@ session_start();
 if (!isset($_SESSION['CPM'] ) || $_SESSION['CPM'] != 1)
 	die('Hacking attempt...');
 
+/**
+ * Define Timezone
+ */
+if (isset($_SESSION['settings']['timezone'])) {
+	date_default_timezone_set($_SESSION['settings']['timezone']);
+}else{
+	date_default_timezone_set('UTC');
+}
 
 require_once('../includes/language/'.$_SESSION['user_language'].'.php');
 include('../includes/settings.php');
@@ -447,6 +455,16 @@ if ( isset($_POST['type']) ){
                 }
                 $pw = CleanString($pw);
 
+            	//generate 2d key
+            	include('../includes/libraries/pwgen/pwgen.class.php');
+            	$pwgen = new PWGen();
+            	$pwgen->setLength(20);
+            	$pwgen->setSecure(true);
+            	$pwgen->setSymbols(false);
+            	$pwgen->setCapitalize(true);
+            	$pwgen->setNumerals(true);
+            	$_SESSION['key_tmp'] = $pwgen->generate();
+
                 // Prepare files listing
                     $files = $files_edit = "";
                     // launch query
@@ -462,7 +480,7 @@ if ( isset($_POST['type']) ){
                         if ( in_array($reccord['extension'],$k['image_file_ext']) )
                             $files .=   '<img src="includes/images/'.$icon_image.'" /><a class="image_dialog" href="'.$_SESSION['settings']['cpassman_url'].'/upload/'.$reccord['file'].'" title="'.$reccord['name'].'">'.$reccord['name'].'</a><br />';
                         else
-                            $files .=   '<img src="includes/images/'.$icon_image.'" /><a href=\'sources/downloadFile.php?name='.urlencode($reccord['name']).'&path=../upload/'.$reccord['file'].'&size='.$reccord['size'].'&type='.urlencode($reccord['type']).'\' target=\'_blank\'>'.$reccord['name'].'</a><br />';
+                            $files .=   '<img src="includes/images/'.$icon_image.'" /><a href=\'sources/downloadFile.php?name='.urlencode($reccord['name']).'&path=../upload/'.$reccord['file'].'&size='.$reccord['size'].'&type='.urlencode($reccord['type']).'&key='.$_SESSION['key'].'&key_tmp='.$_SESSION['key_tmp'].'\' target=\'_blank\'>'.$reccord['name'].'</a><br />';
                         // Prepare list of files for edit dialogbox
                         $files_edit .= '<span id="span_edit_file_'.$reccord['id'].'"><img src="includes/images/'.$icon_image.'" /><img src="includes/images/document--minus.png" style="cursor:pointer;"  onclick="delete_attached_file(\"'.$reccord['id'].'\")" />&nbsp;'.$reccord['name']."</span><br />";
                     }
@@ -842,6 +860,16 @@ if ( isset($_POST['type']) ){
                     );
                 }
 
+            	//generate 2d key
+            	include('../includes/libraries/pwgen/pwgen.class.php');
+            	$pwgen = new PWGen();
+            	$pwgen->setLength(20);
+            	$pwgen->setSecure(true);
+            	$pwgen->setSymbols(false);
+            	$pwgen->setCapitalize(true);
+            	$pwgen->setNumerals(true);
+            	$_SESSION['key_tmp'] = $pwgen->generate();
+
                 // Prepare files listing
                     $files = $files_edit = "";
                     // launch query
@@ -857,7 +885,7 @@ if ( isset($_POST['type']) ){
                         if ( in_array($reccord['extension'],$k['image_file_ext']) )
                             $files .=   '<img src=\'includes/images/'.$icon_image.'\' /><a class=\'image_dialog\' href=\''.$_SESSION['settings']['cpassman_url'].'/upload/'.$reccord['file'].'\' title=\''.$reccord['name'].'\'>'.$reccord['name'].'</a><br />';
                         else
-                            $files .=   '<img src=\'includes/images/'.$icon_image.'\' /><a href=\'sources/downloadFile.php?name='.urlencode($reccord['name']).'&path=../upload/'.$reccord['file'].'&size='.$reccord['size'].'&type='.urlencode($reccord['type']).'\'>'.$reccord['name'].'</a><br />';
+                            $files .=   '<img src=\'includes/images/'.$icon_image.'\' /><a href=\'sources/downloadFile.php?name='.urlencode($reccord['name']).'&path=../upload/'.$reccord['file'].'&size='.$reccord['size'].'&type='.urlencode($reccord['type']).'&key='.$_SESSION['key'].'&key_tmp='.$_SESSION['key_tmp'].'\'>'.$reccord['name'].'</a><br />';
                         // Prepare list of files for edit dialogbox
                         $files_edit .= '<span id=\'span_edit_file_'.$reccord['id'].'\'><img src=\'includes/images/'.$icon_image.'\' /><img src=\'includes/images/document--minus.png\' style=\'cursor:pointer;\'  onclick=\'delete_attached_file("'.$reccord['id'].'")\' />&nbsp;'.$reccord['name']."</span><br />";
                     }
@@ -925,8 +953,6 @@ if ( isset($_POST['type']) ){
         * Generate a password
         */
         case "pw_generate":
-            $key = "";
-            //call class
             include('../includes/libraries/pwgen/pwgen.class.php');
             $pwgen = new PWGen();
 

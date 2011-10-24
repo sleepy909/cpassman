@@ -3,9 +3,9 @@ session_start();
 
 require_once("../includes/language/english.php");
 require_once("../includes/include.php");
-
+echo 'document.getElementById("res_step1_error").innerHTML = "";';
 if(!file_exists("../includes/settings.php")){
-	echo 'document.getElementById("res_step1").innerHTML = "File settings.php does not exist in folder includes/! If it is an upgrade, it should be there, otherwize select install!";';
+	echo 'document.getElementById("res_step1_error").innerHTML = "File settings.php does not exist in folder includes/! If it is an upgrade, it should be there, otherwize select install!";';
 	echo 'document.getElementById("loader").style.display = "none";';
 	exit;
 }

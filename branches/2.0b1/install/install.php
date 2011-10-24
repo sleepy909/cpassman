@@ -180,7 +180,7 @@ if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
                     <h3>Step 1 - Check server</h3>
 
                     <fieldset><legend>Please give me</legend>
-                    <label for="root_path" style="width:300px;">Absolute path to cPassMan folder :</label><input type="text" id="root_path" name="root_path" class="step" style="width:560px;" /><br />
+                    <label for="root_path" style="width:300px;">Absolute path to cPassMan folder :</label><input type="text" id="root_path" name="root_path" class="step" style="width:560px;" value="'.substr($_SERVER['DOCUMENT_ROOT'],0 ,strlen($_SERVER['DOCUMENT_ROOT'])-1).substr($_SERVER['PHP_SELF'], 0, strlen($_SERVER['PHP_SELF'])-20) .'" /><br />
                     <label for="url_path" style="width:300px;">Full URL to cPassMan :</label><input type="text" id="url_path" name="url_path" class="step" style="width:560px;" value="http://' . $_SERVER['HTTP_HOST'].substr($_SERVER['PHP_SELF'],0,strrpos($_SERVER['PHP_SELF'],'/')-8).'" /><span style="padding-left:10px;" id="url_path_res"></span><br />
                     </fieldset>
 
@@ -226,24 +226,24 @@ if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
    echo '
                     <h3>Step 3</h3>
                     <fieldset><legend>Give me some informations</legend>
-                    <label for="tbl_prefix" style="width:320px;">Table prefix :</label><input type="text" id="tbl_prefix" name="tbl_prefix" class="step" value="cpassman_" onblur /><span style="padding-left:10px;" id="tbl_prefix_res"></span><br />
+                    <label for="tbl_prefix" style="width:300px;">Table prefix :</label><input type="text" id="tbl_prefix" name="tbl_prefix" class="step" value="cpassman_" onblur /><span style="padding-left:10px;" id="tbl_prefix_res"></span><br />
 
-                    <label for="encrypt_key" style="width:320px;">Encryption key: <img src="../includes/images/information-white.png" alt="" title="For security reasons, salt key must be more than 15 characters and less than 32, should contains upper and lower case letters, special characters and numbers, and SHALL NOT CONTAINS single quotes!!!">
+                    <label for="encrypt_key" style="width:300px;">Encryption key: <img src="../includes/images/information-white.png" alt="" title="For security reasons, salt key must be more than 15 characters and less than 32, should contains upper and lower case letters, special characters and numbers, and SHALL NOT CONTAINS single quotes!!!">
                         <span style="font-size:9pt;font-weight:normal;"><br />for passwords encryption in database</span>
                     </label>
-                    <input type="text" id="encrypt_key" name="encrypt_key" class="step" value="whateveryouwant" /><span style="padding-left:10px;" id="encrypt_key_res"></span><br />
+                    <input type="text" id="encrypt_key" name="encrypt_key" class="step" value="whateveryouwant" /><span style="padding-left:10px;" id="encrypt_key_res"></span><br /><br />
 
-                    <label for="smtp_server" style="width:320px;">SMTP server :<span style="font-size:9pt;font-weight:normal;"><br />Email server configuration</span></label><input type="text" id="smtp_server" name="smtp_server" class="step" value="smtp.my_domain.com" /><br />
+                    <label for="smtp_server" style="width:300px;">SMTP server :<span style="font-size:9pt;font-weight:normal;"><br />Email server configuration</span></label><input type="text" id="smtp_server" name="smtp_server" class="step" value="smtp.my_domain.com" /><br /><br />
 
-                    <label for="smtp_auth" style="width:320px;">SMTP authorization:<span style="font-size:9pt;font-weight:normal;"><br />false or true</span></label><input type="text" id="smtp_auth" name="smtp_auth" class="step" value="false" /><br />
+                    <label for="smtp_auth" style="width:300px;">SMTP authorization:<span style="font-size:9pt;font-weight:normal;"><br />false or true</span></label><input type="text" id="smtp_auth" name="smtp_auth" class="step" value="false" /><br /><br />
 
-                    <label for="smtp_auth_username" style="width:320px;">SMTP authorization username :</label><input type="text" id="smtp_auth_username" name="smtp_auth_username" class="step" value="" /><br />
+                    <label for="smtp_auth_username" style="width:300px;">SMTP authorization username :</label><input type="text" id="smtp_auth_username" name="smtp_auth_username" class="step" value="" /><br />
 
-                    <label for="smtp_auth_password" style="width:320px;">SMTP authorization password :</label><input type="text" id="smtp_auth_password" name="smtp_auth_password" class="step" value="" /><br />
+                    <label for="smtp_auth_password" style="width:300px;">SMTP authorization password :</label><input type="text" id="smtp_auth_password" name="smtp_auth_password" class="step" value="" /><br />
 
-                    <label for="email_from" style="width:320px;">Email from :</label><input type="text" id="email_from" name="email_from" class="step" value=""  /><br />
+                    <label for="email_from" style="width:300px;">Email from :</label><input type="text" id="email_from" name="email_from" class="step" value=""  /><br />
 
-                    <label for="email_from_name" style="width:320px;">Email from name :</label><input type="text" id="email_from_name" name="email_from_name" class="step" value="" />
+                    <label for="email_from_name" style="width:300px;">Email from name :</label><input type="text" id="email_from_name" name="email_from_name" class="step" value="" />
                     </fieldset>
 
                     <fieldset><legend>Anonymous statistics</legend>

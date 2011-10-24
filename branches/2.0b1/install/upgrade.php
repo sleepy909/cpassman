@@ -129,7 +129,7 @@ if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
 	                 </fieldset>
 
 	                 <h4>Next elements will be checked.</h4>
-	                 <div style="margin:15px;" id="re_step1">
+	                 <div style="margin:15px;" id="res_step1">
 	                 <span style="padding-left:30px;font-size:13pt;">File "settings.php" is writable</span><br />
 	                 <span style="padding-left:30px;font-size:13pt;">Directory "/install/" is writable</span><br />
 	                 <span style="padding-left:30px;font-size:13pt;">Directory "/includes/" is writable</span><br />
@@ -139,6 +139,7 @@ if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
                      <span style="padding-left:30px;font-size:13pt;">PHP version is gretter or equal to 5.3.0</span><br />
 	                 </div>
 	                 <div style="margin-top:20px;font-weight:bold;text-align:center;height:27px;" id="res_step1"></div>
+	                 <div style="margin-top:20px;font-weight:bold;text-align:center;height:27px;" id="res_step1_error"></div>
 	                 <input type="hidden" id="step1" name="step1" value="" />';
 
 

@@ -244,7 +244,15 @@ echo '
             <input type="hidden" id="id_categorie" value="" />
             <input type="hidden" id="id_item" value="" />
             <input type="hidden" id="hid_anyone_can_modify" value="" />
-            <div style="height:210px;overflow-y:auto;" id="item_details_scroll">
+            <div style="height:210px;overflow-y:auto;" id="item_details_scroll">';
+
+				//history dialog button
+				echo '
+						<button  style="cursor:pointer; float:right; margin:3px 3px 0 0;" onclick="OpenDialog(\'div_item_history\', \'false\')">
+				        	<img src="includes/images/report.png" />
+				       	</button>';
+
+				echo'
                 <div id="item_details_expired" style="display:none;background-color:white; margin:5px;">
                     <div class="ui-state-error ui-corner-all" style="padding:2px;">
                         <img src="includes/images/error.png" alt="" />&nbsp;<b>'.$txt['pw_is_expired_-_update_it'].'</b>
@@ -330,17 +338,7 @@ echo '
                         <div id="id_kbs" style="display:inline;"></div><input type="hidden" id="hid_kbs" />
                     </td>
                 </tr>';
-                //Line for HISTORY
                 echo '
-                <tr>
-                    <td valign="top" class="td_title"><span class="ui-icon ui-icon-carat-1-e" style="float: left; margin-right: .3em;">&nbsp;</span>'.$txt['history'].' :</td>
-                    <td>
-                        <div onclick="OpenDiv(\'id_info\')" style="cursor:pointer">
-                            <img src="includes/images/layout_split_vertical.png" />
-                        </div>
-                        <div id="id_info" style="font-size:8pt;margin-top:4px;display:none;"></div>
-                    </td>
-                </tr>
                 </table>
             </div>
         </div>';
@@ -762,7 +760,7 @@ echo '
 //DIALOG TO WHAT FOLDER COPYING ITEM
 echo '
 <div id="div_copy_item_to_folder" style="display:none;">
-    <div id="new_rep_show_error" style="text-align:center;margin:2px;display:none;" class="ui-state-error ui-corner-all"></div>
+    <div id="copy_item_to_folder_show_error" style="text-align:center;margin:2px;display:none;" class="ui-state-error ui-corner-all"></div>
     <div style="">'.$txt['item_copy_to_folder'].'</div>
 	<div style="margin:10px;">
 		<select id="copy_in_folder">
@@ -771,6 +769,10 @@ echo '
 		'</select>
 	</div>
 </div>';
+
+//DIALOG FOR HISTORY OF ITEM
+echo '
+<div id="div_item_history" style="display:none;"></div>';
 
 
 require_once("items.load.php");

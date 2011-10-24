@@ -347,8 +347,8 @@ switch($_POST['type'])
             LIMIT $start, $nb_elements");
 
     	foreach( $rows as $reccord){
-    		$label = explode('@',addslashes(CleanString($reccord['label'])));
-    		$logs .= '<tr><td>'.date($_SESSION['settings']['date_format']." ".$_SESSION['settings']['time_format'],$reccord['date']).'</td><td align=\"left\">'.htmlspecialchars($label[0], ENT_QUOTES).'</td><td align=\"center\">'.$reccord['login'].'</td></tr>';
+    		//$label = explode('@',addslashes(CleanString($reccord['label'])));
+    		$logs .= '<tr><td>'.date($_SESSION['settings']['date_format']." ".$_SESSION['settings']['time_format'],$reccord['date']).'</td><td align=\"left\">'.str_replace('"', '\"', $reccord['label']).'</td><td align=\"center\">'.$reccord['login'].'</td></tr>';
     	}
 
     	echo '[{"tbody_logs": "'.$logs.'" , "log_pages" : "'.$pages.'"}]';

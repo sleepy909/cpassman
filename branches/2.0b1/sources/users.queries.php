@@ -365,7 +365,7 @@ if ( !empty($_POST['type']) ){
             foreach( $rows as $reccord ){
                 $text .= '<input type="checkbox" id="cb_change_function-'.$reccord['id'].'"';
             	if ( in_array($reccord['id'], $users_functions) )  $text .= ' checked';
-            	if ( !in_array($reccord['id'], $my_functions) )  $text .= ' disabled="disabled"';
+            	if ( !in_array($reccord['id'], $my_functions) && $_SESSION['is_admin'] != 1)  $text .= ' disabled="disabled"';
                 $text .= '>&nbsp;'.$reccord['title'].'<br />';
             }
 
@@ -608,8 +608,8 @@ if ( !empty($_POST['type']) ){
             LIMIT $start,".$_POST['nb_items_by_page']);
 
     		foreach( $rows as $reccord){
-    			$label = explode('@',addslashes(CleanString($reccord['label'])));
-    			$logs .= '<tr><td>'.date($_SESSION['settings']['date_format']." ".$_SESSION['settings']['time_format'],$reccord['date']).'</td><td align=\"center\">'.$label[0].'</td><td align=\"center\">'.$reccord['login'].'</td><td align=\"center\">'.$txt[$reccord['action']].'</td></tr>';
+    			//$label = explode('@',addslashes(CleanString($reccord['label'])));
+    			$logs .= '<tr><td>'.date($_SESSION['settings']['date_format']." ".$_SESSION['settings']['time_format'],$reccord['date']).'</td><td align=\"center\">'.str_replace('"', '\"', $reccord['label']).'</td><td align=\"center\">'.$reccord['login'].'</td><td align=\"center\">'.$txt[$reccord['action']].'</td></tr>';
     		}
 
     		echo '[ { "table_logs": "'.$logs.'", "pages": "'.$pages.'", "error" : "no" } ]';
