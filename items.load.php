@@ -57,6 +57,20 @@ if (!isset($_SESSION['CPM'] ) || $_SESSION['CPM'] != 1)
         }
     }
 
+    /**
+     * Open a dialogbox
+     * @access public
+     * @return void
+     **/
+    function OpenDialog(id, modal){
+    	if(modal == "false"){
+    		$("#"+id).dialog( "option", "modal", false );
+    	}else{
+    		$("#"+id).dialog( "option", "modal", true );
+    	}
+    	$("#"+id).dialog("open");
+    }
+
 
 //###########
 //## FUNCTION : Launch the listing of all items of one category
@@ -592,10 +606,9 @@ function aes_decrypt(text) {
 }
 
 function AjouterFolder(){
-    if ( document.getElementById("new_rep_titre").value == "0" ) alert("<?php echo $txt['error_group_label'];?>");
-    else if ( document.getElementById("new_rep_complexite").value == "" ) alert("<?php echo $txt['error_group_complex'];?>");
+    if ( document.getElementById("new_rep_titre").value == "0" ) $("#new_rep_show_error").html("<?php echo $txt['error_group_label'];?>").show();
+    else if ( document.getElementById("new_rep_complexite").value == "" ) $("#new_rep_show_error").html("<?php echo $txt['error_group_complex'];?>").show();
     else{
-    	LoadingPage();
     	if ($("#new_rep_role").val() == undefined) {
     		role_id = "<?php echo $_SESSION['fonction_id'];?>";
     	}else{
@@ -616,15 +629,9 @@ function AjouterFolder(){
             function(data){
                 //Check errors
                 if (data[0].error == "error_group_exist") {
-                    $("#div_add_group").dialog("open");
-                    $("#addgroup_show_error").html("<?php echo $txt['error_group_exist'];?>");
-                    $("#addgroup_show_error").show();
-                    LoadingPage();
+                    $("#new_rep_show_error").html("<?php echo $txt['error_group_exist'];?>").show();
                 }else if (data[0].error == "error_html_codes") {
-                    $("#div_add_group").dialog("open");
-                    $("#addgroup_show_error").html("<?php echo $txt['error_html_codes'];?>");
-                    $("#addgroup_show_error").show();
-                    LoadingPage();
+                    $("#addgroup_show_error").html("<?php echo $txt['error_html_codes'];?>").show();
                 }else {
                     window.location.href = "index.php?page=items";
                 }
@@ -739,7 +746,7 @@ function AfficherDetailsItem(id, salt_key_required, expired_item, restricted, di
                     $("#hid_desc").val(data.description);
                     $("#id_login").html(data.login);
                     $("#hid_login").val(data.login);
-                    $("#id_info").html(htmlspecialchars_decode(data.historique));
+                    $("#div_item_history").html(htmlspecialchars_decode(data.historique));
                     $("#id_restricted_to").html(data.id_restricted_to+data.id_restricted_to_roles);
                     $("#hid_restricted_to").val(data.id_restricted_to);
                     $("#hid_restricted_to_roles").val(data.id_restricted_to_roles);
@@ -1058,23 +1065,19 @@ $("#div_copy_item_to_folder").dialog({
 					function(data){
 						//check if format error
 			            if (data[0].error == "no_item") {
-			                $("#div_dialog_message_text").html(data[1].error_text);
-			                $("#div_dialog_message").dialog("open");
+			                $("#copy_item_to_folder_show_error").html(data[1].error_text).show();
 			            }
 
 						//if OK
 						if (data[0].status == "ok") {
 							window.location.href = "index.php?page=items&group="+$('#copy_in_folder').val()+"&id="+data[1].new_id;
 						}
-						LoadingPage();
 					},
 					"json"
 				);
-
-
-                $(this).dialog('close');
             },
             "<?php echo $txt['cancel_button'];?>": function() {
+            	$("#copy_item_to_folder_show_error").html("").hide();
                 $(this).dialog('close');
             }
         }
@@ -1278,9 +1281,9 @@ $(function() {
         buttons: {
             "<?php echo $txt['save_button'];?>": function() {
                 AjouterFolder();
-                $(this).dialog('close');
             },
             "<?php echo $txt['cancel_button'];?>": function() {
+            	$("#new_rep_show_error").html("").hide();
                 $(this).dialog('close');
             }
         }
@@ -1324,8 +1327,7 @@ $(function() {
 							if (data[0].error == "") {
 								window.location.href = "index.php?page=items";
 							}else{
-				                document.getElementById('edit_rep_show_error').innerHTML = data[0].error;
-				                $("#edit_rep_show_error").show();
+				                $("#edit_rep_show_error").html(data[0].error).show();
 				            }
 						},
 						"json"
@@ -1333,6 +1335,7 @@ $(function() {
 			    }
             },
             "<?php echo $txt['cancel_button'];?>": function() {
+            	$("#edit_rep_show_error").html("").hide();
                 $(this).dialog('close');
             }
         }
@@ -1452,6 +1455,21 @@ $(function() {
         width: 500,
         height: 200,
         title: "<?php echo $txt['admin_main'];?>",
+        buttons: {
+            "<?php echo $txt['close'];?>": function() {
+                $(this).dialog('close');
+            }
+        }
+    });
+    //<=
+    //=> SHOW HISTORY DIALOG
+    $("#div_item_history").dialog({
+        bgiframe: true,
+        modal: true,
+        autoOpen: false,
+        width: 500,
+        height: 200,
+        title: "<?php echo $txt['history'];?>",
         buttons: {
             "<?php echo $txt['close'];?>": function() {
                 $(this).dialog('close');

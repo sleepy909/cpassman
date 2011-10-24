@@ -241,7 +241,17 @@ switch($_POST['type'])
             fwrite($handle,$return);
             fclose($handle);
 
-        	echo '[{"result":"db_backup" , "href":"sources/downloadFile.php?name='.urlencode($filename).'&path='.$path.$filename.'&type=sql"}]';
+        	//generate 2d key
+        	include('../includes/libraries/pwgen/pwgen.class.php');
+        	$pwgen = new PWGen();
+        	$pwgen->setLength(20);
+        	$pwgen->setSecure(true);
+        	$pwgen->setSymbols(false);
+        	$pwgen->setCapitalize(true);
+        	$pwgen->setNumerals(true);
+        	$_SESSION['key_tmp'] = $pwgen->generate();
+
+        	echo '[{"result":"db_backup" , "href":"sources/downloadFile.php?name='.urlencode($filename).'&path='.$path.$filename.'&type=sql&key='.$_SESSION['key'].'&key_tmp='.$_SESSION['key_tmp'].'"}]';
         }
     break;
 

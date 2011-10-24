@@ -118,7 +118,7 @@ echo '
         	if ($_SESSION['user_gestionnaire']) {
         		$show_user_folders = false;
         		//Check if the user is a manager. If yes, not allowed to modifier
-        		if ($_SESSION['user_gestionnaire'] == 1 && $reccord['gestionnaire'] == 1) {
+        		if (($_SESSION['user_gestionnaire'] == 1 && $reccord['gestionnaire'] == 1) || $reccord['admin'] == 1 ) {
         			$show_user_folders = false;
         		}else{
         			//Check if the user has at least a same role as the manager
@@ -210,14 +210,14 @@ echo '
 
                     echo '
                     <td align="center">
-                        <img ', ($_SESSION['user_gestionnaire'] == 1 && ($reccord['admin'] == 1 || $reccord['gestionnaire'] == 1)) ? 'src="includes/images/user--minus_disabled.png"':'src="includes/images/'.$user_icon.'.png" onclick="'.$action_on_user.'" style="cursor:pointer;" title="'.$user_txt.'"', ' />
+                        <img ', ($show_user_folders == true) ? 'src="includes/images/'.$user_icon.'.png" onclick="'.$action_on_user.'" style="cursor:pointer;" title="'.$user_txt.'"':'src="includes/images/user--minus_disabled.png"', ' />
                     </td>
                     <td align="center">
-                        &nbsp;<img ', ($_SESSION['user_gestionnaire'] == 1 && ($reccord['admin'] == 1 || $reccord['gestionnaire'] == 1)) ? 'src="includes/images/lock__pencil_disabled.png"':'src="includes/images/lock__pencil.png" onclick="mdp_user(\''.$reccord['id'].'\')" style="cursor:pointer;"', ' />
+                        &nbsp;<img ', ($show_user_folders == true) ? 'src="includes/images/lock__pencil.png" onclick="mdp_user(\''.$reccord['id'].'\')" style="cursor:pointer;"':'src="includes/images/lock__pencil_disabled.png"', ' />
                     </td>
                     <td align="center">
                         &nbsp;';
-        				if ($_SESSION['user_gestionnaire'] == 1 && ($reccord['admin'] == 1 || $reccord['gestionnaire'] == 1)) {
+        				if ($show_user_folders != true) {
         					echo '<img src="includes/images/mail--pencil_disabled.png" />';
         				}else{
         					echo '<img src="includes/images/', empty($reccord['email']) ? 'mail--exclamation.png':'mail--pencil.png', '" onclick="mail_user(\''.$reccord['id'].'\',\''.addslashes($reccord['email']).'\')" style="cursor:pointer;" title="'.$reccord['email'].'"', ' />';
@@ -225,7 +225,7 @@ echo '
         			echo '
                     </td>
                     <td align="center">
-                        &nbsp;<img ', ($_SESSION['user_gestionnaire'] == 1 && ($reccord['admin'] == 1 || $reccord['gestionnaire'] == 1)) ? 'src="includes/images/report_disabled.png"':'src="includes/images/report.png" onclick="user_action_log_items(\''.$reccord['id'].'\')" style="cursor:pointer;" title="'.$txt['see_logs'].'"', ' />
+                        &nbsp;<img ', ($show_user_folders != true) ? 'src="includes/images/report_disabled.png"':'src="includes/images/report.png" onclick="user_action_log_items(\''.$reccord['id'].'\')" style="cursor:pointer;" title="'.$txt['see_logs'].'"', ' />
                     </td>
                 </tr>';
                 $x++;

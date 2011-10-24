@@ -350,7 +350,7 @@ require_once("load.php");
     if (isset($_SESSION['error']['salt'])) {
         echo '
         <div style="margin:10px;padding:10px;" class="ui-state-error ui-corner-all">
-            ', ( isset($_SESSION['error']['salt']) ) ? '<span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;">&nbsp;</span>'.$txt['error_salt'].'' : '', '
+            ', ( isset($_SESSION['error']['salt']) && $_SESSION['error']['salt'] == TRUE ) ? '<span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;">&nbsp;</span>'.$txt['error_salt'].'' : '', '
         </div>';
 	}
 

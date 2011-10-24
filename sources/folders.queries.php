@@ -264,7 +264,7 @@ else if ( isset($_POST['type']) ){
 
                 //Get user's rights
                 IdentifyUserRights($_SESSION['groupes_visibles'].';'.$new_id,$_SESSION['groupes_interdits'],$_SESSION['is_admin'],$_SESSION['fonction_id'],true);
-								
+
 								//If it is a subfolder, then give access to it for all roles that allows the parent folder
                 $rows = $db->fetch_all_array("
 									SELECT role_id
@@ -277,14 +277,13 @@ else if ( isset($_POST['type']) ){
                         'roles_values',
                         array(
                             'role_id' => $reccord['role_id'],
-														'folder_id' => $new_id
+							'folder_id' => $new_id
                         )
                     );
                 }
-
-            	echo '[ { "error" : "'.$error.'" } ]';
-
             }
+            echo '[ { "error" : "'.$error.'" } ]';
+
         break;
 
         //CASE where UPDATING a new group

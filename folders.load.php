@@ -174,7 +174,7 @@ function add_new_folder(){
 	}else{
 		if ( document.getElementById("ajouter_groupe_titre").value != "" && document.getElementById("parent_id").value != "na" ){
 			$("#addgroup_show_error").hide();
-
+			LoadingPage();
 			//prepare data
 			var data = '{"title":"'+$('#ajouter_groupe_titre').val().replace(/"/g,'&quot;') + '", "complexity":"'+$('#new_rep_complexite').val().replace(/"/g,'&quot;')+'", '+
 			'"parent_id":"'+$('#parent_id').val().replace(/"/g,'&quot;')+'", "renewal_period":"'+$('#add_node_renewal_period').val().replace(/"/g,'&quot;')+'"}';
