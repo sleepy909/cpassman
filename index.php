@@ -91,7 +91,7 @@ require_once("load.php");
     /* HEADER */
     echo '
     <div id="top">
-        <div id="logo"><img src="includes/images/canevas/new_logo_cpm.png" alt="" /></div>';
+        <div id="logo"><img src="includes/images/canevas/logo.png" alt="" /></div>';
 
         //Display menu
         if (isset($_SESSION['login'])) {
@@ -279,7 +279,7 @@ require_once("load.php");
     // MESSAGE BOX
     echo '
         <div style="position:absolute;width:980px;">
-            <div id="message_box" style="display:none;float:right;width:200px;height-min:25px;background-color:#FFC0C0;border:2px solid #FF0000;padding:5px;text-align:center;"></div>
+            <div id="message_box" style="display:none;float:right;width:200px;min-height:25px;background-color:#FFC0C0;border:2px solid #FF0000;padding:5px;text-align:center;"></div>
         </div>';
 
     // Main page

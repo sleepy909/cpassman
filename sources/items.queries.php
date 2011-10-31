@@ -1291,7 +1291,7 @@ if ( isset($_POST['type']) ){
                         	$html .= 'item';
                         }
 
-                    	$html .= '" id="'.$reccord['id'].'">';
+                    	$html .= '" id="'.$reccord['id'].'" style="margin-left:-30px;">';
 
                     	if ($can_move == 1) {
                     		$html .= '<img src="includes/images/grippy.png" style="margin-right:5px;cursor:hand;" alt="" class="grippy"  />';

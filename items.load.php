@@ -263,10 +263,13 @@ function ListerItems(groupe_id, restricted, start){
 							}
 						});
 					}
+					//$('#items_list').jScrollPane();
 	            }
 
 				//Delete data
                 delete data;
+
+                //$('#jstree').jScrollPane();
 
         		//hide ajax loader
         		$("#div_loading").hide();
@@ -837,6 +840,7 @@ function AfficherDetailsItem(id, salt_key_required, expired_item, restricted, di
                     $("#item_details_expired_full").hide();
                     $("#menu_button_edit_item, #menu_button_del_item, #menu_button_copy_item, #menu_button_add_fav, #menu_button_del_fav, #menu_button_show_pw, #menu_button_copy_pw, #menu_button_copy_login, #menu_button_copy_link").attr("disabled","disabled");
                 }
+                $('#item_details_ok').jScrollPane();
                 $("#div_loading").hide();
             }
         );

@@ -230,7 +230,7 @@ switch($_POST['type'])
 
         if ( !empty($return) ){
             //save file
-            $filename = 'db-backup-'.time().'-'.(md5(implode(',',$tables))).'.sql';
+            $filename = 'db-backup-'.time().'.sql';
             $path = '../files/';
             $handle = fopen($path.$filename,'w+');
 
@@ -260,11 +260,12 @@ switch($_POST['type'])
     case "admin_action_db_restore":
         require_once('main.functions.php');
 
-        echo '$("#result_admin_action_db_restore").html("");';
-        $file = md5($_POST['option']);
+    	$data_post = explode('&', $_POST['option']);
+    	$file = $data_post[0];
+    	$key = $data_post[1];
 
         //create uncrypted file
-        if ( !empty($_POST['key']) ) {
+        if ( !empty($key) ) {
             //read full file
             $file_array = file("../files/".$file);
 
@@ -275,7 +276,7 @@ switch($_POST['type'])
             $file = "../files/".time().".log";
             $inF = fopen($file,"w");
             while(list($cle,$val) = each($file_array)) {
-                fputs($inF,decrypt($val,$_POST['key'])."\n");
+                fputs($inF,decrypt($val,$key)."\n");
             }
             fclose($inF);
         }
@@ -287,7 +288,7 @@ switch($_POST['type'])
                 $query.= fgets($handle, 4096);
                 if ( substr(rtrim($query), -1) == ';' ) {
                     //launch query
-                    mysql_query($query);
+                    $db->query($query);
                     $query = '';
                 }
             }
@@ -298,8 +299,7 @@ switch($_POST['type'])
         unlink("../files/".$file);
 
         //Show done
-        echo '$("#result_admin_action_db_restore").html("<img src=\"includes/images/tick.png\" alt=\"\" />");$("#result_admin_action_db_restore_get_file").hide();';
-        echo 'LoadingPage();';
+    	echo '[{"result":"db_restore"}]';
     break;
 
     ###########################################################

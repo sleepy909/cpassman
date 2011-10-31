@@ -11,22 +11,25 @@ $_SESSION['CPM'] = 1;
         <script type="text/javascript" src="../includes/js/functions.js"></script>
         <script type="text/javascript" src="install.js"></script>
         <script type="text/javascript" src="gauge/gauge.js"></script>
-        <script type="text/javascript" src="../includes/jquery-ui/js/jquery-1.6.2.min.js"></script>
-				<script type="text/javascript" src="../includes/libraries/crypt/aes.min.js"></script>
+        <script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="js/aes.min.js"></script>
 
         <script type="text/javascript">
-        if(typeof $=='undefined') {function $(v) {return(document.getElementById(v));}}
-        window.onload = function () {
-            if ( document.getElementById("progressbar") ){
+		<!-- // --><![CDATA[
+        //if(typeof $=='undefined') {function $(v) {return(document.getElementById(v));}}
+        $(function() {
+            if ( $("#progressbar") ){
                 gauge.add($("progressbar"), { width:600, height:30, name: 'pbar', limit: true, gradient: true, scale: 10, colors:['#ff0000','#00ff00']});
-                if ( document.getElementById("step").value == "1" ) gauge.modify($('pbar'),{values:[0.10,1]});
-                else if ( document.getElementById("step").value == "2" ) gauge.modify($('pbar'),{values:[0.30,1]});
-                else if ( document.getElementById("step").value == "3" ) gauge.modify($('pbar'),{values:[0.50,1]});
-                else if ( document.getElementById("step").value == "4" ) gauge.modify($('pbar'),{values:[0.70,1]});
-                else if ( document.getElementById("step").value == "5" ) gauge.modify($('pbar'),{values:[0.90,1]});
-                else if ( document.getElementById("step").value == "6" ) gauge.modify($('pbar'),{values:[1,1]});
+                if ( $("#step").val() == "1" ) gauge.modify($('pbar'),{values:[0.10,1]});
+                else if ( $("#step").val() == "2" ) gauge.modify($('pbar'),{values:[0.30,1]});
+                else if ( $("#step").val() == "3" ) gauge.modify($('pbar'),{values:[0.50,1]});
+                else if ( $("#step").val() == "4" ) gauge.modify($('pbar'),{values:[0.70,1]});
+                else if ( $("#step").val() == "5" ) gauge.modify($('pbar'),{values:[0.90,1]});
+                else if ( $("#step").val() == "6" ) gauge.modify($('pbar'),{values:[1,1]});
             }
 
+			//DB PW non accepted characters management
 		    $("#db_pw").keypress(function (e) {
 		        var key = e.charCode || e.keyCode || 0;
 		        if(key == 32) alert('No space character is allowed for password');
@@ -37,11 +40,25 @@ $_SESSION['CPM'] = 1;
 	            );
 		    });
 
-        }
+			//DB PW non accepted characters management
+		    $("#encrypt_key").keypress(function (e) {
+		        var key = e.charCode || e.keyCode || 0;alert(key);
+				if($("#encrypt_key").val().length < 15)
+					$("#encrypt_key_res").html("<img src='../includes/images/cross.png' />");
+				else
+					$("#encrypt_key_res").html("<img src='../includes/images/tick.png' />");
+	            // allow backspace, tab, delete, arrows, letters, numbers and keypad numbers ONLY
+	            return (
+	                key != 33 && key != 34 && key != 39 && key != 92 && key != 32  && key != 96
+					&& (key < 165)
+					&& $("#encrypt_key").val().length <= 32
+	            );
+		    });
+        });
 
-				function aes_encrypt(text) {
-					return Aes.Ctr.encrypt(text, "cpm", 128);
-				}
+		function aes_encrypt(text) {
+			return Aes.Ctr.encrypt(text, "cpm", 128);
+		}
 
         function goto_next_page(page){
             document.getElementById("step").value=page;
@@ -100,11 +117,6 @@ $_SESSION['CPM'] = 1;
 						document.getElementById("encrypt_key_res").innerHTML = "<img src='images/exclamation-red.png /'> 15 to 32 characters!";
                         status = false;
 					}
-					if ( document.getElementById("encrypt_key").value.indexOf("'") == -1 ) key_char = true;
-					else{
-						document.getElementById("encrypt_key_res").innerHTML = "<img src='images/exclamation-red.png /'> NO single quote!";
-                        status = false;
-					}
 					if ( key_val == true && key_length == true && key_char == true )
 						document.getElementById("encrypt_key_res").innerHTML = "<img src='images/tick.png'>";
 
@@ -131,6 +143,7 @@ $_SESSION['CPM'] = 1;
 				}
             }
         }
+		// ]]>
         </script>
     </head>
     <body>
@@ -175,12 +188,17 @@ if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
 
 
 }else if ( (isset($_POST['step']) && $_POST['step'] == 1) || (isset($_GET['step']) && $_GET['step'] == 1) ){
+	//define root path
+	$abs_path = "";
+	if(strrpos($_SERVER['DOCUMENT_ROOT'],"/") == 1) $abs_path = strlen($_SERVER['DOCUMENT_ROOT'])-1;
+	else $abs_path = $_SERVER['DOCUMENT_ROOT'];
+	$abs_path .= substr($_SERVER['PHP_SELF'], 0, strlen($_SERVER['PHP_SELF'])-20);
    //ETAPE 1
    echo '
                     <h3>Step 1 - Check server</h3>
 
                     <fieldset><legend>Please give me</legend>
-                    <label for="root_path" style="width:300px;">Absolute path to cPassMan folder :</label><input type="text" id="root_path" name="root_path" class="step" style="width:560px;" value="'.substr($_SERVER['DOCUMENT_ROOT'],0 ,strlen($_SERVER['DOCUMENT_ROOT'])-1).substr($_SERVER['PHP_SELF'], 0, strlen($_SERVER['PHP_SELF'])-20) .'" /><br />
+                    <label for="root_path" style="width:300px;">Absolute path to cPassMan folder :</label><input type="text" id="root_path" name="root_path" class="step" style="width:560px;" value="'.$abs_path.'" /><br />
                     <label for="url_path" style="width:300px;">Full URL to cPassMan :</label><input type="text" id="url_path" name="url_path" class="step" style="width:560px;" value="http://' . $_SERVER['HTTP_HOST'].substr($_SERVER['PHP_SELF'],0,strrpos($_SERVER['PHP_SELF'],'/')-8).'" /><span style="padding-left:10px;" id="url_path_res"></span><br />
                     </fieldset>
 
@@ -207,7 +225,7 @@ if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
                     <label for="db_host">Host :</label><input type="text" id="db_host" name="db_host" class="step" /><br />
                     <label for="db_db">Database name :</label><input type="text" id="db_bdd" name="db_bdd" class="step" /><br />
                     <label for="db_login">Login :</label><input type="text" id="db_login" name="db_login" class="step" /><br />
-                    <label for="db_pw">Password :</label><input type="password" id="db_pw" name="db_pw" class="step" tilte="Double quotes not allowed!" />
+                    <label for="db_pw">Password :</label><input type="text" id="db_pw" name="db_pw" class="step" tilte="Double quotes not allowed!" />
 										<br />
 										<div id="error_db" style="display:none;font-size:18px;color:red;margin:10px 0 10px 0;"></div>
                     </fieldset>
@@ -361,7 +379,7 @@ echo '
             cPassMan '.$k['version'].' &copy; copyright 2010-2011
         </div>
         <div style="float:right;margin-top:-15px;">
-            <a rel="license" href="http://creativecommons.org/licenses/by-nd/3.0/" title="Collaborative Passwords Manager by Nils Laumaill&#233; is licensed under a Creative Commons Attribution-No Derivative Works 3.0 License" target="_blank"><img src="includes/images/canevas/cc.3.0.png" alt="" /></a>
+            <a rel="license" href="http://creativecommons.org/licenses/by-nd/3.0/" title="Collaborative Passwords Manager by Nils Laumaill&#233; is licensed under a Creative Commons Attribution-No Derivative Works 3.0 License" target="_blank"><img src="../includes/images/canevas/cc.3.0.png" alt="" /></a>
         </div>
     </div>';
 ?>

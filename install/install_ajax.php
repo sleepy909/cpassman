@@ -342,7 +342,7 @@ if ( isset($_POST['type']) ){
                 CREATE TABLE IF NOT EXISTS `".$_SESSION['tbl_prefix']."files` (
                 `id` int(11) NOT NULL AUTO_INCREMENT,
                 `id_item` int(11) NOT NULL,
-                `name` varchar(50) NOT NULL,
+                `name` varchar(100) NOT NULL,
                 `size` int(10) NOT NULL,
                 `extension` varchar(10) NOT NULL,
                 `type` varchar(50) NOT NULL,

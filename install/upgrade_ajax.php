@@ -3,8 +3,8 @@ session_start();
 
 require_once("../includes/language/english.php");
 require_once("../includes/include.php");
-echo 'document.getElementById("res_step1_error").innerHTML = "";';
 if(!file_exists("../includes/settings.php")){
+	echo 'document.getElementById("res_step1_error").innerHTML = "";';
 	echo 'document.getElementById("res_step1_error").innerHTML = "File settings.php does not exist in folder includes/! If it is an upgrade, it should be there, otherwize select install!";';
 	echo 'document.getElementById("loader").style.display = "none";';
 	exit;
@@ -322,7 +322,7 @@ if ( isset($_POST['type']) ){
                 CREATE TABLE IF NOT EXISTS `".$_SESSION['tbl_prefix']."files` (
                 `id` int(11) NOT NULL AUTO_INCREMENT,
                 `id_item` int(11) NOT NULL,
-                `name` varchar(50) NOT NULL,
+                `name` varchar(100) NOT NULL,
                 `size` int(10) NOT NULL,
                 `extension` varchar(10) NOT NULL,
                 `type` varchar(50) NOT NULL,
@@ -339,6 +339,7 @@ if ( isset($_POST['type']) ){
 				break;
 			}
 			mysql_query("ALTER TABLE `".$_SESSION['tbl_prefix']."files` CHANGE id id INT(11) AUTO_INCREMENT PRIMARY KEY;");
+			mysql_query("ALTER TABLE `".$_SESSION['tbl_prefix']."files` CHANGE name name VARCHAR(100) NOT NULL;");
 
 			## TABLE CACHE
 			mysql_query("DROP TABLE IF EXISTS `".$_SESSION['tbl_prefix']."cache`");
