@@ -16,17 +16,6 @@
 if (!isset($_SESSION['CPM'] ) || $_SESSION['CPM'] != 1)
 	die('Hacking attempt...');
 
-
-/**
- * Define Timezone
- */
-if (isset($_SESSION['settings']['timezone'])) {
-	date_default_timezone_set($_SESSION['settings']['timezone']);
-}else{
-	date_default_timezone_set('UTC');
-}
-
-
 /* CHECK IF UPDATE IS NEEDED */
     if ( isset($_SESSION['settings']['update_needed']) && ($_SESSION['settings']['update_needed'] != false || empty($_SESSION['settings']['update_needed'])) ){
         $row = $db->fetch_row("SELECT valeur FROM ".$pre."misc WHERE type = 'admin' AND intitule = 'cpassman_version'");
@@ -56,6 +45,15 @@ $rows = $db->fetch_all_array("SELECT valeur,intitule FROM ".$pre."misc WHERE typ
 foreach( $rows as $reccord ){
 	$_SESSION['settings'][$reccord['intitule']] = $reccord['valeur'];
 }
+
+
+/**
+ * Define Timezone
+ */
+if (!isset($_SESSION['settings']['timezone'])) {
+	$_SESSION['settings']['timezone'] = 'UTC';
+}
+date_default_timezone_set($_SESSION['settings']['timezone']);
 
 
 /* CHECK IF MAINTENANCE MODE

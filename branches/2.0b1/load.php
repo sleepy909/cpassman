@@ -19,17 +19,16 @@ if (!isset($_SESSION['CPM'] ) || $_SESSION['CPM'] != 1)
 //Common elements
 $htmlHeaders = '
         <link rel="stylesheet" href="includes/css/passman.css" type="text/css" />
+        <link rel="stylesheet" href="includes/jquery-ui/css/'.$k['jquery-ui-theme'].'/jquery-ui-'.$k['jquery-ui-version'].'.custom.css" type="text/css" />
+
         <script type="text/javascript" src="includes/js/functions.js"></script>
 
         <script type="text/javascript" src="includes/jquery-ui/js/jquery-'.$k['jquery-version'].'.min.js"></script>
         <script type="text/javascript" src="includes/jquery-ui/js/jquery-ui-'.$k['jquery-ui-version'].'.custom.min.js"></script>
-        <link rel="stylesheet" href="includes/jquery-ui/css/'.$k['jquery-ui-theme'].'/jquery-ui-'.$k['jquery-ui-version'].'.custom.css" type="text/css" />
 
         <script language="JavaScript" type="text/javascript" src="includes/js/jquery.tooltip.js"></script>
-        <link rel="stylesheet" href="includes/css/jquery.tooltip.css" type="text/css" />
 
 		<script language="JavaScript" type="text/javascript" src="includes/libraries/simplePassMeter/simplePassMeter.js"></script>
-        <link rel="stylesheet" href="includes/libraries/simplePassMeter/simplePassMeter.css" type="text/css" />
 
         <script type="text/javascript" src="includes/libraries/crypt/aes.min.js"></script>';
 
@@ -41,10 +40,9 @@ if ( isset($_GET['page']) && $_GET['page'] == "items")
     $htmlHeaders .= '
 		<link rel="stylesheet" type="text/css" href="includes/css/items.css" />
         <script type="text/javascript" src="includes/libraries/jstree/jquery.cookie.js"></script>
-        <script type="text/javascript" src="includes/libraries/jstree/jquery.jstree.min.js"></script>
+        <script type="text/javascript" src="includes/libraries/jstree/jquery.jstree.pack.js"></script>
         <script type="text/javascript" src="includes/libraries/zclip/jquery.zclip.min.js"></script>
 
-        <link rel="stylesheet" type="text/css" href="includes/css/jquery.autocomplete.css" />
         <script type="text/javascript" src="includes/js/jquery.bgiframe.min.js"></script>
         <script type="text/javascript" src="includes/js/jquery.autocomplete.pack.js"></script>
 
@@ -57,7 +55,10 @@ if ( isset($_GET['page']) && $_GET['page'] == "items")
 		<script type="text/javascript" src="includes/libraries/ckeditor/adapters/jquery.js"></script>
 
 		<link rel="stylesheet" type="text/css" href="includes/libraries/multiselect/jquery.multiselect.css" />
-        <script type="text/javascript" src="includes/libraries/multiselect/jquery.multiselect.min.js"></script>';
+        <script type="text/javascript" src="includes/libraries/multiselect/jquery.multiselect.min.js"></script>
+
+        <!--<link type="text/css" href="includes/libraries/jscrollpane/jscrollpane.css" rel="stylesheet" media="all" />
+		<script type="text/javascript" src="includes/libraries/jscrollpane/jscrollpane.js"></script>-->';
 
 else
 if ( isset($_GET['page']) && $_GET['page'] == "manage_settings")
@@ -781,6 +782,23 @@ else
 if ( isset($_GET['page']) && $_GET['page'] == "manage_settings" ){
     $htmlHeaders .= '
     $(function() {
+    	$("#restore_bck_encryption_key_dialog").dialog({
+            bgiframe: true,
+            modal: true,
+            autoOpen: false,
+            width:100,
+            height:140,
+            title: "'.$txt['admin_action_db_restore_key'].'",
+            buttons: {
+                "'.$txt['ok'].'": function() {
+                    LaunchAdminActions("admin_action_db_restore", $("#restore_bck_fileObj").val()+"&"+$("#restore_bck_encryption_key").val());
+                },
+                "'.$txt['cancel_button'].'": function() {
+                    $(this).dialog("close");
+                }
+            }
+        });
+
         //CALL TO UPLOADIFY FOR RESTORE SQL FILE
         $("#fileInput_restore_sql").uploadify({
             "uploader"  : "includes/libraries/uploadify/uploadify.swf",
@@ -795,8 +813,8 @@ if ( isset($_GET['page']) && $_GET['page'] == "manage_settings" ){
             "wmode"     : "transparent",
             "buttonImg" : "includes/images/inbox--plus.png",
             "onComplete": function(event, queueID, fileObj, reponse, data){
-                var key = prompt("'.$txt['admin_action_db_restore_key'].'","'.$txt['encrypt_key'].'");
-                if ( key != "" ) LaunchAdminActions("admin_action_db_restore",fileObj.name+"&key="+key);
+            	$("#restore_bck_fileObj").val(fileObj.name);
+            	$("#restore_bck_encryption_key_dialog").dialog("open");
             }
         });
 
@@ -841,6 +859,13 @@ if ( isset($_GET['page']) && $_GET['page'] == "manage_settings" ){
 					$("#result_admin_action_db_backup").html("<img src=\'includes/images/document-code.png\' alt=\'\' />&nbsp;<a href=\'"+data[0].href+"\'>'.$txt['pdf_download'].'</a>");
 				}else if(data[0].result == "pf_done"){
 					$("#result_admin_action_check_pf").show();
+				}else if(data[0].result == "db_restore"){
+					$("#restore_bck_encryption_key_dialog").dialog("close");
+					$("#result_admin_action_db_restore").html("<img src=\"includes/images/tick.png\" alt=\"\" />");
+					$("#result_admin_action_db_restore_get_file").hide();
+					//deconnect user
+		            $("#menu_action").val("deconnexion");
+		            document.main_form.submit();
 				}
 			},
 			"json"

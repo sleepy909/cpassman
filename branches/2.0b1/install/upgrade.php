@@ -10,7 +10,8 @@ $_SESSION['CPM'] = 1;
         <link rel="stylesheet" href="install.css" type="text/css" />
         <script type="text/javascript" src="../includes/js/functions.js"></script>
         <script type="text/javascript" src="install.js"></script>
-        <script type="text/javascript" src="../includes/jquery-ui/js/jquery-<?php echo $k['jquery-version'];?>.min.js"></script>
+        <script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/jquery-ui.min.js"></script>
         <script type="text/javascript" src="gauge/gauge.js"></script>
 
         <script type="text/javascript">
@@ -64,7 +65,7 @@ $_SESSION['CPM'] = 1;
                     document.getElementById("loader").style.display = "";
                     var data = "type="+step;
                 }
-                httpRequest("upgrade_ajax.php",data)
+                httpRequest("upgrade_ajax.php",data);
             }
         }
         </script>
@@ -120,12 +121,17 @@ if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
 	                 <span style="font-weight:bold; font-size:14px;color:#C60000;"><img src="../includes/images/error.png" />&nbsp;ALWAYS BE SURE TO CREATE A DUMP OF YOUR DATABASE BEFORE UPGRADING</span>';
 
 }else if ( (isset($_POST['step']) && $_POST['step'] == 1) || (isset($_GET['step']) && $_GET['step'] == 1) ){
+//define root path
+	$abs_path = "";
+	if(strrpos($_SERVER['DOCUMENT_ROOT'],"/") == 1) $abs_path = strlen($_SERVER['DOCUMENT_ROOT'])-1;
+	else $abs_path = $_SERVER['DOCUMENT_ROOT'];
+	$abs_path .= substr($_SERVER['PHP_SELF'], 0, strlen($_SERVER['PHP_SELF'])-20);
 	//ETAPE 1
 	echo '
 	                 <h3>Step 1 - Check server</h3>
 
 	                 <fieldset><legend>Please give me</legend>
-	                 <label for="root_path" style="width:300px;">Absolute path to cPassMan folder :</label><input type="text" id="root_path" name="root_path" class="step" style="width:560px;" /><br />
+	                 <label for="root_path" style="width:300px;">Absolute path to cPassMan folder :</label><input type="text" id="root_path" name="root_path" class="step" style="width:560px;" value="'.$abs_path.'" /><br />
 	                 </fieldset>
 
 	                 <h4>Next elements will be checked.</h4>
@@ -288,7 +294,7 @@ echo '
         </div>
         <div style="float:right;margin-top:-15px;">
             <!--<a href="http://sourceforge.net/projects/communitypasswo" target="_blank"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=280505&amp;type=10" width="80" height="15" alt="Get Collaborative Passwords Manager at SourceForge.net. Fast, secure and Free Open Source software downloads" /></a>-->
-            <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/2.0/" title="Collaborative Passwords Manager by Nils Laumaill&#233; is licensed under a Creative Commons Attribution-Noncommercial-No Derivative Works 2.0 France License"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-nd/2.0/fr/80x15.png" /></a>
+            <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/2.0/" title="Collaborative Passwords Manager by Nils Laumaill&#233; is licensed under a Creative Commons Attribution-Noncommercial-No Derivative Works 2.0 France License"><img alt="Creative Commons License" style="border-width:0" src="../includes/images/canevas/cc.3.0.png" /></a>
         </div>
     </div>';
 ?>

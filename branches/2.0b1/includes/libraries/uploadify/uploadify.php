@@ -36,7 +36,7 @@ THE SOFTWARE.
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-
+date_default_timezone_set($_SESSION['settings']['timezone']);
 
 // Permits to extract the file extension
 function findexts ($filename)
@@ -52,10 +52,10 @@ if (!empty($_FILES)) {
 	//Case where upload is an attached file for one item
 	if ( !isset($_POST['type_upload']) || $_POST['type_upload'] != "import_items_from_file" ){
 		// Get some variables
-		$file_random_id = md5($_FILES['Filedata']['name'].mktime(date('h'), date('i'), date('s'), date('m'), date('d'), date('Y')));
-		$tempFile = $_FILES['Filedata']['tmp_name'];
+		//$file_random_id = md5($_FILES['Filedata']['name'].mktime(date('h'), date('i'), date('s'), date('m'), date('d'), date('Y')));
+		//$tempFile = $_FILES['Filedata']['tmp_name'];
 		$targetPath = $_SERVER['DOCUMENT_ROOT'].$_REQUEST['folder'] . '/';
-		$targetFile =  str_replace('//','/',$targetPath) . $file_random_id;
+		$targetFile =  str_replace('//','/',$targetPath) . $_FILES['Filedata']['name'];
 
 		include('../../settings.php');
 
@@ -63,19 +63,6 @@ if (!empty($_FILES)) {
 		include('../../../sources/class.database.php');
 		$db = new Database($server, $user, $pass, $database, $pre);
 		$db->connect();
-
-		// Store to database
-		$db->query_insert(
-			'files',
-			array(
-			    'id_item' => $_POST['post_id'],
-			    'name' => str_replace(' ','_',$_FILES['Filedata']['name']),
-			    'size' => $_FILES['Filedata']['size'],
-			    'extension' => findexts($_FILES['Filedata']['name']),
-			    'type' => $_FILES['Filedata']['type'],
-			    'file' => $file_random_id
-			)
-		);
 
 		// Log upload into databse - only log for a modification
 		if ( $_POST['type'] == "modification" ){
@@ -92,13 +79,13 @@ if (!empty($_FILES)) {
 		}
 	}else{
 		// Get some variables
-		$tempFile = $_FILES['Filedata']['tmp_name'];
+		//$tempFile = $_FILES['Filedata']['tmp_name'];
 		$targetPath = $_SERVER['DOCUMENT_ROOT'].$_REQUEST['folder'] . '/';
 		$targetFile =  str_replace('//','/',$targetPath) . $_FILES['Filedata']['name'];
 	}
 
 	//move
-	move_uploaded_file($tempFile, $targetFile);
+	move_uploaded_file($_FILES['Filedata']['tmp_name'], $targetFile);
 	echo "1";
 
 }

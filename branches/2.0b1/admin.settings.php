@@ -1016,4 +1016,10 @@ echo '
         echo '
     </form>
 </div>';
+
+echo '
+<input id="restore_bck_fileObj" name="restore_bck_fileObj" type="hidden" value="" />
+<div id="restore_bck_encryption_key_dialog" style="display:none;">
+    <input id="restore_bck_encryption_key" name="restore_bck_encryption_key" type="text" value="" />
+</div>';
 ?>
