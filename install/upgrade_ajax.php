@@ -268,6 +268,7 @@ if ( isset($_POST['type']) ){
 			$res2 = add_column_if_not_exist($_SESSION['tbl_prefix']."users","no_bad_attempts","TINYINT(1) NOT NULL DEFAULT '0'");
 			$res2 = add_column_if_not_exist($_SESSION['tbl_prefix']."users","can_create_root_folder","TINYINT(1) NOT NULL DEFAULT '0'");
 			$res2 = add_column_if_not_exist($_SESSION['tbl_prefix']."users","read_only","TINYINT(1) NOT NULL DEFAULT '0'");
+			$res2 = add_column_if_not_exist($_SESSION['tbl_prefix']."users","timestamp","VARCHAR(30) NOT NULL DEFAULT '0'");
 			echo 'document.getElementById("tbl_2").innerHTML = "<img src=\"images/tick.png\">";';
 
 			## Alter nested_tree table

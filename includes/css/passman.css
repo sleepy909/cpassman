@@ -116,7 +116,7 @@ font-family: arial;
 font-size:11px;
 }
 
-#div_loading {
+#div_loading, .div_center {
   position:absolute;
   left: 50%;
   top: 40%;
@@ -175,7 +175,7 @@ cursor: pointer;
 .button_menu { outline: 0; margin:0; padding: 1px; text-decoration:none; cursor:pointer; position: relative; text-align: center; }
 
 .dropdown dd, .dropdown dt, .dropdown ul { margin:0px; padding:0px; }
-.dropdown dd { position:relative; z-index:5000;}
+.dropdown dd { position:relative; z-index:1000;}
 .dropdown a, .dropdown a:visited { text-decoration:none; outline:none;}
 .dropdown dt {background: url(../images/arrow.png) no-repeat scroll right center; display:block; padding-right:20px; cursor:pointer;}
 .dropdown dd ul { background:#e4dfcb none repeat scroll 0 0; border:1px solid #d4ca9a; color:#C5C0B0; display:none;
@@ -267,7 +267,7 @@ cursor: pointer;
 	.meterWarn .simplePassMeterIcon,
 	.meterGood .simplePassMeterIcon,
 .meterExcel .simplePassMeterIcon {
-	background-image: url('simplePassMeterSprite.png');
+	background-image: url('../images/simplePassMeterSprite.png');
 	background-repeat: no-repeat;
 }
 .meterExcel .simplePassMeterIcon { background-position: 0 0; }

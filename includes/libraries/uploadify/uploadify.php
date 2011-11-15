@@ -29,7 +29,7 @@ THE SOFTWARE.
  * @version 	2.0
  * @copyright 	(c) 2009-2011 Nils Laumaillé
  * @licensing 	CC BY-ND (http://creativecommons.org/licenses/by-nd/3.0/legalcode)
- * @link		http://cpassman.org
+ * @link		http://www.teampass.net
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -49,11 +49,7 @@ function findexts ($filename)
 }
 
 if (!empty($_FILES)) {
-	//Case where upload is an attached file for one item
-	if ( !isset($_POST['type_upload']) || $_POST['type_upload'] != "import_items_from_file" ){
-		// Get some variables
-		//$file_random_id = md5($_FILES['Filedata']['name'].mktime(date('h'), date('i'), date('s'), date('m'), date('d'), date('Y')));
-		//$tempFile = $_FILES['Filedata']['tmp_name'];
+	if ( isset($_POST['type_upload']) && $_POST['type_upload'] != "import_items_from_csv" ){
 		$targetPath = $_SERVER['DOCUMENT_ROOT'].$_REQUEST['folder'] . '/';
 		$targetFile =  str_replace('//','/',$targetPath) . $_FILES['Filedata']['name'];
 
@@ -67,14 +63,56 @@ if (!empty($_FILES)) {
 		// Log upload into databse - only log for a modification
 		if ( $_POST['type'] == "modification" ){
 			$db->query_insert(
-				'log_items',
-				array(
-				    'id_item' => $_POST['post_id'],
-				    'date' => mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y')),
-				    'id_user' => $_POST['user_id'],
-				    'action' => 'at_modification',
-				    'raison' => 'at_add_file : '.addslashes($_FILES['Filedata']['name'])
-				)
+			'log_items',
+			array(
+			    'id_item' => $_POST['post_id'],
+			    'date' => mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y')),
+			    'id_user' => $_POST['user_id'],
+			    'action' => 'at_modification',
+			    'raison' => 'at_add_file : '.addslashes($_FILES['Filedata']['name'])
+			)
+			);
+		}
+	}
+	//Case where upload is an attached file for one item
+	else if ( !isset($_POST['type_upload']) || $_POST['type_upload'] != "import_items_from_file" ){
+		// Get some variables
+		$file_random_id = md5($_FILES['Filedata']['name'].mktime(date('h'), date('i'), date('s'), date('m'), date('d'), date('Y')));
+		$tempFile = $_FILES['Filedata']['tmp_name'];
+		$targetPath = $_SERVER['DOCUMENT_ROOT'].$_REQUEST['folder'] . '/';
+		$targetFile =  str_replace('//','/',$targetPath) . $file_random_id;
+
+		include('../../settings.php');
+
+		//Connect to mysql server
+		include('../../../sources/class.database.php');
+		$db = new Database($server, $user, $pass, $database, $pre);
+		$db->connect();
+
+		// Store to database
+		$db->query_insert(
+		'files',
+		array(
+		    'id_item' => $_POST['post_id'],
+		    'name' => str_replace(' ','_',$_FILES['Filedata']['name']),
+		    'size' => $_FILES['Filedata']['size'],
+		    'extension' => findexts($_FILES['Filedata']['name']),
+		    'type' => $_FILES['Filedata']['type'],
+		    'file' => $file_random_id
+		)
+		);
+
+		// Log upload into databse - only log for a modification
+		if ( $_POST['type'] == "modification" ){
+			$db->query_insert(
+			'log_items',
+			array(
+			    'id_item' => $_POST['post_id'],
+			    'date' => mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('y')),
+			    'id_user' => $_POST['user_id'],
+			    'action' => 'at_modification',
+			    'raison' => 'at_add_file : '.addslashes($_FILES['Filedata']['name'])
+			)
 			);
 		}
 	}else{

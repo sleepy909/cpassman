@@ -5,7 +5,7 @@
  * @version 	2.0
  * @copyright 	(c) 2009-2011 Nils Laumaillé
  * @licensing 	CC BY-ND (http://creativecommons.org/licenses/by-nd/3.0/legalcode)
- * @link		http://cpassman.org
+ * @link		http://www.teampass.net
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -1241,7 +1241,7 @@ if ( isset($_POST['type']) ){
                             $display_item = $need_sk = $can_move = 1;
                         }else
                         //CAse where item is restricted to a group of users included user
-                        if ( !empty($reccord['restricted_to']) && in_array($_SESSION['user_id'],$restricted_users_array) || (isset($_SESSION['list_folders_editable_by_role']) && in_array($_POST['id'], $_SESSION['list_folders_editable_by_role']))){
+                        if ( !empty($reccord['restricted_to']) && in_array($_SESSION['user_id'],$restricted_users_array) || (isset($_SESSION['list_folders_editable_by_role']) && in_array($_POST['id'], $_SESSION['list_folders_editable_by_role'])) && in_array($_SESSION['user_id'],$restricted_users_array)){
                             $perso = '<img src="includes/images/tag-small-yellow.png">';
                         	$recherche_group_pf = 0;
                             $action = 'AfficherDetailsItem(\''.$reccord['id'].'\',\'0\',\''.$expired_item.'\', \''.$restricted_to.'\')';

@@ -1,12 +1,12 @@
 <?php
 session_start();
-//Session cpassman tag
+//Session teampass tag
 $_SESSION['CPM'] = 1;
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
-        <title>cPassMan Installation</title>
+        <title>TeamPass Installation</title>
         <link rel="stylesheet" href="install.css" type="text/css" />
         <script type="text/javascript" src="../includes/js/functions.js"></script>
         <script type="text/javascript" src="install.js"></script>
@@ -42,7 +42,7 @@ $_SESSION['CPM'] = 1;
 
 			//DB PW non accepted characters management
 		    $("#encrypt_key").keypress(function (e) {
-		        var key = e.charCode || e.keyCode || 0;alert(key);
+		        var key = e.charCode || e.keyCode || 0;
 				if($("#encrypt_key").val().length < 15)
 					$("#encrypt_key_res").html("<img src='../includes/images/cross.png' />");
 				else
@@ -172,7 +172,7 @@ echo '
 if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
    //ETAPE O
     echo '
-                    <h2>This page will help you through the installation process of cPassMan</h2>
+                    <h2>This page will help you through the installation process of TeamPass</h2>
 
                     Before starting, be sure to:<br />
                     - upload the complete package on the server,<br />
@@ -181,9 +181,9 @@ if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
                     <br />
                     <br />
                     <i>* Mysql database suggestions:<br />
-                    - create a new database (for example cpassman),<br />
-                    - create a new mysql user (for example cpassman_root),<br />
-                    - set full admin rights for this user on cpassman table,<br />
+                    - create a new database (for example teampass),<br />
+                    - create a new mysql user (for example teampass_root),<br />
+                    - set full admin rights for this user on teampass table,<br />
                     - allow access from localhost to the database<br /></i>';
 
 
@@ -198,8 +198,8 @@ if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
                     <h3>Step 1 - Check server</h3>
 
                     <fieldset><legend>Please give me</legend>
-                    <label for="root_path" style="width:300px;">Absolute path to cPassMan folder :</label><input type="text" id="root_path" name="root_path" class="step" style="width:560px;" value="'.$abs_path.'" /><br />
-                    <label for="url_path" style="width:300px;">Full URL to cPassMan :</label><input type="text" id="url_path" name="url_path" class="step" style="width:560px;" value="http://' . $_SERVER['HTTP_HOST'].substr($_SERVER['PHP_SELF'],0,strrpos($_SERVER['PHP_SELF'],'/')-8).'" /><span style="padding-left:10px;" id="url_path_res"></span><br />
+                    <label for="root_path" style="width:300px;">Absolute path to teampass folder :</label><input type="text" id="root_path" name="root_path" class="step" style="width:560px;" value="'.$abs_path.'" /><br />
+                    <label for="url_path" style="width:300px;">Full URL to teampass :</label><input type="text" id="url_path" name="url_path" class="step" style="width:560px;" value="http://' . $_SERVER['HTTP_HOST'].substr($_SERVER['PHP_SELF'],0,strrpos($_SERVER['PHP_SELF'],'/')-8).'" /><span style="padding-left:10px;" id="url_path_res"></span><br />
                     </fieldset>
 
                     <h4>Next elements will be checked.</h4>
@@ -244,7 +244,7 @@ if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
    echo '
                     <h3>Step 3</h3>
                     <fieldset><legend>Give me some informations</legend>
-                    <label for="tbl_prefix" style="width:300px;">Table prefix :</label><input type="text" id="tbl_prefix" name="tbl_prefix" class="step" value="cpassman_" onblur /><span style="padding-left:10px;" id="tbl_prefix_res"></span><br />
+                    <label for="tbl_prefix" style="width:300px;">Table prefix :</label><input type="text" id="tbl_prefix" name="tbl_prefix" class="step" value="teampass_" onblur /><span style="padding-left:10px;" id="tbl_prefix_res"></span><br />
 
                     <label for="encrypt_key" style="width:300px;">Encryption key: <img src="../includes/images/information-white.png" alt="" title="For security reasons, salt key must be more than 15 characters and less than 32, should contains upper and lower case letters, special characters and numbers, and SHALL NOT CONTAINS single quotes!!!">
                         <span style="font-size:9pt;font-weight:normal;"><br />for passwords encryption in database</span>
@@ -266,7 +266,7 @@ if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
 
                     <fieldset><legend>Anonymous statistics</legend>
                     <input type="checkbox" name="send_stats" id="send_stats" />Send monthly anonymous statistics.<br />
-                    Please considere sending your statistics as a way to contribute to futur improvments of cPassMan. Indeed this will help the creator to evaluate how the tool is used and by this way how to improve the tool. When enabled, the tool will automatically send once by month a bunch of statistics without any action from you. Of course, those data are absolutely anonymous and no data is exported, just the next informations : number of users, number of folders, number of items, tool version, ldap enabled, and personal folders enabled.<br>
+                    Please considere sending your statistics as a way to contribute to futur improvments of teampass. Indeed this will help the creator to evaluate how the tool is used and by this way how to improve the tool. When enabled, the tool will automatically send once by month a bunch of statistics without any action from you. Of course, those data are absolutely anonymous and no data is exported, just the next informations : number of users, number of folders, number of items, tool version, ldap enabled, and personal folders enabled.<br>
                     This option can be enabled or disabled through the administration panel.
                     </fieldset>
 
@@ -340,7 +340,7 @@ else if ( (isset($_POST['step']) && $_POST['step'] == 6) || (isset($_GET['step']
                     Installation is now finished!<br />
                     You can log as an Administrator by using login <b>admin</b> and password <b>admin</b>.<br />
                     You can delete "Install" directory from your server for more security, and change the CHMOD on the "/includes" directory.<br /><br />
-                    For news, help and information, visit the <a href="http://cpassman.org" target="_blank">cPassMan website</a>.';
+                    For news, help and information, visit the <a href="http://teampass.net" target="_blank">TeamPass website</a>.';
 }
 
 
@@ -354,7 +354,7 @@ if ( !isset($_POST['step']) ){
 }elseif ( $_POST['step'] == 6 ){
        echo '
                     <div id="buttons_bottom">
-                        <input type="button" id="but_next" onclick="javascript:window.location.href=\'http://' . $_SERVER['HTTP_HOST'].substr($_SERVER['PHP_SELF'],0,strrpos($_SERVER['PHP_SELF'],'/')-8) . '\';" style="padding:3px;cursor:pointer;font-size:20px;" class="ui-state-default ui-corner-all" value="Open cPassMan" />
+                        <input type="button" id="but_next" onclick="javascript:window.location.href=\'http://' . $_SERVER['HTTP_HOST'].substr($_SERVER['PHP_SELF'],0,strrpos($_SERVER['PHP_SELF'],'/')-8) . '\';" style="padding:3px;cursor:pointer;font-size:20px;" class="ui-state-default ui-corner-all" value="Open TeamPass" />
                     </div>';
 }else{
    echo '
@@ -376,7 +376,7 @@ echo '
     echo '
     <div id="footer">
         <div style="width:500px;">
-            cPassMan '.$k['version'].' &copy; copyright 2010-2011
+            TeamPass '.$k['version'].' &copy; copyright 2010-2011
         </div>
         <div style="float:right;margin-top:-15px;">
             <a rel="license" href="http://creativecommons.org/licenses/by-nd/3.0/" title="Collaborative Passwords Manager by Nils Laumaill&#233; is licensed under a Creative Commons Attribution-No Derivative Works 3.0 License" target="_blank"><img src="../includes/images/canevas/cc.3.0.png" alt="" /></a>

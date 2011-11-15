@@ -5,7 +5,7 @@
  * @version 	2.0
  * @copyright 	(c) 2009-2011 Nils Laumaillé
  * @licensing 	CC BY-ND (http://creativecommons.org/licenses/by-nd/3.0/legalcode)
- * @link		http://cpassman.org
+ * @link		http://www.teampass.net
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -55,10 +55,7 @@ if ( isset($_GET['page']) && $_GET['page'] == "items")
 		<script type="text/javascript" src="includes/libraries/ckeditor/adapters/jquery.js"></script>
 
 		<link rel="stylesheet" type="text/css" href="includes/libraries/multiselect/jquery.multiselect.css" />
-        <script type="text/javascript" src="includes/libraries/multiselect/jquery.multiselect.min.js"></script>
-
-        <!--<link type="text/css" href="includes/libraries/jscrollpane/jscrollpane.css" rel="stylesheet" media="all" />
-		<script type="text/javascript" src="includes/libraries/jscrollpane/jscrollpane.js"></script>-->';
+        <script type="text/javascript" src="includes/libraries/multiselect/jquery.multiselect.min.js"></script>';
 
 else
 if ( isset($_GET['page']) && $_GET['page'] == "manage_settings")
@@ -416,7 +413,7 @@ if ( !isset($_GET['page']) ){
         //CALL TO UPLOADIFY FOR CSV IMPORT
         $("#fileInput_csv").uploadify({
             "uploader"  : "includes/libraries/uploadify/uploadify.swf",
-            "scriptData": {"type_upload":"import_items_from_file"},
+            "scriptData": {"type_upload":"import_items_from_csv"},
             "script"    : "includes/libraries/uploadify/uploadify.php",
             "cancelImg" : "includes/libraries/uploadify/cancel.png",
             "auto"      : true,
@@ -629,7 +626,7 @@ if ( !isset($_GET['page']) ){
 			{
 			   type		: "import_items",
 			   folder	: $("#import_items_to").val(),
-			   data		: escape(items),
+			   data		: aes_encrypt(items),
 			   import_csv_anyone_can_modify	: $("#import_csv_anyone_can_modify").prop("checked"),
 			   import_csv_anyone_can_modify_in_role	: $("#import_csv_anyone_can_modify_in_role").prop("checked")
 			},

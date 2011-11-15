@@ -1,14 +1,14 @@
-            88888888ba                                     88b           d88
-            88      "8b                                    888b         d888
-            88      ,8P                                    88`8b       d8'88
- ,adPPYba,  88aaaaaa8P'  ,adPPYYba,  ,adPPYba,  ,adPPYba,  88 `8b     d8' 88  ,adPPYYba,  8b,dPPYba,
-a8"     ""  88""""""'    ""     `Y8  I8[    ""  I8[    ""  88  `8b   d8'  88  ""     `Y8  88P'   `"8a
-8b          88           ,adPPPPP88   `"Y8ba,    `"Y8ba,   88   `8b d8'   88  ,adPPPPP88  88       88
-"8a,   ,aa  88           88,    ,88  aa    ]8I  aa    ]8I  88    `888'    88  88,    ,88  88       88
- `"Ybbd8"'  88           `"8bbdP"Y8  `"YbbdP"'  `"YbbdP"'  88     `8'     88  `"8bbdP"Y8  88       88
+888888888888                                         88888888ba
+     88                                              88      "8b
+     88                                              88      ,8P
+     88   ,adPPYba,  ,adPPYYba,  88,dPYba,,adPYba,   88aaaaaa8P'  ,adPPYYba,  ,adPPYba,  ,adPPYba,
+     88  a8P_____88  ""     `Y8  88P'   "88"    "8a  88""""""'    ""     `Y8  I8[    ""  I8[    ""
+     88  8PP"""""""  ,adPPPPP88  88      88      88  88           ,adPPPPP88   `"Y8ba,    `"Y8ba,
+     88  "8b,   ,aa  88,    ,88  88      88      88  88           88,    ,88  aa    ]8I  aa    ]8I
+     88   `"Ybbd8"'  `"8bbdP"Y8  88      88      88  88           `"8bbdP"Y8  `"YbbdP"'  `"YbbdP"'
 
 |===================================================================================================|
-|						cPassMan for Collaborative Passwords Manager								|
+|						TeamPass - A Collaborative Passwords Manager								|
 |								2009-2011 (c) Nils Laumaillé										|
 |===================================================================================================|
 
@@ -21,14 +21,14 @@ a8"     ""  88""""""'    ""     `Y8  I8[    ""  I8[    ""  88  `8b   d8'  88  ""
 *****************************************************************************************************
 
 ----------------------------------------  INFORMATIONS  ---------------------------------------------
-Website: http://cpassman.org/
+Website: http://www.teampass.net/
 Hosted at Google Code: http://code.google.com/p/cpassman/
 
 BUGS & SUGGESTIONS:
 *For bugs discovery or any suggestions, please report in Google Code Issues (http://code.google.com/p/cpassman/issues/list).
 
 INSTALLATION:
-* http://cpassman.org/help
+* http://www.teampass.net/tag/installation/
 * Once uploaded, launch install/install.php and follow instructions.
 
 NEEDS:
@@ -116,7 +116,7 @@ v2.0
 * fixed: js library used not compliant with IE9
 * fixed: extra characters in front of passwords [108]
 * fixed: strings error in upgrade.php pages
-* fixed: 2.0 RC1/RC2/RC3 bugs => 125 - 123 - 136 - 143 - 146 - 140
+* fixed: 2.0 RC1/RC2/RC3/RC4 bugs => 125 - 123 - 136 - 143 - 146 - 140 - 167 - 168 - 169 - 170
 
 v1.80
 * improvement: an item can be modified by anyone if activated [3040120]

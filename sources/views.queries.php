@@ -5,7 +5,7 @@
  * @version 	2.0
  * @copyright 	(c) 2009-2011 Nils Laumaillé
  * @licensing 	CC BY-ND (http://creativecommons.org/licenses/by-nd/3.0/legalcode)
- * @link		http://cpassman.org
+ * @link		http://www.teampass.net
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -196,7 +196,41 @@ switch($_POST['type'])
     #----------------------------------
     #CASE admin want to delete a list of deleted items
     case "really_delete_items":
-        foreach( explode(';',$_POST['list']) as $id ){
+    	$folders = explode(';',$_POST['folders']);
+    	if(count($folders)>0){
+    		//delete folders
+    		foreach( $folders as $f_id ){
+    			//get folder ID
+    			$id = substr($f_id, 1);
+
+    			//delete any subfolder
+	    		$rows = $db->fetch_all_array(
+	    			"SELECT valeur
+	                FROM ".$pre."misc
+	                WHERE type='folder_deleted' AND intitule = '".$f_id."'"
+	    		);
+	    		foreach ($rows as $reccord){
+	    			//get folder id
+	    			$val = explode(",", $reccord['valeur']);
+	    			//delete items & logs
+	    			$items = $db->fetch_all_array("SELECT id FROM ".$pre."items WHERE id_tree='".$val[0]."'");
+	    			foreach( $items as $item ) {
+	    				//Delete item
+	    				$db->query("DELETE FROM ".$pre."items WHERE id = ".$item['id']);
+	    				$db->query("DELETE FROM ".$pre."log_items WHERE id_item = ".$item['id']);
+
+	    				//Update CACHE table
+	    				mysql_query("DELETE FROM ".$pre."cache WHERE id = ".$item['id']);
+	    			}
+	    			//Actualize the variable
+	    			$_SESSION['nb_folders'] --;
+	    		}
+    			//delete folder
+    			$db->query("DELETE FROM ".$pre."misc WHERE intitule = '".$f_id."' AND type = 'folder_deleted'");
+    		}
+    	}
+
+        foreach( explode(';',$_POST['items']) as $id ){
             //delete from ITEMS
             $db->query("DELETE FROM ".$pre."items WHERE id=".$id);
             //delete from LOG_ITEMS
@@ -208,8 +242,6 @@ switch($_POST['type'])
         	//delete from KEYS
         	$db->query("DELETE FROM `".$pre."keys` WHERE `id` ='".$id."' AND `table`='items'");
         }
-        //reload
-        echo 'window.location.href = "index.php?page=manage_views";';
     break;
 
     #----------------------------------

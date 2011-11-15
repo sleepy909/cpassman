@@ -1,11 +1,11 @@
 <?php
 /**
- * @file 		isers.queries.php
+ * @file 		users.queries.php
  * @author		Nils Laumaillé
  * @version 	2.0
  * @copyright 	(c) 2009-2011 Nils Laumaillé
  * @licensing 	CC BY-ND (http://creativecommons.org/licenses/by-nd/3.0/legalcode)
- * @link		http://cpassman.org
+ * @link		http://www.teampass.net
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -214,27 +214,29 @@ if ( !empty($_POST['type']) ){
 
         		//Get personal folder ID
         		$data = $db->fetch_row("SELECT id FROM ".$pre."nested_tree WHERE title = '".$_POST['id']."' AND personal_folder = 1");
-        		$personal_folder_id = $data[0];
 
         		// Get through each subfolder
-        		$folders = $tree->getDescendants($personal_folder_id,true);
-        		foreach($folders as $folder){
-        			//delete folder
-        			$db->query("DELETE FROM ".$pre."nested_tree WHERE id = '".$folder->id."' AND personal_folder = 1");
+        		if(!empty($data[0])){
+        			$folders = $tree->getDescendants($data[0],true);
+	        		foreach($folders as $folder){
+	        			//delete folder
+	        			$db->query("DELETE FROM ".$pre."nested_tree WHERE id = '".$folder->id."' AND personal_folder = 1");
 
-        			//delete items & logs
-        			$items = $db->fetch_all_array("SELECT id FROM ".$pre."items WHERE id_tree='".$folder->id."' AND perso = 1");
-        			foreach( $items as $item ) {
-        				//Delete item
-        				$db->query("DELETE FROM ".$pre."items WHERE id = ".$item['id']);
-        				//log
-        				$db->query("DELETE FROM ".$pre."log_items WHERE id_item = ".$item['id']);
-        			}
+	        			//delete items & logs
+	        			$items = $db->fetch_all_array("SELECT id FROM ".$pre."items WHERE id_tree='".$folder->id."' AND perso = 1");
+	        			foreach( $items as $item ) {
+	        				//Delete item
+	        				$db->query("DELETE FROM ".$pre."items WHERE id = ".$item['id']);
+	        				//log
+	        				$db->query("DELETE FROM ".$pre."log_items WHERE id_item = ".$item['id']);
+	        			}
+	        		}
+
+	        		//rebuild tree
+	        		$tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
+	        		$tree->rebuild();
         		}
 
-        		//rebuild tree
-        		$tree = new NestedTree($pre.'nested_tree', 'id', 'parent_id', 'title');
-        		$tree->rebuild();
         	}else{
         		//lock user in database
         		$db->query_update(

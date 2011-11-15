@@ -1,12 +1,12 @@
 <?php
 session_start();
-//Session cpassman tag
+//Session teampass tag
 $_SESSION['CPM'] = 1;
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
-        <title>cPassMan Installation</title>
+        <title>TeamPass Installation</title>
         <link rel="stylesheet" href="install.css" type="text/css" />
         <script type="text/javascript" src="../includes/js/functions.js"></script>
         <script type="text/javascript" src="install.js"></script>
@@ -111,7 +111,7 @@ echo '
 if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
 	//ETAPE O
 	echo '
-	                 <h2>This page will help you to upgrade the cPassMan\'s database</h2>
+	                 <h2>This page will help you to upgrade the TeamPass\'s database</h2>
 
 	                 Before starting, be sure to:<br />
 	                 - upload the complete package on the server and overwrite existing files,<br />
@@ -131,7 +131,7 @@ if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
 	                 <h3>Step 1 - Check server</h3>
 
 	                 <fieldset><legend>Please give me</legend>
-	                 <label for="root_path" style="width:300px;">Absolute path to cPassMan folder :</label><input type="text" id="root_path" name="root_path" class="step" style="width:560px;" value="'.$abs_path.'" /><br />
+	                 <label for="root_path" style="width:300px;">Absolute path to TeamPass folder :</label><input type="text" id="root_path" name="root_path" class="step" style="width:560px;" value="'.$abs_path.'" /><br />
 	                 </fieldset>
 
 	                 <h4>Next elements will be checked.</h4>
@@ -158,12 +158,12 @@ if ( !isset($_GET['step']) && !isset($_POST['step'])  ){
 	                 <label for="db_db">Database name :</label><input type="text" id="db_bdd" name="db_bdd" class="step" /><br />
 	                 <label for="db_login">Login :</label><input type="text" id="db_login" name="db_login" class="step" /><br />
 	                 <label for="db_pw">Password :</label><input type="password" id="db_pw" name="db_pw" class="step" /><br />
-	                 <label for="tbl_prefix">Table prefix :</label><input type="text" id="tbl_prefix" name="tbl_prefix" class="step" value="cpassman_" />
+	                 <label for="tbl_prefix">Table prefix :</label><input type="text" id="tbl_prefix" name="tbl_prefix" class="step" value="teampass_" />
 	                 </fieldset>
 
 	                 <fieldset><legend>Anonymous statistics</legend>
 	                 <input type="checkbox" name="send_stats" id="send_stats" />Send monthly anonymous statistics.<br />
-	                 Please considere sending your statistics as a way to contribute to futur improvments of cPassMan. Indeed this will help the creator to evaluate how the tool is used and by this way how to improve the tool. When enabled, the tool will automatically send once by month a bunch of statistics without any action from you. Of course, those data are absolutely anonymous and no data is exported, just the next informations : number of users, number of folders, number of items, tool version, ldap enabled, and personal folders enabled.<br>
+	                 Please considere sending your statistics as a way to contribute to futur improvments of TeamPass. Indeed this will help the creator to evaluate how the tool is used and by this way how to improve the tool. When enabled, the tool will automatically send once by month a bunch of statistics without any action from you. Of course, those data are absolutely anonymous and no data is exported, just the next informations : number of users, number of folders, number of items, tool version, ldap enabled, and personal folders enabled.<br>
 	                 This option can be enabled or disabled through the administration panel.
 	                 </fieldset>
 
@@ -178,7 +178,7 @@ else if ( (isset($_POST['step']) && $_POST['step'] == 3 || isset($_GET['step']) 
 
 	if (version_compare($_POST['actual_cpm_version'], $k['version'], "<")) {
 		echo '
-			Notice that cPassMan is now only using UTF-8 charset.
+			Notice that TeamPass is now only using UTF-8 charset.
 			This step will convert the database to this charset.<br />
 			<p>
 				Save previous tables before converting (prefix "old_" will be used)&nbsp;&nbsp;<input type="checkbox" id="prefix_before_convert" />
@@ -238,7 +238,7 @@ else if ( (isset($_POST['step']) && $_POST['step'] == 6) || (isset($_GET['step']
 	                 <h3>Step 6</h3>
 	                 Upgrade is now finished!<br />
 	                 You can delete "Install" directory from your server for more security.<br /><br />
-	                 For news, help and information, visit the <a href="http://cpassman.org" target="_blank">cPassMan website</a>.';
+	                 For news, help and information, visit the <a href="http://teampass.net" target="_blank">TeamPass website</a>.';
 }
 
 
@@ -268,7 +268,7 @@ if ( !isset($_POST['step']) ){
 }elseif ( $_POST['step'] == 6 ){
 	echo '
 	             <div id="buttons_bottom">
-	                 <input type="button" id="but_next" onclick="javascript:window.location.href=\'http://' . $_SERVER['HTTP_HOST'].substr($_SERVER['PHP_SELF'],0,strrpos($_SERVER['PHP_SELF'],'/')-8) . '\';" style="padding:3px;cursor:pointer;font-size:20px;" class="ui-state-default ui-corner-all" value="Open cPassMan" />
+	                 <input type="button" id="but_next" onclick="javascript:window.location.href=\'http://' . $_SERVER['HTTP_HOST'].substr($_SERVER['PHP_SELF'],0,strrpos($_SERVER['PHP_SELF'],'/')-8) . '\';" style="padding:3px;cursor:pointer;font-size:20px;" class="ui-state-default ui-corner-all" value="Open TeamPass" />
 	             </div>';
 }else{
 	echo '
@@ -290,7 +290,7 @@ echo '
 echo '
     <div id="footer">
         <div style="width:500px;">
-            cPassMan '.$k['version'].' &#169; copyright 2009-2010
+            TeamPass '.$k['version'].' &#169; copyright 2009-2010
         </div>
         <div style="float:right;margin-top:-15px;">
             <!--<a href="http://sourceforge.net/projects/communitypasswo" target="_blank"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=280505&amp;type=10" width="80" height="15" alt="Get Collaborative Passwords Manager at SourceForge.net. Fast, secure and Free Open Source software downloads" /></a>-->

@@ -5,7 +5,7 @@
  * @version 	2.0
  * @copyright 	(c) 2009-2011 Nils Laumaillé
  * @licensing 	CC BY-ND (http://creativecommons.org/licenses/by-nd/3.0/legalcode)
- * @link		http://cpassman.org
+ * @link		http://www.teampass.net
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -136,7 +136,7 @@ else if ( isset($_POST['type']) ){
 	            	'misc',
 	            	array(
 	            	    'type' => 'folder_deleted',
-	            	    'intitule' => "f".$folder->id,
+	            	    'intitule' => "f".$_POST['id'],
 	            	    'valeur' => $folder->id.','.$folder->parent_id.','.$folder->title.','.$folder->nleft.','.$folder->nright.','.$folder->nlevel.',0,0,0,0'
 	            	)
             	);

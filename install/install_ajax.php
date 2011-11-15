@@ -267,6 +267,7 @@ if ( isset($_POST['type']) ){
                   `no_bad_attempts` tinyint(1) NOT NULL DEFAULT '0',
                   `can_create_root_folder` tinyint(1) NOT NULL DEFAULT '0',
                   `read_only` tinyint(1) NOT NULL DEFAULT '0',
+                  `timestamp` varchar(30) NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `login` (`login`)
                 ) CHARSET=utf8;");

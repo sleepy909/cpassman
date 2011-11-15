@@ -5,7 +5,7 @@
  * @version 	2.0
  * @copyright 	(c) 2009-2011 Nils Laumaillé
  * @licensing 	CC BY-ND (http://creativecommons.org/licenses/by-nd/3.0/legalcode)
- * @link		http://cpassman.org
+ * @link		http://www.teampass.net
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -42,10 +42,10 @@ switch($_POST['type'])
         $handle = fopen($local_file, 'w');
 
         // Mise en place d'une connexion basique
-        $conn_id = ftp_connect("www.cpassman.org") or die("Impossible de se connecter au serveur $ftp_server");
+        $conn_id = ftp_connect("www.teampass.net") or die("Impossible de se connecter au serveur $ftp_server");
 
         // Identification avec un nom d'utilisateur et un mot de passe
-        $login_result = ftp_login($conn_id, "robot@cpassman.org", "Cm3_Pc9l");
+        $login_result = ftp_login($conn_id, "robot@teampass.net", "Cm3_Pc9l");
 
         //envoyer la date et ip de connexion
         //....

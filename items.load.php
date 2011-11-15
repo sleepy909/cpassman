@@ -5,7 +5,7 @@
  * @version 	2.0
  * @copyright 	(c) 2009-2011 Nils Laumaillé
  * @licensing 	CC BY-ND (http://creativecommons.org/licenses/by-nd/3.0/legalcode)
- * @link		http://cpassman.org
+ * @link		http://www.teampass.net
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -343,7 +343,7 @@ function AjouterItem(){
 
     //Complete url format
     var url = $("#url").val();
-    if (url.substring(0,7) != "http://" && url!="" && url.substring(0,8) != "https://" && url.substring(0,6) != "ftp://") {
+    if (url.substring(0,7) != "http://" && url!="" && url.substring(0,8) != "https://" && url.substring(0,6) != "ftp://" && url.substring(0,6) != "ssh://") {
     	url = "http://"+url;
     }
 
@@ -453,7 +453,7 @@ function EditerItem(){
 
     //Complete url format
     var url = $("#edit_url").val();
-    if (url.substring(0,7) != "http://" && url!="" && url.substring(0,8) != "https://" && url.substring(0,6) != "ftp://") {
+    if (url.substring(0,7) != "http://" && url!="" && url.substring(0,8) != "https://" && url.substring(0,6) != "ftp://" && url.substring(0,6) != "ssh://") {
     	url = "http://"+url;
     }
 
@@ -840,7 +840,6 @@ function AfficherDetailsItem(id, salt_key_required, expired_item, restricted, di
                     $("#item_details_expired_full").hide();
                     $("#menu_button_edit_item, #menu_button_del_item, #menu_button_copy_item, #menu_button_add_fav, #menu_button_del_fav, #menu_button_show_pw, #menu_button_copy_pw, #menu_button_copy_login, #menu_button_copy_link").attr("disabled","disabled");
                 }
-                $('#item_details_ok').jScrollPane();
                 $("#div_loading").hide();
             }
         );
@@ -988,7 +987,7 @@ function open_edit_item_div(restricted_to_roles) {
 	    	$("#edit_restricted_to_list").append("<option value='"+elem[0]+"'>"+elem[1]+"</option>");
 	        var index = $('#edit_restricted_to').val().lastIndexOf(elem[1]+";");
 	        if ( index != -1 ) {
-	            $("#edit_restricted_to_list option:eq("+(i+1)+")").attr("selected", "selected");
+	            $("#edit_restricted_to_list option[value="+elem[0]+"]").attr('selected', true);
 	        }
 	    }
 	}
@@ -1009,7 +1008,7 @@ function open_edit_item_div(restricted_to_roles) {
 		    	$("#edit_restricted_to_list").append("<option value='role_"+elem[0]+"'>"+elem[1]+"</option>");
 		        var index = $('#edit_restricted_to_roles').val().lastIndexOf(elem[1]+";");
 		        if ( index != -1 ) {
-		            $("#edit_restricted_to_list option:eq("+(j+1)+")").attr("selected", "selected");
+		            $("#edit_restricted_to_list option[value="+elem[0]+"]").attr('selected', true);
 		        }
 		    }
 		    j++;

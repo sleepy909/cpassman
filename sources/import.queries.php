@@ -5,7 +5,7 @@
  * @version 	2.0
  * @copyright 	(c) 2009-2011 Nils Laumaillé
  * @licensing 	CC BY-ND (http://creativecommons.org/licenses/by-nd/3.0/legalcode)
- * @link		http://cpassman.org
+ * @link		http://www.teampass.net
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -80,7 +80,7 @@ switch($_POST['type'])
                         if ( !empty($line[0]) && !empty($line[2]) && !empty($account) ){
                         if ( $continue_on_next_line == false ){
                             // Prepare listing that will be shown to user
-                            $display .= '<tr><td><input type="checkbox" class="item_checkbox" id="item_to_import-'.$line_number.'" /></td><td><span id="item_text-'.$line_number.'">'.$account.'</span><input type="hidden" value="'.$account.'@|@'.$login.'@|@'.$pw.'@|@'.$url.'@|@'.$comment.'@|@'.$line_number.'" id="item_to_import_values-'.$line_number.'" /></td></tr>';
+                            $display .= '<tr><td><input type=\"checkbox\" class=\"item_checkbox\" id=\"item_to_import-'.$line_number.'\" /></td><td><span id=\"item_text-'.$line_number.'\">'.$account.'</span><input type=\"hidden\" value=\"'.$account.'@|@'.$login.'@|@'.$pw.'@|@'.$url.'@|@'.$comment.'@|@'.$line_number.'\" id=\"item_to_import_values-'.$line_number.'\" /></td></tr>';
 
                             // Initialize this variable in order to restart from scratch
                             $account = "";
@@ -111,24 +111,24 @@ switch($_POST['type'])
 
         if ( $line_number > 0 ){
         	//add last line
-        	$display .= '<tr><td><input type="checkbox" class="item_checkbox" id="item_to_import-'.$line_number.'" /></td><td><span id="item_text-'.$line_number.'">'.$account.'</span><input type="hidden" value="'.$account.'@|@'.$login.'@|@'.$pw.'@|@'.$url.'@|@'.$comment.'@|@'.$line_number.'" id="item_to_import_values-'.$line_number.'" /></td></tr>';
+        	$display .= '<tr><td><input type=\"checkbox\" class=\"item_checkbox\" id=\"item_to_import-'.$line_number.'\" /></td><td><span id=\"item_text-'.$line_number.'\">'.$account.'</span><input type=\"hidden\" value=\"'.$account.'@|@'.$login.'@|@'.$pw.'@|@'.$url.'@|@'.$comment.'@|@'.$line_number.'\" id=\"item_to_import_values-'.$line_number.'\" /></td></tr>';
 
             // Add a checkbox for select/unselect all others
-            $display .= '<tr><td><input type="checkbox" id="item_all_selection" /></td><td>'.$txt['all'].'</td></tr>';
+            $display .= '<tr><td><input type=\"checkbox\" id=\"item_all_selection\" /></td><td>'.$txt['all'].'</td></tr>';
             //echo 'function selectAll() {$("input[type=\'checkbox\']:not([disabled=\'disabled\'])").attr(\'checked\', true);}';
 
             // Prepare a list of all folders that the user can choose
-            $display .= '</table><div style="margin-top:10px;"><label><b>'.$txt['import_to_folder'].'</b></label>&nbsp;<select id="import_items_to">';
+            $display .= '</table><div style=\"margin-top:10px;\"><label><b>'.$txt['import_to_folder'].'</b></label>&nbsp;<select id=\"import_items_to\">';
             foreach($tst as $t){
                 if ( in_array($t->id,$_SESSION['groupes_visibles']) ){
                     $ident="";
                     for($x=1;$x<$t->nlevel;$x++) $ident .= "&nbsp;&nbsp;";
                     if ($prev_level != NULL && $prev_level < $t->nlevel ){
-                        $display .= '<option value="'.$t->id.'">'.$ident.str_replace("&","&amp;",addslashes($t->title)).'</option>';
+                        $display .= '<option value=\"'.$t->id.'\">'.$ident.str_replace(array("&",'"'),array("&amp;","&quot;"),$t->title).'</option>';
                     }else if ($prev_level != NULL && $prev_level == $t->nlevel ){
-                       $display .= '<option value="'.$t->id.'">'.$ident.str_replace("&","&amp;",addslashes($t->title)).'</option>';
+                       $display .= '<option value=\"'.$t->id.'\">'.$ident.str_replace(array("&",'"'),array("&amp;","&quot;"),$t->title).'</option>';
                     }else{
-                        $display .= '<option value="'.$t->id.'">'.$ident.str_replace("&","&amp;",addslashes($t->title)).'</option>';
+                        $display .= '<option value=\"'.$t->id.'\">'.$ident.str_replace(array("&",'"'),array("&amp;","&quot;"),$t->title).'</option>';
                     }
                     $prev_level = $t->nlevel;
                 }
@@ -136,16 +136,22 @@ switch($_POST['type'])
             $display .= '</select></div>';
 
             // Show results to user.
-            echo '$(\'#import_status\').html(\''.$display.'\');';
-            echo ' ';
         	echo '[{"error":"no" , "output" : "'.$display.'"}]';
         }
     break;
 
     //Insert into DB the items the user has selected
     case "import_items":
+    	//decrypt and retreive data in JSON format
+    	require_once '../includes/libraries/crypt/aes.class.php';     // AES PHP implementation
+    	require_once '../includes/libraries/crypt/aesctr.class.php';  // AES Counter Mode implementation
+    	$data_received = (AesCtr::decrypt($_POST['data'], $_SESSION['key'], 256));
+
+    	//Prepare variables
+    	$list_items = htmlspecialchars_decode($data_received);
+
         include('main.functions.php');
-        foreach( explode('@_#sep#_@',mysql_real_escape_string(stripslashes($_POST['data']))) as $item ){
+        foreach( explode('@_#sep#_@',mysql_real_escape_string(stripslashes($list_items))) as $item ){
             //For each item, insert into DB
             $item = explode('@|@',$item);   //explode item to get all fields
 
