@@ -5,7 +5,7 @@
  * @version 	2.0
  * @copyright 	(c) 2009-2011 Nils Laumaillé
  * @licensing 	CC BY-ND (http://creativecommons.org/licenses/by-nd/3.0/legalcode)
- * @link		http://cpassman.org
+ * @link		http://www.teampass.net
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -30,7 +30,7 @@ foreach($rows as $record){
         "login" => $record['login'],
         "email" => $record['email'],
     );
-    $users_string .= $record['id'].'#'.$record['login'].";";
+    $users_string .= $record['id']."#".$record['login'].";";
 }
 
 //Get list of roles
@@ -302,42 +302,42 @@ echo '
                         <div id="id_url" style="display:inline;"></div><input type="hidden" id="hid_url" value="" />
                     </td>
                 </tr>';
-                //Line for FILES
-                echo '
-                <tr>
-                    <td valign="top" class="td_title"><span class="ui-icon ui-icon-carat-1-e" style="float: left; margin-right: .3em;">&nbsp;</span>'.$txt['files_&_images'].' :</td>
-                    <td>
-                        <div id="id_files" style="display:inline;font-size:11px;"></div><input type="hidden" id="hid_files" />
-                        <div id="dialog_files" style="display: none;">
-                          <img id="image_files" src="includes/images" />
-                        </div>
-                    </td>
-                </tr>';
-                //Line for RESTRICTED TO
-                echo '
-                <tr>
-                    <td valign="top" class="td_title"><span class="ui-icon ui-icon-carat-1-e" style="float: left; margin-right: .3em;">&nbsp;</span>'.$txt['restricted_to'].' :</td>
-                    <td>
-                        <div id="id_restricted_to" style="display:inline;"></div><input type="hidden" id="hid_restricted_to" /><input type="hidden" id="hid_restricted_to_roles" />
-                    </td>
-                </tr>';
-                //Line for TAGS
-                echo '
-                <tr>
-                    <td valign="top" class="td_title"><span class="ui-icon ui-icon-carat-1-e" style="float: left; margin-right: .3em;">&nbsp;</span>'.$txt['tags'].' :</td>
-                    <td>
-                        <div id="id_tags" style="display:inline;"></div><input type="hidden" id="hid_tags" />
-                    </td>
-                </tr>';
-                //Line for KBs
-								if(isset($_SESSION['settings']['enable_kb']) && $_SESSION['settings']['enable_kb'] == 1)
-                echo '
-                <tr>
-                    <td valign="top" class="td_title"><span class="ui-icon ui-icon-carat-1-e" style="float: left; margin-right: .3em;">&nbsp;</span>'.$txt['kbs'].' :</td>
-                    <td>
-                        <div id="id_kbs" style="display:inline;"></div><input type="hidden" id="hid_kbs" />
-                    </td>
-                </tr>';
+				//Line for FILES
+				echo '
+				<tr>
+				    <td valign="top" class="td_title"><span class="ui-icon ui-icon-carat-1-e" style="float:left; margin-right:.3em;">&nbsp;</span>'.$txt['files_&_images'].' :</td>
+				    <td>
+				        <div id="id_files" style="display:inline;font-size:11px;"></div><input type="hidden" id="hid_files" />
+				        <div id="dialog_files" style="display: none;">
+				      		<img id="image_files" src="includes/images" />
+				        </div>
+				    </td>
+				</tr>';
+				//Line for RESTRICTED TO
+				echo '
+				<tr>
+				    <td valign="top" class="td_title"><span class="ui-icon ui-icon-carat-1-e" style="float: left; margin-right: .3em;">&nbsp;</span>'.$txt['restricted_to'].' :</td>
+				    <td>
+				        <div id="id_restricted_to" style="display:inline;"></div><input type="hidden" id="hid_restricted_to" /><input type="hidden" id="hid_restricted_to_roles" />
+				    </td>
+				</tr>';
+				//Line for TAGS
+				echo '
+				<tr>
+				    <td valign="top" class="td_title"><span class="ui-icon ui-icon-carat-1-e" style="float: left; margin-right: .3em;">&nbsp;</span>'.$txt['tags'].' :</td>
+				    <td>
+				        <div id="id_tags" style="display:inline;"></div><input type="hidden" id="hid_tags" />
+				    </td>
+				</tr>';
+				//Line for KBs
+				if(isset($_SESSION['settings']['enable_kb']) && $_SESSION['settings']['enable_kb'] == 1)
+					echo '
+					<tr>
+					    <td valign="top" class="td_title"><span class="ui-icon ui-icon-carat-1-e" style="float: left; margin-right: .3em;">&nbsp;</span>'.$txt['kbs'].' :</td>
+					    <td>
+					        <div id="id_kbs" style="display:inline;"></div><input type="hidden" id="hid_kbs" />
+					    </td>
+					</tr>';
                 echo '
                 </table>
             </div>

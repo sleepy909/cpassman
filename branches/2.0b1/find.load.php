@@ -5,7 +5,7 @@
  * @version 	2.0
  * @copyright 	(c) 2009-2011 Nils Laumaillé
  * @licensing 	CC BY-ND (http://creativecommons.org/licenses/by-nd/3.0/legalcode)
- * @link		http://cpassman.org
+ * @link		http://www.teampass.net
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of

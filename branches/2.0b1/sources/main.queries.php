@@ -5,7 +5,7 @@
  * @version 	2.0
  * @copyright 	(c) 2009-2011 Nils Laumaillé
  * @licensing 	CC BY-ND (http://creativecommons.org/licenses/by-nd/3.0/legalcode)
- * @link		http://cpassman.org
+ * @link		http://www.teampass.net
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -147,7 +147,7 @@ switch($_POST['type'])
     	$username = htmlspecialchars_decode($data_received['login']);
 
 		//GET SALT KEY LENGTH
-        if ( strlen(SALT) > 32 ) {
+        if ( strlen(SALT) > 32) {
             $_SESSION['error']['salt'] = TRUE;
         }
 
@@ -347,7 +347,8 @@ switch($_POST['type'])
                     "users",
                     array(
                         'key_tempo'=>$_SESSION['key'],
-                        'last_connexion'=>mktime(date("h"),date("i"),date("s"),date("m"),date("d"),date("Y")),
+                    	'last_connexion'=>mktime(date("h"),date("i"),date("s"),date("m"),date("d"),date("Y")),
+                    	'timestamp'=>mktime(date("h"),date("i"),date("s"),date("m"),date("d"),date("Y")),
                         'disabled'=>0,
                         'no_bad_attempts'=>0
                     ),

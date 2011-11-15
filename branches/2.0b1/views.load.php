@@ -5,7 +5,7 @@
  * @version 	2.0
  * @copyright 	(c) 2009-2011 Nils Laumaillé
  * @licensing 	CC BY-ND (http://creativecommons.org/licenses/by-nd/3.0/legalcode)
- * @link		http://cpassman.org
+ * @link		http://www.teampass.net
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -88,17 +88,24 @@ function restoreDeletedItems(){
 
 function reallyDeleteItems(){
     if ( confirm("<?php echo $txt['views_confirm_items_deletion'];?>") ){
-        var list = "";
+        var list_items = "";
         $(".cb_deleted_item:checked").each(function() {
-            if ( list == "" ) list = $(this).val();
-            else list = list+';'+$(this).val();
+            if ( list_items == "" ) list_items = $(this).val();
+            else list_items = list_items+';'+$(this).val();
+        });
+
+        var list_folders = "";
+        $(".cb_deleted_folder:checked").each(function() {
+            if ( list_folders == "" ) list_folders = $(this).val();
+            else list_folders = list_folders+';'+$(this).val();
         });
 
 		$.post(
 		    "sources/views.queries.php",
 		    {
 		        type    : "really_delete_items",
-		        list	: list
+		        items	: list_items,
+		        folders	: list_folders
 		    },
 		    function(data){
 		    	window.location.href = "index.php?page=manage_views";

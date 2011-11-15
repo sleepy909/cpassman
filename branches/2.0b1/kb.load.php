@@ -1,10 +1,15 @@
 <?php
-
 /**
+ * @file 		kb.load.php
+ * @author		Nils Laumaillé
+ * @version 	2.0
+ * @copyright 	(c) 2009-2011 Nils Laumaillé
+ * @licensing 	CC BY-ND (http://creativecommons.org/licenses/by-nd/3.0/legalcode)
+ * @link		http://www.teampass.net
  *
- *
- * @version $Id$
- * @copyright 2011
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
 if (!isset($_SESSION['CPM'] ) || $_SESSION['CPM'] != 1)

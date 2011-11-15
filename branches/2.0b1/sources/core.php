@@ -5,7 +5,7 @@
  * @version 	2.0
  * @copyright 	(c) 2009-2011 Nils Laumaillé
  * @licensing 	CC BY-ND (http://creativecommons.org/licenses/by-nd/3.0/legalcode)
- * @link		http://cpassman.org
+ * @link		http://www.teampass.net
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -127,6 +127,14 @@ date_default_timezone_set($_SESSION['settings']['timezone']);
 			if ( !empty($data['groupes_visibles'])) $_SESSION['groupes_visibles'] = @implode(';',$data['groupes_visibles']);
 			if ( !empty($data['groupes_interdits'])) $_SESSION['groupes_interdits'] = @implode(';',$data['groupes_interdits']);
 
+			$db->query_update(
+			"users",
+			array(
+				'timestamp'=>mktime(date("h"),date("i"),date("s"),date("m"),date("d"),date("Y"))
+			),
+			"id=".$_SESSION['user_id']
+			);
+
 			// get access rights
 			IdentifyUserRights($data['groupes_visibles'],$data['groupes_interdits'],$data['admin'],$data['fonction_id'],false);
 		}
@@ -235,4 +243,8 @@ date_default_timezone_set($_SESSION['settings']['timezone']);
             $_SESSION['temporary']['send_stats_done'] = true;   //permits to test only once by session
         }
     }
+
+    /* CHECK NUMBER OF USER ONLINE */
+    $query_count = $db->fetch_row("SELECT COUNT(*) FROM ".$pre."users WHERE timestamp >= '".(mktime(date('h'),date('m'),date('s'),date('m'),date('d'),date('y')) - 600)."'");
+    $_SESSION['nb_users_online'] = $query_count[0];
 ?>

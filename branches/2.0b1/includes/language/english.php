@@ -5,7 +5,7 @@ $cpassman_url = '';
 }else{
 $cpassman_url = $_SESSION['settings']['cpassman_url'];
 }
-
+$txt['users_online'] = "users online";
 $txt['account_is_locked'] = "This is account is locked";
 $txt['activity'] = "Activity";
 $txt['add_button'] = "Add";

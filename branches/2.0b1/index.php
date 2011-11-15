@@ -30,7 +30,7 @@
  * @version 	2.0
  * @copyright 	(c) 2009-2011 Nils Laumaillé
  * @licensing 	CC BY-ND (http://creativecommons.org/licenses/by-nd/3.0/legalcode)
- * @link		http://cpassman.org
+ * @link		http://www.teampass.net
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -173,7 +173,19 @@ require_once("load.php");
         }
 
         //Display language menu
-        $langues = array("french" => "fr","spanish" => "es","german" => "de","english" => "us","czech" => "cz","russian" => "ru","hungarian" => "hu","turkish" => "tr","norwegian" => "no","japanese" => "ja","portuguese" => "pr");
+        $langues = array(
+        	"french" => "fr",
+        	"spanish" => "es",
+        	"german" => "de",
+        	"english" => "us",
+        	"czech" => "cz",
+        	"russian" => "ru",
+        	"hungarian" => "hu",
+        	"turkish" => "tr",
+        	"norwegian" => "no",
+        	"japanese" => "ja",
+        	"portuguese" => "pr"
+        );
         foreach ($langues as $lang => $abrev) {
             if ($_SESSION['user_language'] == $lang) {
                 $flag = $abrev;
@@ -183,20 +195,20 @@ require_once("load.php");
 
         echo '
         <div style="float:right;">
-            <dl id="flags" class="dropdown" title="'.$txt['select_language'].'">
+            <dl id="flags" class="dropdown">
                 <dt><img src="includes/images/flags/'.$flag.'.png" alt="" /></dt>
                 <dd>
                     <ul>
-                        <li><a href="#"><img class="flag" src="includes/images/flags/cz.png" alt="Czech" onclick="ChangeLanguage(\'czech\')" /></a></li>
-                        <li><a href="#"><img class="flag" src="includes/images/flags/us.png" alt="English" onclick="ChangeLanguage(\'english\')" /></a></li>
-                        <li><a href="#"><img class="flag" src="includes/images/flags/fr.png" alt="French" onclick="ChangeLanguage(\'french\')" /></a></li>
-                        <li><a href="#"><img class="flag" src="includes/images/flags/de.png" alt="German" onclick="ChangeLanguage(\'german\')" /></a></li>
-                        <li><a href="#"><img class="flag" src="includes/images/flags/ja.png" alt="Japanese" onclick="ChangeLanguage(\'japanese\')" /></a></li>
-                        <li><a href="#"><img class="flag" src="includes/images/flags/no.png" alt="Norwegian" onclick="ChangeLanguage(\'norwegian\')" /></a></li>
-                        <li><a href="#"><img class="flag" src="includes/images/flags/pr.png" alt="Portuguese" onclick="ChangeLanguage(\'portuguese\')" /></a></li>
-                        <li><a href="#"><img class="flag" src="includes/images/flags/ru.png" alt="Russian" onclick="ChangeLanguage(\'russian\')" /></a></li>
-                        <li><a href="#"><img class="flag" src="includes/images/flags/es.png" alt="Spanish" onclick="ChangeLanguage(\'spanish\')" /></a></li>
-                        <li><a href="#"><img class="flag" src="includes/images/flags/tr.png" alt="Turkish" onclick="ChangeLanguage(\'turkish\')" /></a></li>
+                        <li><a href="#"><img class="flag" src="includes/images/flags/cz.png" alt="Czech" title="Czech" onclick="ChangeLanguage(\'czech\')" /></a></li>
+                        <li><a href="#"><img class="flag" src="includes/images/flags/us.png" alt="English" title="English" onclick="ChangeLanguage(\'english\')" /></a></li>
+                        <li><a href="#"><img class="flag" src="includes/images/flags/fr.png" alt="French" title="French" onclick="ChangeLanguage(\'french\')" /></a></li>
+                        <li><a href="#"><img class="flag" src="includes/images/flags/de.png" alt="German" title="German" onclick="ChangeLanguage(\'german\')" /></a></li>
+                        <li><a href="#"><img class="flag" src="includes/images/flags/ja.png" alt="Japanese" title="Japanese" onclick="ChangeLanguage(\'japanese\')" /></a></li>
+                        <li><a href="#"><img class="flag" src="includes/images/flags/no.png" alt="Norwegian" title="Norwegian" onclick="ChangeLanguage(\'norwegian\')" /></a></li>
+                        <li><a href="#"><img class="flag" src="includes/images/flags/pr.png" alt="Portuguese" title="Portuguese" onclick="ChangeLanguage(\'portuguese\')" /></a></li>
+                        <li><a href="#"><img class="flag" src="includes/images/flags/ru.png" alt="Russian" title="Russian" onclick="ChangeLanguage(\'russian\')" /></a></li>
+                        <li><a href="#"><img class="flag" src="includes/images/flags/es.png" alt="Spanish" title="Spanish" onclick="ChangeLanguage(\'spanish\')" /></a></li>
+                        <li><a href="#"><img class="flag" src="includes/images/flags/tr.png" alt="Turkish" title="Turkish" onclick="ChangeLanguage(\'turkish\')" /></a></li>
                         <!--
                         <li><a href="#"><img class="flag" src="includes/images/flags/hu.png" alt="Hungarian" onclick="ChangeLanguage(\'hungarian\')" /></a></li>
                         -->
@@ -278,8 +290,8 @@ require_once("load.php");
 
     // MESSAGE BOX
     echo '
-        <div style="position:absolute;width:980px;">
-            <div id="message_box" style="display:none;float:right;width:200px;min-height:25px;background-color:#FFC0C0;border:2px solid #FF0000;padding:5px;text-align:center;"></div>
+        <div style="" class="div_center">
+            <div id="message_box" style="display:none;width:200px;min-height:25px;background-color:#FFC0C0;border:2px solid #FF0000;padding:5px;text-align:center;"></div>
         </div>';
 
     // Main page
@@ -498,14 +510,17 @@ require_once("load.php");
 
     //FOOTER
     /* DON'T MODIFY THE FOOTER
-    * PLEASE DON'T SUPPRESS THE SOURCEFORGE LOGO WHICH HELPS THIS TOOL TO BE WELL PLACED AND QUOTED ... MANY THANKS TO YOU */
+    *  ... MANY THANKS TO YOU */
     echo '
     <div id="footer">
-        <div style="width:500px;">
-            <a href="http://cpassman.org" target="_blank" style="color:#F0F0F0;">cPassMan</a> '.$k['version'].' &copy; copyright 2009-2011
+        <div style="float:left;width:32%;">
+            <a href="http://cpassman.org" target="_blank" style="color:#F0F0F0;">TeamPass</a> '.$k['version'].' &copy; copyright 2009-2011
         </div>
-        <div style="float:right;margin-top:-22px;">
-            <a rel="license" href="http://creativecommons.org/licenses/by-nd/3.0/" title="Collaborative Passwords Manager by Nils Laumaill&#233; is licensed under a Creative Commons Attribution-No Derivative Works 3.0 License" target="_blank"><img src="includes/images/canevas/cc.3.0.png" alt="" /></a>
+        <div style="float:left;width:32%;text-align:center;">
+        	', (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) ? $_SESSION['nb_users_online']."&nbsp;".$txt['users_online'] : "", '
+        </div>
+        <div style="float:right;margin-top:5px;text-align:right;">
+            <a rel="license" href="http://creativecommons.org/licenses/by-nd/3.0/" title="TeamPass by Nils Laumaill&#233; is licensed under a Creative Commons Attribution-NoDerivs 3.0 Unported License" target="_blank"><img src="includes/images/canevas/cc.3.0.png" alt="" /></a>
         </div>
     </div>';
 
