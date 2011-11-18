@@ -24,7 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 /**
- * @file 		uploadify.php adapted for cPassMan
+ * @file 		uploadify.php adapted for TeamPass
  * @author		Nils Laumaillé
  * @version 	2.0
  * @copyright 	(c) 2009-2011 Nils Laumaillé
@@ -49,7 +49,7 @@ function findexts ($filename)
 }
 
 if (!empty($_FILES)) {
-	if ( isset($_POST['type_upload']) && $_POST['type_upload'] != "import_items_from_csv" ){
+	if ( isset($_POST['type_upload']) && ($_POST['type_upload'] == "import_items_from_csv" || $_POST['type_upload']== "import_items_from_file") ){
 		$targetPath = $_SERVER['DOCUMENT_ROOT'].$_REQUEST['folder'] . '/';
 		$targetFile =  str_replace('//','/',$targetPath) . $_FILES['Filedata']['name'];
 

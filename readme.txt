@@ -15,7 +15,7 @@
 *****************************************************************************************************
 ***** 	  																						*****
 ***** 	  								LICENCE AGREEMENT										*****
-***** 	  Before installing and using cPassMan, you must accept its licence defined				*****
+***** 	  Before installing and using TeamPass, you must accept its licence defined				*****
 *****	as "Creative Commons 3.0 BY-ND" (http://creativecommons.org/licenses/by-nd/3.0/)	*****
 ***** 	  																						*****
 *****************************************************************************************************
@@ -116,7 +116,8 @@ v2.0
 * fixed: js library used not compliant with IE9
 * fixed: extra characters in front of passwords [108]
 * fixed: strings error in upgrade.php pages
-* fixed: 2.0 RC1/RC2/RC3/RC4 bugs => 125 - 123 - 136 - 143 - 146 - 140 - 167 - 168 - 169 - 170
+* fixed: 2.0 RC1/RC2/RC3/RC4 bugs => 125 - 123 - 136 - 143 - 146 - 140 - 167 -
+		168 - 169 - 170 - 178 - 179
 
 v1.80
 * improvement: an item can be modified by anyone if activated [3040120]

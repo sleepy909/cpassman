@@ -565,6 +565,7 @@ global \$server, \$user, \$pass, \$database, \$pre, \$db;
 \$database = \"".$_SESSION['db_bdd']."\";
 \$pre = \"".$_SESSION['tbl_prefix']."\";
 
+date_default_timezone_set(\$_SESSION['settings']['timezone']);
 ?>");
 
             fclose($fh);

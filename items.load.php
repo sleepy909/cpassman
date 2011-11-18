@@ -1024,6 +1024,7 @@ function open_edit_item_div(restricted_to_roles) {
         uncheckAllText: "<?php echo $txt['uncheck_all_text'];?>",
         noneSelectedText: "<?php echo $txt['none_selected_text'];?>"
     });
+    $("#edit_restricted_to_list").multiselect('refresh');
 
     //refresh pw complecity
     $("#edit_pw1").focus();

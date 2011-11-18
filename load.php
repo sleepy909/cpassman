@@ -632,7 +632,11 @@ if ( !isset($_GET['page']) ){
 			},
 			function(data){
 				//after inserted, disable the checkbox in order to prevent against new insert
-				$("#item_to_import-"+data[0].item).attr("disabled", true);$("#item_text-"+data[0].item).css("textDecoration", "line-through");
+				var elem = data[0].items.split(";");
+				for (var i=0; i<elem.length; i++) {
+					$("#item_to_import-"+elem[i]).attr("disabled", true);
+					$("#item_text-"+elem[i]).css("textDecoration", "line-through");
+				}
 
 				$("#import_status_ajax_loader").hide();
 			},
@@ -863,6 +867,12 @@ if ( isset($_GET['page']) && $_GET['page'] == "manage_settings" ){
 					//deconnect user
 		            $("#menu_action").val("deconnexion");
 		            document.main_form.submit();
+				}else if(data[0].result == "db_optimize"){
+					$("#result_admin_action_db_optimize").html("<img src=\'includes/images/tick.png\' alt=\'\' />");
+				}else if(data[0].result == "purge_old_files"){
+					$("#result_admin_action_purge_old_files").html("<img src=\'includes/images/tick.png\' alt=\'\' />&nbsp;"+data[0].nb_files_deleted+"&nbsp;'.$txt['admin_action_purge_old_files_result'].'");
+				}else if(data[0].result == "db_clean_items"){
+					$("#result_admin_action_db_clean_items").html("<img src=\"includes/images/tick.png\" alt=\"\" />&nbsp;"+data[0].nb_items_deleted+"&nbsp;'.$txt['admin_action_db_clean_items_result'].'");
 				}
 			},
 			"json"

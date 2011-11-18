@@ -514,7 +514,7 @@ require_once("load.php");
     echo '
     <div id="footer">
         <div style="float:left;width:32%;">
-            <a href="http://cpassman.org" target="_blank" style="color:#F0F0F0;">TeamPass</a> '.$k['version'].' &copy; copyright 2009-2011
+            <a href="http://cpassman.org" target="_blank" style="color:#F0F0F0;">'.$k['tool_name'].'</a> '.$k['version'].' &copy; copyright 2009-2011
         </div>
         <div style="float:left;width:32%;text-align:center;">
         	', (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) ? $_SESSION['nb_users_online']."&nbsp;".$txt['users_online'] : "", '
