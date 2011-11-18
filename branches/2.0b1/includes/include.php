@@ -15,8 +15,8 @@
 //DONT'T CHANGE BELOW THIS LINE
 global $settings;
 
-$k['version'] = "2.0rc4";
-$k['tool_name'] = "cPassMan";
+$k['version'] = "2.0";
+$k['tool_name'] = "TeamPass";
 $k['jquery-version'] = "1.6.2";
 $k['jquery-ui-version'] = "1.8.16";
 $k['jquery-ui-theme'] = "overcast";

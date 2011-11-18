@@ -68,6 +68,12 @@ switch($_POST['type'])
                     }
                 }
                 if ( $line_number> 0){
+                	//Clean single/double quotes
+                	for($x=0;$x<5;$x++){
+                		$line[$x] = trim($line[$x], "'");
+                		$line[$x] = trim($line[$x], '"');
+                	}
+
                     //If any comment is on several lines, then replace 'lf' character
                     $line[4] = str_replace(array("\r\n", "\n", "\r"),"<br />",$line[4]);
 
@@ -105,7 +111,7 @@ switch($_POST['type'])
             // close file
             fclose ($fp);
         } else {
-        	echo '[{"error":"bad_structure"}]';
+        	echo '[{"error":"cannot_open"}]';
         	break;
         }
 
@@ -149,6 +155,7 @@ switch($_POST['type'])
 
     	//Prepare variables
     	$list_items = htmlspecialchars_decode($data_received);
+    	$list = "";
 
         include('main.functions.php');
         foreach( explode('@_#sep#_@',mysql_real_escape_string(stripslashes($list_items))) as $item ){
@@ -210,9 +217,11 @@ switch($_POST['type'])
 
         	//reload Cache table
         	UpdateCacheTable("reload", "");
+			if(empty($list)) $list = $item[5];
+        	else $list .= ";".$item[5];
 
-            echo '[{"item":"'.$item[5].'"}]';
         }
+    	echo '[{"items":"'.$list.'"}]';
     break;
 
     //Check if import KEEPASS file format is what expected

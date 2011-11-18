@@ -179,8 +179,7 @@ switch($_POST['type'])
         UpdateCacheTable("reload");
 
         //show some info
-        echo '$("#result_admin_action_db_clean_items").html("<img src=\"includes/images/tick.png\" alt=\"\" />&nbsp;'.$nb_items_deleted."&nbsp;".$txt['admin_action_db_clean_items_result'].'");';
-        echo 'LoadingPage();';
+    	echo '[{"result" : "db_clean_items","nb_items_deleted":"'.$nb_items_deleted.'"}]';
     break;
 
     ###########################################################
@@ -305,8 +304,6 @@ switch($_POST['type'])
     ###########################################################
     #CASE for optimizing the DB
     case "admin_action_db_optimize":
-        echo '$("#result_admin_action_db_optimize").html("");';
-
         //Get all tables
         $alltables = mysql_query("SHOW TABLES");
         while ($table = mysql_fetch_assoc($alltables))
@@ -322,15 +319,13 @@ switch($_POST['type'])
         }
 
         //Show done
-        echo '$("#result_admin_action_db_optimize").html("<img src=\"includes/images/tick.png\" alt=\"\" />");';
-        echo 'LoadingPage();';
+    	echo '[{"result":"db_optimize"}]';
     break;
 
     ###########################################################
     #CASE for deleted old files in folder "files"
     case "admin_action_purge_old_files":
         $nb_files_deleted = 0;
-        echo '$("#result_admin_action_purge_old_files").html("");';
 
         //read folder
         $rep = "../files/";
@@ -347,8 +342,7 @@ switch($_POST['type'])
         closedir($dir);
 
         //Show done
-        echo '$("#result_admin_action_purge_old_files").html("<img src=\"includes/images/tick.png\" alt=\"\" />&nbsp;'.$nb_files_deleted.$txt['admin_action_purge_old_files_result'].'");';
-        echo 'LoadingPage();';
+    	echo '[{"result":"purge_old_files","nb_files_deleted":"'.$nb_files_deleted.'"}]';
     break;
 
 	/*

@@ -179,7 +179,7 @@ if ( isset($_POST['type']) ){
 
 		            //Announce by email?
 		            if ( $data_received['annonce'] == 1 ){
-		                require_once("class.phpmailer.php");
+		                require_once("../includes/libraries/phpmailer/class.phpmailer.php");
 		                //envoyer email
 		                $destinataire= explode(';',$data_received['diffusion']);
 		                foreach($destinataire as $mail_destinataire){
